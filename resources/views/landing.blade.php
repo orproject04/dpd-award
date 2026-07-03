@@ -21,9 +21,10 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-[#0a0c11] text-white antialiased overflow-x-hidden" 
+<body class="bg-[#050608] text-white antialiased selection:bg-[#88c445] selection:text-[#0a0c11]" 
       x-data="{ 
           scrolled: false, 
+          mobileMenuOpen: false,
           selectedCat: null,
           catNames: {
               'pendidikan': 'Pendidikan',
@@ -44,6 +45,13 @@
                 DPD <span class="text-[#88c445]">AWARD</span>
             </a>
             
+            <!-- Mobile Menu Toggle -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-white p-2 focus:outline-none">
+                <svg x-show="!mobileMenuOpen" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                <svg x-show="mobileMenuOpen" x-cloak width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+
+            <!-- Desktop Nav -->
             <nav class="hidden lg:flex items-center gap-[34px]">
                 <a href="#beranda" class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">BERANDA</a>
                 <a href="#kategori" class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">KATEGORI</a>
@@ -52,6 +60,16 @@
                 <a href="#faq" class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">FAQ</a>
                 <a href="{{ route('nominasi') }}" class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[13.5px] tracking-wide px-6 py-2.5 rounded-full shadow-[0_8px_30px_rgba(224,181,60,0.28)] hover:scale-105 transition-transform">DAFTAR</a>
             </nav>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div x-show="mobileMenuOpen" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-[#0a0c11] border-b border-[#e0b53c]/20 py-4 px-6 flex flex-col gap-4 shadow-xl">
+            <a href="#beranda" @click="mobileMenuOpen = false" class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">BERANDA</a>
+            <a href="#kategori" @click="mobileMenuOpen = false" class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">KATEGORI</a>
+            <a href="#alur" @click="mobileMenuOpen = false" class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">ALUR</a>
+            <a href="#statistik" @click="mobileMenuOpen = false" class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">STATISTIK</a>
+            <a href="#faq" @click="mobileMenuOpen = false" class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">FAQ</a>
+            <a href="{{ route('nominasi') }}" class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] tracking-wide px-6 py-3 rounded-full text-center mt-2">DAFTAR SEKARANG</a>
         </div>
     </header>
 
@@ -65,9 +83,9 @@
         
         <div class="relative z-10 max-w-7xl mx-auto w-full">
             <div x-data="{ shown: false }" x-intersect="shown = true">
-                <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" class="inline-flex items-center gap-2.5 px-[18px] py-2 border border-[#e0b53c]/50 rounded-full mb-[26px] transition-all duration-[800ms] ease-out">
-                    <span class="w-[6px] h-[6px] rounded-full bg-[#e0b53c] shadow-[0_0_8px_#e0b53c]"></span>
-                    <span class="text-[#f5da8b] text-[12.5px] font-bold tracking-[0.24em]">PENGHARGAAN NASIONAL &nbsp;&middot;&nbsp; DPD RI</span>
+                <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" class="inline-flex max-w-full items-center justify-center gap-2.5 px-4 sm:px-[18px] py-2 border border-[#e0b53c]/50 rounded-[20px] sm:rounded-full mb-[26px] transition-all duration-[800ms] ease-out">
+                    <span class="w-[6px] h-[6px] shrink-0 rounded-full bg-[#e0b53c] shadow-[0_0_8px_#e0b53c]"></span>
+                    <span class="text-[#f5da8b] text-[10.5px] sm:text-[12.5px] font-bold tracking-[0.15em] sm:tracking-[0.24em] leading-normal text-center">PENGHARGAAN NASIONAL &nbsp;&middot;&nbsp; DPD RI</span>
                 </div>
                 
                 <h1 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" class="cz text-[clamp(52px,8vw,104px)] font-extrabold leading-[0.94] uppercase tracking-wide mb-6 max-w-[900px] transition-all duration-[800ms] ease-out delay-100">
@@ -99,38 +117,39 @@
 
     <!-- COUNTDOWN -->
     <section id="countdown" class="py-16 px-6 bg-gradient-to-b from-[#10131a] to-[#0a0c11] border-y border-[#e0b53c]/15">
-        <div x-data="countdown()" x-init="start()" x-intersect="shown = true" class="max-w-[1000px] mx-auto bg-gradient-to-br from-[#191d27] to-[#10131a] border border-[#e0b53c]/30 rounded-[28px] p-10 flex flex-wrap items-center justify-between gap-8 shadow-[0_30px_70px_rgba(0,0,0,0.5)] transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
+        <div x-data="countdown()" x-init="start()" x-intersect="shown = true" class="max-w-[1000px] mx-auto bg-gradient-to-br from-[#191d27] to-[#10131a] border border-[#e0b53c]/30 rounded-[24px] sm:rounded-[28px] p-6 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-[0_30px_70px_rgba(0,0,0,0.5)] transition-all duration-[800ms] ease-out text-center lg:text-left" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
             <div>
-                <span class="text-[#88c445] text-xs font-bold tracking-[0.2em]">TENGGAT PENDAFTARAN</span>
+                <span class="text-[#88c445] text-[11px] sm:text-xs font-bold tracking-[0.2em]">TENGGAT PENDAFTARAN</span>
                 <h2 class="cz text-white text-[clamp(26px,4vw,38px)] font-bold uppercase mt-2">Penutupan <span class="text-[#e0b53c]">Nominasi</span></h2>
-                <p class="text-white/55 mt-2 text-[15px]">Waktu tersisa untuk mengirimkan usulan Anda</p>
+                <p class="text-white/55 mt-2 text-[14px] sm:text-[15px]">Waktu tersisa untuk mengirimkan usulan Anda</p>
             </div>
             
-            <div class="flex gap-3">
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
                 <div class="text-center">
-                    <div class="w-[78px] h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-2xl flex items-center justify-center mb-2">
-                        <span class="cz text-[38px] font-bold text-[#e0b53c]" x-text="days">00</span>
+                    <div class="w-[64px] h-[72px] sm:w-[78px] sm:h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2">
+                        <span class="cz text-[28px] sm:text-[38px] font-bold text-[#e0b53c]" x-text="days">00</span>
                     </div>
-                    <span class="text-white/55 text-[11px] font-bold tracking-[0.14em]">HARI</span>
+                    <span class="text-white/55 text-[10px] sm:text-[11px] font-bold tracking-[0.14em]">HARI</span>
                 </div>
                 <div class="text-center">
-                    <div class="w-[78px] h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-2xl flex items-center justify-center mb-2">
-                        <span class="cz text-[38px] font-bold text-[#e0b53c]" x-text="hours">00</span>
+                    <div class="w-[64px] h-[72px] sm:w-[78px] sm:h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2">
+                        <span class="cz text-[28px] sm:text-[38px] font-bold text-[#e0b53c]" x-text="hours">00</span>
                     </div>
-                    <span class="text-white/55 text-[11px] font-bold tracking-[0.14em]">JAM</span>
+                    <span class="text-white/55 text-[10px] sm:text-[11px] font-bold tracking-[0.14em]">JAM</span>
                 </div>
                 <div class="text-center">
-                    <div class="w-[78px] h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-2xl flex items-center justify-center mb-2">
-                        <span class="cz text-[38px] font-bold text-[#e0b53c]" x-text="minutes">00</span>
+                    <div class="w-[64px] h-[72px] sm:w-[78px] sm:h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2">
+                        <span class="cz text-[28px] sm:text-[38px] font-bold text-[#e0b53c]" x-text="minutes">00</span>
                     </div>
-                    <span class="text-white/55 text-[11px] font-bold tracking-[0.14em]">MENIT</span>
+                    <span class="text-white/55 text-[10px] sm:text-[11px] font-bold tracking-[0.14em]">MENIT</span>
                 </div>
                 <div class="text-center">
-                    <div class="w-[78px] h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-2xl flex items-center justify-center mb-2">
-                        <span class="cz text-[38px] font-bold text-[#88c445]" x-text="seconds">00</span>
+                    <div class="w-[64px] h-[72px] sm:w-[78px] sm:h-[88px] bg-black/50 border border-[#e0b53c]/25 rounded-xl sm:rounded-2xl flex items-center justify-center mb-2">
+                        <span class="cz text-[28px] sm:text-[38px] font-bold text-[#e0b53c]" x-text="seconds">00</span>
                     </div>
-                    <span class="text-white/55 text-[11px] font-bold tracking-[0.14em]">DETIK</span>
+                    <span class="text-white/55 text-[10px] sm:text-[11px] font-bold tracking-[0.14em]">DETIK</span>
                 </div>
+
             </div>
         </div>
         
@@ -211,6 +230,58 @@
         </div>
     </section>
 
+    <!-- STATISTIK -->
+    <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" alt="" class="w-full h-full object-cover opacity-30 blur-[2px]">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
+        </div>
+        <div class="relative z-10 max-w-[1100px] mx-auto">
+            <div x-data="{ shown: false }" x-intersect="shown = true" class="text-center mb-[60px] transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
+                <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">ANTUSIASME NASIONAL</span>
+                <h2 class="cz text-[clamp(38px,6vw,64px)] font-extrabold uppercase text-white mt-3 leading-none">Statistik <span class="text-[#e0b53c]">Pendaftar</span></h2>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4">
+                @php
+                $stats = [
+                    ['value' => 1245, 'label' => 'Pendidikan'], ['value' => 982, 'label' => 'Kesehatan'], ['value' => 843, 'label' => 'Lingkungan'],
+                    ['value' => 1503, 'label' => 'Kepemudaan'], ['value' => 721, 'label' => 'Sosial Budaya'], ['value' => 2110, 'label' => 'Ekonomi Kreatif']
+                ];
+                @endphp
+                @foreach($stats as $index => $st)
+                <div x-data="counter({{ $st['value'] }})" x-intersect="startCount()" class="border border-[#e0b53c]/20 hover:border-[#88c445]/55 bg-gradient-to-br from-[#191d27] to-[#10131a] rounded-xl py-5 px-3 text-center transition-colors duration-300">
+                    <div class="cz text-[clamp(28px,2.5vw,36px)] font-bold text-[#e0b53c] leading-none" x-text="display">0</div>
+                    <p class="text-white/60 text-[11px] font-bold tracking-[0.1em] uppercase mt-2">{{ $st['label'] }}</p>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        <script>
+            function counter(target) {
+                return {
+                    display: '0',
+                    started: false,
+                    startCount() {
+                        if(this.started) return;
+                        this.started = true;
+                        let start = null;
+                        const duration = 1800;
+                        const fmt = new Intl.NumberFormat('id-ID');
+                        const step = (ts) => {
+                            if(!start) start = ts;
+                            const progress = Math.min((ts - start)/duration, 1);
+                            this.display = fmt.format(Math.floor(progress * target));
+                            if(progress < 1) requestAnimationFrame(step);
+                            else this.display = fmt.format(target);
+                        };
+                        requestAnimationFrame(step);
+                    }
+                }
+            }
+        </script>
+    </section>
+
     <!-- ALUR / TIMELINE -->
     <section id="alur" class="py-[110px] px-6 bg-white">
         <div class="max-w-[900px] mx-auto">
@@ -246,60 +317,9 @@
         </div>
     </section>
 
-    <!-- STATISTIK -->
-    <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" alt="" class="w-full h-full object-cover opacity-30 blur-[2px]">
-            <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
-        </div>
-        <div class="relative z-10 max-w-[1100px] mx-auto">
-            <div x-data="{ shown: false }" x-intersect="shown = true" class="text-center mb-[60px] transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
-                <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">ANTUSIASME NASIONAL</span>
-                <h2 class="cz text-[clamp(38px,6vw,64px)] font-extrabold uppercase text-white mt-3 leading-none">Statistik <span class="text-[#e0b53c]">Pendaftar</span></h2>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-5">
-                @php
-                $stats = [
-                    ['value' => 1245, 'label' => 'Pendidikan'], ['value' => 982, 'label' => 'Kesehatan'], ['value' => 843, 'label' => 'Lingkungan'],
-                    ['value' => 1503, 'label' => 'Kepemudaan'], ['value' => 721, 'label' => 'Sosial Budaya'], ['value' => 2110, 'label' => 'Ekonomi Kreatif']
-                ];
-                @endphp
-                @foreach($stats as $index => $st)
-                <div x-data="counter({{ $st['value'] }})" x-intersect="startCount()" class="border border-[#e0b53c]/20 hover:border-[#88c445]/55 bg-gradient-to-br from-[#191d27] to-[#10131a] rounded-[22px] py-8 px-6 text-center transition-colors duration-300">
-                    <div class="cz text-[clamp(44px,5vw,58px)] font-bold text-[#e0b53c] leading-none" x-text="display">0</div>
-                    <p class="text-white/60 text-[13px] font-bold tracking-[0.12em] uppercase mt-2.5">{{ $st['label'] }}</p>
-                </div>
-                @endforeach
-            </div>
-        </div>
-        <script>
-            function counter(target) {
-                return {
-                    display: '0',
-                    started: false,
-                    startCount() {
-                        if(this.started) return;
-                        this.started = true;
-                        let start = null;
-                        const duration = 1800;
-                        const fmt = new Intl.NumberFormat('id-ID');
-                        const step = (ts) => {
-                            if(!start) start = ts;
-                            const progress = Math.min((ts - start)/duration, 1);
-                            this.display = fmt.format(Math.floor(progress * target));
-                            if(progress < 1) requestAnimationFrame(step);
-                            else this.display = fmt.format(target);
-                        };
-                        requestAnimationFrame(step);
-                    }
-                }
-            }
-        </script>
-    </section>
 
     <!-- TESTIMONI -->
-    <section id="testimoni" class="py-[110px] px-6 bg-[#fbf7ee] text-[#10131a]">
+    <!-- <section id="testimoni" class="py-[110px] px-6 bg-[#fbf7ee] text-[#10131a]">
         <div class="max-w-[1100px] mx-auto">
             <div x-data="{ shown: false }" x-intersect="shown = true" class="text-center mb-[60px] transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
                 <span class="text-[#1b6e4c] text-[12.5px] font-extrabold tracking-[0.22em]">SUARA PENERIMA PENGHARGAAN</span>
@@ -330,14 +350,14 @@
                 @endforeach
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- SYARAT & KETENTUAN -->
     <section id="syarat" class="py-[110px] px-6 bg-gradient-to-br from-[#0c3b28] to-[#0a0c11]">
         <div class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.2fr] gap-14 items-start">
             <div x-data="{ shown: false }" x-intersect="shown = true" class="transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[30px]'">
                 <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">SEBELUM MENDAFTAR</span>
-                <h2 class="cz text-[clamp(36px,5vw,56px)] font-extrabold uppercase mt-3 leading-[1.02]">Syarat &amp; <span class="text-[#e0b53c]">Ketentuan</span></h2>
+                <h2 class="cz text-[clamp(36px,5vw,56px)] font-extrabold uppercase mt-3 leading-[1.02] text-white">Syarat &amp; <span class="text-[#e0b53c]">Ketentuan</span></h2>
                 <p class="text-white/70 text-[17px] leading-[1.65] mt-5">Pastikan Anda memenuhi kriteria berikut. Seluruh proses <strong class="text-[#88c445]">gratis</strong> dan terbuka untuk umum — waspadai penipuan yang mengatasnamakan panitia.</p>
                 <a href="#kategori" class="inline-flex items-center gap-2.5 mt-[30px] bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[15px] px-[30px] py-[15px] rounded-full shadow-[0_10px_34px_rgba(224,181,60,0.3)]">
                     Mulai Pendaftaran
@@ -406,6 +426,8 @@
         </div>
     </section>
 
+    
+
     <!-- FINAL CTA -->
     <section class="relative py-[120px] px-6 bg-[#0a0c11] text-center overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(224,181,60,0.14),transparent_60%)]"></div>
@@ -448,9 +470,9 @@
                     <div class="cz text-white text-[19px] font-bold" x-text="catNames[selectedCat]"></div>
                 </div>
             </div>
-            <a :href="'{{ route('nominasi') }}?kategori=' + selectedCat" class="bg-[#88c445] text-[#0a0c11] font-extrabold text-[15px] px-[30px] py-[14px] rounded-full inline-flex items-center gap-2 hover:bg-[#75a83a] transition-colors">
+            <a :href="'{{ route('nominasi') }}?kategori=' + selectedCat" class="bg-[#88c445] text-[#0a0c11] font-extrabold text-[15px] px-[30px] py-[14px] rounded-full flex justify-center w-full sm:w-auto sm:inline-flex items-center gap-2 hover:bg-[#75a83a] transition-colors">
                 Lanjutkan Pendaftaran
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="hidden sm:block"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
         </div>
     </div>

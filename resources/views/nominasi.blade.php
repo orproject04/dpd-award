@@ -222,23 +222,23 @@
                 </div>
 
                 <!-- NAV BUTTONS -->
-                <div class="flex justify-between gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]">
-                    <div>
+                <div class="flex flex-col-reverse sm:flex-row justify-between gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]">
+                    <div class="w-full sm:w-auto">
                         <template x-if="step > 0">
-                            <button @click="back()" class="inline-flex items-center gap-2 border-[1.5px] border-[#cfc4a8] bg-white text-[#4b5262] font-bold text-[15px] px-[26px] py-[13px] rounded-xl hover:bg-gray-50 transition-colors">
+                            <button @click="back()" class="w-full sm:w-auto justify-center inline-flex items-center gap-2 border-[1.5px] border-[#cfc4a8] bg-white text-[#4b5262] font-bold text-[15px] px-[26px] py-[13px] rounded-xl hover:bg-gray-50 transition-colors">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Kembali
                             </button>
                         </template>
                     </div>
                     
-                    <div>
+                    <div class="w-full sm:w-auto flex flex-col gap-3.5">
                         <template x-if="step < 4">
-                            <button @click="next()" class="inline-flex items-center gap-2 bg-[#88c445] text-[#0a0c11] font-extrabold text-[15px] px-[30px] py-[13px] rounded-xl shadow-[0_8px_24px_rgba(136,196,69,.3)] hover:bg-[#75a83a] transition-colors">Lanjut
+                            <button @click="next()" class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-[#88c445] text-[#0a0c11] font-extrabold text-[15px] px-[30px] py-[13px] rounded-xl shadow-[0_8px_24px_rgba(136,196,69,.3)] hover:bg-[#75a83a] transition-colors">Lanjut
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                             </button>
                         </template>
                         <template x-if="step === 4">
-                            <button @click="submitForm()" class="inline-flex items-center gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[15px] px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform">Kirim Nominasi
+                            <button @click="submitForm()" class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[15px] px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform">Kirim Nominasi
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
                             </button>
                         </template>

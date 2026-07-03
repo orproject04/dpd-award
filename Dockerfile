@@ -1,14 +1,8 @@
 # ==========================
 # STAGE 1: Build assets (Vite)
 # ==========================
-FROM node:18-alpine AS build-assets
+FROM node:20-slim AS build-assets
 WORKDIR /app
-
-# Set timezone untuk Node.js stage
-RUN apk add --no-cache tzdata \
- && cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime \
- && echo "Asia/Jakarta" > /etc/timezone \
- && apk del tzdata
 
 # Cache deps (copy package files first for better layer caching)
 COPY package*.json vite.config.js ./

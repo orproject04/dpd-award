@@ -61,7 +61,7 @@ RUN composer install --optimize-autoloader --no-interaction --prefer-dist --no-s
 COPY . .
 
 # Copy environment dan built assets
-COPY .env-docker .env
+COPY .env.example .env
 COPY --from=build-assets /app/public/build ./public/build
 
 # Setup Laravel (kombinasi RUN untuk reduce layers)

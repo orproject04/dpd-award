@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', LandingController::class)->name('landing');
+Route::view('/nominasi', 'nominasi')->name('nominasi');
 
 Route::middleware(['auth', 'verified'])->group(fn() => Route::get('/home', HomeController::class)->name('home'));
 

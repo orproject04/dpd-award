@@ -20,9 +20,6 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Update Apache port to match Render's $PORT environment variable
-RUN sed -i "s/80/\${PORT:-80}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/*.conf
-
 # Change DocumentRoot to /var/www/html/public
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
@@ -44,8 +41,11 @@ RUN composer install --optimize-autoloader --no-dev \
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Create a startup script that handles Laravel caching, migrations, and starts Apache
+# Create a startup script that handles Laravel caching, migrations, port binding, and starts Apache
 RUN echo '#!/bin/bash\n\
+PORT=${PORT:-80}\n\
+sed -i "s/Listen 80/Listen $PORT/g" /etc/apache2/ports.conf\n\
+sed -i "s/:80/:$PORT/g" /etc/apache2/sites-available/000-default.conf\n\
 php artisan config:cache\n\
 php artisan route:cache\n\
 php artisan view:cache\n\

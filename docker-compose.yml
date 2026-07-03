@@ -1,0 +1,26 @@
+services:
+    app:
+        env_file:
+            - .env
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: dpd-award-app:latest
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '8000:8080'
+        volumes:
+            - './storage:/var/www/html/storage'
+            - './bootstrap/cache:/var/www/html/bootstrap/cache'
+            - './public/storage:/var/www/html/public/storage'
+        networks:
+            - dpd-award
+        depends_on:
+            redis:
+                condition: service_healthy
+        restart: unless-stopped
+
+networks:
+    dpd-award:
+        driver: bridge

@@ -23,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
 
+        // Apply security headers to all Laravel responses (web + api)
+        $middleware->append(\App\Http\Middleware\SetSecurityHeaders::class);
+
         $middleware->appendToGroup('web', [
             DetectFlashMessage::class,
             CheckPassword::class,

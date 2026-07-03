@@ -22,11 +22,16 @@ export default defineConfig({
     plugins: [
         tailwindcss(),
         laravel({
-            input: [
-                "resources/css/app.css",
-                "resources/js/app.js",
-            ],
+            input: ["resources/css/app.css", "resources/js/app.js"],
             refresh: true,
+        }),
+        viteStaticCopy({
+            targets: [
+                {
+                    src: "resources/fonts",
+                    dest: "", // will copy to /public/build/fonts
+                },
+            ],
         }),
     ],
     assetsInclude: ["**/*.png", "**/*.jpg", "**/*.svg", "**/*.jpeg"],

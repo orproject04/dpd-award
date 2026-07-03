@@ -1,7 +1,8 @@
 node_modules
 vendor
-public/build
 .env
 .env.*
 .git
 storage/*.key
+storage/logs/*
+public/storage

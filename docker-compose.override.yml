@@ -1,0 +1,15 @@
+# services:
+#   vite:
+#     env_file:
+#       - .env-docker
+#     image: node:18-alpine
+#     working_dir: /var/www/html
+#     command: sh -c "npm install && npm run dev"
+#     volumes:
+#       - .:/var/www/html
+#     ports:
+#       - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+#     networks:
+#       - sail
+#     depends_on:
+#       - laravel.test

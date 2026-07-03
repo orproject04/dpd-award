@@ -1,8 +1,12 @@
 import './bootstrap';
-import.meta.glob(['../images/**']);
 import Alpine from 'alpinejs';
 import intersect from '@alpinejs/intersect';
 import collapse from '@alpinejs/collapse';
+
+import.meta.glob('../images/*', {
+  eager: true,
+  import: 'default'
+});
 
 window.Alpine = Alpine;
 

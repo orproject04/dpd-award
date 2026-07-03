@@ -14,7 +14,7 @@
             <div class="item">
                 <div class="ui compact menu b-0">
                     <div class="ui simple dropdown basic button top right pointing b-0 p-x-volt-0">
-                        <img src="{{ Vite::asset('resources/images/avatar.png') }}" alt="" class="ui image avatar">
+                        <img src="{{ auth()->user()->avatar }}" alt="" class="ui image avatar">
                         <i class="dropdown icon m-l-0"></i>
                         <div class="menu">
                             <div class="header"><span class="ui text {{ config('laravolt.ui.color') }}">{{ auth()->user()->name }}</span></div>

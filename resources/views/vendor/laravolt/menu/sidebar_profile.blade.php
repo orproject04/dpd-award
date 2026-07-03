@@ -1,6 +1,6 @@
 @auth
     <div class="sidebar__profile">
-        <img src="{{ Vite::asset('resources/images/avatar.png') }}" class="ui image">
+        <img src="{{ auth()->user()->avatar }}" class="ui image">
         <div class="meta">
             <h4 class="ui header">{{ auth()->user()->name }}</h4>
             <div class="extra">

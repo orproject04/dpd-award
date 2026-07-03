@@ -441,16 +441,32 @@
 
     <!-- FOOTER -->
     <footer class="bg-black pt-16 pb-10 px-6 border-t border-[#e0b53c]/15">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between gap-8 items-start">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+            <!-- Col 1 -->
             <div>
                 <div class="cz text-[30px] font-extrabold tracking-wide text-white">DPD <span class="text-[#88c445]">AWARD</span></div>
-                <p class="text-white/40 text-[14px] mt-2">Inspirasi Nyata untuk Indonesia</p>
+                <p class="text-white/40 text-[14px] mt-3">Inspirasi Nyata untuk Indonesia</p>
                 <p class="text-white/30 text-[13px] mt-1">Dewan Perwakilan Daerah Republik Indonesia</p>
             </div>
-            <div class="flex gap-10 flex-wrap">
+            
+            <!-- Col 2 -->
+            <div class="flex flex-col gap-3 md:pl-10">
+                <h4 class="text-white font-bold mb-1">Tautan Penting</h4>
                 <a href="#syarat" class="text-white/60 text-[14px] hover:text-[#88c445] transition-colors">Syarat &amp; Ketentuan</a>
                 <a href="#faq" class="text-white/60 text-[14px] hover:text-[#88c445] transition-colors">FAQ</a>
-                <a href="#" class="text-white/60 text-[14px] hover:text-[#88c445] transition-colors">Kontak Panitia</a>
+            </div>
+            
+            <!-- Col 3 -->
+            <div class="flex flex-col gap-3">
+                <h4 class="text-white font-bold mb-1">Kontak Panitia</h4>
+                <div class="text-white/60 text-[14px] flex flex-col gap-2">
+                    <a href="tel:+6281234567890" class="inline-flex items-center gap-2 hover:text-[#88c445] transition-colors">
+                        <span>📞</span> +62 8000 0000 (WA)
+                    </a>
+                    <a href="mailto:info@dpdaward.go.id" class="inline-flex items-center gap-2 hover:text-[#88c445] transition-colors">
+                        <span>✉️</span> info@dpdaward.go.id
+                    </a>
+                </div>
             </div>
         </div>
         <div class="max-w-7xl mx-auto mt-10 pt-6 border-t border-white/10 text-white/35 text-[13px]">

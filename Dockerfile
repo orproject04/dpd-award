@@ -92,7 +92,7 @@ RUN rm -f /etc/nginx/http.d/default.conf \
  && chmod +x /entrypoint.sh
 
 # Expose Nginx (bukan FPM)
-EXPOSE 8080
+EXPOSE 80
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

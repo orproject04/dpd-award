@@ -22,6 +22,9 @@ class SetSecurityHeaders
         // Prevent browsers from MIME-type sniffing
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
+        // Content Security Policy
+        $response->headers->set('Content-Security-Policy', "upgrade-insecure-requests; default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';");
+
         // Prevent clickjacking attacks
         $response->headers->set('X-Frame-Options', 'DENY');
 

@@ -16,8 +16,10 @@
         .cz { font-family: 'Cinzel', serif; }
         @keyframes sheen { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shimmer { 100% { transform: translateX(250%); } }
         .animate-sheen { animation: sheen 6s linear infinite; }
         .animate-floaty { animation: floaty 2s ease-in-out infinite; }
+        .group:hover .shimmer-effect { animation: shimmer 1.5s infinite; }
         [x-cloak] { display: none !important; }
     </style>
 </head>
@@ -98,9 +100,12 @@
                 </p>
                 
                 <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" class="flex flex-wrap gap-4 transition-all duration-[800ms] ease-out delay-300">
-                    <a href="#kategori" class="inline-flex items-center gap-2.5 bg-[#88c445] text-[#0a0c11] font-extrabold text-[16px] tracking-[0.03em] px-9 py-[17px] rounded-full shadow-[0_10px_40px_rgba(136,196,69,0.4)] hover:shadow-[0_16px_50px_rgba(136,196,69,0.55)] hover:-translate-y-[2px] transition-all">
-                        Ajukan Nominasi
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    <a href="#kategori" class="inline-flex items-center gap-2.5 bg-[#88c445] text-[#0a0c11] font-extrabold text-[16px] tracking-[0.03em] px-9 py-[17px] rounded-full shadow-[0_10px_40px_rgba(136,196,69,0.4)] hover:shadow-[0_16px_50px_rgba(136,196,69,0.6)] hover:-translate-y-[2px] transition-all relative overflow-hidden group">
+                        <span class="absolute top-0 -left-[100%] w-[120%] h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg] shimmer-effect"></span>
+                        <span class="relative z-10 flex items-center gap-2.5">
+                            Ajukan Nominasi
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </span>
                     </a>
                     <a href="#alur" class="inline-flex items-center gap-2.5 border-[1.5px] border-[#f5da8b]/55 text-[#f5da8b] font-bold text-[16px] px-[34px] py-[17px] rounded-full hover:bg-[#e0b53c]/10 transition-colors">
                         Lihat Alur Seleksi
@@ -109,10 +114,10 @@
             </div>
         </div>
 
-        <div class="absolute bottom-[26px] left-1/2 -translate-x-1/2 z-10 text-white/40 flex flex-col items-center gap-1.5">
+        <a href="#countdown" class="absolute bottom-[26px] left-1/2 -translate-x-1/2 z-10 text-white/40 flex flex-col items-center gap-1.5 hover:text-white/80 transition-colors cursor-pointer">
             <span class="text-[11px] tracking-[0.2em] font-semibold">GULIR</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-floaty"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
+        </a>
     </section>
 
     <!-- COUNTDOWN -->
@@ -261,21 +266,23 @@
             function counter(target) {
                 return {
                     display: '0',
-                    started: false,
+                    animationId: null,
                     startCount() {
-                        if(this.started) return;
-                        this.started = true;
+                        if (this.animationId) cancelAnimationFrame(this.animationId);
+                        this.display = '0';
                         let start = null;
-                        const duration = 1800;
+                        const duration = 2000; // sedikit diperlambat agar lebih dramatis
                         const fmt = new Intl.NumberFormat('id-ID');
                         const step = (ts) => {
                             if(!start) start = ts;
                             const progress = Math.min((ts - start)/duration, 1);
-                            this.display = fmt.format(Math.floor(progress * target));
-                            if(progress < 1) requestAnimationFrame(step);
+                            // Easing easeOutExpo
+                            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                            this.display = fmt.format(Math.floor(easeProgress * target));
+                            if(progress < 1) this.animationId = requestAnimationFrame(step);
                             else this.display = fmt.format(target);
                         };
-                        requestAnimationFrame(step);
+                        this.animationId = requestAnimationFrame(step);
                     }
                 }
             }
@@ -304,11 +311,11 @@
                 @endphp
 
                 @foreach($timeline as $index => $step)
-                <div x-data="{ shown: false }" x-intersect="shown = true" class="relative flex gap-7 pb-11 transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" style="transition-delay: {{ $index * 100 }}ms;">
-                    <div class="shrink-0 w-14 h-14 rounded-full border-[3px] border-white shadow-[0_6px_18px_rgba(0,0,0,0.15)] flex items-center justify-center z-10 cz font-bold text-xl" style="background: {{ $step['dot'] }}; color: {{ $step['num'] }};">{{ $step['n'] }}</div>
-                    <div class="pt-1">
-                        <span class="inline-block bg-[#f3ecdd] text-[#b8860b] font-bold text-[13px] px-3.5 py-1.5 rounded-full mb-2.5">{{ $step['date'] }}</span>
-                        <h3 class="cz text-[26px] font-bold">{{ $step['title'] }}</h3>
+                <div x-data="{ shown: false }" x-intersect="shown = true" class="group relative flex gap-7 pb-11 transition-all duration-[800ms] ease-out cursor-pointer" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" style="transition-delay: {{ $index * 100 }}ms;">
+                    <div class="shrink-0 w-14 h-14 rounded-full border-[3px] border-white shadow-[0_6px_18px_rgba(0,0,0,0.15)] flex items-center justify-center z-10 cz font-bold text-xl group-hover:scale-[1.15] group-hover:shadow-[0_8px_26px_rgba(136,196,69,0.4)] transition-all duration-300" style="background: {{ $step['dot'] }}; color: {{ $step['num'] }};">{{ $step['n'] }}</div>
+                    <div class="pt-1 group-hover:-translate-y-1 transition-transform duration-300">
+                        <span class="inline-block bg-[#f3ecdd] text-[#b8860b] font-bold text-[13px] px-3.5 py-1.5 rounded-full mb-2.5 group-hover:bg-[#88c445]/20 group-hover:text-[#456d1c] transition-colors duration-300">{{ $step['date'] }}</span>
+                        <h3 class="cz text-[26px] font-bold group-hover:text-[#1b6e4c] transition-colors duration-300">{{ $step['title'] }}</h3>
                         <p class="text-[#4b5262] text-[15.5px] leading-[1.6] mt-1.5 max-w-[560px]">{{ $step['desc'] }}</p>
                     </div>
                 </div>
@@ -359,9 +366,10 @@
                 <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">SEBELUM MENDAFTAR</span>
                 <h2 class="cz text-[clamp(36px,5vw,56px)] font-extrabold uppercase mt-3 leading-[1.02] text-white">Syarat &amp; <span class="text-[#e0b53c]">Ketentuan</span></h2>
                 <p class="text-white/70 text-[17px] leading-[1.65] mt-5">Pastikan Anda memenuhi kriteria berikut. Seluruh proses <strong class="text-[#88c445]">gratis</strong> dan terbuka untuk umum — waspadai penipuan yang mengatasnamakan panitia.</p>
-                <a href="#kategori" class="inline-flex items-center gap-2.5 mt-[30px] bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[15px] px-[30px] py-[15px] rounded-full shadow-[0_10px_34px_rgba(224,181,60,0.3)]">
-                    Mulai Pendaftaran
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                <a href="#kategori" class="group relative overflow-hidden inline-flex items-center gap-2.5 mt-[30px] bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[15px] px-[30px] py-[15px] rounded-full shadow-[0_10px_34px_rgba(224,181,60,0.3)] hover:-translate-y-1 transition-transform">
+                    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]"></span>
+                    <span class="relative z-10">Mulai Pendaftaran</span>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
             </div>
             
@@ -376,12 +384,12 @@
                 ];
                 @endphp
                 @foreach($reqs as $index => $r)
-                <div x-data="{ shown: false }" x-intersect="shown = true" class="flex gap-4 items-start bg-white/5 border border-[#e0b53c]/20 rounded-2xl p-5 transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[30px]'" style="transition-delay: {{ $index * 100 }}ms;">
-                    <div class="shrink-0 w-[30px] h-[30px] rounded-lg bg-[#88c445]/15 flex items-center justify-center">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#88c445" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <div x-data="{ shown: false }" x-intersect="shown = true" class="group flex gap-4 items-start bg-white/5 border border-[#e0b53c]/20 rounded-2xl p-5 cursor-pointer hover:bg-white/10 hover:border-[#88c445]/50 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(136,196,69,0.15)] transition-all duration-[400ms] ease-out" :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[30px]'" style="transition-delay: {{ $index * 100 }}ms;">
+                    <div class="shrink-0 w-[30px] h-[30px] rounded-lg bg-[#88c445]/15 flex items-center justify-center group-hover:bg-[#88c445] transition-colors duration-300">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-[#88c445] group-hover:text-[#0a0c11] transition-colors duration-300"><polyline points="20 6 9 17 4 12"/></svg>
                     </div>
                     <div>
-                        <h4 class="text-white text-base font-bold">{{ $r['title'] }}</h4>
+                        <h4 class="text-white text-base font-bold group-hover:text-[#e0b53c] transition-colors duration-300">{{ $r['title'] }}</h4>
                         <p class="text-white/60 text-[14px] leading-[1.55] mt-1">{{ $r['desc'] }}</p>
                     </div>
                 </div>
@@ -410,14 +418,17 @@
                 @endphp
                 
                 @foreach($faqData as $index => $f)
-                <div x-data="{ shown: false }" x-intersect="shown = true" class="bg-white border border-[#e8e0cf] rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(11,42,91,0.04)] transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" style="transition-delay: {{ $index * 100 }}ms;">
-                    <button @click="openFaq === {{ $index }} ? openFaq = -1 : openFaq = {{ $index }}" class="w-full text-left p-6 flex items-center justify-between gap-4 outline-none">
-                        <span class="cz text-[19px] font-semibold flex-1">{{ $f['q'] }}</span>
-                        <span class="w-[30px] h-[30px] shrink-0 rounded-full bg-[#f3ecdd] flex items-center justify-center transition-transform duration-300" :class="openFaq === {{ $index }} ? 'rotate-180' : ''">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                <div x-data="{ shown: false, isOpen: false }" x-intersect="shown = true" 
+                     @mouseenter="isOpen = true" @mouseleave="isOpen = false"
+                     class="bg-white border border-[#e8e0cf] rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(11,42,91,0.04)] transition-all duration-[800ms] ease-out" 
+                     :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" style="transition-delay: {{ $index * 100 }}ms;">
+                    <div class="w-full text-left p-6 flex items-center justify-between gap-4 cursor-pointer">
+                        <span class="cz text-[19px] font-semibold flex-1 transition-colors duration-300" :class="isOpen ? 'text-[#1b6e4c]' : 'text-[#10131a]'">{{ $f['q'] }}</span>
+                        <span class="w-[30px] h-[30px] shrink-0 rounded-full flex items-center justify-center transition-all duration-300" :class="isOpen ? 'bg-[#1b6e4c] rotate-180' : 'bg-[#f3ecdd]'">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" :stroke="isOpen ? '#ffffff' : '#b8860b'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                         </span>
-                    </button>
-                    <div x-show="openFaq === {{ $index }}" x-collapse class="overflow-hidden">
+                    </div>
+                    <div x-show="isOpen" x-collapse class="overflow-hidden">
                         <p class="px-6 pb-6 text-[#4b5262] text-[15.5px] leading-[1.7]">{{ $f['a'] }}</p>
                     </div>
                 </div>
@@ -432,10 +443,14 @@
     <section class="relative py-[120px] px-6 bg-[#0a0c11] text-center overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(224,181,60,0.14),transparent_60%)]"></div>
         <div x-data="{ shown: false }" x-intersect="shown = true" class="relative z-10 max-w-[760px] mx-auto transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
-            <div class="text-[52px] mb-2">🏆</div>
+            <div class="text-[52px] mb-2 animate-floaty">🏆</div>
             <h2 class="cz text-[clamp(34px,5vw,58px)] font-extrabold uppercase leading-[1.05] text-white">Karya Nyata Anda Layak <span class="text-[#e0b53c]">Diapresiasi</span></h2>
             <p class="text-white/70 text-[18px] leading-[1.6] mt-5 mb-8 max-w-[560px] mx-auto">Ajukan nominasi sekarang dan jadilah bagian dari malam penganugerahan DPD Award 2026.</p>
-            <a href="{{ route('nominasi') }}" class="inline-flex items-center gap-2.5 bg-[#88c445] text-[#0a0c11] font-extrabold text-[17px] px-[42px] py-[18px] rounded-full shadow-[0_12px_44px_rgba(136,196,69,0.4)] hover:-translate-y-[3px] transition-transform">Ajukan Nominasi Sekarang</a>
+            <a href="{{ route('nominasi') }}" class="group relative overflow-hidden inline-flex items-center gap-2.5 bg-[#88c445] text-[#0a0c11] font-extrabold text-[17px] px-[42px] py-[18px] rounded-full shadow-[0_12px_44px_rgba(136,196,69,0.4)] hover:-translate-y-[3px] transition-transform">
+                <span class="absolute top-0 -left-[100%] w-[120%] h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg] shimmer-effect"></span>
+                <span class="relative z-10">Ajukan Nominasi Sekarang</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="relative z-10 group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
         </div>
     </section>
 

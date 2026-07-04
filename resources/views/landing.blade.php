@@ -419,7 +419,9 @@
                 
                 @foreach($faqData as $index => $f)
                 <div x-data="{ shown: false, isOpen: false }" x-intersect="shown = true" 
-                     @mouseenter="isOpen = true" @mouseleave="isOpen = false"
+                     @mouseenter="if(window.matchMedia('(hover: hover)').matches) isOpen = true" 
+                     @mouseleave="if(window.matchMedia('(hover: hover)').matches) isOpen = false" 
+                     @click="isOpen = !isOpen"
                      class="bg-white border border-[#e8e0cf] rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(11,42,91,0.04)] transition-all duration-[800ms] ease-out" 
                      :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'" style="transition-delay: {{ $index * 100 }}ms;">
                     <div class="w-full text-left p-6 flex items-center justify-between gap-4 cursor-pointer">

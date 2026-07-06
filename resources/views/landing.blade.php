@@ -104,7 +104,7 @@
 
     <!-- HEADER -->
     <header
-        :class="scrolled ? 'bg-[#0a0c11]/90 backdrop-blur-md border-b border-[#e0b53c]/20 py-3.5' : 'bg-transparent py-6'"
+        :class="(scrolled || mobileMenuOpen) ? 'bg-[#0a0c11]/90 backdrop-blur-md border-b border-[#e0b53c]/20 py-3.5' : 'bg-transparent py-6'"
         class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
             <a href="#beranda"
@@ -162,8 +162,7 @@
             <a href="#faq" @click="mobileMenuOpen = false"
                 class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">TANYA JAWAB</a>
             <a href="{{ route('nominasi') }}"
-                class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] tracking-wide px-6 py-3 rounded-full text-center mt-2">DAFTAR
-                SEKARANG</a>
+                class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] tracking-wide px-6 py-3 rounded-full text-center mt-2">DAFTAR</a>
         </div>
     </header>
 
@@ -612,9 +611,9 @@
                 @endphp
 
                 @foreach($faqData as $index => $f)
-                    <div x-data="{ shown: false, isHovered: false, isClicked: false }" x-intersect="shown = true"
-                        x-intersect:leave="shown = false" @mouseenter="isHovered = true" @mouseleave="isHovered = false"
-                        @click="isClicked = !isClicked"
+                    <div x-data="{ shown: false, isHovered: false, isClicked: false, forceClose: false, get isOpen() { return this.isClicked || (this.isHovered && !this.forceClose); } }" x-intersect="shown = true"
+                        x-intersect:leave="shown = false" @mouseenter="isHovered = true; forceClose = false" @mouseleave="isHovered = false; forceClose = false"
+                        @click="isClicked = !isClicked; forceClose = !isClicked"
                         class="bg-white border border-[#e8e0cf] rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(11,42,91,0.04)] transition-all duration-[800ms] ease-out cursor-pointer"
                         :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                         style="transition-delay: {{ $index * 100 }}ms;">
@@ -623,7 +622,7 @@
                                 :class="(isHovered || isClicked) ? 'text-[#1b6e4c]' : 'text-[#10131a]'">{{ $f['q'] }}</span>
                             <span
                                 class="w-[30px] h-[30px] shrink-0 rounded-full flex items-center justify-center transition-all duration-300"
-                                :class="(isHovered || isClicked) ? 'bg-[#1b6e4c] rotate-180' : 'bg-[#f3ecdd]'">
+                                :class="[(isHovered || isClicked) ? 'bg-[#1b6e4c]' : 'bg-[#f3ecdd]', isOpen ? 'rotate-180' : '']">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                     :stroke="(isHovered || isClicked) ? '#ffffff' : '#b8860b'" stroke-width="2.5"
                                     stroke-linecap="round" stroke-linejoin="round">
@@ -631,7 +630,7 @@
                                 </svg>
                             </span>
                         </div>
-                        <div x-show="isHovered || isClicked" x-collapse class="overflow-hidden">
+                        <div x-show="isOpen" x-collapse class="overflow-hidden">
                             <p class="px-6 pb-6 text-[#4b5262] text-[15.5px] leading-[1.7]">{{ $f['a'] }}</p>
                         </div>
                     </div>
@@ -644,12 +643,13 @@
     <footer class="bg-black pt-10 pb-6 px-6 border-t border-[#e0b53c]/15">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
             <div class="text-center md:text-left md:flex-1">
-                <div
-                    class="cz text-[30px] font-extrabold tracking-wide text-white flex items-center justify-center md:justify-start gap-2">
+                <div class="flex items-center justify-center md:justify-start gap-3.5">
                     <img src="/images/logo.png" alt="Logo DPD" class="w-11 h-11 object-contain">
-                    <span>DPD <span class="text-[#88c445]">AWARD</span></span>
+                    <div class="flex flex-col text-left">
+                        <span class="cz text-[28px] font-extrabold tracking-wide text-white leading-[1.1]">DPD <span class="text-[#88c445]">AWARD</span></span>
+                        <span class="text-white/40 text-[13px] tracking-wide">Dari Daerah untuk Indonesia</span>
+                    </div>
                 </div>
-                <p class="text-white/40 text-[14px] mt-2">Dari Daerah untuk Indonesia</p>
             </div>
 
             <div class="flex flex-col items-center gap-4 md:flex-[2]">

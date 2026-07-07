@@ -704,7 +704,31 @@
         </div>
     </section>
 
-    <!-- 8. FOOTER (PENUTUP) -->
+    <!-- 8. STATEMENT PENUTUP -->
+    <section class="py-[80px] px-6 bg-[#0a0c11] border-t border-white/5 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#1b6e4c]/5 to-transparent"></div>
+        <div class="relative max-w-4xl mx-auto text-center" x-data="{ shown: false }" x-intersect.half="shown = true"
+            x-intersect:leave="shown = false">
+            <div :class="shown ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-[40px] scale-95'"
+                class="transition-all duration-[1000ms] ease-out">
+                <img src="/images/logo.png" alt="Logo DPD" class="w-14 h-14 object-contain mx-auto mb-6 animate-floaty">
+                <p class="text-white/85 text-[16px] md:text-[19px] leading-[1.85] font-medium max-w-[800px] mx-auto">
+                    Melalui <span class="text-[#e0b53c] font-bold">DPDRI Award 2026</span>, DPD RI menegaskan posisinya
+                    sebagai mitra sejati daerah yang hadir <span class="text-white font-bold">mendengar, mendorong, dan
+                        mengapresiasi</span> kerja nyata di seluruh pelosok Nusantara.
+                </p>
+                <p
+                    class="text-white/85 text-[16px] md:text-[19px] leading-[1.85] font-medium max-w-[800px] mx-auto mt-4">
+                    Penghargaan ini diharapkan menjadi cermin keberhasilan sekaligus <span
+                        class="text-white font-bold">pemantik semangat</span> bagi seluruh tokoh dan individu untuk
+                    terus <span class="text-white font-bold">berinovasi, berkolaborasi</span>, dan memberikan yang
+                    terbaik bagi masyarakat dan daerahnya.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. FOOTER -->
     <footer class="bg-black pt-10 pb-6 px-6 border-t border-[#e0b53c]/15">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
             <div class="text-center md:text-left md:flex-1">

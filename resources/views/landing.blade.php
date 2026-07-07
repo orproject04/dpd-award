@@ -171,7 +171,7 @@
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/hero-bg.jpg') }}" alt=""
-                class="w-full h-full object-cover object-[35%_33%] md:scale-[1.25] md:translate-x-[15%] md:translate-y-[5%] md:origin-center">
+                class="w-full h-full object-cover object-[35%_33%] scale-[1.15] md:scale-[1.25] md:translate-x-[15%] md:translate-y-[5%] md:origin-center">
             <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/55 via-[#0a0c11]/72 to-[#0a0c11]"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-[#0a0c11]/35 to-transparent"></div>
         </div>
@@ -705,8 +705,8 @@
     </section>
 
     <!-- 8. STATEMENT PENUTUP -->
-    <section class="py-[80px] px-6 bg-[#0a0c11] border-t border-white/5 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-[#1b6e4c]/5 to-transparent"></div>
+    <section class="py-[80px] px-6 bg-gradient-to-b from-[#0a2e1d] to-[#05160e] border-t border-white/5 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(27,110,76,0.15),transparent)]"></div>
         <div class="relative max-w-4xl mx-auto text-center" x-data="{ shown: false }" x-intersect.half="shown = true"
             x-intersect:leave="shown = false">
             <div :class="shown ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-[40px] scale-95'"

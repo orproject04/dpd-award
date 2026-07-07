@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DPD Award 2026</title>
+    <title>DPDRI Award 2026</title>
     <link rel="icon" href="{{ asset('images/logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,7 +111,7 @@
             <a href="#beranda"
                 class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2">
                 <img src="/images/logo.png" alt="Logo DPD" class="w-10 h-10 object-contain">
-                <span>DPD <span class="text-[#88c445]">AWARD</span></span>
+                <span>DPDRI <span class="text-[#88c445]">AWARD</span></span>
             </a>
 
             <button @click="mobileMenuOpen = !mobileMenuOpen"
@@ -171,7 +171,7 @@
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/hero-bg.jpg') }}" alt=""
-                class="w-full h-full object-cover object-[35%_33%] md:object-[40%_33%]">
+                class="w-full h-full object-cover object-[35%_33%] md:scale-[1.25] md:translate-x-[15%] md:translate-y-[5%] md:origin-center">
             <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/55 via-[#0a0c11]/72 to-[#0a0c11]"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-[#0a0c11]/35 to-transparent"></div>
         </div>
@@ -187,8 +187,8 @@
                 </div>
 
                 <h1 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                    class="cz text-[clamp(52px,8vw,104px)] font-extrabold leading-[0.94] uppercase tracking-wide mb-6 max-w-[900px] transition-all duration-[800ms] ease-out delay-100">
-                    <span class="text-white block">DPD Award</span>
+                    class="cz text-[clamp(40px,9vw,104px)] font-extrabold leading-[0.94] uppercase tracking-wide mb-6 max-w-[900px] transition-all duration-[800ms] ease-out delay-100">
+                    <span class="text-white block whitespace-nowrap">DPDRI Award</span>
                     <span
                         class="inline-block bg-[linear-gradient(100deg,#b8860b_0%,#f5da8b_28%,#fff7e6_46%,#e0b53c_62%,#9c6f16_100%)] bg-[length:200%_auto] text-transparent bg-clip-text animate-sheen">2026</span>
                 </h1>
@@ -196,7 +196,7 @@
                 <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                     class="text-white/90 text-[clamp(17px,2vw,21px)] leading-[1.65] max-w-[720px] mb-[38px] transition-all duration-[800ms] ease-out delay-200">
                     Mengapresiasi dedikasi dan kontribusi luar biasa dari individu-individu inspiratif di seluruh
-                    pelosok Nusantara. DPD Award hadir untuk merayakan karya nyata demi kemajuan bangsa.
+                    pelosok Nusantara. DPDRI Award hadir untuk merayakan karya nyata demi kemajuan bangsa.
                 </p>
 
                 <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
@@ -344,7 +344,7 @@
     </section>
 
     <!-- 3. KATEGORI -->
-    <section id="kategori" class="py-[110px] px-6 bg-[#fbf7ee]">
+    <section id="kategori" class="py-[110px] px-6 bg-[#fbf7ee]" x-data="{ modalOpen: false, activeCat: null }">
         <div class="max-w-7xl mx-auto">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
                 class="text-center mb-16 transition-all duration-[800ms] ease-out"
@@ -358,22 +358,22 @@
                     lanjutkan pendaftaran.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-[26px]">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[26px]">
 
                 @php
                     $categories = [
-                        ['id' => 'pendidikan', 'title' => 'Inovator Pendidikan Non Formal', 'desc' => 'Apresiasi bagi pendidik atau inovator yang memajukan kualitas pendidikan luar sekolah di daerah.', 'img' => asset('images/kat-pendidikan.png'), 'cp' => 'Bapak Dony (0812-xxxx-xxxx)'],
-                        ['id' => 'kesehatan', 'title' => 'Inovator Teknologi Kesehatan', 'desc' => 'Bagi tenaga medis atau inovator yang menciptakan teknologi untuk meningkatkan kesehatan masyarakat luas.', 'img' => asset('images/kat-kesehatan.png'), 'cp' => 'Bapak Dani (0813-xxxx-xxxx)'],
-                        ['id' => 'pangan', 'title' => 'Penggerak Desa Mandiri Pangan', 'desc' => 'Bagi pahlawan ketahanan pangan yang menginisiasi gerakan mandiri pangan dan pertanian berkelanjutan di desanya.', 'img' => asset('images/kat-pangan.png'), 'cp' => 'Bapak Demto (0811-xxxx-xxxx)'],
-                        ['id' => 'budaya', 'title' => 'Pelestari Budaya Daerah', 'desc' => 'Bagi individu yang gigih melestarikan kesenian daerah, merawat kerukunan warga, atau memajukan budaya lokal.', 'img' => asset('images/kat-budaya.png'), 'cp' => 'Ibu Izi (0815-xxxx-xxxx)']
+                        ['id' => 'pendidikan', 'title' => 'Bidang Pendidikan', 'desc' => 'Kategori Inovator Pendidikan Non Formal/Pendidikan Luar Sekolah', 'img' => asset('images/kat-pendidikan.png'), 'cp' => 'Bapak Dony (0812-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu yang memiliki dedikasi dan berkontribusi dalam pendirian dan pengembangan pendidikan nonformal guna memperluas akses pembelajaran dan meningkatkan kesempatan belajar bagi berbagai kelompok masyarakat.', 'pos' => 'center 40%'],
+                        ['id' => 'kesehatan', 'title' => 'Bidang Kesehatan', 'desc' => 'Kategori Inovator Teknologi Kesehatan', 'img' => asset('images/kat-kesehatan.png'), 'cp' => 'Bapak Dani (0813-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu, profesional atau akademisi yang menghasilkan inovasi di bidang kesehatan melalui riset klinis maupun laboratorium, termasuk penemuan obat, terapi, atau alat kesehatan yang memberikan manfaat bagi masyarakat.', 'pos' => 'center 40%'],
+                        ['id' => 'pangan', 'title' => 'Bidang Ketahanan Pangan', 'desc' => 'Kategori Penggerak Desa Mandiri Pangan', 'img' => asset('images/kat-pangan.png'), 'cp' => 'Bapak Demto (0811-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu yang menjadi penggerak dalam membangun desa mandiri pangan melalui pemanfaatan potensi pangan lokal, pemberdayaan masyarakat, dan penguatan ketahanan pangan secara berkelanjutan yang memberikan manfaat bagi masyarakat desa.', 'pos' => 'center 15%'],
+                        ['id' => 'budaya', 'title' => 'Bidang Seni dan Budaya', 'desc' => 'Kategori Pelestari Budaya Daerah', 'img' => asset('images/kat-budaya.png'), 'cp' => 'Ibu Izi (0815-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu yang memiliki inovasi dalam pengembangan dan pelestarian budaya daerah serta berperan aktif dalam mempromosikan budaya daerah di tingkat nasional maupun internasional.', 'pos' => 'center 40%']
                     ];
                 @endphp
 
                 @foreach($categories as $index => $cat)
-                    <a href="{{ route('nominasi') }}?kategori={{ $cat['id'] }}" x-data="{ shown: false }"
+                    <div @click="activeCat = {{ json_encode($cat) }}; modalOpen = true" x-data="{ shown: false }"
                         x-intersect="shown = true" x-intersect:leave="shown = false"
                         :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                        class="group relative rounded-[24px] overflow-hidden aspect-[4/3] sm:aspect-[16/9] md:aspect-[1/0.8] lg:aspect-[16/10] flex flex-col justify-end cursor-pointer border-2 border-transparent hover:border-[#88c445] hover:shadow-[0_12px_40px_rgba(136,196,69,0.25)] transition-all duration-300"
+                        class="group relative rounded-[24px] overflow-hidden aspect-[4/3] sm:aspect-[16/9] md:aspect-[1/0.8] lg:aspect-[3/4] flex flex-col justify-end cursor-pointer border-2 border-transparent hover:border-[#88c445] hover:shadow-[0_12px_40px_rgba(136,196,69,0.25)] transition-all duration-300"
                         style="transition-delay: {{ $index * 100 }}ms;">
 
                         <img src="{{ $cat['img'] }}" alt=""
@@ -397,22 +397,84 @@
                             <h3 class="cz text-[20px] sm:text-[28px] font-bold text-white mb-2 leading-tight">
                                 {{ $cat['title'] }}
                             </h3>
-                            <p
-                                class="text-white/80 text-[12px] sm:text-[14px] leading-[1.55] mb-4 max-w-full sm:max-w-[80%]">
+                            <p class="text-white/80 text-[12px] sm:text-[14px] leading-[1.55] max-w-full sm:max-w-[80%]">
                                 {{ $cat['desc'] }}
                             </p>
-                            <div
-                                class="inline-flex items-center gap-2 bg-[#e0b53c]/20 border border-[#e0b53c]/50 text-[#f5da8b] px-3 py-1.5 rounded-lg text-[13px] font-semibold">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5">
-                                    <path
-                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                                </svg>
-                                CP: {{ $cat['cp'] }}
-                            </div>
                         </div>
-                    </a>
+                    </div>
                 @endforeach
+            </div>
+        </div>
+
+        <!-- Modal Detail Kategori -->
+        <div x-show="modalOpen" x-cloak class="fixed inset-0 z-[200] flex items-center justify-center px-4"
+            aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <!-- Backdrop -->
+            <div x-show="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-[#0a0c11]/80 backdrop-blur-sm transition-opacity" @click="modalOpen = false">
+            </div>
+
+            <!-- Modal Panel -->
+            <div x-show="modalOpen" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
+                class="relative bg-white rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)] max-w-2xl w-full flex flex-col max-h-[90vh]">
+
+                <!-- Modal Header Image -->
+                <div class="relative h-[200px] sm:h-[220px] md:h-[200px] w-full shrink-0">
+                    <img :src="activeCat?.img" alt="" class="w-full h-full object-cover"
+                        :style="`object-position: ${activeCat?.pos || 'center'}`">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    <button @click="modalOpen = false"
+                        class="absolute top-4 right-4 w-10 h-10 bg-black/40 hover:bg-black/70 backdrop-blur text-white rounded-full flex items-center justify-center transition-colors">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <h3 class="cz text-[28px] sm:text-[36px] font-bold text-white leading-tight"
+                            x-text="activeCat?.title"></h3>
+                        <p class="text-[#88c445] font-semibold text-[14px] sm:text-[15px] mt-1"
+                            x-text="activeCat?.desc"></p>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6 sm:p-8 overflow-y-auto">
+                    <h4 class="text-[14px] font-bold text-[#b8860b] tracking-wider mb-2">PENJELASAN KATEGORI</h4>
+                    <p class="text-[#4b5262] text-[15px] sm:text-[16px] leading-[1.7]" x-text="activeCat?.penjelasan">
+                    </p>
+                </div>
+
+                <!-- Modal Footer -->
+                <div
+                    class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row justify-between items-center gap-4 shrink-0">
+                    <a :href="'https://wa.me/' + (activeCat?.wa || '6281200000000') + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI Award pada ' + activeCat?.title + ' - ' + activeCat?.desc)"
+                        target="_blank"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-[#1da851] bg-[#25d366]/10 hover:bg-[#25d366]/20 font-bold text-[14px] px-5 py-3 rounded-xl transition-colors">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                        </svg>
+                        <span x-text="activeCat?.cp"></span>
+                    </a>
+                    <a :href="'{{ route('nominasi') }}?kategori=' + activeCat?.id"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-br from-[#1b6e4c] to-[#259b6b] text-white font-bold text-[15px] px-8 py-3.5 rounded-full shadow-[0_8px_20px_rgba(27,110,76,0.25)] hover:scale-105 transition-transform">
+                        Daftar Sekarang
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -487,7 +549,7 @@
                 <h2 class="cz text-[clamp(38px,6vw,68px)] font-extrabold uppercase text-[#10131a] mt-3 leading-none">
                     Timeline <span class="text-[#1b6e4c]">Kegiatan</span></h2>
                 <p class="text-[#4b5262] text-[18px] leading-[1.6] mt-[18px]">Rangkaian tahapan penting menuju malam
-                    penganugerahan DPD Award 2026.</p>
+                    penganugerahan DPDRI Award 2026.</p>
             </div>
 
             <div class="relative text-[#10131a] pl-2 md:pl-0">
@@ -497,11 +559,11 @@
 
                 @php
                     $timeline = [
-                        ['n' => '1', 'title' => 'Pembukaan pendaftaran', 'dot' => '#406010ff', 'num' => '#fff'],
+                        ['n' => '1', 'title' => 'Pembukaan Pendaftaran', 'dot' => '#406010ff', 'num' => '#fff'],
                         ['n' => '2', 'title' => 'Periode Pendaftaran', 'dot' => '#50721fff', 'num' => '#fff'],
                         ['n' => '3', 'title' => 'Verifikasi dan Identifikasi Data', 'dot' => '#658f28ff', 'num' => '#fff'],
-                        ['n' => '4', 'title' => 'Penilaian tahap 1', 'dot' => '#7cb137ff', 'num' => '#fff'],
-                        ['n' => '5', 'title' => 'Penilaian tahap 2', 'dot' => '#8cc043ff', 'num' => '#fff'],
+                        ['n' => '4', 'title' => 'Penilaian Tahap 1', 'dot' => '#7cb137ff', 'num' => '#fff'],
+                        ['n' => '5', 'title' => 'Penilaian Tahap 2', 'dot' => '#8cc043ff', 'num' => '#fff'],
                         ['n' => '6', 'title' => 'Wawancara', 'dot' => '#9ad44bff', 'num' => '#fff'],
                         ['n' => '7', 'title' => 'Malam Penganugerahan', 'dot' => 'linear-gradient(135deg,#d6d45bff, #cac714ff)', 'num' => '#fff'],
                     ];
@@ -604,16 +666,18 @@
                 @php
                     $faqData = [
                         ['q' => 'Siapa saja yang bisa dinominasikan?', 'a' => 'Semua Warga Negara Indonesia (WNI) yang memiliki rekam jejak, inovasi, atau karya nyata yang berdampak positif bagi masyarakat di salah satu dari 4 kategori yang tersedia.'],
-                        ['q' => 'Apakah saya bisa menominasikan diri sendiri?', 'a' => 'Bisa. Anda dapat mengusulkan diri sendiri atau orang lain (individu/komunitas) selama memenuhi syarat dan ketentuan, serta melampirkan bukti portofolio atau dokumentasi kegiatan.'],
-                        ['q' => 'Apakah ada biaya pendaftaran?', 'a' => 'Tidak. Seluruh proses pendaftaran dan nominasi DPD Award tidak dipungut biaya sepeser pun. Hati-hati terhadap segala bentuk penipuan yang mengatasnamakan panitia.'],
+                        ['q' => 'Apakah saya bisa menominasikan diri sendiri?', 'a' => 'Bisa. Anda dapat mengusulkan diri sendiri selama memenuhi syarat dan ketentuan, serta melampirkan bukti portofolio atau dokumentasi kegiatan.'],
+                        ['q' => 'Apakah ada biaya pendaftaran?', 'a' => 'Tidak. Seluruh proses pendaftaran dan nominasi DPDRI Award tidak dipungut biaya sepeser pun. Hati-hati terhadap segala bentuk penipuan yang mengatasnamakan panitia.'],
                         ['q' => 'Bagaimana proses penjurian dilakukan?', 'a' => 'Setelah pendaftaran ditutup, tim kurator menyeleksi kelengkapan berkas. Kandidat yang lolos dinilai oleh Dewan Juri independen berdasarkan kriteria dampak sosial, inovasi, keberlanjutan, dan inspirasi.'],
-                        ['q' => 'Kapan pemenang diumumkan?', 'a' => 'Pemenang untuk setiap kategori diumumkan pada Malam Penganugerahan DPD Award 2026 yang disiarkan secara nasional.']
+                        ['q' => 'Kapan pemenang diumumkan?', 'a' => 'Pemenang untuk setiap kategori diumumkan pada Malam Penganugerahan DPDRI Award 2026 yang disiarkan secara nasional.']
                     ];
                 @endphp
 
                 @foreach($faqData as $index => $f)
-                    <div x-data="{ shown: false, isHovered: false, isClicked: false, forceClose: false, get isOpen() { return this.isClicked || (this.isHovered && !this.forceClose); } }" x-intersect="shown = true"
-                        x-intersect:leave="shown = false" @mouseenter="isHovered = true; forceClose = false" @mouseleave="isHovered = false; forceClose = false"
+                    <div x-data="{ shown: false, isHovered: false, isClicked: false, forceClose: false, get isOpen() { return this.isClicked || (this.isHovered && !this.forceClose); } }"
+                        x-intersect="shown = true" x-intersect:leave="shown = false"
+                        @mouseenter="isHovered = true; forceClose = false"
+                        @mouseleave="isHovered = false; forceClose = false"
                         @click="isClicked = !isClicked; forceClose = !isClicked"
                         class="bg-white border border-[#e8e0cf] rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(11,42,91,0.04)] transition-all duration-[800ms] ease-out cursor-pointer"
                         :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
@@ -647,7 +711,8 @@
                 <div class="flex items-center justify-center md:justify-start gap-3.5">
                     <img src="/images/logo.png" alt="Logo DPD" class="w-11 h-11 object-contain">
                     <div class="flex flex-col text-left">
-                        <span class="cz text-[28px] font-extrabold tracking-wide text-white leading-[1.1]">DPD <span class="text-[#88c445]">AWARD</span></span>
+                        <span class="cz text-[28px] font-extrabold tracking-wide text-white leading-[1.1]">DPDRI <span
+                                class="text-[#88c445]">AWARD</span></span>
                         <span class="text-white/40 text-[13px] tracking-wide">Dari Daerah untuk Indonesia</span>
                     </div>
                 </div>

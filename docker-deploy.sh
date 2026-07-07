@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# DPD Award App Docker Deployment Script for AWS EC2
+# DPDRI Award App Docker Deployment Script for AWS EC2
 # Usage: ./docker-deploy.sh [branch] [environment]
 # Example: ./docker-deploy.sh develop production
 
@@ -19,7 +19,7 @@ ENVIRONMENT=${2:-production}
 APP_DIR="/home/ubuntu/dpd-award-app"
 BACKUP_DIR="/home/ubuntu/backups"
 
-echo -e "${GREEN}🚀 Starting DPD Award App Docker Deployment...${NC}"
+echo -e "${GREEN}🚀 Starting DPDRI Award App Docker Deployment...${NC}"
 echo -e "${YELLOW}Branch: $BRANCH${NC}"
 echo -e "${YELLOW}Environment: $ENVIRONMENT${NC}"
 echo -e "${YELLOW}Directory: $APP_DIR${NC}"

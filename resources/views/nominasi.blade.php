@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pendaftaran DPD Award 2026</title>
+    <title>Pendaftaran DPDRI Award 2026</title>
     <link rel="icon" href="{{ asset('images/logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,7 +79,7 @@
             <a href="{{ route('landing') }}"
                 class="cz text-[22px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2">
                 <img src="/images/logo.png" alt="Logo DPD" class="w-8 h-8 object-contain">
-                <span>DPD <span class="text-[#88c445]">AWARD</span></span>
+                <span>DPDRI <span class="text-[#88c445]">AWARD</span></span>
             </a>
             <span class="text-white/40 text-[13px] font-semibold">2026</span>
         </div>
@@ -91,7 +91,7 @@
 
             <div class="text-center mb-9">
                 <span class="text-[#1b6e4c] text-[12px] font-extrabold tracking-[0.2em]">FORMULIR PENDAFTARAN</span>
-                <h1 class="cz text-[clamp(30px,5vw,46px)] font-extrabold uppercase mt-2">DPD AWARD <span
+                <h1 class="cz text-[clamp(30px,5vw,46px)] font-extrabold uppercase mt-2">DPDRI AWARD <span
                         class="text-[#b8860b]">2026</span></h1>
             </div>
 
@@ -136,7 +136,7 @@
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                             <polyline points="22 4 12 14.01 9 11.01" />
                         </svg>
-                        Kategori yang dipilih: <span x-text="categories.find(c => c.id === data.kategori)?.name"></span>
+                        Kategori yang dipilih: <span x-text="categories.find(c => c.id === data.kategori)?.en"></span>
                     </div>
                 </template>
 
@@ -401,40 +401,88 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <template x-for="u in uploads" :key="u.key">
                                 <template x-if="data.files[u.key]">
-                                    <a :href="data.previews[u.key]?.url" :download="data.files[u.key]" class="flex items-center gap-3.5 p-3 bg-white border border-[#ece2ca] rounded-[14px] shadow-sm hover:border-[#1b6e4c]/40 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                    <a :href="data.previews[u.key]?.url" :download="data.files[u.key]"
+                                        class="flex items-center gap-3.5 p-3 bg-white border border-[#ece2ca] rounded-[14px] shadow-sm hover:border-[#1b6e4c]/40 hover:bg-gray-50 transition-colors cursor-pointer group">
                                         <template x-if="data.previews[u.key]?.type === 'image'">
-                                            <div class="w-12 h-12 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
+                                            <div
+                                                class="w-12 h-12 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
                                                 <img :src="data.previews[u.key].url" class="w-full h-full object-cover">
                                             </div>
                                         </template>
                                         <template x-if="data.previews[u.key]?.type === 'pdf'">
-                                            <div class="w-12 h-12 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
-                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z"></path></svg>
+                                            <div
+                                                class="w-12 h-12 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                    </path>
+                                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                                    <path d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z"></path>
+                                                </svg>
                                             </div>
                                         </template>
                                         <template x-if="data.previews[u.key]?.type === 'word'">
-                                            <div class="w-12 h-12 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
-                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9h4"></path></svg>
+                                            <div
+                                                class="w-12 h-12 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                    </path>
+                                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                                    <path d="M8 13h8"></path>
+                                                    <path d="M8 17h8"></path>
+                                                    <path d="M10 9h4"></path>
+                                                </svg>
                                             </div>
                                         </template>
                                         <template x-if="data.previews[u.key]?.type === 'zip'">
-                                            <div class="w-12 h-12 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
-                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                            <div
+                                                class="w-12 h-12 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                                    </path>
+                                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                                </svg>
                                             </div>
                                         </template>
                                         <template x-if="data.previews[u.key]?.type === 'doc'">
-                                            <div class="w-12 h-12 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
-                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                            <div
+                                                class="w-12 h-12 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                    </path>
+                                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                                </svg>
                                             </div>
                                         </template>
                                         <div class="flex-1 min-w-0">
-                                            <div class="text-[13px] font-bold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors" x-text="u.title"></div>
-                                            <div class="text-[12px] text-[#6b7280] truncate mt-0.5" x-text="data.files[u.key]"></div>
+                                            <div class="text-[13px] font-bold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
+                                                x-text="u.title"></div>
+                                            <div class="text-[12px] text-[#6b7280] truncate mt-0.5"
+                                                x-text="data.files[u.key]"></div>
                                         </div>
-                                        
+
                                         <!-- Ikon Download -->
-                                        <div class="shrink-0 text-[#9aa2b1] group-hover:text-[#1b6e4c] transition-colors ml-1">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                        <div
+                                            class="shrink-0 text-[#9aa2b1] group-hover:text-[#1b6e4c] transition-colors ml-1">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="7 10 12 15 17 10"></polyline>
+                                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                                            </svg>
                                         </div>
                                     </a>
                                 </template>
@@ -446,7 +494,7 @@
                         <input type="checkbox" x-model="data.setuju" class="w-5 h-5 mt-0.5 shrink-0 accent-[#1b6e4c]">
                         <span class="text-[14px] text-[#4b5262] leading-[1.5]">Saya menyatakan bahwa seluruh data yang
                             diisi adalah benar dan menyetujui <a href="{{ route('landing') }}#syarat" target="_blank"
-                                class="text-[#1b6e4c] font-bold hover:underline">syarat &amp; ketentuan</a> DPD Award
+                                class="text-[#1b6e4c] font-bold hover:underline">syarat &amp; ketentuan</a> DPDRI Award
                             2026.</span>
                     </label>
                     <template x-if="showErr && errs.setuju">
@@ -456,44 +504,38 @@
                 </div>
 
                 <!-- NAV BUTTONS -->
-                <div
-                    class="flex flex-col-reverse sm:flex-row justify-between gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]">
-                    <div class="w-full sm:w-auto">
-                        <template x-if="step > 0">
-                            <button @click="back()"
-                                class="w-full sm:w-auto justify-center inline-flex items-center gap-2 border-[1.5px] border-[#cfc4a8] bg-white text-[#4b5262] font-bold text-[15px] px-[26px] py-[13px] rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="19" y1="12" x2="5" y2="12" />
-                                    <polyline points="12 19 5 12 12 5" />
-                                </svg>Kembali
-                            </button>
-                        </template>
-                    </div>
+                <div class="flex flex-row gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]" :class="step > 0 ? 'justify-between' : 'justify-end'">
+                    <template x-if="step > 0">
+                        <button @click="back()"
+                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 border-[1.5px] border-[#cfc4a8] bg-white text-[#4b5262] font-bold text-[14px] sm:text-[15px] px-2 sm:px-[26px] py-[13px] rounded-xl hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                                <line x1="19" y1="12" x2="5" y2="12" />
+                                <polyline points="12 19 5 12 12 5" />
+                            </svg>Kembali
+                        </button>
+                    </template>
 
-                    <div class="w-full sm:w-auto flex flex-col gap-3.5">
-                        <template x-if="step < 5">
-                            <button @click="next()"
-                                class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-[#88c445] text-[#0a0c11] font-extrabold text-[15px] px-[30px] py-[13px] rounded-xl shadow-[0_8px_24px_rgba(136,196,69,.3)] hover:bg-[#75a83a] transition-colors cursor-pointer">Lanjut
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                    <polyline points="12 5 19 12 12 19" />
-                                </svg>
-                            </button>
-                        </template>
-                        <template x-if="step === 5">
-                            <button @click="submitForm()"
-                                class="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[15px] px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform cursor-pointer">Kirim
-                                Nominasi
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 2 11 13" />
-                                    <path d="M22 2 15 22l-4-9-9-4z" />
-                                </svg>
-                            </button>
-                        </template>
-                    </div>
+                    <template x-if="step < 5">
+                        <button @click="next()"
+                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-[#88c445] text-[#0a0c11] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[30px] py-[13px] rounded-xl shadow-[0_8px_24px_rgba(136,196,69,.3)] hover:bg-[#75a83a] transition-colors cursor-pointer whitespace-nowrap">Lanjut
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </button>
+                    </template>
+                    <template x-if="step === 5">
+                        <button @click="submitForm()"
+                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform cursor-pointer whitespace-nowrap">Kirim
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                                <path d="M22 2 11 13" />
+                                <path d="M22 2 15 22l-4-9-9-4z" />
+                            </svg>
+                        </button>
+                    </template>
                 </div>
 
             </div>
@@ -546,10 +588,10 @@
                     { label: 'Kategori' }, { label: 'Unduh Formulir' }, { label: 'Data Diri' }, { label: 'Kontribusi' }, { label: 'Berkas' }, { label: 'Tinjau' }
                 ],
                 categories: [
-                    { id: 'pendidikan', name: 'Pendidikan Non Formal/Luar Sekolah', en: 'Pendidikan', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>' },
-                    { id: 'kesehatan', name: 'Teknologi Kesehatan', en: 'Kesehatan', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 5 2-3h4"/></svg>' },
-                    { id: 'pangan', name: 'Penggerak Desa Mandiri Pangan', en: 'Pangan', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>' },
-                    { id: 'budaya', name: 'Pelestari Budaya Daerah', en: 'Seni Budaya', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>' }
+                    { id: 'pendidikan', name: 'Bidang Pendidikan', en: 'Kategori Inovator Pendidikan Non Formal/Pendidikan Luar Sekolah', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>' },
+                    { id: 'kesehatan', name: 'Bidang Kesehatan', en: 'Kategori Inovator Teknologi Kesehatan', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/><path d="M3.5 12h4l2-3 3 5 2-3h4"/></svg>' },
+                    { id: 'pangan', name: 'Bidang Ketahanan Pangan', en: 'Kategori Penggerak Desa Mandiri Pangan', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>' },
+                    { id: 'budaya', name: 'Bidang Seni dan Budaya', en: 'Kategori Pelestari Budaya Daerah', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>' }
                 ],
                 provinces: [
                     'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Jambi', 'Sumatera Selatan', 'Bengkulu', 'Lampung', 'Kepulauan Bangka Belitung', 'Kepulauan Riau',
@@ -574,7 +616,8 @@
                 },
 
                 get reviewData() {
-                    const catName = this.categories.find(c => c.id === this.data.kategori)?.name || '—';
+                    const cat = this.categories.find(c => c.id === this.data.kategori);
+                    const catName = cat ? cat.en : '-';
                     const fileCount = Object.values(this.data.files).filter(Boolean).length;
                     return [
                         { label: 'Kategori', value: catName },
@@ -603,7 +646,7 @@
                         this.data.files[key] = file.name;
                         const ext = file.name.split('.').pop().toLowerCase();
                         const fileUrl = URL.createObjectURL(file);
-                        
+
                         if (file.type.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
                             this.data.previews[key] = { type: 'image', url: fileUrl };
                         } else if (file.type === 'application/pdf' || ext === 'pdf') {

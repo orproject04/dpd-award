@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DPDRI Award 2026</title>
+    <title>DPDRI AWARDS 2026</title>
     <link rel="icon" href="{{ asset('images/logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -105,13 +105,20 @@
 
     <!-- HEADER -->
     <header
-        :class="(scrolled || mobileMenuOpen) ? 'bg-[#0a0c11]/90 backdrop-blur-md border-b border-[#e0b53c]/20 py-3.5' : 'bg-transparent py-6'"
+        :class="(scrolled || mobileMenuOpen) ? 'py-3.5' : 'py-5'"
         class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        
+        <div class="absolute inset-0 pointer-events-none transition-opacity duration-300"
+             :class="(scrolled || mobileMenuOpen) ? 'opacity-70' : 'opacity-70'"
+             style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 90%); mask-image: linear-gradient(to bottom, black 60%, transparent 100%);">
+             <div class="absolute inset-0 bg-[#0a0c11]/80 backdrop-blur-lg"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-6 flex items-center justify-between">
             <a href="#beranda"
                 class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2">
-                <img src="/images/logo.png" alt="Logo DPD" class="w-10 h-10 object-contain">
-                <span>DPDRI <span class="text-[#88c445]">AWARD</span></span>
+                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-10 object-contain">
+                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-10 object-contain">
             </a>
 
             <button @click="mobileMenuOpen = !mobileMenuOpen"
@@ -149,7 +156,7 @@
         </div>
 
         <div x-show="mobileMenuOpen" x-cloak x-transition
-            class="lg:hidden absolute top-full left-0 right-0 bg-[#0a0c11] border-b border-[#e0b53c]/20 py-4 px-6 flex flex-col gap-4 shadow-xl">
+            class="lg:hidden absolute top-full left-0 right-0 bg-[#0a0c11]/95 backdrop-blur-xl border-b border-[#e0b53c]/20 py-4 px-6 flex flex-col gap-4 shadow-xl">
             <a href="#beranda" @click="mobileMenuOpen = false"
                 class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">BERANDA</a>
             <a href="#kategori" @click="mobileMenuOpen = false"
@@ -169,38 +176,130 @@
 
     <!-- 1. BERANDA (HERO) -->
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
-        <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 z-0 bg-[#0a0c11]">
             <img src="{{ asset('images/hero-bg.jpg') }}" alt=""
-                class="w-full h-full object-cover object-[35%_33%] scale-[1.15] md:scale-[1.25] md:translate-x-[15%] md:translate-y-[5%] md:origin-center">
-            <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/55 via-[#0a0c11]/72 to-[#0a0c11]"></div>
-            <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-[#0a0c11]/35 to-transparent"></div>
+                class="w-full h-full object-cover object-center">
         </div>
 
-        <div class="relative z-10 max-w-7xl mx-auto w-full">
+
+        <!-- Full-Width Artistic Brush Stroke Background -->
+        <div class="absolute bottom-0 left-0 w-full z-0 h-[250px] pointer-events-none overflow-visible">
+            <!-- Base gradient to ensure the absolute bottom is solid black -->
+            <div class="absolute bottom-0 w-full h-[150px] bg-gradient-to-t from-[#020305] to-transparent"></div>
+            
+            <!-- Layered blurred ellipses to create an organic, artistic brush stroke edge -->
+            <div class="absolute bottom-[-60px] left-[-10%] w-[120%] h-[200px] bg-[#05070a]/95 blur-[35px] rounded-[100%] rotate-2"></div>
+            <div class="absolute bottom-[-40px] left-[-5%] w-[110%] h-[180px] bg-black blur-[45px] rounded-[100%] -rotate-3"></div>
+            <div class="absolute bottom-[-20px] left-[15%] w-[80%] h-[150px] bg-[#020305] blur-[30px] rounded-[100%] rotate-1"></div>
+        </div>
+
+        <div class="absolute bottom-[20px] sm:bottom-[30px] left-1/2 -translate-x-1/2 z-10 w-full flex items-center justify-center gap-6 md:gap-14 lg:gap-20">
+            
+            <svg width="0" height="0" style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+                <defs>
+                    <linearGradient id="goldLaurel" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fceabb"/>
+                        <stop offset="30%" stop-color="#f8b500"/>
+                        <stop offset="70%" stop-color="#b8860b"/>
+                        <stop offset="100%" stop-color="#8c6b14"/>
+                    </linearGradient>
+                    <g id="laurelLeaf">
+                        <path d="M 0 0 C 8 -12 20 -10 25 -2 C 16 4 8 6 0 0 Z" fill="url(#goldLaurel)"/>
+                        <path d="M 0 0 Q 12 -4 23 -2" stroke="#604000" stroke-width="0.75" fill="none"/>
+                        <path d="M 0 0 C 8 -12 20 -10 25 -2" stroke="#fceabb" stroke-width="0.5" fill="none" opacity="0.6"/>
+                    </g>
+                    <g id="laurelBranch" transform="translate(0, 5)">
+                        <!-- Stem -->
+                        <path d="M 5 35 Q 75 70 140 10" stroke="url(#goldLaurel)" stroke-width="2" stroke-linecap="round"/>
+                        
+                        <!-- Top side Leaves -->
+                        <use href="#laurelLeaf" transform="translate(20, 41) rotate(-35) scale(0.8)"/>
+                        <use href="#laurelLeaf" transform="translate(45, 48) rotate(-45) scale(1)"/>
+                        <use href="#laurelLeaf" transform="translate(73, 48) rotate(-60) scale(1.1)"/>
+                        <use href="#laurelLeaf" transform="translate(100, 40) rotate(-75) scale(1)"/>
+                        <use href="#laurelLeaf" transform="translate(120, 27) rotate(-85) scale(0.8)"/>
+                        
+                        <!-- Bottom side Leaves -->
+                        <use href="#laurelLeaf" transform="translate(28, 44) rotate(65) scale(0.8)"/>
+                        <use href="#laurelLeaf" transform="translate(56, 49) rotate(55) scale(1)"/>
+                        <use href="#laurelLeaf" transform="translate(85, 46) rotate(40) scale(1.1)"/>
+                        <use href="#laurelLeaf" transform="translate(110, 34) rotate(25) scale(1)"/>
+                        
+                        <!-- Tip Leaf -->
+                        <use href="#laurelLeaf" transform="translate(138, 10) rotate(-25) scale(0.9)"/>
+                    </g>
+                </defs>
+            </svg>
+
+            <!-- Left Laurel Separator -->
+            <div class="hidden md:block w-[120px] lg:w-[160px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)]">
+                <svg viewBox="0 -10 170 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <use href="#laurelBranch" />
+                </svg>
+            </div>
+
+            <!-- Intertwined Trophies -->
+            <div class="flex items-center justify-center shrink-0">
+                <!-- 1. Far Left -->
+                <div class="relative z-10 -mr-6 md:-mr-8 group" style="animation-delay: 0ms;">
+                    <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
+                    <div class="relative w-[85px] h-[85px] md:w-[60px] md:h-[60px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                        <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
+                    </div>
+                </div>
+                
+                <!-- 2. Left Middle -->
+                <div class="relative z-20 -mr-5 md:-mr-7 group" style="animation-delay: 200ms;">
+                    <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
+                    <div class="relative w-[110px] h-[110px] md:w-[85px] md:h-[85px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                        <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
+                    </div>
+                </div>
+                
+                <!-- 3. Right Middle -->
+                <div class="relative z-30 -mr-6 md:-mr-8 group" style="animation-delay: 400ms;">
+                    <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
+                    <div class="relative w-[110px] h-[110px] md:w-[85px] md:h-[85px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                        <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
+                    </div>
+                </div>
+                
+                <!-- 4. Far Right -->
+                <div class="relative z-10 group" style="animation-delay: 600ms;">
+                    <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
+                    <div class="relative w-[85px] h-[85px] md:w-[60px] md:h-[60px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                        <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Laurel Separator -->
+            <div class="hidden md:block w-[120px] lg:w-[160px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)] scale-x-[-1]">
+                <svg viewBox="0 -10 170 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <use href="#laurelBranch" />
+                </svg>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 1.5 PEMBUKAAN -->
+    <section class="py-8 px-6 bg-[#0a0c11] text-center border-b border-[#e0b53c]/15">
+        <div class="mx-auto w-full">
+        <div class="max-w-4xl mx-auto" x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false">
+            <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
+                class="cz text-[clamp(28px,5vw,48px)] font-extrabold uppercase text-white mb-6 transition-all duration-[800ms] ease-out">
+                DPDRI <span class="text-[#e0b53c]"><i>AWARDS</i> 2026</span>
+            </h2>
+            <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
+                class="text-white/80 text-[clamp(16px,2vw,20px)] leading-[1.7] transition-all duration-[800ms] ease-out delay-100">
+                Mengapresiasi dedikasi dan kontribusi luar biasa dari individu-individu inspiratif di seluruh pelosok Nusantara. DPDRI <i>AWARDS</i> hadir untuk merayakan karya nyata demi kemajuan bangsa.
+            </p>
+        </div>
+                <div class="relative z-10 max-w-7xl mx-auto w-full">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false">
                 <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                    class="inline-flex max-w-full items-center justify-center gap-2.5 px-4 sm:px-[18px] py-2 border border-[#e0b53c]/50 rounded-[20px] sm:rounded-full mb-[26px] transition-all duration-[800ms] ease-out">
-                    <span class="w-[6px] h-[6px] shrink-0 rounded-full bg-[#e0b53c] shadow-[0_0_8px_#e0b53c]"></span>
-                    <span
-                        class="text-[#f5da8b] text-[10.5px] sm:text-[12.5px] font-bold tracking-[0.15em] sm:tracking-[0.24em] leading-normal text-center">PENGHARGAAN
-                        NASIONAL &nbsp;&middot;&nbsp; DPD RI</span>
-                </div>
-
-                <h1 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                    class="cz text-[clamp(40px,9vw,104px)] font-extrabold leading-[0.94] uppercase tracking-wide mb-6 max-w-[900px] transition-all duration-[800ms] ease-out delay-100">
-                    <span class="text-white block whitespace-nowrap">DPDRI Award</span>
-                    <span
-                        class="inline-block bg-[linear-gradient(100deg,#b8860b_0%,#f5da8b_28%,#fff7e6_46%,#e0b53c_62%,#9c6f16_100%)] bg-[length:200%_auto] text-transparent bg-clip-text animate-sheen">2026</span>
-                </h1>
-
-                <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                    class="text-white/90 text-[clamp(17px,2vw,21px)] leading-[1.65] max-w-[720px] mb-[38px] transition-all duration-[800ms] ease-out delay-200">
-                    Mengapresiasi dedikasi dan kontribusi luar biasa dari individu-individu inspiratif di seluruh
-                    pelosok Nusantara. DPDRI Award hadir untuk merayakan karya nyata demi kemajuan bangsa.
-                </p>
-
-                <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                    class="flex flex-wrap gap-4 transition-all duration-[800ms] ease-out delay-300">
+                    class="flex flex-wrap justify-center gap-4 mt-8 transition-all duration-[800ms] ease-out delay-300">
                     <a href="{{ route('nominasi') }}"
                         class="inline-flex items-center gap-2.5 bg-[#88c445] text-[#0a0c11] font-extrabold text-[16px] tracking-[0.03em] px-9 py-[17px] rounded-full shadow-[0_10px_40px_rgba(136,196,69,0.4)] hover:shadow-[0_16px_50px_rgba(136,196,69,0.6)] hover:-translate-y-[2px] transition-all relative overflow-hidden group">
                         <span
@@ -222,15 +321,7 @@
                 </div>
             </div>
         </div>
-
-        <a href="#countdown"
-            class="absolute bottom-[26px] left-1/2 -translate-x-1/2 z-10 text-white/40 flex flex-col items-center gap-1.5 hover:text-white/80 transition-colors cursor-pointer">
-            <span class="text-[11px] tracking-[0.2em] font-semibold">GULIR</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                class="animate-floaty">
-                <polyline points="6 9 12 15 18 9" />
-            </svg>
-        </a>
+    </div>
     </section>
 
     <!-- 2. COUNTDOWN -->
@@ -353,19 +444,61 @@
                     APRESIASI</span>
                 <h2 class="cz text-[clamp(38px,6vw,68px)] font-extrabold uppercase text-[#10131a] mt-3 leading-none">
                     Kategori <span class="text-[#1b6e4c]">Penghargaan</span></h2>
-                <p class="text-[#4b5262] text-[18px] leading-[1.6] max-w-[660px] mx-auto mt-[18px]">Pilih kategori yang
-                    paling sesuai dengan dedikasi individu yang ingin Anda nominasikan. Klik untuk memilih, lalu
-                    lanjutkan pendaftaran.</p>
+                <p class="text-[#4b5262] text-[18px] leading-[1.6] max-w-[660px] mx-auto mt-[18px]">Pilih kategori yang paling sesuai dengan prestasi dan inovasi yang Anda miliki. Klik untuk melanjutkan pendaftaran</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[26px]">
 
                 @php
                     $categories = [
-                        ['id' => 'pendidikan', 'title' => 'Bidang Pendidikan', 'desc' => 'Kategori Inovator Pendidikan Non Formal/Pendidikan Luar Sekolah', 'img' => asset('images/kat-pendidikan.png'), 'cp' => 'Bapak Dony (0812-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu yang memiliki dedikasi dan berkontribusi dalam pendirian dan pengembangan pendidikan nonformal guna memperluas akses pembelajaran dan meningkatkan kesempatan belajar bagi berbagai kelompok masyarakat.', 'pos' => 'center 40%'],
-                        ['id' => 'kesehatan', 'title' => 'Bidang Kesehatan', 'desc' => 'Kategori Inovator Teknologi Kesehatan', 'img' => asset('images/kat-kesehatan.png'), 'cp' => 'Bapak Dani (0813-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu, profesional atau akademisi yang menghasilkan inovasi di bidang kesehatan melalui riset klinis maupun laboratorium, termasuk penemuan obat, terapi, atau alat kesehatan yang memberikan manfaat bagi masyarakat.', 'pos' => 'center 40%'],
-                        ['id' => 'pangan', 'title' => 'Bidang Ketahanan Pangan', 'desc' => 'Kategori Penggerak Desa Mandiri Pangan', 'img' => asset('images/kat-pangan.png'), 'cp' => 'Bapak Demto (0811-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu yang menjadi penggerak dalam membangun desa mandiri pangan melalui pemanfaatan potensi pangan lokal, pemberdayaan masyarakat, dan penguatan ketahanan pangan secara berkelanjutan yang memberikan manfaat bagi masyarakat desa.', 'pos' => 'center 15%'],
-                        ['id' => 'budaya', 'title' => 'Bidang Seni dan Budaya', 'desc' => 'Kategori Pelestari Budaya Daerah', 'img' => asset('images/kat-budaya.png'), 'cp' => 'Ibu Izi (0815-xxxx-xxxx)', 'penjelasan' => 'Diberikan kepada individu yang memiliki inovasi dalam pengembangan dan pelestarian budaya daerah serta berperan aktif dalam mempromosikan budaya daerah di tingkat nasional maupun internasional.', 'pos' => 'center 40%']
+                        [
+                            'id' => 'pendidikan', 
+                            'title' => 'Bidang Pendidikan', 
+                            'desc' => 'Kategori Inovator Pendidikan Non Formal/Pendidikan Luar Sekolah', 
+                            'img' => asset('images/kat-pendidikan.png'), 
+                            'cp' => [
+                                ['name' => 'MOHAMAD HAFID', 'phone' => '6281285229613', 'display' => '0812-8522-9613'],
+                                ['name' => 'ADZAN RAMADHAN', 'phone' => '6285157973661', 'display' => '0851-5797-3661']
+                            ], 
+                            'penjelasan' => 'Diberikan kepada individu yang memiliki dedikasi dan berkontribusi dalam pendirian dan pengembangan pendidikan nonformal guna memperluas akses pembelajaran dan meningkatkan kesempatan belajar bagi berbagai kelompok masyarakat.', 
+                            'pos' => 'center 40%'
+                        ],
+                        [
+                            'id' => 'kesehatan', 
+                            'title' => 'Bidang Kesehatan', 
+                            'desc' => 'Kategori Inovator Teknologi Kesehatan', 
+                            'img' => asset('images/kat-kesehatan.png'), 
+                            'cp' => [
+                                ['name' => 'SENDRI SANRISAGI', 'phone' => '6283870745443', 'display' => '0838-7074-5443'],
+                                ['name' => 'DONY DWI PRABOWO', 'phone' => '6281225677965', 'display' => '0812-2567-7965']
+                            ], 
+                            'penjelasan' => 'Diberikan kepada individu, profesional atau akademisi yang menghasilkan inovasi di bidang kesehatan melalui riset klinis maupun laboratorium, termasuk penemuan obat, terapi, atau alat kesehatan yang memberikan manfaat bagi masyarakat.', 
+                            'pos' => 'center 40%'
+                        ],
+                        [
+                            'id' => 'pangan', 
+                            'title' => 'Bidang Ketahanan Pangan', 
+                            'desc' => 'Kategori Penggerak Desa Mandiri Pangan', 
+                            'img' => asset('images/kat-pangan.png'), 
+                            'cp' => [
+                                ['name' => 'NOVA AULIA FADJAR', 'phone' => '', 'display' => ''],
+                                ['name' => 'PUGO SURYA ADHITAMA', 'phone' => '628567009410', 'display' => '0856-7009-410']
+                            ], 
+                            'penjelasan' => 'Diberikan kepada individu yang menjadi penggerak dalam membangun desa mandiri pangan melalui pemanfaatan potensi pangan lokal, pemberdayaan masyarakat, dan penguatan ketahanan pangan secara berkelanjutan yang memberikan manfaat bagi masyarakat desa.', 
+                            'pos' => 'center 15%'
+                        ],
+                        [
+                            'id' => 'budaya', 
+                            'title' => 'Bidang Seni dan Budaya', 
+                            'desc' => 'Kategori Pelestari Budaya Daerah', 
+                            'img' => asset('images/kat-budaya.png'), 
+                            'cp' => [
+                                ['name' => 'NURUL HUSNA', 'phone' => '6281285003000', 'display' => '0812-8500-3000'],
+                                ['name' => 'BAGAS MAULANA HASAN', 'phone' => '6281270643734', 'display' => '0812-7064-3734']
+                            ], 
+                            'penjelasan' => 'Diberikan kepada individu yang memiliki inovasi dalam pengembangan dan pelestarian budaya daerah serta berperan aktif dalam mempromosikan budaya daerah di tingkat nasional maupun internasional.', 
+                            'pos' => 'center 40%'
+                        ]
                     ];
                 @endphp
 
@@ -444,6 +577,15 @@
                         <p class="text-[#88c445] font-semibold text-[14px] sm:text-[15px] mt-1"
                             x-text="activeCat?.desc"></p>
                     </div>
+                    <a :href="'{{ route('nominasi') }}?kategori=' + activeCat?.id"
+                        class="absolute -bottom-5 right-6 sm:right-8 z-20 inline-flex items-center justify-center gap-2 bg-gradient-to-br from-[#1b6e4c] to-[#259b6b] text-white font-bold text-[14px] px-6 py-2.5 rounded-full shadow-[0_8px_20px_rgba(27,110,76,0.25)] hover:scale-105 transition-transform">
+                        Daftar Sekarang
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
                 </div>
 
                 <!-- Modal Body -->
@@ -456,24 +598,31 @@
                 <!-- Modal Footer -->
                 <div
                     class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row justify-between items-center gap-4 shrink-0">
-                    <a :href="'https://wa.me/' + (activeCat?.wa || '6281200000000') + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI Award pada ' + activeCat?.title + ' - ' + activeCat?.desc)"
-                        target="_blank"
-                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-[#1da851] bg-[#25d366]/10 hover:bg-[#25d366]/20 font-bold text-[14px] px-5 py-3 rounded-xl transition-colors">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
-                        </svg>
-                        <span x-text="activeCat?.cp"></span>
-                    </a>
-                    <a :href="'{{ route('nominasi') }}?kategori=' + activeCat?.id"
-                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-br from-[#1b6e4c] to-[#259b6b] text-white font-bold text-[15px] px-8 py-3.5 rounded-full shadow-[0_8px_20px_rgba(27,110,76,0.25)] hover:scale-105 transition-transform">
-                        Daftar Sekarang
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
+                    <div class="w-full sm:w-auto">
+                        <span class="text-[#1da851] font-bold text-[12px] uppercase flex items-center gap-1.5 mb-1.5">
+                            Contact Person
+                        </span>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full flex-wrap">
+                            <template x-for="(cp, i) in activeCat?.cp" :key="i">
+                                <div>
+                                    <template x-if="cp.phone">
+                                        <a :href="'https://wa.me/' + cp.phone" target="_blank" class="px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 whitespace-nowrap flex items-center gap-2 cursor-pointer group">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#25d366" class="group-hover:scale-110 transition-transform">
+                                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                                            </svg>
+                                            <div class="text-[#10131a] font-medium text-[12px] leading-relaxed" x-text="cp.name + ' (' + cp.display + ')'"></div>
+                                        </a>
+                                    </template>
+                                    <template x-if="!cp.phone">
+                                        <div class="px-3 py-2 bg-gray-100/50 rounded-xl border border-gray-200 whitespace-nowrap flex items-center">
+                                            <div class="text-[#64748b] font-medium text-[12px] leading-relaxed" x-text="cp.name + ' (Belum ada nomor)'"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -508,7 +657,7 @@
                 @php
                     $reqs = [
                         ['title' => 'Warga Negara Indonesia', 'desc' => 'Nominee adalah WNI yang berdomisili dan berkontribusi di wilayah Indonesia.'],
-                        ['title' => 'Mengisi Form Pendaftaran', 'desc' => 'Wajib mengunduh dan mengisi formulir pendaftaran dengan benar.'],
+                        ['title' => 'Mengisi Form Pendaftaran', 'desc' => 'Peserta mengisi formulir pendaftaran dengan benar.'],
                         ['title' => 'Memiliki Karya dan Dampak Nyata', 'desc' => 'Memiliki rekam jejak, inovasi, atau karya berdampak positif dalam salah satu dari 4 kategori.'],
                         ['title' => 'Melengkapi Dokumen', 'desc' => 'Melampirkan KTP, portofolio/dokumentasi kegiatan, dan foto pendukung.']
                     ];
@@ -540,47 +689,133 @@
     </section>
 
     <!-- 5. TIMELINE KEGIATAN -->
-    <section id="alur" class="py-[110px] px-6 bg-white">
-        <div class="max-w-[900px] mx-auto">
+    <section id="alur" class="relative py-[90px] px-6 bg-[#f8f9fa] border-y border-black/5 overflow-hidden">
+        <div class="max-w-[1200px] mx-auto relative z-10">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
                 class="text-center mb-[70px] transition-all duration-[800ms] ease-out"
                 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
-                <span class="text-[#b8860b] text-[12.5px] font-extrabold tracking-[0.22em]">TAHAP DEMI TAHAP</span>
-                <h2 class="cz text-[clamp(38px,6vw,68px)] font-extrabold uppercase text-[#10131a] mt-3 leading-none">
-                    Timeline <span class="text-[#1b6e4c]">Kegiatan</span></h2>
-                <p class="text-[#4b5262] text-[18px] leading-[1.6] mt-[18px]">Rangkaian tahapan penting menuju malam
-                    penganugerahan DPDRI Award 2026.</p>
+                <span class="text-[#1b6e4c] text-[12.5px] font-extrabold tracking-[0.22em]">TAHAP DEMI TAHAP</span>
+                <h2 class="cz text-[clamp(38px,6vw,68px)] font-extrabold uppercase text-[#0a3622] mt-3 leading-none">
+                    Timeline <span class="text-[#e0b53c]">Kegiatan</span></h2>
+                <p class="text-gray-600 text-[18px] leading-[1.6] mt-[18px]">Rangkaian tahapan penting menuju malam penganugerahan DPDRI <i>AWARDS</i> 2026.</p>
             </div>
 
-            <div class="relative text-[#10131a] pl-2 md:pl-0">
-                <div
-                    class="absolute left-[35px] md:left-[27px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-[#e0b53c] to-[#88c445]/40">
+            @php
+                $timeline = [
+                    ['n' => '1', 'title' => 'Pengumuman DPDRI AWARDS'],
+                    ['n' => '2', 'title' => 'Pembukaan Pendaftaran'],
+                    ['n' => '3', 'title' => 'Batas Akhir Penerimaan Berkas'],
+                    ['n' => '4', 'title' => 'Seleksi Administrasi'],
+                    ['n' => '5', 'title' => 'Penilaian Tahap Pertama'],
+                    ['n' => '6', 'title' => 'Penilaian Tahap Kedua'],
+                    ['n' => '7', 'title' => 'Pleno Penetapan Pemenang'],
+                    ['n' => '8', 'title' => 'Malam Penganugerahan'],
+                ];
+            @endphp
+
+            <!-- Desktop Snake Timeline (Hidden on mobile/tablet) -->
+            <div class="relative hidden lg:block w-full py-10 mt-10">
+                <style>
+                @keyframes sparkle {
+                    0%, 100% { opacity: 0; transform: scale(0.5); }
+                    50% { opacity: 1; transform: scale(1.2); }
+                }
+                .sparkle-1 { animation: sparkle 2s infinite ease-in-out; }
+                .sparkle-2 { animation: sparkle 2.5s infinite ease-in-out 0.5s; }
+                .sparkle-3 { animation: sparkle 1.8s infinite ease-in-out 1s; }
+                .sparkle-4 { animation: sparkle 2.2s infinite ease-in-out 1.5s; }
+                </style>
+                <!-- Row 1 -->
+                <div class="grid grid-cols-4 relative z-10">
+                    <div class="absolute top-[27px] left-[12.5%] right-[12.5%] border-t-[3px] border-dashed border-[#1b6e4c]/30 z-[-1]"></div>
+                    <div class="absolute top-[27px] right-[0%] w-[12.5%] h-[calc(100%+60px)] border-t-[3px] border-r-[3px] border-b-[3px] border-dashed border-[#1b6e4c]/30 rounded-r-[150px] z-[-1]"></div>
+                    @foreach(array_slice($timeline, 0, 4) as $index => $step)
+                        <div class="relative z-10 flex flex-col items-center px-4 group">
+                            <!-- Circle -->
+                            <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['n'] == '8' ? 'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] border-2 border-white/60 text-[#1a1405]' : 'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] border-2 border-[#3bc48b]/40 text-white' }}">
+                                <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none"></div>
+                                <span class="relative z-10">{{ $step['n'] }}</span>
+                            </div>
+                            
+                            <!-- Card -->
+                            <div class="rounded-2xl p-4 w-full flex-1 flex items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
+                                
+                                @if($step['n'] == '8')
+                                    <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 animate-pulse mix-blend-screen pointer-events-none"></div>
+                                    <div class="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]"></div>
+                                    
+                                    <!-- Subtle Sprinkles -->
+                                    <div class="absolute top-2 left-3 w-1 h-1 bg-[#e0b53c] rounded-full sparkle-1 shadow-[0_0_4px_#e0b53c]"></div>
+                                    <div class="absolute bottom-3 right-4 w-1.5 h-1.5 bg-white rounded-full sparkle-2 shadow-[0_0_6px_#fff]"></div>
+                                    <div class="absolute top-4 right-2 w-1 h-1 bg-[#f5da8b] rounded-full sparkle-3 shadow-[0_0_4px_#f5da8b]"></div>
+                                    <div class="absolute bottom-2 left-6 w-1 h-1 bg-white rounded-full sparkle-4 shadow-[0_0_4px_#fff]"></div>
+                                @endif
+                                
+                                <h3 class="font-semibold text-center tracking-wide text-[14.5px] leading-snug relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]' : 'text-white' }}">{{ $step['title'] }}</h3>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
-                @php
-                    $timeline = [
-                        ['n' => '1', 'title' => 'Pembukaan Pendaftaran', 'dot' => '#406010ff', 'num' => '#fff'],
-                        ['n' => '2', 'title' => 'Periode Pendaftaran', 'dot' => '#50721fff', 'num' => '#fff'],
-                        ['n' => '3', 'title' => 'Verifikasi dan Identifikasi Data', 'dot' => '#658f28ff', 'num' => '#fff'],
-                        ['n' => '4', 'title' => 'Penilaian Tahap 1', 'dot' => '#7cb137ff', 'num' => '#fff'],
-                        ['n' => '5', 'title' => 'Penilaian Tahap 2', 'dot' => '#8cc043ff', 'num' => '#fff'],
-                        ['n' => '6', 'title' => 'Wawancara', 'dot' => '#9ad44bff', 'num' => '#fff'],
-                        ['n' => '7', 'title' => 'Malam Penganugerahan', 'dot' => 'linear-gradient(135deg,#d6d45bff, #cac714ff)', 'num' => '#fff'],
-                    ];
-                @endphp
+                <div class="grid grid-cols-4 relative z-10 mt-[60px]">
+                    <div class="absolute top-[27px] left-[5%] right-[12.5%] border-t-[3px] border-dashed border-[#1b6e4c]/30 z-[-1]"></div>
+                    
+                    <!-- Arrow at the end (left side) -->
+                    <div class="absolute top-[16px] left-[5%] -translate-x-[50%] text-[#1b6e4c]/50 z-[-1]">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 18 4 12 10 6"></polyline>
+                        </svg>
+                    </div>
+                    
+                    @foreach(array_reverse(array_slice($timeline, 4, 4)) as $index => $step)
+                        <div class="relative z-10 flex flex-col items-center px-4 group">
+                            <!-- Circle -->
+                            <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['n'] == '8' ? 'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] text-[#1a1405]' : 'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] border-2 border-[#3bc48b]/40 text-white' }}">
+                                <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none"></div>
+                                <span class="relative z-10">{{ $step['n'] }}</span>
+                            </div>
+                            
+                            <!-- Card -->
+                            <div class="rounded-2xl p-4 w-full flex-1 flex items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
+                                
+                                @if($step['n'] == '8')
+                                    <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 animate-pulse mix-blend-screen pointer-events-none"></div>
+                                    <div class="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]"></div>
+                                    
+                                    <!-- Subtle Sprinkles -->
+                                    <div class="absolute top-2 left-3 w-1 h-1 bg-[#e0b53c] rounded-full sparkle-1 shadow-[0_0_4px_#e0b53c]"></div>
+                                    <div class="absolute bottom-3 right-4 w-1.5 h-1.5 bg-white rounded-full sparkle-2 shadow-[0_0_6px_#fff]"></div>
+                                    <div class="absolute top-4 right-2 w-1 h-1 bg-[#f5da8b] rounded-full sparkle-3 shadow-[0_0_4px_#f5da8b]"></div>
+                                    <div class="absolute bottom-2 left-6 w-1 h-1 bg-white rounded-full sparkle-4 shadow-[0_0_4px_#fff]"></div>
+                                @endif
+                                
+                                <h3 class="font-semibold text-center tracking-wide text-[14.5px] leading-snug relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]' : 'text-white' }}">{{ $step['title'] }}</h3>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Mobile & Tablet Timeline (Standard Vertical) -->
+            <div class="relative block lg:hidden w-full mt-10 pl-2 sm:pl-4">
+                <div class="absolute left-[28px] sm:left-[36px] top-2 bottom-2 w-[3px] bg-gradient-to-b from-[#1b6e4c]/50 to-transparent"></div>
 
                 @foreach($timeline as $index => $step)
                     <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
-                        class="group relative flex gap-5 md:gap-7 pb-11 transition-all duration-[800ms] ease-out"
-                        :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                        style="transition-delay: {{ $index * 80 }}ms;">
-                        <div class="shrink-0 w-14 h-14 rounded-full border-[3px] border-white shadow-[0_6px_18px_rgba(0,0,0,0.15)] flex items-center justify-center z-10 cz font-bold text-xl group-hover:scale-[1.15] group-hover:shadow-[0_8px_26px_rgba(136,196,69,0.4)] transition-all duration-300"
-                            style="background: {{ $step['dot'] }}; color: {{ $step['num'] }};">{{ $step['n'] }}</div>
-                        <div class="pt-3 group-hover:-translate-y-1 transition-transform duration-300">
-                            <h3
-                                class="cz text-[22px] md:text-[26px] font-bold group-hover:text-[#1b6e4c] transition-colors duration-300">
+                        class="group relative flex items-start gap-5 sm:gap-7 mb-10 transition-all duration-[800ms] ease-out"
+                        :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[30px]'"
+                        style="transition-delay: {{ $index * 50 }}ms;">
+                        
+                        <div class="shrink-0 w-14 h-14 rounded-full flex items-center justify-center z-10 relative {{ $step['n'] == '8' ? 'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] border-2 border-white/60 text-[#1a1405]' : 'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] border-2 border-[#3bc48b]/40 text-white' }}">
+                            <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none"></div>
+                            <span class="font-bold text-[20px] relative z-10">{{ $step['n'] }}</span>
+                        </div>
+
+                        <div class="pt-1">
+                            <h3 class="cz text-[18px] sm:text-[22px] font-bold tracking-wide transition-colors duration-300 leading-[1.3] mb-2 {{ $step['n'] == '8' ? 'text-[#d4af37]' : 'text-[#0a3622]' }}">
                                 {{ $step['title'] }}
                             </h3>
+                            <p class="text-gray-600 text-[14px] leading-relaxed">Pelaksanaan dan penyelesaian tahapan secara seksama sesuai prosedur yang telah ditetapkan komite DPD.</p>
                         </div>
                     </div>
                 @endforeach
@@ -667,9 +902,9 @@
                     $faqData = [
                         ['q' => 'Siapa saja yang bisa dinominasikan?', 'a' => 'Semua Warga Negara Indonesia (WNI) yang memiliki rekam jejak, inovasi, atau karya nyata yang berdampak positif bagi masyarakat di salah satu dari 4 kategori yang tersedia.'],
                         ['q' => 'Apakah saya bisa menominasikan diri sendiri?', 'a' => 'Bisa. Anda dapat mengusulkan diri sendiri selama memenuhi syarat dan ketentuan, serta melampirkan bukti portofolio atau dokumentasi kegiatan.'],
-                        ['q' => 'Apakah ada biaya pendaftaran?', 'a' => 'Tidak. Seluruh proses pendaftaran dan nominasi DPDRI Award tidak dipungut biaya sepeser pun. Hati-hati terhadap segala bentuk penipuan yang mengatasnamakan panitia.'],
+                        ['q' => 'Apakah ada biaya pendaftaran?', 'a' => 'Tidak. Seluruh proses pendaftaran dan nominasi DPDRI <i>AWARDS</i> tidak dipungut biaya sepeser pun. Hati-hati terhadap segala bentuk penipuan yang mengatasnamakan panitia.'],
                         ['q' => 'Bagaimana proses penjurian dilakukan?', 'a' => 'Setelah pendaftaran ditutup, tim kurator menyeleksi kelengkapan berkas. Kandidat yang lolos dinilai oleh Dewan Juri independen berdasarkan kriteria dampak sosial, inovasi, keberlanjutan, dan inspirasi.'],
-                        ['q' => 'Kapan pemenang diumumkan?', 'a' => 'Pemenang untuk setiap kategori diumumkan pada Malam Penganugerahan DPDRI Award 2026 yang disiarkan secara nasional.']
+                        ['q' => 'Kapan pemenang diumumkan?', 'a' => 'Pemenang untuk setiap kategori diumumkan pada Malam Penganugerahan DPDRI <i>AWARDS</i> 2026 yang disiarkan secara nasional.']
                     ];
                 @endphp
 
@@ -704,26 +939,48 @@
         </div>
     </section>
 
-    <!-- 8. STATEMENT PENUTUP -->
-    <section class="py-[80px] px-6 bg-gradient-to-b from-[#0a2e1d] to-[#05160e] border-t border-white/5 relative overflow-hidden">
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(27,110,76,0.15),transparent)]"></div>
-        <div class="relative max-w-4xl mx-auto text-center" x-data="{ shown: false }" x-intersect.half="shown = true"
-            x-intersect:leave="shown = false">
-            <div :class="shown ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-[40px] scale-95'"
-                class="transition-all duration-[1000ms] ease-out">
-                <img src="/images/logo.png" alt="Logo DPD" class="w-14 h-14 object-contain mx-auto mb-6 animate-floaty">
-                <p class="text-white/85 text-[16px] md:text-[19px] leading-[1.85] font-medium max-w-[800px] mx-auto">
-                    Melalui <span class="text-[#e0b53c] font-bold">DPDRI Award 2026</span>, DPD RI menegaskan posisinya
-                    sebagai mitra sejati daerah yang hadir <span class="text-white font-bold">mendengar, mendorong, dan
-                        mengapresiasi</span> kerja nyata di seluruh pelosok Nusantara.
-                </p>
-                <p
-                    class="text-white/85 text-[16px] md:text-[19px] leading-[1.85] font-medium max-w-[800px] mx-auto mt-4">
-                    Penghargaan ini diharapkan menjadi cermin keberhasilan sekaligus <span
-                        class="text-white font-bold">pemantik semangat</span> bagi seluruh tokoh dan individu untuk
-                    terus <span class="text-white font-bold">berinovasi, berkolaborasi</span>, dan memberikan yang
-                    terbaik bagi masyarakat dan daerahnya.
-                </p>
+    <!-- 8. STATEMENT PENUTUP & CTA -->
+    <section class="py-[80px] px-6 bg-gradient-to-b from-[#193931] to-[#05160e] border-t border-white/15 relative overflow-hidden flex items-center min-h-[400px]">
+        <!-- Giant Background Logo Overlay (Left) -->
+        <div class="absolute top-1/2 -translate-y-1/2 -left-[40%] md:-left-[15%] lg:-left-[5%] h-[150%] md:h-[200%] opacity-30 pointer-events-none select-none mix-blend-multiply">
+            <img src="{{ asset('images/logo.png') }}" alt="" class="w-auto h-full object-contain filter brightness-0">
+        </div>
+        
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(27,110,76,0.15),transparent)] pointer-events-none"></div>
+
+        <!-- Content on the right -->
+        <div class="relative max-w-7xl mx-auto w-full flex justify-end">
+            <div class="w-full md:w-[70%] lg:w-[60%] text-right" x-data="{ shown: false }" x-intersect.half="shown = true" x-intersect:leave="shown = false">
+                <div :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[40px]'"
+                    class="transition-all duration-[1000ms] ease-out flex flex-col items-end">
+                    
+                    <div class="relative py-4 pr-6">
+                        <!-- Subtle Quote Marks -->
+                        <div class="absolute -top-6 -right-2 text-[#e0b53c]/15 text-[60px] md:text-[80px] font-serif leading-none select-none">"</div>
+                        
+                        <p class="text-white/90 text-[15px] md:text-[17px] leading-[1.8] font-medium mb-5 relative z-10">
+                            Melalui <span class="text-[#e0b53c] font-bold tracking-wide">DPDRI <i>AWARDS</i> 2026</span>, DPD RI menegaskan posisinya
+                            sebagai mitra sejati daerah yang hadir <span class="text-white font-bold bg-white/5 px-2 py-0.5 rounded">mendengar, mendorong, dan mengapresiasi</span> kerja nyata di seluruh pelosok Nusantara.
+                        </p>
+                        
+                        <p class="text-white/80 text-[15px] md:text-[17px] leading-[1.8] relative z-10 italic">
+                            Penghargaan ini diharapkan menjadi cermin keberhasilan sekaligus <span
+                                class="text-[#88c445] font-bold not-italic">pemantik semangat</span> bagi seluruh tokoh dan individu untuk
+                            terus <span class="text-white font-semibold not-italic underline decoration-[#88c445] decoration-2 underline-offset-4">berinovasi, berkolaborasi</span>, dan memberikan yang terbaik bagi masyarakat dan daerahnya.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-4 relative z-10 pr-6">
+                        <a href="{{ route('nominasi') }}"
+                            class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[14px] tracking-wide px-7 py-3 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
+                            Daftarkan Nominasi
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -736,7 +993,7 @@
                     <img src="/images/logo.png" alt="Logo DPD" class="w-11 h-11 object-contain">
                     <div class="flex flex-col text-left">
                         <span class="cz text-[28px] font-extrabold tracking-wide text-white leading-[1.1]">DPDRI <span
-                                class="text-[#88c445]">AWARD</span></span>
+                                class="text-[#88c445]"><i>AWARDS</i></span></span>
                         <span class="text-white/40 text-[13px] tracking-wide">Dari Daerah untuk Indonesia</span>
                     </div>
                 </div>

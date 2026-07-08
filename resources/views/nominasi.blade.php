@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pendaftaran DPDRI Award 2026</title>
+    <title>Pendaftaran DPDRI <i>AWARDS</i> 2026</title>
     <link rel="icon" href="{{ asset('images/logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,8 +78,8 @@
             </a>
             <a href="{{ route('landing') }}"
                 class="cz text-[22px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2">
-                <img src="/images/logo.png" alt="Logo DPD" class="w-8 h-8 object-contain">
-                <span>DPDRI <span class="text-[#88c445]">AWARD</span></span>
+                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-8 object-contain">
+                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-8 object-contain">
             </a>
             <span class="text-white/40 text-[13px] font-semibold">2026</span>
         </div>
@@ -91,7 +91,7 @@
 
             <div class="text-center mb-9">
                 <span class="text-[#1b6e4c] text-[12px] font-extrabold tracking-[0.2em]">FORMULIR PENDAFTARAN</span>
-                <h1 class="cz text-[clamp(30px,5vw,46px)] font-extrabold uppercase mt-2">DPDRI AWARD <span
+                <h1 class="cz text-[clamp(30px,5vw,46px)] font-extrabold uppercase mt-2">DPDRI <i>AWARDS</i> <span
                         class="text-[#b8860b]">2026</span></h1>
             </div>
 
@@ -128,7 +128,7 @@
             <div
                 class="bg-white border border-[#e8ddc4] rounded-[22px] shadow-[0_18px_48px_rgba(11,42,91,0.10)] p-[clamp(24px,4vw,44px)] mt-6">
 
-                <template x-if="step > 0 && step < 5 && data.kategori">
+                <template x-if="step > 0 && step < 4 && data.kategori">
                     <div
                         class="mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#1b6e4c]/10 border border-[#1b6e4c]/20 rounded-lg text-[#1b6e4c] font-bold text-[13px]">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -176,52 +176,14 @@
                     </template>
                 </div>
 
-                <!-- STEP 1: UNDUH FORMULIR -->
+                <!-- STEP 1: DATA DIRI -->
                 <div x-show="step === 1" x-cloak>
-                    <h2 class="cz text-[26px] font-bold text-[#10131a]">Unduh Formulir Pendaftaran</h2>
-                    <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Unduh format formulir di bawah ini, isi dengan
-                        lengkap, lalu siapkan untuk diunggah pada tahap selanjutnya.</p>
-
-                    <div class="bg-[#faf6ec] border border-[#d8cdb4] border-dashed rounded-[16px] p-6 text-center">
-                        <div
-                            class="w-[50px] h-[50px] mx-auto rounded-full bg-[#f3ecdd] flex items-center justify-center text-[#b8860b] mb-4">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="7 10 12 15 17 10" />
-                                <line x1="12" y1="15" x2="12" y2="3" />
-                            </svg>
-                        </div>
-                        <h3 class="font-bold text-[16px] mb-2">Template Formulir Pendaftaran (.docx)</h3>
-                        <p class="text-[14px] text-[#6b7280] mb-5">Silakan unduh dokumen ini sebagai format standar
-                            pengajuan nominasi Anda.</p>
-                        <a href="/docs/Formulir_Pendaftaran_DPD_Award.docx" download
-                            class="inline-flex items-center gap-2 bg-[#1b6e4c] hover:bg-[#135037] text-white font-bold px-6 py-2.5 rounded-lg transition-colors">
-                            Unduh Formulir
-                        </a>
-                    </div>
-
-                    <div class="mt-6 flex items-start gap-3 bg-[#e8f4fd] p-4 rounded-xl border border-[#c2e0f4]">
-                        <svg class="shrink-0 mt-0.5 text-[#1a73e8]" width="20" height="20" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="12" y1="16" x2="12" y2="12" />
-                            <line x1="12" y1="8" x2="12.01" y2="8" />
-                        </svg>
-                        <p class="text-[13.5px] text-[#1e4e8c]">Pastikan Anda telah mengunduh formulir. Anda dapat
-                            melanjutkan mengisi data di website ini sambil menyiapkan formulir tersebut.</p>
-                    </div>
-                </div>
-
-                <!-- STEP 2: DATA DIRI -->
-                <div x-show="step === 2" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Data Diri</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Isi data individu yang dinominasikan dan data Anda
                         sebagai pengaju.</p>
 
                     <div class="flex flex-col gap-5">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        
                             <div>
                                 <label class="block text-[14px] font-bold mb-2">Nama Lengkap <span
                                         class="text-[#c0392b]">*</span></label>
@@ -232,93 +194,225 @@
                                         x-text="errs.namaNominee"></p>
                                 </template>
                             </div>
-                            <div>
-                                <label class="block text-[14px] font-bold mb-2">Provinsi <span
-                                        class="text-[#c0392b]">*</span></label>
-                                <div x-data="{ open: false, search: '' }" class="relative"
-                                    @click.outside="open = false">
-                                    <input type="text" x-model="search" @focus="open = true; search = data.wilayah"
-                                        @input="open = true; data.wilayah = search" placeholder="Cari provinsi..."
-                                        class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
-                                    <div x-show="open"
-                                        class="absolute z-10 w-full mt-1 bg-white border border-[#d8cdb4] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.1)] max-h-48 overflow-y-auto">
-                                        <template
-                                            x-for="p in provinces.filter(prov => prov.toLowerCase().includes(search.toLowerCase()))"
-                                            :key="p">
-                                            <div @click="data.wilayah = p; search = p; open = false"
-                                                class="px-4 py-2.5 text-[14.5px] hover:bg-[#f0f8f2] hover:text-[#1b6e4c] cursor-pointer transition-colors"
-                                                x-text="p"></div>
-                                        </template>
-                                        <template
-                                            x-if="provinces.filter(prov => prov.toLowerCase().includes(search.toLowerCase())).length === 0">
-                                            <div class="px-4 py-3 text-[14px] text-[#9aa2b1]">Tidak ditemukan</div>
-                                        </template>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="space-y-3">
+                                    <label class="block text-[14px] font-bold mb-2">Tempat Lahir <span
+                                            class="text-[#c0392b]">*</span></label>
+                                    <div x-data="{ open: false, search: '' }" class="relative"
+                                        @click.outside="open = false">
+                                        <input type="text" x-model="search" @focus="open = true; search = data.wilayah"
+                                            @input="open = true; data.wilayah = search" placeholder="Cari Tempat..."
+                                            class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                        <div x-show="open"
+                                            class="absolute z-10 w-full mt-1 bg-white border border-[#d8cdb4] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.1)] max-h-48 overflow-y-auto">
+                                            <template
+                                                x-for="p in provinces.filter(prov => prov.toLowerCase().includes(search.toLowerCase()))"
+                                                :key="p">
+                                                <div @click="data.wilayah = p; search = p; open = false"
+                                                    class="px-4 py-2.5 text-[14.5px] hover:bg-[#f0f8f2] hover:text-[#1b6e4c] cursor-pointer transition-colors"
+                                                    x-text="p"></div>
+                                            </template>
+                                            <template
+                                                x-if="provinces.filter(prov => prov.toLowerCase().includes(search.toLowerCase())).length === 0">
+                                                <div class="px-4 py-3 text-[14px] text-[#9aa2b1]">Tidak ditemukan</div>
+                                            </template>
+                                        </div>
                                     </div>
+                                    <template x-if="showErr && errs.wilayah">
+                                        <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.wilayah">
+                                        </p>
+                                    </template>
                                 </div>
-                                <template x-if="showErr && errs.wilayah">
-                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.wilayah">
+
+                                <div class="space-y-3">
+                                    <label class="block text-[14px] font-bold mb-2">Tanggal Lahir <span
+                                            class="text-[#c0392b]">*</span></label>
+                                    <input x-model="data.tanggalLahir" type="date"
+                                        class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                    <template x-if="showErr && errs.tanggalLahir">
+                                        <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.tanggalLahir">
+                                        </p>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="space-y-3">
+                                    <label class="block text-[14px] font-bold mb-2">Jenis Kelamin <span
+                                            class="text-[#c0392b]">*</span></label>
+                                    <select x-model="data.jenisKelamin"
+                                        class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                        <option value="" selected disabled>Pilih Jenis Kelamin</option>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                    <template x-if="showErr && errs.jenisKelamin">
+                                        <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5"
+                                            x-text="errs.jenisKelamin"></p>
+                                    </template>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <label class="block text-[14px] font-bold mb-2">Pendidikan<span
+                                            class="text-[#c0392b]">*</span></label>
+                                    <select x-model="data.pendidikan"
+                                        class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                        <option value="" selected disabled>Pilih Tingkat Pendidikan</option>
+                                        <option value="SMA/Sederajat">SMA/Sederajat</option>
+                                        <option value="Diploma I">Diploma I</option>
+                                        <option value="Diploma II">Diploma II</option>
+                                        <option value="Diploma III">Diploma III</option>
+                                        <option value="Diploma IV">Diploma IV</option>
+                                        <option value="Sarjana (S1)">Sarjana (S1)</option>
+                                        <option value="Magister (S2)">Magister (S2)</option>
+                                        <option value="Doktor (S3)">Doktor (S3)</option>
+                                    </select>
+                                    <template x-if="showErr && errs.pendidikan">
+                                        <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5"
+                                            x-text="errs.pendidikan"></p>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[14px] font-bold mb-2">Alamat <span
+                                        class="text-[#c0392b]">*</span></label>
+                                <input x-model="data.alamat"
+                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200" type="text" placeholder="Masukkan Alamat">
+                                <template x-if="showErr && errs.alamat">
+                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.alamat">
                                     </p>
                                 </template>
                             </div>
-                            <div>
-                                <label class="block text-[14px] font-bold mb-2">Nomor WhatsApp <span
-                                        class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.telp" type="tel" placeholder="08xxxxxxxxxx"
-                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
-                                <template x-if="showErr && errs.telp">
-                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.telp"></p>
-                                </template>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="space-y-3">
+                                    <label class="block text-[14px] font-bold mb-2">Nomor WhatsApp <span
+                                            class="text-[#c0392b]">*</span></label>
+                                    <input x-model="data.telp" type="tel" placeholder="08xxxxxxxxxx"
+                                        class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                    <template x-if="showErr && errs.telp">
+                                        <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.telp"></p>
+                                    </template>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <label class="block text-[14px] font-bold mb-2">Alamat Email <span
+                                            class="text-[#c0392b]">*</span></label>
+                                    <input x-model="data.email" type="email" placeholder="nama@email.com"
+                                        class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                    <template x-if="showErr && errs.email">
+                                        <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.email"></p>
+                                    </template>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-[14px] font-bold mb-2">Alamat Email <span
-                                        class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.email" type="email" placeholder="nama@email.com"
-                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
-                                <template x-if="showErr && errs.email">
-                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.email"></p>
-                                </template>
-                            </div>
+
                         </div>
                     </div>
-                </div>
 
-                <!-- STEP 3: KONTRIBUSI -->
-                <div x-show="step === 3" x-cloak>
+                <!-- STEP 2: KONTRIBUSI -->
+                <div x-show="step === 2" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Daftar Kontribusi / Inovasi</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Ceritakan karya dan dampak nyata yang telah
                         diberikan.</p>
 
                     <div class="flex flex-col gap-5">
-                        <div>
-                            <label class="block text-[14px] font-bold mb-2">Judul / Nama Karya <span
-                                    class="text-[#c0392b]">*</span></label>
-                            <input x-model="data.judul" type="text" placeholder="Contoh: Gerakan Literasi Pesisir"
-                                class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
-                            <template x-if="showErr && errs.judul">
-                                <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.judul"></p>
+                        
+                        <!-- CAPAIAN / PRESTASI / INOVASI -->
+                        <div class="flex flex-col gap-4">
+                            <div>
+                                <label class="block text-[16px] font-bold mb-1">Capaian / Prestasi / Inovasi <span class="text-[#c0392b]">*</span></label>
+                                <p class="text-[#6b7280] text-[13px]">Capaian, prestasi, atau inovasi yang pernah dilakukan terkait kategori yang diikuti</p>
+                            </div>
+                            
+                            <template x-for="(item, index) in data.capaianList" :key="index">
+                                <div class="flex items-start gap-3 bg-[#faf6ec] p-4 rounded-xl border border-[#ece2ca]">
+                                    <div class="font-bold text-[#1b6e4c] pt-2.5 w-5 shrink-0 text-right" x-text="(index + 1) + '.'"></div>
+                                    <div class="flex-1 flex flex-col gap-3">
+                                        <input x-model="item.judul" placeholder="Judul capaian/inovasi..."
+                                            class="w-full h-[45px] px-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[15px] text-[#10131a] transition-all duration-200">
+                                        <textarea x-model="item.deskripsi" placeholder="Deskripsi (maksimal 200 kata per poin)..."
+                                            class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-y leading-[1.55] transition-all duration-200"></textarea>
+                                    </div>
+                                    <button x-show="data.capaianList.length > 1" @click="data.capaianList.splice(index, 1)" type="button" 
+                                        class="shrink-0 mt-2.5 w-9 h-9 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </template>
-                        </div>
-                        <div>
-                            <label class="block text-[14px] font-bold mb-2">Deskripsi Kontribusi <span
-                                    class="text-[#c0392b]">*</span></label>
-                            <textarea x-model="data.deskripsi"
-                                placeholder="Jelaskan latar belakang, kegiatan, dan pihak yang terdampak..."
-                                class="w-full min-h-[130px] p-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] resize-y leading-[1.55] transition-all duration-200"></textarea>
-                            <template x-if="showErr && errs.deskripsi">
-                                <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.deskripsi"></p>
+                            <template x-if="showErr && errs.capaianList">
+                                <p class="text-[#c0392b] text-[13px] font-semibold mt-1" x-text="errs.capaianList"></p>
                             </template>
+
+                            <button @click="data.capaianList.push({ judul: '', deskripsi: '' })" type="button" 
+                                class="inline-flex items-center gap-2 self-start text-[#1b6e4c] font-bold text-[14px] px-4 py-2 bg-[#1b6e4c]/10 rounded-lg hover:bg-[#1b6e4c]/20 transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Tambah Capaian / Inovasi
+                            </button>
                         </div>
-                        <div>
-                            <label class="block text-[14px] font-bold mb-2">Dampak & Pencapaian</label>
-                            <textarea x-model="data.dampak"
-                                placeholder="Contoh: menjangkau 1.200 anak, 8 desa, sejak 2019..."
-                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] resize-y leading-[1.55] transition-all duration-200"></textarea>
+
+                        <!-- DAFTAR PENGHARGAAN -->
+                        <div class="flex flex-col gap-4">
+                            <div>
+                                <label class="block text-[16px] font-bold mt-2 mb-1">Daftar Penghargaan</label>
+                                <p class="text-[#6b7280] text-[13px]">Lampirkan bukti penghargaan berupa sertifikat/piagam dalam bentuk <i>softcopy</i>.</p>
+                            </div>
+                            
+                            <template x-for="(item, index) in data.penghargaanList" :key="index">
+                                <div class="flex items-start gap-3">
+                                    <div class="font-bold text-[#1b6e4c] pt-[45px] w-5 shrink-0 text-right sm:hidden" x-show="index > 0" x-text="(index + 1) + '.'"></div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 flex-1">
+                                        <div class="sm:col-span-7">
+                                            <label x-show="index === 0" class="block text-[13.5px] font-bold mb-2">Uraian Penghargaan</label>
+                                            <input x-model="item.nama" placeholder="Nama penghargaan..."
+                                            class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label x-show="index === 0" class="block text-[13.5px] font-bold mb-2">Tahun</label>
+                                            <input x-model="item.tahun" type="number" min="1900" max="2026" placeholder="Tahun"
+                                            class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label x-show="index === 0" class="block text-[13.5px] font-bold mb-2">Evidance / Bukti</label>
+                                            <label class="flex items-center justify-between w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] border-dashed rounded-xl text-[14px] text-[#6b7280] cursor-pointer hover:bg-[#faf6ec] transition-all" :class="item.fileName ? 'bg-[#f0f8f2] border-[#1b6e4c] text-[#1b6e4c] font-medium' : ''">
+                                                <span class="truncate pr-2" x-text="item.fileName || 'Upload file...'"></span>
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                <input type="file" class="hidden" @change="item.fileName = $event.target.files[0] ? $event.target.files[0].name : ''">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Delete Button -->
+                                    <button x-show="data.penghargaanList.length > 1" @click="data.penghargaanList.splice(index, 1)" type="button" 
+                                        class="shrink-0 mt-[1.8rem] w-12 h-[50px] rounded-xl flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors border border-[#c0392b]/20" :class="index === 0 ? 'sm:mt-[1.8rem]' : 'sm:mt-0'">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                            
+                            <template x-if="showErr && errs.penghargaanList">
+                                <p class="text-[#c0392b] text-[13px] font-semibold mt-1" x-text="errs.penghargaanList"></p>
+                            </template>
+
+                            <button @click="data.penghargaanList.push({ nama: '', tahun: '', fileName: '' })" type="button" 
+                                class="mt-1 inline-flex items-center gap-2 self-start text-[#1b6e4c] font-bold text-[14px] px-4 py-2 bg-[#1b6e4c]/10 rounded-lg hover:bg-[#1b6e4c]/20 transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Tambah Penghargaan
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- STEP 4: BERKAS -->
-                <div x-show="step === 4" x-cloak>
+                <!-- STEP 3: BERKAS -->
+                <div x-show="step === 3" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Unggah Berkas & Data Dukung</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Unggah dokumen pendukung dan formulir yang telah
                         Anda isi. Format PDF/JPG/PNG, maks. 5MB per file.</p>
@@ -378,8 +472,8 @@
                     </div>
                 </div>
 
-                <!-- STEP 5: TINJAU -->
-                <div x-show="step === 5" x-cloak>
+                <!-- STEP 4: TINJAU -->
+                <div x-show="step === 4" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Tinjau &amp; Kirim</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Periksa kembali data Anda sebelum mengirim
                         nominasi.</p>
@@ -494,7 +588,7 @@
                         <input type="checkbox" x-model="data.setuju" class="w-5 h-5 mt-0.5 shrink-0 accent-[#1b6e4c]">
                         <span class="text-[14px] text-[#4b5262] leading-[1.5]">Saya menyatakan bahwa seluruh data yang
                             diisi adalah benar dan menyetujui <a href="{{ route('landing') }}#syarat" target="_blank"
-                                class="text-[#1b6e4c] font-bold hover:underline">syarat &amp; ketentuan</a> DPDRI Award
+                                class="text-[#1b6e4c] font-bold hover:underline">syarat &amp; ketentuan</a> DPDRI <i>AWARDS</i>
                             2026.</span>
                     </label>
                     <template x-if="showErr && errs.setuju">
@@ -516,7 +610,7 @@
                         </button>
                     </template>
 
-                    <template x-if="step < 5">
+                    <template x-if="step < 4">
                         <button @click="next()"
                             class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-[#88c445] text-[#0a0c11] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[30px] py-[13px] rounded-xl shadow-[0_8px_24px_rgba(136,196,69,.3)] hover:bg-[#75a83a] transition-colors cursor-pointer whitespace-nowrap">Lanjut
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -526,7 +620,7 @@
                             </svg>
                         </button>
                     </template>
-                    <template x-if="step === 5">
+                    <template x-if="step === 4">
                         <button @click="submitForm()"
                             class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform cursor-pointer whitespace-nowrap">Kirim
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -580,12 +674,14 @@
                 regId: '',
                 errs: {},
                 data: {
-                    kategori: '', namaNominee: '', wilayah: '', email: '', telp: '', judul: '', deskripsi: '', dampak: '', setuju: false,
-                    files: { form: '', ktp: '', porto: '', foto: '' },
-                    previews: { form: '', ktp: '', porto: '', foto: '' }
+                    kategori: '', namaNominee: '', wilayah: '', email: '', telp: '', judul: '', dampak: '', setuju: false,
+                    capaianList: [{ judul: '', deskripsi: '' }],
+                    penghargaanList: [{ nama: '', tahun: '', fileName: '' }],
+                    files: { ktp: '', porto: '', foto: '' },
+                    previews: { ktp: '', porto: '', foto: '' }
                 },
                 steps: [
-                    { label: 'Kategori' }, { label: 'Unduh Formulir' }, { label: 'Data Diri' }, { label: 'Kontribusi' }, { label: 'Berkas' }, { label: 'Tinjau' }
+                    { label: 'Kategori' }, { label: 'Data Diri' }, { label: 'Kontribusi' }, { label: 'Berkas' }, { label: 'Tinjau' }
                 ],
                 categories: [
                     { id: 'pendidikan', name: 'Bidang Pendidikan', en: 'Kategori Inovator Pendidikan Non Formal/Pendidikan Luar Sekolah', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>' },
@@ -600,10 +696,9 @@
                     'Maluku', 'Maluku Utara', 'Papua Barat', 'Papua', 'Papua Selatan', 'Papua Tengah', 'Papua Pegunungan', 'Papua Barat Daya'
                 ],
                 uploads: [
-                    { key: 'form', title: 'Formulir Pendaftaran (Yang telah diisi)', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>', optional: false },
-                    { key: 'ktp', title: 'KTP / Identitas Nominee', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v14H3z"/><path d="M7 9h4M7 13h6"/></svg>', optional: false },
+                    { key: 'ktp', title: 'KTP / Identitas', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v14H3z"/><path d="M7 9h4M7 13h6"/></svg>', optional: false },
                     { key: 'porto', title: 'Portofolio / Dokumentasi', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>', optional: false },
-                    { key: 'foto', title: 'Foto Nominee', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM21 15l-5-5L5 21"/></svg>', optional: true }
+                    { key: 'foto', title: 'Foto Diri', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM21 15l-5-5L5 21"/></svg>', optional: true }
                 ],
 
                 init() {
@@ -670,8 +765,8 @@
                     const d = this.data;
 
                     if (step === 0 && !d.kategori) { this.errs.kategori = true; hasErr = true; }
-                    // step 1 = Unduh Formulir, no validation required
-                    if (step === 2) {
+                    
+                    if (step === 1) {
                         if (!d.namaNominee.trim()) { this.errs.namaNominee = "Wajib diisi."; hasErr = true; }
                         if (!d.wilayah.trim()) { this.errs.wilayah = "Wajib diisi."; hasErr = true; }
 
@@ -691,16 +786,37 @@
                             this.errs.email = "Masukkan email yang valid."; hasErr = true;
                         }
                     }
-                    if (step === 3) {
-                        if (!d.judul.trim()) { this.errs.judul = "Wajib diisi."; hasErr = true; }
-                        if (!d.deskripsi.trim()) { this.errs.deskripsi = "Wajib diisi."; hasErr = true; }
+                    if (step === 2) {
+                        let capaianInvalid = false;
+                        d.capaianList.forEach(item => {
+                            if (!item.judul.trim() || !item.deskripsi.trim()) {
+                                capaianInvalid = true;
+                            }
+                        });
+                        if (d.capaianList.length === 0 || capaianInvalid) {
+                            this.errs.capaianList = "Harap lengkapi judul dan deskripsi pada setiap baris capaian/inovasi."; 
+                            hasErr = true;
+                        }
+
+                        let penghargaanInvalid = false;
+                        d.penghargaanList.forEach((item, idx) => {
+                            const isRowEmpty = !item.nama.trim() && !item.tahun.toString().trim() && !item.fileName;
+                            if (!isRowEmpty) {
+                                if (!item.nama.trim() || !item.tahun.toString().trim()) {
+                                    penghargaanInvalid = true;
+                                }
+                            }
+                        });
+                        if (penghargaanInvalid) {
+                            this.errs.penghargaanList = "Harap lengkapi uraian dan tahun untuk penghargaan yang ditambahkan.";
+                            hasErr = true;
+                        }
                     }
-                    if (step === 4) {
-                        if (!d.files.form) { this.errs.form = "Formulir pendaftaran wajib diunggah."; hasErr = true; }
+                    if (step === 3) {
                         if (!d.files.ktp) { this.errs.ktp = "KTP wajib diunggah."; hasErr = true; }
                         if (!d.files.porto) { this.errs.porto = "Portofolio wajib diunggah."; hasErr = true; }
                     }
-                    if (step === 5 && !d.setuju) { this.errs.setuju = true; hasErr = true; }
+                    if (step === 4 && !d.setuju) { this.errs.setuju = true; hasErr = true; }
 
                     return hasErr;
                 },
@@ -711,7 +827,7 @@
                         return;
                     }
                     this.showErr = false;
-                    if (this.step < 5) this.step++;
+                    if (this.step < 4) this.step++;
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
@@ -722,7 +838,7 @@
                 },
 
                 submitForm() {
-                    if (this.validate(5)) {
+                    if (this.validate(4)) {
                         this.showErr = true;
                         return;
                     }

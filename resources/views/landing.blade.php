@@ -178,7 +178,7 @@
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-[#0a0c11]">
             <img src="{{ asset('images/hero-bg.jpg') }}" alt=""
-                class="w-full h-full object-cover object-center">
+                class="w-full h-full object-cover object-[40%_center] md:object-center">
         </div>
 
 
@@ -606,7 +606,7 @@
                             <template x-for="(cp, i) in activeCat?.cp" :key="i">
                                 <div>
                                     <template x-if="cp.phone">
-                                        <a :href="'https://wa.me/' + cp.phone" target="_blank" class="px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 whitespace-nowrap flex items-center gap-2 cursor-pointer group">
+                                        <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI Award pada ' + activeCat?.title + ' - ' + activeCat?.desc)" target="_blank" class="px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 whitespace-nowrap flex items-center gap-2 cursor-pointer group">
                                             <svg width="15" height="15" viewBox="0 0 24 24" fill="#25d366" class="group-hover:scale-110 transition-transform">
                                                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
                                             </svg>
@@ -702,13 +702,13 @@
 
             @php
                 $timeline = [
-                    ['n' => '1', 'title' => 'Pengumuman DPDRI AWARDS'],
-                    ['n' => '2', 'title' => 'Pembukaan Pendaftaran'],
-                    ['n' => '3', 'title' => 'Batas Akhir Penerimaan Berkas'],
-                    ['n' => '4', 'title' => 'Seleksi Administrasi'],
-                    ['n' => '5', 'title' => 'Penilaian Tahap Pertama'],
-                    ['n' => '6', 'title' => 'Penilaian Tahap Kedua'],
-                    ['n' => '7', 'title' => 'Pleno Penetapan Pemenang'],
+                    ['n' => '1', 'title' => 'Pembukaan Pendaftaran'],
+                    ['n' => '2', 'title' => 'Periode Pendaftaran', 'date' => '13 Juli – 1 Agustus 2026'],
+                    ['n' => '3', 'title' => 'Verifikasi dan Identifikasi Data'],
+                    ['n' => '4', 'title' => 'Penilaian Tahap 1'],
+                    ['n' => '5', 'title' => 'Penilaian Tahap 2'],
+                    ['n' => '6', 'title' => 'Penilaian Tahap 3'],
+                    ['n' => '7', 'title' => 'Wawancara'],
                     ['n' => '8', 'title' => 'Malam Penganugerahan'],
                 ];
             @endphp
@@ -738,7 +738,7 @@
                             </div>
                             
                             <!-- Card -->
-                            <div class="rounded-2xl p-4 w-full flex-1 flex items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
+                            <div class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
                                 
                                 @if($step['n'] == '8')
                                     <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 animate-pulse mix-blend-screen pointer-events-none"></div>
@@ -752,6 +752,9 @@
                                 @endif
                                 
                                 <h3 class="font-semibold text-center tracking-wide text-[14.5px] leading-snug relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]' : 'text-white' }}">{{ $step['title'] }}</h3>
+                                @if(isset($step['date']))
+                                    <p class="text-center text-[12.5px] font-normal leading-tight mt-1 relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]/80' : 'text-white/80' }}">{{ $step['date'] }}</p>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -776,7 +779,7 @@
                             </div>
                             
                             <!-- Card -->
-                            <div class="rounded-2xl p-4 w-full flex-1 flex items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
+                            <div class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
                                 
                                 @if($step['n'] == '8')
                                     <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 animate-pulse mix-blend-screen pointer-events-none"></div>
@@ -790,6 +793,9 @@
                                 @endif
                                 
                                 <h3 class="font-semibold text-center tracking-wide text-[14.5px] leading-snug relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]' : 'text-white' }}">{{ $step['title'] }}</h3>
+                                @if(isset($step['date']))
+                                    <p class="text-center text-[12.5px] font-normal leading-tight mt-1 relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]/80' : 'text-white/80' }}">{{ $step['date'] }}</p>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -812,10 +818,12 @@
                         </div>
 
                         <div class="pt-1">
-                            <h3 class="cz text-[18px] sm:text-[22px] font-bold tracking-wide transition-colors duration-300 leading-[1.3] mb-2 {{ $step['n'] == '8' ? 'text-[#d4af37]' : 'text-[#0a3622]' }}">
+                            <h3 class="cz text-[18px] sm:text-[22px] font-bold tracking-wide transition-colors duration-300 leading-[1.3] mb-1 {{ $step['n'] == '8' ? 'text-[#d4af37]' : 'text-[#0a3622]' }}">
                                 {{ $step['title'] }}
                             </h3>
-                            <p class="text-gray-600 text-[14px] leading-relaxed">Pelaksanaan dan penyelesaian tahapan secara seksama sesuai prosedur yang telah ditetapkan komite DPD.</p>
+                            @if(isset($step['date']))
+                                <p class="text-[14px] leading-relaxed {{ $step['n'] == '8' ? 'text-[#d4af37]/80' : 'text-gray-600' }}">{{ $step['date'] }}</p>
+                            @endif
                         </div>
                     </div>
                 @endforeach
@@ -931,7 +939,7 @@
                             </span>
                         </div>
                         <div x-show="isOpen" x-collapse class="overflow-hidden">
-                            <p class="px-6 pb-6 text-[#4b5262] text-[15.5px] leading-[1.7]">{{ $f['a'] }}</p>
+                            <p class="px-6 pb-6 text-[#4b5262] text-[15.5px] leading-[1.7]">{!! $f['a'] !!}</p>
                         </div>
                     </div>
                 @endforeach
@@ -973,7 +981,7 @@
                     <div class="mt-4 relative z-10 pr-6">
                         <a href="{{ route('nominasi') }}"
                             class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[14px] tracking-wide px-7 py-3 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
-                            Daftarkan Nominasi
+                            Daftar Sekarang
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                                 <polyline points="12 5 19 12 12 19"></polyline>

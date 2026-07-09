@@ -105,20 +105,20 @@
 
     <!-- HEADER -->
     <header
-        :class="(scrolled || mobileMenuOpen) ? 'py-3.5' : 'py-5'"
+        :class="(scrolled || mobileMenuOpen) ? 'py-3.5 lg:py-5' : 'py-5 lg:py-8'"
         class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300">
         
         <div class="absolute inset-0 pointer-events-none transition-opacity duration-300"
              :class="(scrolled || mobileMenuOpen) ? 'opacity-70' : 'opacity-70'"
              style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 90%); mask-image: linear-gradient(to bottom, black 60%, transparent 100%);">
-             <div class="absolute inset-0 bg-[#0a0c11]/80 backdrop-blur-lg"></div>
+             <div class="absolute inset-0 bg-[#0a0c11]/90 backdrop-blur-xl"></div>
         </div>
 
-        <div class="relative max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div class="relative w-full px-6 lg:px-12 flex items-center justify-between">
             <a href="#beranda"
-                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2">
-                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-10 object-contain">
-                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-10 object-contain">
+                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-3 md:gap-5">
+                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-14 md:h-16 lg:h-[75px] object-contain">
+                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-14 md:h-16 lg:h-[75px] object-contain">
             </a>
 
             <button @click="mobileMenuOpen = !mobileMenuOpen"
@@ -136,41 +136,41 @@
                 </svg>
             </button>
 
-            <nav class="hidden lg:flex items-center gap-[34px]">
+            <nav class="hidden lg:flex items-center gap-[42px]">
                 <a href="#beranda"
-                    class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">BERANDA</a>
+                    class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">BERANDA</a>
                 <a href="#kategori"
-                    class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">KATEGORI</a>
+                    class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">KATEGORI</a>
                 <a href="#syarat"
-                    class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">KETENTUAN</a>
+                    class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">KETENTUAN</a>
                 <a href="#alur"
-                    class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">TIMELINE</a>
+                    class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">TIMELINE</a>
                 <a href="#statistik"
-                    class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">STATISTIK</a>
+                    class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">STATISTIK</a>
                 <a href="#faq"
-                    class="text-white/80 hover:text-white text-[13.5px] font-semibold tracking-wider transition-colors">TANYA
+                    class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">TANYA
                     JAWAB</a>
                 <a href="{{ route('nominasi') }}"
-                    class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[13.5px] tracking-wide px-6 py-2.5 rounded-full shadow-[0_8px_30px_rgba(224,181,60,0.28)] hover:scale-105 transition-transform">DAFTAR</a>
+                    class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[16px] tracking-wide px-8 py-3 rounded-full shadow-[0_8px_30px_rgba(224,181,60,0.28)] hover:scale-105 transition-transform">DAFTAR</a>
             </nav>
         </div>
 
         <div x-show="mobileMenuOpen" x-cloak x-transition
-            class="lg:hidden absolute top-full left-0 right-0 bg-[#0a0c11]/95 backdrop-blur-xl border-b border-[#e0b53c]/20 py-4 px-6 flex flex-col gap-4 shadow-xl">
+            class="lg:hidden absolute top-full left-0 right-0 bg-[#0a0c11]/95 backdrop-blur-xl border-b border-[#e0b53c]/20 py-6 px-6 flex flex-col gap-5 shadow-xl">
             <a href="#beranda" @click="mobileMenuOpen = false"
-                class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">BERANDA</a>
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">BERANDA</a>
             <a href="#kategori" @click="mobileMenuOpen = false"
-                class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">KATEGORI</a>
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">KATEGORI</a>
             <a href="#syarat" @click="mobileMenuOpen = false"
-                class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">KETENTUAN</a>
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">KETENTUAN</a>
             <a href="#alur" @click="mobileMenuOpen = false"
-                class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">TIMELINE</a>
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">TIMELINE</a>
             <a href="#statistik" @click="mobileMenuOpen = false"
-                class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">STATISTIK</a>
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">STATISTIK</a>
             <a href="#faq" @click="mobileMenuOpen = false"
-                class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider">TANYA JAWAB</a>
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">TANYA JAWAB</a>
             <a href="{{ route('nominasi') }}"
-                class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] tracking-wide px-6 py-3 rounded-full text-center mt-2">DAFTAR</a>
+                class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[17px] tracking-wide px-6 py-4 rounded-full text-center mt-3">DAFTAR</a>
         </div>
     </header>
 
@@ -193,7 +193,7 @@
             <div class="absolute bottom-[-20px] left-[15%] w-[80%] h-[150px] bg-[#020305] blur-[30px] rounded-[100%] rotate-1"></div>
         </div>
 
-        <div class="absolute bottom-[20px] sm:bottom-[30px] left-1/2 -translate-x-1/2 z-10 w-full flex items-center justify-center gap-6 md:gap-14 lg:gap-20">
+        <div class="absolute bottom-[20px] sm:bottom-[30px] left-1/2 -translate-x-1/2 z-10 w-full max-w-[1300px] px-6 lg:px-12 flex items-center justify-between gap-4 md:gap-12 lg:gap-16">
             
             <svg width="0" height="0" style="position: absolute; width: 0; height: 0;" aria-hidden="true">
                 <defs>
@@ -210,30 +210,37 @@
                     </g>
                     <g id="laurelBranch" transform="translate(0, 5)">
                         <!-- Stem -->
-                        <path d="M 5 35 Q 75 70 140 10" stroke="url(#goldLaurel)" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M 5 35 Q 120 75 240 10" stroke="url(#goldLaurel)" stroke-width="2.5" stroke-linecap="round"/>
                         
                         <!-- Top side Leaves -->
-                        <use href="#laurelLeaf" transform="translate(20, 41) rotate(-35) scale(0.8)"/>
-                        <use href="#laurelLeaf" transform="translate(45, 48) rotate(-45) scale(1)"/>
-                        <use href="#laurelLeaf" transform="translate(73, 48) rotate(-60) scale(1.1)"/>
-                        <use href="#laurelLeaf" transform="translate(100, 40) rotate(-75) scale(1)"/>
-                        <use href="#laurelLeaf" transform="translate(120, 27) rotate(-85) scale(0.8)"/>
+                        <use href="#laurelLeaf" transform="translate(8, 38) rotate(-10) scale(0.6)"/>
+                        <use href="#laurelLeaf" transform="translate(25, 40) rotate(-25) scale(0.7)"/>
+                        <use href="#laurelLeaf" transform="translate(45, 43) rotate(-35) scale(0.85)"/>
+                        <use href="#laurelLeaf" transform="translate(70, 47) rotate(-45) scale(1)"/>
+                        <use href="#laurelLeaf" transform="translate(100, 50) rotate(-55) scale(1.1)"/>
+                        <use href="#laurelLeaf" transform="translate(135, 49) rotate(-65) scale(1.15)"/>
+                        <use href="#laurelLeaf" transform="translate(170, 43) rotate(-75) scale(1.1)"/>
+                        <use href="#laurelLeaf" transform="translate(200, 31) rotate(-85) scale(0.9)"/>
+                        <use href="#laurelLeaf" transform="translate(225, 17) rotate(-95) scale(0.75)"/>
                         
                         <!-- Bottom side Leaves -->
-                        <use href="#laurelLeaf" transform="translate(28, 44) rotate(65) scale(0.8)"/>
-                        <use href="#laurelLeaf" transform="translate(56, 49) rotate(55) scale(1)"/>
-                        <use href="#laurelLeaf" transform="translate(85, 46) rotate(40) scale(1.1)"/>
-                        <use href="#laurelLeaf" transform="translate(110, 34) rotate(25) scale(1)"/>
+                        <use href="#laurelLeaf" transform="translate(35, 44) rotate(70) scale(0.7)"/>
+                        <use href="#laurelLeaf" transform="translate(58, 48) rotate(60) scale(0.85)"/>
+                        <use href="#laurelLeaf" transform="translate(85, 51) rotate(50) scale(1)"/>
+                        <use href="#laurelLeaf" transform="translate(118, 52) rotate(40) scale(1.1)"/>
+                        <use href="#laurelLeaf" transform="translate(153, 49) rotate(30) scale(1.15)"/>
+                        <use href="#laurelLeaf" transform="translate(185, 40) rotate(20) scale(1.05)"/>
+                        <use href="#laurelLeaf" transform="translate(212, 25) rotate(10) scale(0.85)"/>
                         
                         <!-- Tip Leaf -->
-                        <use href="#laurelLeaf" transform="translate(138, 10) rotate(-25) scale(0.9)"/>
+                        <use href="#laurelLeaf" transform="translate(238, 10) rotate(-25) scale(0.9)"/>
                     </g>
                 </defs>
             </svg>
 
             <!-- Left Laurel Separator -->
-            <div class="hidden md:block w-[120px] lg:w-[160px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)]">
-                <svg viewBox="0 -10 170 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="hidden md:block flex-1 max-w-[220px] lg:max-w-[380px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)]">
+                <svg viewBox="0 -10 260 90" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <use href="#laurelBranch" />
                 </svg>
             </div>
@@ -241,25 +248,25 @@
             <!-- Intertwined Trophies -->
             <div class="flex items-center justify-center shrink-0">
                 <!-- 1. Far Left -->
-                <div class="relative z-10 -mr-6 md:-mr-8 group" style="animation-delay: 0ms;">
+                <div class="relative z-10 -mr-6 md:-mr-10 group" style="animation-delay: 0ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[85px] h-[85px] md:w-[60px] md:h-[60px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[95px] h-[95px] md:w-[100px] md:h-[100px] lg:w-[120px] lg:h-[120px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
                     </div>
                 </div>
                 
                 <!-- 2. Left Middle -->
-                <div class="relative z-20 -mr-5 md:-mr-7 group" style="animation-delay: 200ms;">
+                <div class="relative z-20 -mr-5 md:-mr-8 group" style="animation-delay: 200ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[110px] h-[110px] md:w-[85px] md:h-[85px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[125px] h-[125px] md:w-[130px] md:h-[130px] lg:w-[150px] lg:h-[150px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
                     </div>
                 </div>
                 
                 <!-- 3. Right Middle -->
-                <div class="relative z-30 -mr-6 md:-mr-8 group" style="animation-delay: 400ms;">
+                <div class="relative z-30 -mr-6 md:-mr-10 group" style="animation-delay: 400ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[110px] h-[110px] md:w-[85px] md:h-[85px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[125px] h-[125px] md:w-[130px] md:h-[130px] lg:w-[150px] lg:h-[150px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
                     </div>
                 </div>
@@ -267,15 +274,15 @@
                 <!-- 4. Far Right -->
                 <div class="relative z-10 group" style="animation-delay: 600ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[85px] h-[85px] md:w-[60px] md:h-[60px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[95px] h-[95px] md:w-[100px] md:h-[100px] lg:w-[120px] lg:h-[120px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
                     </div>
                 </div>
             </div>
             
             <!-- Right Laurel Separator -->
-            <div class="hidden md:block w-[120px] lg:w-[160px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)] scale-x-[-1]">
-                <svg viewBox="0 -10 170 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="hidden md:block flex-1 max-w-[220px] lg:max-w-[380px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)] scale-x-[-1]">
+                <svg viewBox="0 -10 260 90" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <use href="#laurelBranch" />
                 </svg>
             </div>
@@ -286,14 +293,14 @@
     <!-- 1.5 PEMBUKAAN -->
     <section class="py-8 px-6 bg-[#0a0c11] text-center border-b border-[#e0b53c]/15">
         <div class="mx-auto w-full">
-        <div class="max-w-4xl mx-auto" x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false">
+        <div class="max-w-6xl mx-auto px-4" x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false">
             <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                 class="cz text-[clamp(28px,5vw,48px)] font-extrabold uppercase text-white mb-6 transition-all duration-[800ms] ease-out">
                 DPDRI <span class="text-[#e0b53c]"><i>AWARDS</i> 2026</span>
             </h2>
             <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                 class="text-white/80 text-[clamp(16px,2vw,20px)] leading-[1.7] transition-all duration-[800ms] ease-out delay-100">
-                Mengapresiasi dedikasi dan kontribusi luar biasa dari individu-individu inspiratif di seluruh pelosok Nusantara. DPDRI <i>AWARDS</i> hadir untuk merayakan karya nyata demi kemajuan bangsa.
+                Mengapresiasi dedikasi dan kontribusi luar biasa dari individu-individu inspiratif di seluruh pelosok&nbsp;Nusantara.<br class="hidden md:block"> DPDRI <i>AWARDS</i> hadir untuk merayakan karya nyata demi kemajuan bangsa.
             </p>
         </div>
                 <div class="relative z-10 max-w-7xl mx-auto w-full">
@@ -444,7 +451,10 @@
                     APRESIASI</span>
                 <h2 class="cz text-[clamp(38px,6vw,68px)] font-extrabold uppercase text-[#10131a] mt-3 leading-none">
                     Kategori <span class="text-[#1b6e4c]">Penghargaan</span></h2>
-                <p class="text-[#4b5262] text-[18px] leading-[1.6] max-w-[660px] mx-auto mt-[18px]">Pilih kategori yang paling sesuai dengan prestasi dan inovasi yang Anda miliki. Klik untuk melanjutkan pendaftaran</p>
+                <p class="text-[#4b5262] text-[18px] leading-[1.6] max-w-[660px] mx-auto mt-[18px]">
+                    Pilih kategori yang paling sesuai dengan prestasi dan inovasi yang Anda miliki.<br class="hidden md:block">
+                    Klik untuk melanjutkan pendaftaran
+                </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[26px]">
@@ -481,7 +491,7 @@
                             'desc' => 'Kategori Penggerak Desa Mandiri Pangan', 
                             'img' => asset('images/kat-pangan.png'), 
                             'cp' => [
-                                ['name' => 'NOVA AULIA FADJAR', 'phone' => '', 'display' => ''],
+                                ['name' => 'NOVA AULIA FADJAR', 'phone' => '6281808880109', 'display' => '0818-0888-0109'],
                                 ['name' => 'PUGO SURYA ADHITAMA', 'phone' => '628567009410', 'display' => '0856-7009-410']
                             ], 
                             'penjelasan' => 'Diberikan kepada individu yang menjadi penggerak dalam membangun desa mandiri pangan melalui pemanfaatan potensi pangan lokal, pemberdayaan masyarakat, dan penguatan ketahanan pangan secara berkelanjutan yang memberikan manfaat bagi masyarakat desa.', 
@@ -606,7 +616,7 @@
                             <template x-for="(cp, i) in activeCat?.cp" :key="i">
                                 <div>
                                     <template x-if="cp.phone">
-                                        <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI Award pada ' + activeCat?.title + ' - ' + activeCat?.desc)" target="_blank" class="px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 whitespace-nowrap flex items-center gap-2 cursor-pointer group">
+                                        <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI AWARDS pada ' + activeCat?.title + ' - ' + activeCat?.desc)" target="_blank" class="px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 whitespace-nowrap flex items-center gap-2 cursor-pointer group">
                                             <svg width="15" height="15" viewBox="0 0 24 24" fill="#25d366" class="group-hover:scale-110 transition-transform">
                                                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
                                             </svg>
@@ -634,11 +644,11 @@
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
                 class="transition-all duration-[800ms] ease-out"
                 :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[30px]'">
-                <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">SEBELUM MENDAFTAR</span>
+                <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">PERLU DIPERHATIKAN</span>
                 <h2 class="cz text-[clamp(36px,5vw,56px)] font-extrabold uppercase mt-3 leading-[1.02] text-white">
                     Ketentuan Umum dan <span class="text-[#e0b53c]">Alur Pendaftaran</span></h2>
                 <p class="text-white/70 text-[17px] leading-[1.65] mt-5">Pastikan Anda memenuhi kriteria berikut.
-                    Seluruh proses pendaftaran dilakukan secara transparan dan terbuka untuk umum.</p>
+                    <br class="hidden md:block">Seluruh proses pendaftaran dilakukan <br class="hidden md:block"> secara transparan dan terbuka untuk umum.</p>
                 <a href="#kategori"
                     class="group relative overflow-hidden inline-flex items-center gap-2.5 mt-[30px] bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[15px] px-[30px] py-[15px] rounded-full shadow-[0_10px_34px_rgba(224,181,60,0.3)] hover:-translate-y-1 transition-transform">
                     <span
@@ -702,14 +712,38 @@
 
             @php
                 $timeline = [
-                    ['n' => '1', 'title' => 'Pembukaan Pendaftaran'],
-                    ['n' => '2', 'title' => 'Periode Pendaftaran', 'date' => '13 Juli – 1 Agustus 2026'],
-                    ['n' => '3', 'title' => 'Verifikasi dan Identifikasi Data'],
-                    ['n' => '4', 'title' => 'Penilaian Tahap 1'],
-                    ['n' => '5', 'title' => 'Penilaian Tahap 2'],
-                    ['n' => '6', 'title' => 'Penilaian Tahap 3'],
-                    ['n' => '7', 'title' => 'Wawancara'],
-                    ['n' => '8', 'title' => 'Malam Penganugerahan'],
+                    [
+                        'n' => '1', 'title' => 'Pembukaan Pendaftaran', 
+                        'color_class' => 'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] text-white'
+                    ],
+                    [
+                        'n' => '2', 'title' => 'Periode Pendaftaran', 'date' => '13 Juli – 1 Agustus 2026', 
+                        'color_class' => 'bg-gradient-to-br from-[#2a7a50] via-[#1a5a3a] to-[#0d3f26] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(15,65,40,0.3)] text-white'
+                    ],
+                    [
+                        'n' => '3', 'title' => 'Verifikasi dan Identifikasi Data', 
+                        'color_class' => 'bg-gradient-to-br from-[#3e8953] via-[#246740] to-[#12492a] shadow-[inset_0_2px_5px_rgba(255,255,255,0.5),0_10px_20px_rgba(20,75,45,0.3)] text-white'
+                    ],
+                    [
+                        'n' => '4', 'title' => 'Penilaian Tahap 1', 
+                        'color_class' => 'bg-gradient-to-br from-[#599955] via-[#337743] to-[#17542d] shadow-[inset_0_2px_5px_rgba(255,255,255,0.5),0_10px_20px_rgba(25,85,50,0.3)] text-white'
+                    ],
+                    [
+                        'n' => '5', 'title' => 'Penilaian Tahap 2', 
+                        'color_class' => 'bg-gradient-to-br from-[#7eab56] via-[#4b8941] to-[#20612c] shadow-[inset_0_2px_5px_rgba(255,255,255,0.6),0_10px_20px_rgba(35,100,55,0.3)] text-white'
+                    ],
+                    [
+                        'n' => '6', 'title' => 'Penilaian Tahap 3', 
+                        'color_class' => 'bg-gradient-to-br from-[#a7be53] via-[#6d9d3a] to-[#2c6e26] shadow-[inset_0_2px_5px_rgba(255,255,255,0.6),0_10px_20px_rgba(50,115,50,0.3)]  text-white'
+                    ],
+                    [
+                        'n' => '7', 'title' => 'Wawancara', 
+                        'color_class' => 'bg-gradient-to-br from-[#d4d24a] via-[#97b32d] to-[#407e1b] shadow-[inset_0_2px_5px_rgba(255,255,255,0.7),0_10px_20px_rgba(75,135,45,0.35)]  text-[#1a1405]'
+                    ],
+                    [
+                        'n' => '8', 'title' => 'Malam Penganugerahan', 
+                        'color_class' => 'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] text-[#1a1405]'
+                    ],
                 ];
             @endphp
 
@@ -732,7 +766,7 @@
                     @foreach(array_slice($timeline, 0, 4) as $index => $step)
                         <div class="relative z-10 flex flex-col items-center px-4 group">
                             <!-- Circle -->
-                            <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['n'] == '8' ? 'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] border-2 border-white/60 text-[#1a1405]' : 'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] border-2 border-[#3bc48b]/40 text-white' }}">
+                            <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['color_class'] }}">
                                 <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none"></div>
                                 <span class="relative z-10">{{ $step['n'] }}</span>
                             </div>
@@ -773,7 +807,7 @@
                     @foreach(array_reverse(array_slice($timeline, 4, 4)) as $index => $step)
                         <div class="relative z-10 flex flex-col items-center px-4 group">
                             <!-- Circle -->
-                            <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['n'] == '8' ? 'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] text-[#1a1405]' : 'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] border-2 border-[#3bc48b]/40 text-white' }}">
+                            <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['color_class'] }}">
                                 <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none"></div>
                                 <span class="relative z-10">{{ $step['n'] }}</span>
                             </div>
@@ -812,7 +846,7 @@
                         :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[30px]'"
                         style="transition-delay: {{ $index * 50 }}ms;">
                         
-                        <div class="shrink-0 w-14 h-14 rounded-full flex items-center justify-center z-10 relative {{ $step['n'] == '8' ? 'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] border-2 border-white/60 text-[#1a1405]' : 'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] border-2 border-[#3bc48b]/40 text-white' }}">
+                        <div class="shrink-0 w-14 h-14 rounded-full flex items-center justify-center z-10 relative {{ $step['color_class'] }}">
                             <div class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none"></div>
                             <span class="font-bold text-[20px] relative z-10">{{ $step['n'] }}</span>
                         </div>
@@ -822,8 +856,9 @@
                                 {{ $step['title'] }}
                             </h3>
                             @if(isset($step['date']))
-                                <p class="text-[14px] leading-relaxed {{ $step['n'] == '8' ? 'text-[#d4af37]/80' : 'text-gray-600' }}">{{ $step['date'] }}</p>
+                                <p class="text-[14.5px] font-semibold text-[#1b6e4c] mb-2">{{ $step['date'] }}</p>
                             @endif
+                            <p class="text-gray-600 text-[14px] leading-relaxed">Pelaksanaan dan penyelesaian tahapan secara seksama sesuai prosedur yang telah ditetapkan komite DPD.</p>
                         </div>
                     </div>
                 @endforeach
@@ -948,39 +983,46 @@
     </section>
 
     <!-- 8. STATEMENT PENUTUP & CTA -->
-    <section class="py-[80px] px-6 bg-gradient-to-b from-[#193931] to-[#05160e] border-t border-white/15 relative overflow-hidden flex items-center min-h-[400px]">
-        <!-- Giant Background Logo Overlay (Left) -->
-        <div class="absolute top-1/2 -translate-y-1/2 -left-[40%] md:-left-[15%] lg:-left-[5%] h-[150%] md:h-[200%] opacity-30 pointer-events-none select-none mix-blend-multiply">
-            <img src="{{ asset('images/logo.png') }}" alt="" class="w-auto h-full object-contain filter brightness-0">
-        </div>
+    <section class="py-[80px] px-6 bg-gradient-to-br from-[#0c2619] via-[#16422b] to-[#05110a] border-t border-[#e0b53c]/20 relative overflow-hidden flex items-center min-h-[400px]">
         
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(27,110,76,0.15),transparent)] pointer-events-none"></div>
+        <!-- Metallic Reflection Layers -->
+        <div class="absolute inset-0 bg-[linear-gradient(110deg,rgba(255,255,255,0.08)_0%,transparent_20%,rgba(0,0,0,0.6)_100%)] pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_5%_10%,rgba(136,196,69,0.15),transparent_40%)] pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_30%,rgba(224,181,60,0.08),transparent_30%)] pointer-events-none"></div>
+
+        <!-- Giant Golden Trophy (Left) -->
+        <div class="absolute top-1/2 -translate-y-1/4 -left-[20%] md:-left-[7%] h-[130%] md:h-[160%] pointer-events-none select-none">
+            <!-- This layer creates a massive soft golden glow that stretches to the right -->
+            <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[70px] rounded-full translate-x-[15%]"></div>
+            
+            <img src="{{ asset('images/logo.png') }}" alt="Piala Emas" class="relative z-10 w-auto h-full object-contain brightness-100 contrast-80 saturate-80 drop-shadow-[10px_0_20px_rgba(255,215,0,0.6)]">
+        </div>
 
         <!-- Content on the right -->
         <div class="relative max-w-7xl mx-auto w-full flex justify-end">
             <div class="w-full md:w-[70%] lg:w-[60%] text-right" x-data="{ shown: false }" x-intersect.half="shown = true" x-intersect:leave="shown = false">
-                <div :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[40px]'"
+                <div :class="shown ? 'opacity-100 translate-x-[40px]' : 'opacity-0 translate-x-[40px]'"
                     class="transition-all duration-[1000ms] ease-out flex flex-col items-end">
                     
                     <div class="relative py-4 pr-6">
                         <!-- Subtle Quote Marks -->
                         <div class="absolute -top-6 -right-2 text-[#e0b53c]/15 text-[60px] md:text-[80px] font-serif leading-none select-none">"</div>
                         
-                        <p class="text-white/90 text-[15px] md:text-[17px] leading-[1.8] font-medium mb-5 relative z-10">
+                        <p class="text-white/90 text-[22px] md:text-[21px] leading-[1.8] font-medium mb-5 relative z-10">
                             Melalui <span class="text-[#e0b53c] font-bold tracking-wide">DPDRI <i>AWARDS</i> 2026</span>, DPD RI menegaskan posisinya
-                            sebagai mitra sejati daerah yang hadir <span class="text-white font-bold bg-white/5 px-2 py-0.5 rounded">mendengar, mendorong, dan mengapresiasi</span> kerja nyata di seluruh pelosok Nusantara.
+                            sebagai mitra sejati daerah yang hadir <span class="text-white font-bold bg-white/5 px-2 py-0.5 rounded">mendengar, mendorong, dan mengapresiasi</span><br class="hidden md:block"> kerja nyata di seluruh pelosok&nbsp;Nusantara.
                         </p>
                         
-                        <p class="text-white/80 text-[15px] md:text-[17px] leading-[1.8] relative z-10 italic">
+                        <p class="text-white/80 text-[22px] md:text-[21px] leading-[1.8] relative z-10 italic">
                             Penghargaan ini diharapkan menjadi cermin keberhasilan sekaligus <span
-                                class="text-[#88c445] font-bold not-italic">pemantik semangat</span> bagi seluruh tokoh dan individu untuk
-                            terus <span class="text-white font-semibold not-italic underline decoration-[#88c445] decoration-2 underline-offset-4">berinovasi, berkolaborasi</span>, dan memberikan yang terbaik bagi masyarakat dan daerahnya.
+                                class="text-[#88c445] font-bold">pemantik semangat</span> bagi seluruh tokoh dan individu untuk
+                            terus <span class="text-white font-semibold underline decoration-[#88c445] decoration-2 underline-offset-4">berinovasi, berkolaborasi</span>, dan memberikan yang terbaik bagi masyarakat dan daerahnya.
                         </p>
                     </div>
                     
                     <div class="mt-4 relative z-10 pr-6">
                         <a href="{{ route('nominasi') }}"
-                            class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[14px] tracking-wide px-7 py-3 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
+                            class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[17px] tracking-wide px-9 py-5 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
                             Daftar Sekarang
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -992,6 +1034,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- 9. FOOTER -->
     <footer class="bg-black pt-10 pb-6 px-6 border-t border-[#e0b53c]/15">

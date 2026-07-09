@@ -65,23 +65,31 @@
     </div>
 
     <!-- HEADER -->
-    <header class="sticky top-0 z-50 bg-[#0a0c11]/96 backdrop-blur-[10px] border-b border-[#e0b53c]/20">
-        <div class="max-w-[900px] mx-auto px-6 py-4 flex items-center justify-between">
+    <header class="sticky top-0 z-50 bg-[#0a0c11]/96 backdrop-blur-[10px] border-b border-[#e0b53c]/20 relative">
+        <a href="{{ route('landing') }}"
+            class="absolute left-6 top-1/2 -translate-y-1/2 inline-flex items-center gap-2.5 text-white/75 hover:text-white text-[18px] font-semibold transition-colors z-10 hidden md:flex">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+            </svg>
+            Kembali
+        </a>
+        <a href="{{ route('landing') }}"
+            class="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-10 h-10 text-white/75 hover:text-white bg-white/5 rounded-full transition-colors z-10 md:hidden">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+            </svg>
+        </a>
+
+        <div class="max-w-[900px] mx-auto px-6 py-4 flex items-center justify-center">
             <a href="{{ route('landing') }}"
-                class="inline-flex items-center gap-2.5 text-white/75 hover:text-white text-[14px] font-semibold transition-colors">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12" />
-                    <polyline points="12 19 5 12 12 5" />
-                </svg>
-                Kembali
+                class="cz text-[22px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-3">
+                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-15 object-contain">
+                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-15 object-contain">
             </a>
-            <a href="{{ route('landing') }}"
-                class="cz text-[22px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2">
-                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-8 object-contain">
-                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-8 object-contain">
-            </a>
-            <span class="text-white/40 text-[13px] font-semibold">2026</span>
         </div>
     </header>
 
@@ -200,29 +208,9 @@
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Tempat Lahir <span
                                         class="text-[#c0392b]">*</span></label>
-                                <div x-data="{ open: false, search: '' }" class="relative"
-                                    @click.outside="open = false">
-                                    <input type="text" x-model="search" @focus="open = true; search = data.wilayah"
-                                        @input="open = true; data.wilayah = search" placeholder="Cari Tempat..."
-                                        class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
-                                    <div x-show="open"
-                                        class="absolute z-10 w-full mt-1 bg-white border border-[#d8cdb4] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.1)] max-h-48 overflow-y-auto">
-                                        <template
-                                            x-for="p in provinces.filter(prov => prov.toLowerCase().includes(search.toLowerCase()))"
-                                            :key="p">
-                                            <div @click="data.wilayah = p; search = p; open = false"
-                                                class="px-4 py-2.5 text-[14.5px] hover:bg-[#f0f8f2] hover:text-[#1b6e4c] cursor-pointer transition-colors"
-                                                x-text="p"></div>
-                                        </template>
-                                        <template
-                                            x-if="provinces.filter(prov => prov.toLowerCase().includes(search.toLowerCase())).length === 0">
-                                            <div class="px-4 py-3 text-[14px] text-[#9aa2b1]">Tidak ditemukan</div>
-                                        </template>
-                                    </div>
-                                </div>
+                                <input x-model="data.wilayah" type="text" placeholder="Tempat lahir" class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
                                 <template x-if="showErr && errs.wilayah">
-                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.wilayah">
-                                    </p>
+                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.wilayah"></p>
                                 </template>
                             </div>
 
@@ -448,6 +436,12 @@
                                         <div class="mb-1">
                                             <label class="block text-[13.5px] font-bold mb-2">Deskripsi</label>
                                             <textarea x-model="item.deskripsi"
+                                                @input="
+                                                    let words = item.deskripsi.match(/\S+/g) || [];
+                                                    if (words.length > 200) {
+                                                        item.deskripsi = words.slice(0, 200).join(' ');
+                                                    }
+                                                "
                                                 placeholder="Deskripsi (maksimal 200 kata per poin)..."
                                                 class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-y leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
@@ -460,7 +454,7 @@
 
                                         <div class="mt-2">
                                             <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung
-                                                (Evidance)</label>
+                                                (Evidence)</label>
                                             <div class="relative group cursor-pointer">
                                                 <input type="file" multiple
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -591,7 +585,7 @@
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="sm:col-span-12 mt-2">
-                                            <label class="block text-[13.5px] font-bold mb-2">Evidance / Bukti
+                                            <label class="block text-[13.5px] font-bold mb-2">Evidence / Bukti
                                                 Dukung</label>
                                             <div class="relative group cursor-pointer">
                                                 <input type="file" multiple
@@ -707,72 +701,249 @@
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Periksa kembali data Anda sebelum mengirim
                         nominasi.</p>
 
-                    <div class="bg-[#faf6ec] border border-[#ece2ca] rounded-2xl px-5 py-2">
-                        <template x-for="(r, index) in reviewData" :key="index">
-                            <div class="flex flex-col sm:flex-row justify-between gap-1.5 sm:gap-5 py-3.5 border-b border-[#ece2ca] last:border-b-0">
-                                <span class="text-[13.5px] text-[#8a7f66] font-semibold shrink-0"
-                                    x-text="r.label"></span>
-                                <div class="text-[14.5px] text-[#10131a] font-semibold text-right flex-1 min-w-0">
-                                    <template x-if="r.value">
-                                        <span x-html="r.value" class="block"></span>
-                                    </template>
-                                    <template x-if="r.files && r.files.length > 0">
-                                        <div class="flex flex-wrap gap-2 mt-2 justify-end">
-                                            <template x-for="(f, i) in r.files" :key="i">
-                                                <a :href="f.url" :download="f.name" target="_blank"
-                                                    class="flex items-center gap-2 p-2 max-w-[280px] bg-white border border-[#ece2ca] rounded-xl shadow-sm hover:border-[#1b6e4c]/40 transition-colors text-left group">
-                                                    
-                                                    <template x-if="f.type === 'image'">
-                                                        <div class="w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
-                                                            <img :src="f.url" class="w-full h-full object-cover">
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="f.type === 'pdf'">
-                                                        <div class="w-8 h-8 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
-                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                                                <polyline points="14 2 14 8 20 8"></polyline>
-                                                                <path d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z"></path>
-                                                            </svg>
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="f.type === 'word'">
-                                                        <div class="w-8 h-8 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
-                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                                                <polyline points="14 2 14 8 20 8"></polyline>
-                                                                <path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9h4"></path>
-                                                            </svg>
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="f.type === 'zip'">
-                                                        <div class="w-8 h-8 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
-                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                                                            </svg>
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="f.type === 'doc'">
-                                                        <div class="w-8 h-8 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
-                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                                                <polyline points="14 2 14 8 20 8"></polyline>
-                                                            </svg>
-                                                        </div>
-                                                    </template>
-                                                    
-                                                    <div class="flex-1 min-w-0 pr-1">
-                                                        <div class="text-[12px] font-semibold text-[#10131a] truncate" x-text="f.name"></div>
-                                                    </div>
-                                                </a>
-                                            </template>
-                                        </div>
-                                    </template>
+                    <!-- Kategori & Data Diri Card -->
+                    <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
+                        <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
+                            <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                Informasi Personal
+                            </h3>
+                        </div>
+                        <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Kategori</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="categories.find(c => c.id === data.kategori)?.en || '-'"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Nama Lengkap</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.namaNominee || '—'"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Tempat Lahir</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.wilayah || '—'"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Tanggal Lahir</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.tanggalLahir || '—'"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Jenis Kelamin</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.jenisKelamin || '—'"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Pendidikan</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.pendidikan || '—'"></span>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Alamat</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.alamat || '—'"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Nomor WhatsApp</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.telp || '—'"></span>
+                            </div>
+                            <div>
+                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Alamat Email</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.email || '—'"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dokumen Pribadi -->
+                    <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
+                        <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
+                            <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                Dokumen Pribadi
+                            </h3>
+                        </div>
+                        <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- KTP -->
+                            <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
+                                <template x-if="data.previews.ktp">
+                                    <div class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
+                                        <img :src="data.previews.ktp.url" class="w-full h-full object-cover">
+                                    </div>
+                                </template>
+                                <template x-if="!data.previews.ktp">
+                                    <div class="w-12 h-12 rounded-lg bg-[#ece2ca] flex items-center justify-center shrink-0 text-[#8a7f66]">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </div>
+                                </template>
+                                <div class="flex-1 min-w-0">
+                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">KTP</span>
+                                    <span class="block text-[13.5px] text-[#10131a] font-medium truncate" x-text="data.files.ktp ? data.files.ktp.name : 'Belum diunggah'"></span>
                                 </div>
                             </div>
-                        </template>
+                            <!-- Foto Diri -->
+                            <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
+                                <template x-if="data.previews.foto">
+                                    <div class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
+                                        <img :src="data.previews.foto.url" class="w-full h-full object-cover">
+                                    </div>
+                                </template>
+                                <template x-if="!data.previews.foto">
+                                    <div class="w-12 h-12 rounded-lg bg-[#ece2ca] flex items-center justify-center shrink-0 text-[#8a7f66]">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </div>
+                                </template>
+                                <div class="flex-1 min-w-0">
+                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">Foto Diri</span>
+                                    <span class="block text-[13.5px] text-[#10131a] font-medium truncate" x-text="data.files.foto ? data.files.foto.name : 'Belum diunggah'"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Capaian & Inovasi -->
+                    <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
+                        <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
+                            <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                Capaian &amp; Inovasi
+                            </h3>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <template x-for="(c, i) in data.capaianList" :key="i">
+                                <template x-if="c.judul || c.deskripsi || c.dampak || (c.files && c.files.length)">
+                                    <div class="bg-[#faf6ec]/30 border border-[#ece2ca] rounded-xl p-4">
+                                        <div class="flex items-center gap-2 mb-3 pb-3 border-b border-[#ece2ca]/60">
+                                            <span class="w-6 h-6 rounded-full bg-[#1b6e4c]/10 text-[#1b6e4c] flex items-center justify-center text-[12px] font-bold shrink-0" x-text="i + 1"></span>
+                                            <strong class="text-[14.5px] text-[#10131a]" x-text="c.judul || 'Tanpa Judul'"></strong>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <template x-if="c.deskripsi">
+                                                <div>
+                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-0.5">Deskripsi Singkat</span>
+                                                    <p class="text-[13.5px] text-[#10131a] leading-relaxed" x-text="c.deskripsi"></p>
+                                                </div>
+                                            </template>
+                                            <template x-if="c.dampak">
+                                                <div>
+                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-0.5">Dampak &amp; Pencapaian</span>
+                                                    <p class="text-[13.5px] text-[#10131a] leading-relaxed" x-text="c.dampak"></p>
+                                                </div>
+                                            </template>
+                                            <template x-if="c.files && c.files.length > 0">
+                                                <div>
+                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1.5">Bukti Dukung</span>
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <template x-for="(f, fi) in c.files" :key="fi">
+                                                            <a :href="f.url" :download="f.name" target="_blank"
+                                                                class="flex items-center gap-2 p-2 max-w-[280px] w-full sm:w-auto bg-white border border-[#ece2ca] rounded-xl shadow-sm hover:border-[#1b6e4c]/40 transition-colors text-left group">
+                                                                <template x-if="f.type === 'image'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
+                                                                        <img :src="f.url" class="w-full h-full object-cover">
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'pdf'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z"></path></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'word'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9h4"></path></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'zip'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'doc'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <div class="flex-1 min-w-0 pr-1">
+                                                                    <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors" x-text="f.name"></div>
+                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase" x-text="f.type"></div>
+                                                                </div>
+                                                            </a>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template x-if="data.capaianList.length === 0 || !data.capaianList.some(c => c.judul || c.deskripsi || c.dampak || (c.files && c.files.length))">
+                                <div class="text-[13.5px] text-[#8a7f66] italic text-center py-2">Belum ada data capaian.</div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Penghargaan -->
+                    <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
+                        <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
+                            <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-3.09 1.62.59-3.44L7 10.76l3.46-.5L12 7l1.54 3.26 3.46.5-2.5 2.42.59 3.44z"></path></svg>
+                                Penghargaan
+                            </h3>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <template x-for="(p, i) in data.penghargaanList" :key="i">
+                                <template x-if="p.nama || p.tahun || (p.files && p.files.length)">
+                                    <div class="bg-[#faf6ec]/30 border border-[#ece2ca] rounded-xl p-4">
+                                        <div class="flex items-center gap-2 mb-3 pb-3 border-b border-[#ece2ca]/60">
+                                            <span class="w-6 h-6 rounded-full bg-[#1b6e4c]/10 text-[#1b6e4c] flex items-center justify-center text-[12px] font-bold shrink-0" x-text="i + 1"></span>
+                                            <strong class="text-[14.5px] text-[#10131a] flex-1 min-w-0" x-text="p.nama || 'Tanpa Nama'"></strong>
+                                            <template x-if="p.tahun">
+                                                <span class="px-2.5 py-1 rounded-md bg-[#1b6e4c] text-white text-[12px] font-bold shrink-0" x-text="p.tahun"></span>
+                                            </template>
+                                        </div>
+                                        <div>
+                                            <template x-if="p.files && p.files.length > 0">
+                                                <div>
+                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1.5">Sertifikat / Piagam</span>
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <template x-for="(f, fi) in p.files" :key="fi">
+                                                            <a :href="f.url" :download="f.name" target="_blank"
+                                                                class="flex items-center gap-2 p-2 max-w-[280px] w-full sm:w-auto bg-white border border-[#ece2ca] rounded-xl shadow-sm hover:border-[#1b6e4c]/40 transition-colors text-left group">
+                                                                <template x-if="f.type === 'image'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
+                                                                        <img :src="f.url" class="w-full h-full object-cover">
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'pdf'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z"></path></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'word'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9h4"></path></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'zip'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <template x-if="f.type === 'doc'">
+                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                                                    </div>
+                                                                </template>
+                                                                <div class="flex-1 min-w-0 pr-1">
+                                                                    <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors" x-text="f.name"></div>
+                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase" x-text="f.type"></div>
+                                                                </div>
+                                                            </a>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template x-if="data.penghargaanList.length === 0 || !data.penghargaanList.some(p => p.nama || p.tahun || (p.files && p.files.length))">
+                                <div class="text-[13.5px] text-[#8a7f66] italic text-center py-2">Belum ada data penghargaan.</div>
+                            </template>
+                        </div>
                     </div>
 
                     <label class="flex items-start gap-3 mt-[22px] cursor-pointer">
@@ -794,7 +965,7 @@
                     :class="step > 0 ? 'justify-between' : 'justify-end'">
                     <template x-if="step > 0">
                         <button @click="back()"
-                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 border-[1.5px] border-[#cfc4a8] bg-white text-[#4b5262] font-bold text-[14px] sm:text-[15px] px-2 sm:px-[26px] py-[13px] rounded-xl hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap">
+                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 border-[1.5px] border-[#11563bff] bg-white text-[#11563bff] font-bold text-[14px] sm:text-[15px] px-2 sm:px-[26px] py-[13px] rounded-xl hover:bg-black/5 transition-colors cursor-pointer whitespace-nowrap">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
                                 <line x1="19" y1="12" x2="5" y2="12" />
@@ -805,7 +976,7 @@
 
                     <template x-if="step < 3">
                         <button @click="next()"
-                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-[#88c445] text-[#0a0c11] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[30px] py-[13px] rounded-xl shadow-[0_8px_24px_rgba(136,196,69,.3)] hover:bg-[#75a83a] transition-colors cursor-pointer whitespace-nowrap">Lanjut
+                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-[#11563bff] text-[#ffffff] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[30px] py-[13px] rounded-xl shadow-[0_8px_24px_rgba(136,196,69,.3)] hover:bg-[#1b8d61ff] transition-colors cursor-pointer whitespace-nowrap">Lanjut
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
                                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -815,7 +986,7 @@
                     </template>
                     <template x-if="step === 3">
                         <button @click="submitForm()"
-                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform cursor-pointer whitespace-nowrap">Kirim
+                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#424140] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform cursor-pointer whitespace-nowrap">Kirim
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
                                 <path d="M22 2 11 13" />
@@ -961,69 +1132,7 @@
                     });
                 },
 
-                get reviewData() {
-                    const cat = this.categories.find(c => c.id === this.data.kategori);
-                    const catName = cat ? cat.en : '-';
-                    
-                    const list = [
-                        { label: 'Kategori', value: catName },
-                        { label: 'Nama Lengkap', value: this.data.namaNominee || '—' },
-                        { label: 'Tempat Lahir', value: this.data.wilayah || '—' },
-                        { label: 'Tanggal Lahir', value: this.data.tanggalLahir || '—' },
-                        { label: 'Jenis Kelamin', value: this.data.jenisKelamin || '—' },
-                        { label: 'Pendidikan', value: this.data.pendidikan || '—' },
-                        { label: 'Alamat', value: this.data.alamat || '—' },
-                        { label: 'Nomor WhatsApp', value: this.data.telp || '—' },
-                        { label: 'Alamat Email', value: this.data.email || '—' }
-                    ];
 
-                    if (this.data.files.ktp && this.data.previews.ktp) {
-                        list.push({ label: 'Foto KTP', value: '', files: [{ title: 'KTP / Identitas', ...this.data.previews.ktp, name: this.data.files.ktp }] });
-                    } else {
-                        list.push({ label: 'Foto KTP', value: '—' });
-                    }
-
-                    if (this.data.files.foto && this.data.previews.foto) {
-                        list.push({ label: 'Foto Diri', value: '', files: [{ title: 'Foto Diri', ...this.data.previews.foto, name: this.data.files.foto }] });
-                    } else {
-                        list.push({ label: 'Foto Diri', value: '—' });
-                    }
-
-                    // Kontribusi / Inovasi
-                    this.data.capaianList.forEach((c, i) => {
-                        if (c.judul || c.deskripsi || c.dampak || (c.files && c.files.length)) {
-                            let val = '<div class="text-left bg-white/60 p-3 rounded-lg border border-[#ece2ca] space-y-2.5 mt-1">';
-                            if (c.judul) val += `<div><span class="text-[11.5px] text-[#8a7f66] block uppercase tracking-wider font-bold mb-0.5">Judul Inovasi / Kontribusi</span><strong class="text-[14.5px]">${c.judul}</strong></div>`;
-                            if (c.deskripsi) val += `<div><span class="text-[11.5px] text-[#8a7f66] block uppercase tracking-wider font-bold mb-0.5">Deskripsi</span><span class="text-[13.5px] text-[#10131a] block leading-relaxed">${c.deskripsi}</span></div>`;
-                            if (c.dampak) val += `<div><span class="text-[11.5px] text-[#8a7f66] block uppercase tracking-wider font-bold mb-0.5">Dampak & Pencapaian</span><span class="text-[13.5px] text-[#10131a] block leading-relaxed">${c.dampak}</span></div>`;
-                            val += '</div>';
-                            
-                            const rowFiles = [];
-                            if (c.files && c.files.length) {
-                                c.files.forEach(f => rowFiles.push({ title: 'Bukti Dukung', ...f }));
-                            }
-                            list.push({ label: `Kontribusi ${i+1}`, value: val, files: rowFiles });
-                        }
-                    });
-
-                    // Penghargaan
-                    this.data.penghargaanList.forEach((p, i) => {
-                        if (p.nama || p.tahun || (p.files && p.files.length)) {
-                            let val = '<div class="text-left bg-white/60 p-3 rounded-lg border border-[#ece2ca] space-y-2.5 mt-1">';
-                            if (p.nama) val += `<div><span class="text-[11.5px] text-[#8a7f66] block uppercase tracking-wider font-bold mb-0.5">Uraian Penghargaan</span><strong class="text-[14.5px]">${p.nama}</strong></div>`;
-                            if (p.tahun) val += `<div><span class="text-[11.5px] text-[#8a7f66] block uppercase tracking-wider font-bold mb-0.5">Tahun</span><span class="text-[13.5px] text-[#10131a] block">${p.tahun}</span></div>`;
-                            val += '</div>';
-                            
-                            const rowFiles = [];
-                            if (p.files && p.files.length) {
-                                p.files.forEach(f => rowFiles.push({ title: 'Sertifikat/Piagam', ...f }));
-                            }
-                            list.push({ label: `Penghargaan ${i+1}`, value: val, files: rowFiles });
-                        }
-                    });
-
-                    return list;
-                },
 
                 stepClasses(index) {
                     const done = index < this.step;

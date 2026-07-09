@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 # Default values
 BRANCH=${1:-master}
 ENVIRONMENT=${2:-production}
-APP_DIR="/home/ubuntu/dpd-award-app"
+APP_DIR="/www/wwwroot/dpdriawards.dpd.go.id"
 BACKUP_DIR="/home/ubuntu/backups"
 
 echo -e "${GREEN}🚀 Starting DPDRI Award App Docker Deployment...${NC}"

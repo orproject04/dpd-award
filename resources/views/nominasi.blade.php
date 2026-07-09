@@ -16,6 +16,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
+        html {
+            zoom: 0.9;
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f3ecdd;

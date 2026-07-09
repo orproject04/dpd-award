@@ -16,6 +16,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
+        html {
+            zoom: 0.9;
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #0a0c11;
@@ -116,7 +120,7 @@
 
         <div class="relative w-full px-6 lg:px-12 flex items-center justify-between">
             <a href="#beranda"
-                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-3 md:gap-5">
+                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2 md:gap-2">
                 <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-14 md:h-16 lg:h-[75px] object-contain">
                 <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-14 md:h-16 lg:h-[75px] object-contain">
             </a>
@@ -239,7 +243,7 @@
             </svg>
 
             <!-- Left Laurel Separator -->
-            <div class="hidden md:block flex-1 max-w-[220px] lg:max-w-[380px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)]">
+            <div class="hidden md:block flex-1 max-w-[200px] lg:max-w-[330px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)]">
                 <svg viewBox="0 -10 260 90" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <use href="#laurelBranch" />
                 </svg>
@@ -248,25 +252,25 @@
             <!-- Intertwined Trophies -->
             <div class="flex items-center justify-center shrink-0">
                 <!-- 1. Far Left -->
-                <div class="relative z-10 -mr-6 md:-mr-10 group" style="animation-delay: 0ms;">
+                <div class="relative z-10 -mr-5 md:-mr-8 group" style="animation-delay: 0ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[95px] h-[95px] md:w-[100px] md:h-[100px] lg:w-[120px] lg:h-[120px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[75px] h-[75px] md:w-[85px] md:h-[85px] lg:w-[100px] lg:h-[100px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
                     </div>
                 </div>
                 
                 <!-- 2. Left Middle -->
-                <div class="relative z-20 -mr-5 md:-mr-8 group" style="animation-delay: 200ms;">
+                <div class="relative z-20 -mr-4 md:-mr-6 group" style="animation-delay: 200ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[125px] h-[125px] md:w-[130px] md:h-[130px] lg:w-[150px] lg:h-[150px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[100px] h-[100px] md:w-[105px] md:h-[105px] lg:w-[125px] lg:h-[125px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
                     </div>
                 </div>
                 
                 <!-- 3. Right Middle -->
-                <div class="relative z-30 -mr-6 md:-mr-10 group" style="animation-delay: 400ms;">
+                <div class="relative z-30 -mr-5 md:-mr-8 group" style="animation-delay: 400ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[125px] h-[125px] md:w-[130px] md:h-[130px] lg:w-[150px] lg:h-[150px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[100px] h-[100px] md:w-[105px] md:h-[105px] lg:w-[125px] lg:h-[125px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
                     </div>
                 </div>
@@ -274,14 +278,14 @@
                 <!-- 4. Far Right -->
                 <div class="relative z-10 group" style="animation-delay: 600ms;">
                     <div class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500"></div>
-                    <div class="relative w-[95px] h-[95px] md:w-[100px] md:h-[100px] lg:w-[120px] lg:h-[120px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                    <div class="relative w-[75px] h-[75px] md:w-[85px] md:h-[85px] lg:w-[100px] lg:h-[100px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
                         <img src="{{ asset('images/logo.png') }}" alt="Piala" class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
                     </div>
                 </div>
             </div>
             
             <!-- Right Laurel Separator -->
-            <div class="hidden md:block flex-1 max-w-[220px] lg:max-w-[380px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)] scale-x-[-1]">
+            <div class="hidden md:block flex-1 max-w-[200px] lg:max-w-[330px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)] scale-x-[-1]">
                 <svg viewBox="0 -10 260 90" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <use href="#laurelBranch" />
                 </svg>
@@ -991,9 +995,9 @@
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_30%,rgba(224,181,60,0.08),transparent_30%)] pointer-events-none"></div>
 
         <!-- Giant Golden Trophy (Left) -->
-        <div class="absolute top-1/2 -translate-y-45 -left-[5%] md:-left-[8%] h-[120%] md:h-[140%] pointer-events-none select-none">
+        <div class="absolute top-1/2 -translate-y-45 -left-[5%] md:-left-[6%] h-[120%] md:h-[140%] pointer-events-none select-none">
             <!-- This layer creates a massive soft golden glow that stretches to the right -->
-            <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[70px] rounded-full translate-x-[15%]"></div>
+            <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[25%]"></div>
             
             <img src="{{ asset('images/logo.png') }}" alt="Piala Emas" class="relative z-10 w-auto h-full object-contain brightness-100 contrast-80 saturate-80 drop-shadow-[10px_0_20px_rgba(255,215,0,0.6)]">
         </div>

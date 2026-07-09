@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Default values
-BRANCH=${1:-develop}
+BRANCH=${1:-master}
 ENVIRONMENT=${2:-production}
 APP_DIR="/home/ubuntu/dpd-award-app"
 BACKUP_DIR="/home/ubuntu/backups"

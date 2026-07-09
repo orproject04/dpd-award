@@ -16,9 +16,6 @@ services:
             - './public/storage:/var/www/html/public/storage'
         networks:
             - dpd-award
-        depends_on:
-            redis:
-                condition: service_healthy
         restart: unless-stopped
 
 networks:

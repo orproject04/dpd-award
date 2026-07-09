@@ -991,7 +991,7 @@
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_30%,rgba(224,181,60,0.08),transparent_30%)] pointer-events-none"></div>
 
         <!-- Giant Golden Trophy (Left) -->
-        <div class="absolute top-1/2 -translate-y-1/4 -left-[20%] md:-left-[7%] h-[130%] md:h-[160%] pointer-events-none select-none">
+        <div class="absolute top-1/2 -translate-y-45 -left-[5%] md:-left-[8%] h-[120%] md:h-[140%] pointer-events-none select-none">
             <!-- This layer creates a massive soft golden glow that stretches to the right -->
             <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[70px] rounded-full translate-x-[15%]"></div>
             
@@ -1001,28 +1001,28 @@
         <!-- Content on the right -->
         <div class="relative max-w-7xl mx-auto w-full flex justify-end">
             <div class="w-full md:w-[70%] lg:w-[60%] text-right" x-data="{ shown: false }" x-intersect.half="shown = true" x-intersect:leave="shown = false">
-                <div :class="shown ? 'opacity-100 translate-x-[40px]' : 'opacity-0 translate-x-[40px]'"
+                <div :class="shown ? 'opacity-100 -translate-x-10' : 'opacity-0 translate-x-[40px]'"
                     class="transition-all duration-[1000ms] ease-out flex flex-col items-end">
                     
                     <div class="relative py-4 pr-6">
                         <!-- Subtle Quote Marks -->
                         <div class="absolute -top-6 -right-2 text-[#e0b53c]/15 text-[60px] md:text-[80px] font-serif leading-none select-none">"</div>
                         
-                        <p class="text-white/90 text-[22px] md:text-[21px] leading-[1.8] font-medium mb-5 relative z-10">
+                        <p class="text-white/90 text-[17px] md:text-[16px] leading-[1.8] font-medium mb-5 relative z-10">
                             Melalui <span class="text-[#e0b53c] font-bold tracking-wide">DPDRI <i>AWARDS</i> 2026</span>, DPD RI menegaskan posisinya
-                            sebagai mitra sejati daerah yang hadir <span class="text-white font-bold bg-white/5 px-2 py-0.5 rounded">mendengar, mendorong, dan mengapresiasi</span><br class="hidden md:block"> kerja nyata di seluruh pelosok&nbsp;Nusantara.
+                            sebagai mitra sejati daerah yang hadir <span class="text-white font-bold bg-white/5 px-2 py-0.5 rounded">mendengar, mendorong, dan mengapresiasi</span> kerja nyata di seluruh pelosok&nbsp;Nusantara.
                         </p>
                         
-                        <p class="text-white/80 text-[22px] md:text-[21px] leading-[1.8] relative z-10 italic">
+                        <p class="text-white/80 text-[17px] md:text-[16px] leading-[1.8] relative z-10 italic">
                             Penghargaan ini diharapkan menjadi cermin keberhasilan sekaligus <span
                                 class="text-[#88c445] font-bold">pemantik semangat</span> bagi seluruh tokoh dan individu untuk
-                            terus <span class="text-white font-semibold underline decoration-[#88c445] decoration-2 underline-offset-4">berinovasi, berkolaborasi</span>, dan memberikan yang terbaik bagi masyarakat dan daerahnya.
+                            terus <span class="text-white underline decoration-[#88c445] decoration-2 underline-offset-4">berinovasi, berkolaborasi</span>, dan memberikan yang terbaik bagi <span class="font-semibold text-white"> masyarakat dan daerahnya.
                         </p>
                     </div>
                     
                     <div class="mt-4 relative z-10 pr-6">
                         <a href="{{ route('nominasi') }}"
-                            class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[17px] tracking-wide px-9 py-5 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
+                            class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[15px] tracking-wide px-7 py-3 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
                             Daftar Sekarang
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>

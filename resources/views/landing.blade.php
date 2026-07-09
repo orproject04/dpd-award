@@ -997,7 +997,7 @@
         <!-- Giant Golden Trophy (Left) -->
         <div class="absolute top-1/2 -translate-y-45 -left-[5%] md:-left-[6%] h-[120%] md:h-[140%] pointer-events-none select-none">
             <!-- This layer creates a massive soft golden glow that stretches to the right -->
-            <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[25%]"></div>
+            <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[35%]"></div>
             
             <img src="{{ asset('images/logo.png') }}" alt="Piala Emas" class="relative z-10 w-auto h-full object-contain brightness-100 contrast-80 saturate-80 drop-shadow-[10px_0_20px_rgba(255,215,0,0.6)]">
         </div>

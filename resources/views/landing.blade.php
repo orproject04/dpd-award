@@ -995,7 +995,7 @@
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_30%,rgba(224,181,60,0.08),transparent_30%)] pointer-events-none"></div>
 
         <!-- Giant Golden Trophy (Left) -->
-        <div class="absolute top-1/2 -translate-y-45 -left-[5%] md:-left-[6%] h-[120%] md:h-[140%] pointer-events-none select-none">
+        <div class="absolute top-1/2 -translate-y-45 -left-[5%] md:-left-[4%] h-[120%] md:h-[140%] pointer-events-none select-none">
             <!-- This layer creates a massive soft golden glow that stretches to the right -->
             <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[35%]"></div>
             

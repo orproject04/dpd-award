@@ -16,8 +16,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        html {
-            zoom: 0.9;
+        @media (min-width: 1024px) {
+            html {
+                zoom: 0.9;
+            }
         }
 
         body {
@@ -109,24 +111,24 @@
 
     <!-- HEADER -->
     <header
-        :class="(scrolled || mobileMenuOpen) ? 'py-3.5 lg:py-5' : 'py-5 lg:py-8'"
+        :class="(scrolled || mobileMenuOpen) ? 'pt-4 pb-3 lg:py-5' : 'py-4 lg:py-8'"
         class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300">
         
-        <div class="absolute inset-0 pointer-events-none transition-opacity duration-300"
-             :class="(scrolled || mobileMenuOpen) ? 'opacity-70' : 'opacity-70'"
-             style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 90%); mask-image: linear-gradient(to bottom, black 60%, transparent 100%);">
-             <div class="absolute inset-0 bg-[#0a0c11]/90 backdrop-blur-xl"></div>
+        <div class="absolute inset-0 pointer-events-none transition-all duration-300"
+             :class="mobileMenuOpen ? 'opacity-100' : 'opacity-80'"
+             :style="mobileMenuOpen ? '' : '-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 90%); mask-image: linear-gradient(to bottom, black 60%, transparent 100%);'">
+             <div class="absolute inset-0 backdrop-blur-xl transition-colors duration-300" :class="mobileMenuOpen ? 'bg-[#0a0c11]' : 'bg-[#0a0c11]/90'"></div>
         </div>
 
-        <div class="relative w-full px-6 lg:px-12 flex items-center justify-between">
+        <div class="relative w-full pr-4 lg:px-12 flex items-start lg:items-center justify-between">
             <a href="#beranda"
-                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-2 md:gap-2">
-                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-14 md:h-16 lg:h-[75px] object-contain">
-                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-14 md:h-16 lg:h-[75px] object-contain">
+                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-0 lg:gap-2 mt-0.5 sm:mt-0">
+                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-14 sm:h-16 md:h-16 lg:h-[85px] object-contain transition-all duration-300">
+                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-14 sm:h-16 md:h-16 lg:h-[85px] object-contain transition-all duration-300">
             </a>
 
             <button @click="mobileMenuOpen = !mobileMenuOpen"
-                class="lg:hidden text-white p-2 focus:outline-none cursor-pointer">
+                class="lg:hidden text-white p-2 focus:outline-none cursor-pointer mt-2.5 sm:mt-3.5">
                 <svg x-show="!mobileMenuOpen" width="28" height="28" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12" />
@@ -197,7 +199,7 @@
             <div class="absolute bottom-[-20px] left-[15%] w-[80%] h-[150px] bg-[#020305] blur-[30px] rounded-[100%] rotate-1"></div>
         </div>
 
-        <div class="absolute bottom-[20px] sm:bottom-[30px] left-1/2 -translate-x-1/2 z-10 w-full max-w-[1300px] px-6 lg:px-12 flex items-center justify-between gap-4 md:gap-12 lg:gap-16">
+        <div class="absolute bottom-[20px] sm:bottom-[30px] left-1/2 -translate-x-1/2 z-10 w-full max-w-[1300px] px-6 lg:px-12 flex items-center justify-center lg:justify-between gap-4 md:gap-12 lg:gap-16">
             
             <svg width="0" height="0" style="position: absolute; width: 0; height: 0;" aria-hidden="true">
                 <defs>
@@ -585,10 +587,10 @@
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                     </button>
-                    <div class="absolute bottom-6 left-6 right-6">
+                    <div class="absolute bottom-8 sm:bottom-10 left-6 right-0 pr-[180px] sm:pr-[220px]">
                         <h3 class="cz text-[28px] sm:text-[36px] font-bold text-white leading-tight"
                             x-text="activeCat?.title"></h3>
-                        <p class="text-[#88c445] font-semibold text-[14px] sm:text-[15px] mt-1"
+                        <p class="text-[#88c445] font-semibold text-[14px] sm:text-[15px] mt-2 sm:mt-1 leading-snug"
                             x-text="activeCat?.desc"></p>
                     </div>
                     <a :href="'{{ route('nominasi') }}?kategori=' + activeCat?.id"
@@ -994,37 +996,38 @@
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_5%_10%,rgba(136,196,69,0.15),transparent_40%)] pointer-events-none"></div>
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_30%,rgba(224,181,60,0.08),transparent_30%)] pointer-events-none"></div>
 
-        <!-- Giant Golden Trophy (Left) -->
-        <div class="absolute top-1/2 -translate-y-45 -left-[5%] md:-left-[4%] h-[120%] md:h-[140%] pointer-events-none select-none">
+        <!-- Giant Golden Trophy (Background Watermark on Mobile, Left Image on Desktop) -->
+        <div class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 md:left-[-6%] md:translate-x-0 w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-auto md:h-[140%] pointer-events-none select-none opacity-20 md:opacity-100 mix-blend-screen md:mix-blend-normal">
             <!-- This layer creates a massive soft golden glow that stretches to the right -->
-            <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[35%]"></div>
+            <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[35%] hidden md:block"></div>
             
-            <img src="{{ asset('images/logo.png') }}" alt="Piala Emas" class="relative z-10 w-auto h-full object-contain brightness-100 contrast-80 saturate-80 drop-shadow-[10px_0_20px_rgba(255,215,0,0.6)]">
+            <img src="{{ asset('images/logo.png') }}" alt="Piala Emas" class="relative z-10 w-full h-full md:w-auto object-contain brightness-75 md:brightness-100 contrast-80 saturate-80 drop-shadow-none md:drop-shadow-[10px_0_20px_rgba(255,215,0,0.6)]">
         </div>
 
         <!-- Content on the right -->
-        <div class="relative max-w-7xl mx-auto w-full flex justify-end">
-            <div class="w-full md:w-[70%] lg:w-[60%] text-right" x-data="{ shown: false }" x-intersect.half="shown = true" x-intersect:leave="shown = false">
-                <div :class="shown ? 'opacity-100 -translate-x-10' : 'opacity-0 translate-x-[40px]'"
-                    class="transition-all duration-[1000ms] ease-out flex flex-col items-end">
+        <div class="relative max-w-7xl mx-auto w-full flex justify-center md:justify-end">
+            <div class="w-full md:w-[70%] lg:w-[60%] text-center md:text-right" x-data="{ shown: false }" x-intersect.half="shown = true" x-intersect:leave="shown = false">
+                <div :class="shown ? 'opacity-100 translate-x-0 md:-translate-x-10' : 'opacity-0 translate-x-[20px] md:translate-x-[40px]'"
+                    class="transition-all duration-[1000ms] ease-out flex flex-col items-center md:items-end px-6 md:px-0">
                     
-                    <div class="relative py-4 pr-6">
+                    <div class="relative py-4 md:pr-6 w-full">
                         <!-- Subtle Quote Marks -->
-                        <div class="absolute -top-6 -right-2 text-[#e0b53c]/15 text-[60px] md:text-[80px] font-serif leading-none select-none">"</div>
+                        <div class="absolute -top-6 right-0 md:-right-2 text-[#e0b53c]/15 text-[60px] md:text-[80px] font-serif leading-none select-none">"</div>
+                        <div class="absolute -bottom-6 left-0 text-[#e0b53c]/15 text-[60px] font-serif leading-none select-none md:hidden rotate-180">"</div>
                         
-                        <p class="text-white/90 text-[17px] md:text-[16px] leading-[1.8] font-medium mb-5 relative z-10">
+                        <p class="text-white/90 text-[15px] sm:text-[17px] md:text-[16px] leading-[1.8] font-medium mb-5 relative z-10 drop-shadow-md">
                             Melalui <span class="text-[#e0b53c] font-bold tracking-wide">DPDRI <i>AWARDS</i> 2026</span>, DPD RI menegaskan posisinya
                             sebagai mitra sejati daerah yang hadir <span class="text-white font-bold bg-white/5 px-2 py-0.5 rounded">mendengar, mendorong, dan mengapresiasi</span> kerja nyata di seluruh pelosok&nbsp;Nusantara.
                         </p>
                         
-                        <p class="text-white/80 text-[17px] md:text-[16px] leading-[1.8] relative z-10 italic">
+                        <p class="text-white/80 text-[15px] sm:text-[17px] md:text-[16px] leading-[1.8] relative z-10 italic drop-shadow-md">
                             Penghargaan ini diharapkan menjadi cermin keberhasilan sekaligus <span
                                 class="text-[#88c445] font-bold">pemantik semangat</span> bagi seluruh tokoh dan individu untuk
-                            terus <span class="text-white underline decoration-[#88c445] decoration-2 underline-offset-4">berinovasi, berkolaborasi</span>, dan memberikan yang terbaik bagi <span class="font-semibold text-white"> masyarakat dan daerahnya.
+                            terus <span class="text-white underline decoration-[#88c445] decoration-2 underline-offset-4">berinovasi, berkolaborasi</span>, dan memberikan yang terbaik bagi <span class="font-semibold text-white"> masyarakat dan daerahnya.</span>
                         </p>
                     </div>
                     
-                    <div class="mt-4 relative z-10 pr-6">
+                    <div class="mt-6 md:mt-4 relative z-10 md:pr-6">
                         <a href="{{ route('nominasi') }}"
                             class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[15px] tracking-wide px-7 py-3 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
                             Daftar Sekarang

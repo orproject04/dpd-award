@@ -16,8 +16,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        html {
-            zoom: 0.9;
+        @media (min-width: 1024px) {
+            html {
+                zoom: 0.9;
+            }
         }
 
         body {
@@ -70,8 +72,9 @@
 
     <!-- HEADER -->
     <header class="sticky top-0 z-50 bg-[#0a0c11]/96 backdrop-blur-[10px] border-b border-[#e0b53c]/20 relative">
+        <!-- Desktop Back Button -->
         <a href="{{ route('landing') }}"
-            class="absolute left-6 top-1/2 -translate-y-1/2 inline-flex items-center gap-2.5 text-white/75 hover:text-white text-[18px] font-semibold transition-colors z-10 hidden md:flex">
+            class="absolute left-6 top-1/2 -translate-y-1/2 items-center gap-2.5 text-white/75 hover:text-white text-[16px] lg:text-[18px] font-semibold transition-colors z-10 hidden md:flex">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12" />
@@ -79,8 +82,10 @@
             </svg>
             Kembali
         </a>
+        
+        <!-- Mobile Back Button -->
         <a href="{{ route('landing') }}"
-            class="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-10 h-10 text-white/75 hover:text-white bg-white/5 rounded-full transition-colors z-10 md:hidden">
+            class="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 text-white/75 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10 md:hidden">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12" />
@@ -126,7 +131,7 @@
                                     <span x-text="index + 1"></span>
                                 </template>
                             </div>
-                            <span class="text-[11.5px] text-center leading-[1.25]" :class="stepClasses(index).text"
+                            <span class="text-[10px] sm:text-[11.5px] text-center leading-[1.25]" :class="stepClasses(index).text"
                                 x-text="s.label"></span>
                         </div>
                         <template x-if="index < steps.length - 1">
@@ -143,13 +148,16 @@
 
                 <template x-if="step > 0 && step < 4 && data.kategori">
                     <div
-                        class="mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#1b6e4c]/10 border border-[#1b6e4c]/20 rounded-lg text-[#1b6e4c] font-bold text-[13px]">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        class="mb-6 flex items-start gap-2.5 px-4 py-3 bg-[#1b6e4c]/10 border border-[#1b6e4c]/20 rounded-xl text-[#1b6e4c] text-[13px] leading-snug">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                             <polyline points="22 4 12 14.01 9 11.01" />
                         </svg>
-                        Kategori yang dipilih: <span x-text="categories.find(c => c.id === data.kategori)?.en"></span>
+                        <div class="flex flex-col">
+                            <span class="font-bold">Kategori yang dipilih:</span>
+                            <span class="font-semibold opacity-90 mt-0.5" x-text="categories.find(c => c.id === data.kategori)?.en"></span>
+                        </div>
                     </div>
                 </template>
 
@@ -413,13 +421,13 @@
 
                 <!-- STEP 2: KONTRIBUSI -->
                 <div x-show="step === 2" x-cloak>
-                    <h2 class="cz text-[26px] font-bold text-[#10131a]">Daftar Kontribusi / Inovasi</h2>
+                    <h2 class="cz text-[22px] md:text-[26px] font-bold text-[#10131a]">Daftar Kontribusi / Inovasi</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Ceritakan karya dan dampak nyata yang telah
                         diberikan.</p>
 
                     <div class="flex flex-col gap-5">
                         <!-- KONTRIBUSI / INOVASI -->
-                        <div class="flex flex-col gap-4">
+                        <div class="flex flex-col gap-4 mt-2 pt-4 border-t border-[#d8cdb4]/50">
                             <div>
                                 <label class="block text-[16px] font-bold mb-1">Kontribusi / Inovasi <span
                                         class="text-[#c0392b]">*</span></label>
@@ -428,10 +436,23 @@
                             </div>
 
                             <template x-for="(item, index) in data.capaianList" :key="index">
-                                <div class="flex items-start gap-3 bg-[#faf6ec] p-4 rounded-xl border border-[#ece2ca]">
-                                    <div class="font-bold text-[#1b6e4c] pt-2.5 w-5 shrink-0 text-right"
-                                        x-text="(index + 1) + '.'"></div>
-                                    <div class="flex-1 flex flex-col gap-3">
+                                <div class="flex flex-col gap-4 bg-[#faf6ec] p-4 sm:p-5 rounded-xl border border-[#ece2ca]">
+                                    <div class="flex items-center justify-between pb-3 border-b border-[#ece2ca]/60">
+                                        <div class="font-bold text-[#1b6e4c] flex items-center gap-2.5">
+                                            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b6e4c]/10 text-[14px]" x-text="index + 1"></span>
+                                            <span class="text-[15px]">Data Kontribusi / Inovasi</span>
+                                        </div>
+                                        <button x-show="data.capaianList.length > 1"
+                                            @click="data.capaianList.splice(index, 1)" type="button"
+                                            class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors" title="Hapus">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
                                         <div class="mb-1">
                                             <label class="block text-[13.5px] font-bold mb-2">Judul Inovasi / Kontribusi</label>
                                             <input x-model="item.judul" placeholder="Judul capaian/inovasi..."
@@ -445,15 +466,20 @@
                                                     if (words.length > 200) {
                                                         item.deskripsi = words.slice(0, 200).join(' ');
                                                     }
+                                                    $el.style.height = 'auto';
+                                                    $el.style.height = $el.scrollHeight + 'px';
                                                 "
+                                                x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                 placeholder="Deskripsi (maksimal 200 kata per poin)..."
-                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-y leading-[1.55] transition-all duration-200"></textarea>
+                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
                                         <div class="mb-1">
                                             <label class="block text-[13.5px] font-bold mb-2">Dampak & Pencapaian</label>
                                             <textarea x-model="item.dampak"
+                                                @input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"
+                                                x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                 placeholder="Contoh: menjangkau 1.200 anak, 8 desa, sejak 2019..."
-                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-y leading-[1.55] transition-all duration-200"></textarea>
+                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
 
                                         <div class="mt-2">
@@ -464,7 +490,7 @@
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                                     @change="handleMultiFileChange($event, 'capaianList', index)">
                                                 <div
-                                                    class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-[#d8cdb4] rounded-xl bg-[#faf6ec] group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300">
+                                                    class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-[#d8cdb4] rounded-xl bg-[#faf6ec] group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
                                                     <div
                                                         class="w-12 h-12 mb-3 rounded-full bg-white shadow-sm flex items-center justify-center text-[#b8860b] group-hover:text-[#1b6e4c] group-hover:scale-110 transition-all duration-300">
                                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -532,18 +558,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button x-show="data.capaianList.length > 1"
-                                        @click="data.capaianList.splice(index, 1)" type="button"
-                                        class="shrink-0 mt-2.5 w-9 h-9 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                            <path
-                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                            </path>
-                                        </svg>
-                                    </button>
                                 </div>
                             </template>
                             <template x-if="showErr && errs.capaianList">
@@ -552,7 +566,7 @@
 
                             <button @click="data.capaianList.push({ judul: '', deskripsi: '', dampak: '', files: [] })"
                                 type="button"
-                                class="inline-flex items-center gap-2 self-start text-[#1b6e4c] font-bold text-[14px] px-4 py-2 bg-[#1b6e4c]/10 rounded-lg hover:bg-[#1b6e4c]/20 transition-colors">
+                                class="inline-flex items-center justify-center gap-2 mt-2 self-center text-[#1b6e4c] font-bold text-[14px] px-4 py-2 bg-[#1b6e4c]/10 rounded-lg hover:bg-[#1b6e4c]/20 transition-colors">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -563,27 +577,38 @@
                         </div>
 
                         <!-- DAFTAR PENGHARGAAN -->
-                        <div class="flex flex-col gap-4">
+                        <div class="flex flex-col gap-4 mt-2 pt-4 border-t border-[#d8cdb4]/50">
                             <div>
-                                <label class="block text-[16px] font-bold mt-2 mb-1">Daftar Penghargaan</label>
+                                <label class="block text-[16px] font-bold mb-1 text-[#10131a]">Daftar Penghargaan</label>
                                 <p class="text-[#6b7280] text-[13px]">Lampirkan bukti penghargaan berupa
                                     sertifikat/piagam dalam bentuk <i>softcopy</i>.</p>
                             </div>
 
                             <template x-for="(item, index) in data.penghargaanList" :key="index">
-                                <div class="flex items-start gap-3 bg-[#faf6ec] p-4 rounded-xl border border-[#ece2ca]">
-                                    <div class="font-bold text-[#1b6e4c] w-5 shrink-0 text-right"
-                                        :class="index === 0 ? 'pt-[34px]' : 'pt-2.5'" x-text="(index + 1) + '.'"></div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 flex-1">
+                                <div class="flex flex-col gap-4 bg-[#faf6ec] p-4 sm:p-5 rounded-xl border border-[#ece2ca]">
+                                    <div class="flex items-center justify-between pb-3 border-b border-[#ece2ca]/60">
+                                        <div class="font-bold text-[#1b6e4c] flex items-center gap-2.5">
+                                            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b6e4c]/10 text-[14px]" x-text="index + 1"></span>
+                                            <span class="text-[15px]">Data Penghargaan</span>
+                                        </div>
+                                        <button x-show="data.penghargaanList.length > 1"
+                                            @click="data.penghargaanList.splice(index, 1)" type="button"
+                                            class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors" title="Hapus">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
                                         <div class="sm:col-span-9">
-                                            <label x-show="index === 0"
-                                                class="block text-[13.5px] font-bold mb-2">Uraian Penghargaan</label>
+                                            <label class="block text-[13.5px] font-bold mb-2">Uraian Penghargaan</label>
                                             <input x-model="item.nama" placeholder="Nama penghargaan..."
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="sm:col-span-3">
-                                            <label x-show="index === 0"
-                                                class="block text-[13.5px] font-bold mb-2">Tahun</label>
+                                            <label class="block text-[13.5px] font-bold mb-2">Tahun</label>
                                             <input x-model="item.tahun" type="text" inputmode="numeric" pattern="[0-9]*"
                                                 maxlength="4" placeholder="Tahun"
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
@@ -596,7 +621,7 @@
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                                     @change="handleMultiFileChange($event, 'penghargaanList', index)">
                                                 <div
-                                                    class="flex flex-col items-center justify-center p-5 border-2 border-dashed border-[#d8cdb4] rounded-xl bg-[#faf6ec] group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300">
+                                                    class="flex flex-col items-center justify-center p-5 border-2 border-dashed border-[#d8cdb4] rounded-xl bg-[#faf6ec] group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
                                                     <div
                                                         class="w-10 h-10 mb-2 rounded-full bg-white shadow-sm flex items-center justify-center text-[#b8860b] group-hover:text-[#1b6e4c] group-hover:scale-110 transition-all duration-300">
                                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -664,20 +689,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Delete Button -->
-                                    <button x-show="data.penghargaanList.length > 1"
-                                        @click="data.penghargaanList.splice(index, 1)" type="button"
-                                        class="shrink-0 mt-[1.8rem] w-12 h-[50px] rounded-xl flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors border border-[#c0392b]/20"
-                                        :class="index === 0 ? 'sm:mt-[1.8rem]' : 'sm:mt-0'">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                            <path
-                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                            </path>
-                                        </svg>
-                                    </button>
                                 </div>
                             </template>
 
@@ -687,7 +698,7 @@
                             </template>
 
                             <button @click="data.penghargaanList.push({ nama: '', tahun: '', files: [] })" type="button"
-                                class="mt-1 inline-flex items-center gap-2 self-start text-[#1b6e4c] font-bold text-[14px] px-4 py-2 bg-[#1b6e4c]/10 rounded-lg hover:bg-[#1b6e4c]/20 transition-colors">
+                                class="mt-1 inline-flex items-center justify-center gap-2 mt-2 self-center text-[#1b6e4c] font-bold text-[14px] px-4 py-2 bg-[#1b6e4c]/10 rounded-lg hover:bg-[#1b6e4c]/20 transition-colors">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -965,8 +976,8 @@
                 </div>
 
                 <!-- NAV BUTTONS -->
-                <div class="flex flex-row gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]"
-                    :class="step > 0 ? 'justify-between' : 'justify-end'">
+                <div class="flex flex-col-reverse sm:flex-row gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]"
+                    :class="step > 0 ? 'sm:justify-between' : 'sm:justify-end'">
                     <template x-if="step > 0">
                         <button @click="back()"
                             class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 border-[1.5px] border-[#11563bff] bg-white text-[#11563bff] font-bold text-[14px] sm:text-[15px] px-2 sm:px-[26px] py-[13px] rounded-xl hover:bg-black/5 transition-colors cursor-pointer whitespace-nowrap">

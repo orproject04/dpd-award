@@ -976,8 +976,8 @@
                 </div>
 
                 <!-- NAV BUTTONS -->
-                <div class="flex flex-col-reverse sm:flex-row gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]"
-                    :class="step > 0 ? 'sm:justify-between' : 'sm:justify-end'">
+                <div class="flex gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]"
+                    :class="step > 0 ? 'justify-between' : 'justify-end'">
                     <template x-if="step > 0">
                         <button @click="back()"
                             class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 border-[1.5px] border-[#11563bff] bg-white text-[#11563bff] font-bold text-[14px] sm:text-[15px] px-2 sm:px-[26px] py-[13px] rounded-xl hover:bg-black/5 transition-colors cursor-pointer whitespace-nowrap">

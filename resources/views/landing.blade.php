@@ -844,7 +844,11 @@
 
             <!-- Mobile & Tablet Timeline (Standard Vertical) -->
             <div class="relative block lg:hidden w-full mt-10 pl-2 sm:pl-4">
-                <div class="absolute left-[28px] sm:left-[36px] top-2 bottom-2 w-[3px] bg-gradient-to-b from-[#1b6e4c]/50 to-transparent"></div>
+                <!-- 
+                     pl-2 = 8px padding. Circle is w-14 (56px). Center is 8 + (56/2) = 36px.
+                     sm:pl-4 = 16px padding. Center is 16 + 28 = 44px. 
+                -->
+                <div class="absolute left-[36px] sm:left-[44px] top-2 bottom-2 w-[3px] bg-gradient-to-b from-[#1b6e4c]/50 to-transparent"></div>
 
                 @foreach($timeline as $index => $step)
                     <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
@@ -864,7 +868,6 @@
                             @if(isset($step['date']))
                                 <p class="text-[14.5px] font-semibold text-[#1b6e4c] mb-2">{{ $step['date'] }}</p>
                             @endif
-                            <p class="text-gray-600 text-[14px] leading-relaxed">Pelaksanaan dan penyelesaian tahapan secara seksama sesuai prosedur yang telah ditetapkan komite DPD.</p>
                         </div>
                     </div>
                 @endforeach

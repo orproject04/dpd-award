@@ -24,7 +24,7 @@ class SetSecurityHeaders
 
         // Content Security Policy
         if (app()->environment('production')) {
-            $response->headers->set('Content-Security-Policy', "upgrade-insecure-requests; default-src 'self' https: wss: data: 'unsafe-inline' 'unsafe-eval';");
+            $response->headers->set('Content-Security-Policy', "upgrade-insecure-requests; default-src 'self' https: wss: data: blob: 'unsafe-inline' 'unsafe-eval';");
         }
 
         // Prevent clickjacking attacks

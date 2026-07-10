@@ -165,7 +165,7 @@
                 <div x-show="step === 0">
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Pilih Kategori</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Tentukan bidang yang paling sesuai dengan
-                        kontribusi yang dinominasikan.</p>
+                        kontribusi yang didaftarkan.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                         <template x-for="c in categories" :key="c.id">
@@ -200,8 +200,7 @@
                 <!-- STEP 1: DATA DIRI -->
                 <div x-show="step === 1" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Data Diri</h2>
-                    <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Isi data individu yang dinominasikan dan data Anda
-                        sebagai pengaju.</p>
+                    <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Isi data diri Anda sebelum melanjutkan pendaftaran.</p>
 
                     <div class="flex flex-col gap-5">
 
@@ -459,10 +458,17 @@
                                                 class="w-full h-[45px] px-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[15px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="mb-1">
-                                            <label class="block text-[13.5px] font-bold mb-2">Deskripsi</label>
+                                            <div class="flex justify-between items-end mb-2">
+                                                <label class="block text-[13.5px] font-bold">Deskripsi</label>
+                                                <span class="text-[12px] font-medium transition-colors duration-200"
+                                                    :class="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? 'text-[#c0392b]' : 'text-[#8a7f66]'"
+                                                    x-text="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length + '/200 kata'">
+                                                </span>
+                                            </div>
                                             <textarea x-model="item.deskripsi"
                                                 @input="
-                                                    let words = item.deskripsi.match(/\S+/g) || [];
+                                                    let val = item.deskripsi || '';
+                                                    let words = val.split(' ').filter(w => w.trim().length > 0);
                                                     if (words.length > 200) {
                                                         item.deskripsi = words.slice(0, 200).join(' ');
                                                     }
@@ -471,7 +477,8 @@
                                                 "
                                                 x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                 placeholder="Deskripsi (maksimal 200 kata per poin)..."
-                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden leading-[1.55] transition-all duration-200"></textarea>
+                                                :class="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? '!border-[#c0392b] !ring-1 !ring-[#c0392b]/30 bg-[#fdf5f5]' : ''"
+                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden md:overflow-y-auto md:max-h-[250px] leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
                                         <div class="mb-1">
                                             <label class="block text-[13.5px] font-bold mb-2">Dampak & Pencapaian</label>
@@ -479,7 +486,7 @@
                                                 @input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"
                                                 x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                 placeholder="Contoh: menjangkau 1.200 anak, 8 desa, sejak 2019..."
-                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden leading-[1.55] transition-all duration-200"></textarea>
+                                                class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden md:overflow-y-auto md:max-h-[250px] leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
 
                                         <div class="mt-2">
@@ -714,7 +721,7 @@
                 <div x-show="step === 3" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Tinjau &amp; Kirim</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Periksa kembali data Anda sebelum mengirim
-                        nominasi.</p>
+                        pendaftaran.</p>
 
                     <!-- Kategori & Data Diri Card -->
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
@@ -1025,10 +1032,10 @@
                     <polyline points="20 6 9 17 4 12" />
                 </svg>
             </div>
-            <h1 class="cz text-[clamp(30px,5vw,44px)] font-extrabold uppercase text-[#10131a]">Nominasi <span
+            <h1 class="cz text-[clamp(30px,5vw,44px)] font-extrabold uppercase text-[#10131a]">Pendaftaran <span
                     class="text-[#1b6e4c]">Terkirim</span></h1>
             <p class="text-[#4b5262] text-[17px] leading-[1.65] mt-4 max-w-[480px] mx-auto">Terima kasih telah
-                berpartisipasi. Nominasi Anda telah kami terima dan akan diverifikasi oleh tim komite.</p>
+                berpartisipasi. Pendaftaran Anda telah kami terima dan akan diverifikasi oleh tim komite.</p>
 
             <div
                 class="inline-block mt-6 bg-white border border-[#e8ddc4] rounded-2xl py-4 px-7 shadow-[0_8px_24px_rgba(11,42,91,.08)]">
@@ -1273,12 +1280,13 @@
                     if (step === 2) {
                         let capaianInvalid = false;
                         d.capaianList.forEach(item => {
-                            if (!item.judul.trim() || !item.deskripsi.trim() || !item.dampak?.trim()) {
+                            let wCount = (item.deskripsi || '').split(' ').filter(w => w.trim().length > 0).length;
+                            if (!item.judul.trim() || !item.deskripsi.trim() || !item.dampak?.trim() || wCount > 200) {
                                 capaianInvalid = true;
                             }
                         });
                         if (d.capaianList.length === 0 || capaianInvalid) {
-                            this.errs.capaianList = "Harap lengkapi judul, deskripsi, dan dampak pada setiap baris capaian/inovasi.";
+                            this.errs.capaianList = "Harap lengkapi judul, deskripsi (maksimal 200 kata), dan dampak pada setiap baris capaian/inovasi.";
                             hasErr = true;
                         }
 

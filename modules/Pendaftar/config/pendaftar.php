@@ -4,13 +4,13 @@ return [
     'routes' => [
         'enabled' => true,
         'middleware' => ['web', 'auth'],
-        'prefix' => 'modules',
+        'prefix' => '',
     ],
     'view' => [
         'layout' => 'laravolt::layouts.app',
     ],
     'menu' => [
-        'enabled' => true,
+        'enabled' => false,
     ],
     'permission' => [],
 ];

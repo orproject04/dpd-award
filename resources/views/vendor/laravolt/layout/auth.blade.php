@@ -1,4 +1,17 @@
 <x-volt-base>
+    @push('style')
+    <style>
+        .layout--auth.is-modern,
+        .layout--auth.is-classic {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            min-height: 100vh !important;
+            padding-top: 0 !important;
+        }
+    </style>
+    @endpush
     <div class="layout--auth is-{!! config('laravolt.ui.login_layout') !!}">
         <div class="layout--auth__container">
             <div class="x-inspire" style="background-image: url('{!! config('laravolt.ui.login_background') !!}')">

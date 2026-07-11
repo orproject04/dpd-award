@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', LandingController::class)->name('landing');
 Route::view('/nominasi', 'nominasi')->name('nominasi');
 
-Route::middleware(['auth', 'verified'])->group(fn() => Route::get('/home', HomeController::class)->name('home'));
+Route::middleware(['auth', 'verified'])->group(fn () => Route::get('/home', HomeController::class)->name('home'));
 
-include __DIR__ . '/auth.php';
-include __DIR__ . '/my.php';
+Route::get('/admin', [LoginController::class, 'show'])->name('admin.login');
+
+include __DIR__.'/auth.php';
+include __DIR__.'/my.php';

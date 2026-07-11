@@ -32,7 +32,7 @@ class StatusFilter extends BaseFilter
             'Lolos Penilaian Tahap 2' => 'Lolos Penilaian Tahap 2',
             'Lolos Penilaian Tahap 3' => 'Lolos Penilaian Tahap 3',
             'Lolos Tahap Wawancara' => 'Lolos Tahap Wawancara',
-            'Lolos Tahap FInal' => 'Lolos Tahap FInal',
+            'Lolos Tahap Final' => 'Lolos Tahap Final',
         ];
     }
 

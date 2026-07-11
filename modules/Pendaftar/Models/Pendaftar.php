@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Laravolt\Suitable\AutoFilter;
 use Laravolt\Suitable\AutoSearch;
 use Laravolt\Suitable\AutoSort;
-use Models\Kontribusi;
-use Models\penghargaan;
+use App\Models\Kontribusi;
+use App\Models\Penghargaan;
 
 class Pendaftar extends Model
 {
@@ -20,6 +20,10 @@ class Pendaftar extends Model
 
     /** @var array<string> */
     protected $searchableColumns = ['nomor_registrasi', 'nama'];
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected static function newFactory()
     {
@@ -33,15 +37,16 @@ class Pendaftar extends Model
 
     public function penghargaan()
     {
-        return $this->hasMany(penghargaan::class);
+        return $this->hasMany(Penghargaan::class);
     }
 
     public function getFotoAttribute(): string
     {
-        if (! $this->foto) {
-            return asset('assets/images/default.png');
+        $foto = $this->getRawOriginal('foto');
+        if (empty($foto)) {
+            return '';
         }
 
-        return asset('storage/pendaftar/'.$this->foto);
+        return storage_path('app/private/' . $foto);
     }
 }

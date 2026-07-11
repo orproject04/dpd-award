@@ -40,19 +40,19 @@ class NominasiController extends Controller
 
             $kategoriCode = $kodeKategori[$request->kategori] ?? 'XX';
             $tglLahir = date('ymd', strtotime($request->tanggalLahir));
-            
+
             // Get the latest number suffix for this specific prefix (e.g., DPD-BSB26-991003)
             // The requirement says: XXXX adalah incement 1 dari setiap pendaftar
             // This means it's a global increment or category specific. Let's make it a global increment of all registrations to be safe and robust, or count total + 1.
             $count = Pendaftar::count() + 1;
             $increment = str_pad($count, 4, '0', STR_PAD_LEFT);
-            
+
             $nomorRegistrasi = "DPD-{$kategoriCode}26-{$tglLahir}{$increment}";
 
             // 2. Handle File Uploads for KTP & Foto
             $ktpPath = null;
             $fotoPath = null;
-            
+
             $basePath = "{$request->kategori}/{$nomorRegistrasi}";
 
             if ($request->hasFile('ktp')) {
@@ -109,7 +109,7 @@ class NominasiController extends Controller
                         'judul' => $capaian['judul'] ?? '',
                         'deskripsi' => $capaian['deskripsi'] ?? '',
                         'dampak' => $capaian['dampak'] ?? '',
-                        'bukti_dukung' => implode('|', $evidencePaths),
+                        'bukti_dukung' => $evidencePaths,
                     ]);
                 }
             }
@@ -136,7 +136,7 @@ class NominasiController extends Controller
                         'pendaftar_id' => $pendaftar->id,
                         'uraian' => $penghargaan['nama'] ?? '',
                         'tahun' => (isset($penghargaan['tahun']) && is_numeric($penghargaan['tahun'])) ? (int)$penghargaan['tahun'] : (int)date('Y'),
-                        'bukti_dukung' => implode('|', $evidencePaths),
+                        'bukti_dukung' => $evidencePaths,
                     ]);
                 }
             }
@@ -147,7 +147,6 @@ class NominasiController extends Controller
                 'success' => true,
                 'regId' => $nomorRegistrasi
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Error Nominasi Store: " . $e->getMessage());

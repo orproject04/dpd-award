@@ -4,6 +4,14 @@
         @include('laravolt::menu.topbar')
         @include('laravolt::menu.sidebar')
 
+        <div id="page-loader" class="hidden">
+            <div class="loader-logo-wrapper">
+                <div class="loader-spinner"></div>
+                <div class="loader-spinner-inner"></div>
+                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo" class="loader-logo">
+            </div>
+        </div>
+
         <div class="content"
               up-main="root"
         >

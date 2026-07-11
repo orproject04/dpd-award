@@ -17,6 +17,10 @@ class Penghargaan extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'bukti_dukung' => 'array',
+    ];
+
     public function pendaftar(): BelongsTo
     {
         return $this->belongsTo(Pendaftar::class, 'pendaftar_id');

@@ -28,7 +28,10 @@ class SetSecurityHeaders
         }
 
         // Prevent clickjacking attacks
-        $response->headers->set('X-Frame-Options', 'DENY');
+        $frameOptions = env('X_FRAME_OPTIONS', 'SAMEORIGIN');
+        if ($frameOptions && strtoupper($frameOptions) !== 'NONE') {
+            $response->headers->set('X-Frame-Options', $frameOptions);
+        }
 
         // Enable XSS filtering in older browsers
         $response->headers->set('X-XSS-Protection', '1; mode=block');

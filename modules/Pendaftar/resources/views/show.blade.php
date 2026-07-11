@@ -481,7 +481,7 @@
 
                         {{-- Foto --}}
                         <div class="file-block">
-                            <div class="file-block-label"><i class="camera icon"></i> Foto Profil</div>
+                            <div class="file-block-label"><i class="camera icon"></i> Foto Diri</div>
                             @if(!empty($fotoRaw))
                                 @if($isImage($fotoRaw))
                                     <img src="{{ route('modules::pendaftar.file', ['path' => $fotoRaw]) }}"

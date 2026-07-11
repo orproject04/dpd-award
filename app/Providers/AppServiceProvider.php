@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Filters\CustomBaseFilter;
+use App\Suitable\CustomBuilder;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravolt\Ui\Filters\BaseFilter;
@@ -24,6 +25,9 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind('laravolt.suitable', function ($app) {
+            return new CustomBuilder;
+        });
         $this->app->bind(BaseFilter::class, CustomBaseFilter::class);
     }
 

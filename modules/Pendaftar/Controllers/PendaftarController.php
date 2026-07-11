@@ -6,14 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Modules\Pendaftar\Models\Pendaftar;
+use Modules\Pendaftar\PendaftarTableView;
 use Modules\Pendaftar\Requests\Store;
 use Modules\Pendaftar\Requests\Update;
 
 class PendaftarController extends Controller
 {
-    public function index(): View
+    public function index()
     {
-        return view('pendaftar::index');
+        return PendaftarTableView::make()->view('pendaftar::index')->showPerPage();
     }
 
     public function create(): View

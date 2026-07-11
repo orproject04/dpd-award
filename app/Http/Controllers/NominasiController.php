@@ -87,7 +87,7 @@ class NominasiController extends Controller
                 'email' => $request->email,
                 'ktp' => $ktpPath,
                 'foto' => $fotoPath ?? '',
-                'status' => 'diajukan',
+                'status' => 'Diajukan',
             ]);
 
             // 4. Handle Kontribusi

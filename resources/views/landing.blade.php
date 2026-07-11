@@ -151,6 +151,8 @@
                     class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">KETENTUAN</a>
                 <a href="#alur"
                     class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">TIMELINE</a>
+                <a href="#lacak"
+                    class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">LACAK</a>
                 <a href="#statistik"
                     class="text-white/80 hover:text-white text-[16px] font-semibold tracking-wider transition-colors">STATISTIK</a>
                 <a href="#faq"
@@ -171,6 +173,8 @@
                 class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">KETENTUAN</a>
             <a href="#alur" @click="mobileMenuOpen = false"
                 class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">TIMELINE</a>
+            <a href="#lacak" @click="mobileMenuOpen = false"
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">LACAK</a>
             <a href="#statistik" @click="mobileMenuOpen = false"
                 class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">STATISTIK</a>
             <a href="#faq" @click="mobileMenuOpen = false"
@@ -873,6 +877,142 @@
                 @endforeach
             </div>
         </div>
+    </section>
+    
+    <!-- 5. LACAK PENDAFTARAN -->
+    <section id="lacak" class="py-[90px] px-6 bg-white border-t border-gray-200 relative overflow-hidden">
+        <div class="absolute inset-0 z-0 pointer-events-none">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#1b6e4c]/5 rounded-full blur-[100px]"></div>
+        </div>
+        <div class="relative z-10 max-w-[700px] mx-auto text-center" x-data="tracking()" x-intersect="shown = true" x-intersect:leave="shown = false">
+            <div class="transition-all duration-[800ms] ease-out" :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
+                <span class="text-[#1b6e4c] text-[12.5px] font-extrabold tracking-[0.22em]">CEK STATUS</span>
+                <h2 class="cz text-[clamp(32px,5vw,52px)] font-extrabold uppercase mt-3 leading-[1.1] text-[#0a3622]">
+                    Lacak <span class="text-[#e0b53c]">Pendaftaran</span>
+                </h2>
+                <p class="text-[#4b5262] text-[16px] leading-[1.65] mt-4 mb-8">
+                    Masukkan nomor registrasi untuk melihat status pendaftaran Anda.
+                </p>
+
+                <!-- Form Tracking -->
+                <form @submit.prevent="cekStatus" class="relative group max-w-[500px] mx-auto">
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#1b6e4c] to-[#e0b53c] rounded-2xl blur opacity-15 group-hover:opacity-25 transition duration-500"></div>
+                    <div class="relative flex items-center bg-white border border-gray-200 rounded-2xl p-2 shadow-lg focus-within:border-[#e0b53c]/50 focus-within:ring-2 focus-within:ring-[#e0b53c]/20 transition-all">
+                        <div class="pl-4 text-[#e0b53c]">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                        <input type="text" x-model="regId" placeholder="Contoh: DPD-BP26-1505900001" required
+                            class="w-full bg-transparent border-none text-[#10131a] text-[15px] px-4 py-3 focus:outline-none placeholder:text-gray-400 uppercase">
+                        <button type="submit" :disabled="isLoading"
+                            class="shrink-0 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-bold text-[14px] px-6 py-3 rounded-xl hover:scale-[1.05] hover:shadow-[0_4px_15px_rgba(224,181,60,0.4)] hover:brightness-110 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none cursor-pointer flex items-center gap-2">
+                            <span x-show="!isLoading">Cek Status</span>
+                            <span x-show="isLoading" x-cloak>Mencari...</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Hasil Pencarian -->
+                <div x-show="result" x-cloak x-transition.opacity.duration.300ms class="mt-8 text-left bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xl max-w-[500px] mx-auto">
+                    <template x-if="success">
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 rounded-full bg-[#1b6e4c]/10 flex items-center justify-center shrink-0">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1b6e4c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-[#10131a] font-bold text-[18px]">Data Ditemukan</h4>
+                                    <p class="text-[#1b6e4c] text-[13px] font-semibold tracking-wide uppercase" x-text="resultData?.nomor_registrasi"></p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4 pt-4 border-t border-gray-100">
+                                <div>
+                                    <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">NAMA</div>
+                                    <div class="text-[#10131a] font-semibold text-[16px] cz" x-text="resultData?.nama"></div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">KATEGORI</div>
+                                    <div class="text-[#4b5262] font-medium text-[15px]" x-text="resultData?.kategori"></div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">STATUS</div>
+                                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#e0b53c]/10 border border-[#e0b53c]/20 mt-1">
+                                        <div class="w-2 h-2 rounded-full bg-[#e0b53c] animate-pulse"></div>
+                                        <span class="text-[#b8860b] font-bold text-[14px] uppercase" x-text="resultData?.status"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template x-if="!success">
+                        <div class="text-center py-4">
+                            <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                </svg>
+                            </div>
+                            <h4 class="text-[#10131a] font-bold text-[18px] mb-2">Tidak Ditemukan</h4>
+                            <p class="text-[#4b5262] text-[14px] leading-relaxed" x-text="message"></p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function tracking() {
+                return {
+                    shown: false,
+                    regId: '',
+                    isLoading: false,
+                    result: false,
+                    success: false,
+                    message: '',
+                    resultData: null,
+                    
+                    async cekStatus() {
+                        if (!this.regId) return;
+                        this.isLoading = true;
+                        this.result = false;
+                        
+                        try {
+                            const res = await fetch('{{ route('track') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({ reg_id: this.regId })
+                            });
+                            
+                            const data = await res.json();
+                            
+                            this.success = data.success;
+                            if (data.success) {
+                                this.resultData = data.data;
+                                this.resultData.nomor_registrasi = this.regId; 
+                            } else {
+                                this.message = data.message || 'Nomor registrasi tidak valid.';
+                            }
+                        } catch (err) {
+                            this.success = false;
+                            this.message = 'Permintaan terlalu banyak (Rate Limit). Silakan tunggu maksimal 1 menit untuk mencoba kembali.';
+                        } finally {
+                            this.isLoading = false;
+                            this.result = true;
+                        }
+                    }
+                }
+            }
+        </script>
     </section>
 
     <!-- 6. STATISTIK PENDAFTAR -->

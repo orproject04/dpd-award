@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', LandingController::class)->name('landing');
 Route::view('/nominasi', 'nominasi')->name('nominasi');
 Route::post('/nominasi', [\App\Http\Controllers\NominasiController::class, 'store'])->middleware('throttle:3,1')->name('nominasi.store');
+Route::post('/track', [LandingController::class, 'track'])->middleware('throttle:5,1')->name('track');
 
 Route::middleware(['auth', 'verified'])->group(fn () => Route::get('/home', HomeController::class)->name('home'));
 

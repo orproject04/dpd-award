@@ -19,13 +19,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', LandingController::class)->name('landing');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', HomeController::class)->name('dashboard');
+    Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');
+});
+
 Route::view('/nominasi', 'nominasi')->name('nominasi');
 Route::post('/nominasi', [\App\Http\Controllers\NominasiController::class, 'store'])->middleware('throttle:3,1')->name('nominasi.store');
 Route::post('/track', [LandingController::class, 'track'])->middleware('throttle:5,1')->name('track');
 
-Route::middleware(['auth', 'verified'])->group(fn () => Route::get('/home', HomeController::class)->name('home'));
-
 Route::get('/admin', [LoginController::class, 'show'])->name('admin.login');
 
-include __DIR__.'/auth.php';
-include __DIR__.'/my.php';
+include __DIR__ . '/auth.php';
+include __DIR__ . '/my.php';

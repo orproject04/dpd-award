@@ -78,6 +78,7 @@ class PendaftarTableView extends CustomTableView
                 'Lolos Penilaian Tahap 3' => 'yellow',
                 'Lolos Tahap Wawancara' => 'yellow',
                 'Lolos Tahap Final' => 'teal',
+                'Tidak Lolos' => 'red',
             ])->addClass('large')->sortable(),
 
             MyRestfulButton::make('modules::pendaftar')->withoutEdit(),

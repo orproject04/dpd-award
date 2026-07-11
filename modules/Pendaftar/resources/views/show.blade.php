@@ -9,7 +9,8 @@
             'Lolos Penilaian Tahap 2',
             'Lolos Penilaian Tahap 3',
             'Lolos Tahap Wawancara',
-            'Lolos Tahap Final'
+            'Lolos Tahap Final',
+            'Tidak Lolos'
         ];
 
         $statusColor = match ($pendaftar->status) {
@@ -20,6 +21,7 @@
             'Lolos Penilaian Tahap 3'=> 'yellow',
             'Lolos Tahap Wawancara'  => 'yellow',
             'Lolos Tahap Final'      => 'teal',
+            'Tidak Lolos'            => 'red',
             default                  => 'grey'
         };
 
@@ -63,7 +65,6 @@
             border-radius: var(--radius);
             box-shadow: 0 2px 8px rgba(0,0,0,.05);
             margin-bottom: 1.5rem;
-            overflow: hidden;
         }
         .show-card-header {
             display: flex;
@@ -72,15 +73,17 @@
             padding: 1rem 1.25rem;
             background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
             border-bottom: 1px solid #e8edf2;
+            border-top-left-radius: calc(var(--radius) - 1px);
+            border-top-right-radius: calc(var(--radius) - 1px);
         }
         .show-card-header .card-icon {
             width: 32px; height: 32px;
             display: flex; align-items: center; justify-content: center;
             background: var(--accent); border-radius: 8px; color: #fff;
-            font-size: .9rem; flex-shrink: 0;
+            font-size: 1rem; flex-shrink: 0;
         }
         .show-card-header h3 {
-            margin: 0; font-size: 1rem; font-weight: 700; color: #1a2035;
+            margin: 0; font-size: 1.1rem; font-weight: 700; color: #1a2035;
         }
         .show-card-body { padding: 1.25rem; }
 
@@ -88,7 +91,7 @@
         .profile-table { width: 100%; border-collapse: collapse; }
         .profile-table tr { border-bottom: 1px solid #f1f5f9; }
         .profile-table tr:last-child { border-bottom: none; }
-        .profile-table td { padding: .65rem .75rem; font-size: .9rem; vertical-align: top; }
+        .profile-table td { padding: .65rem .75rem; font-size: 1rem; vertical-align: top; }
         .profile-table td:first-child {
             width: 38%; color: #64748b; font-weight: 500; white-space: nowrap;
         }
@@ -104,8 +107,8 @@
         }
         .file-block:last-child { margin-bottom: 0; }
         .file-block-label {
-            font-size: .78rem; font-weight: 700; color: #64748b;
-            text-transform: uppercase; letter-spacing: .06em; margin-bottom: .65rem;
+            font-size: .9rem; font-weight: 700; color: #64748b;
+            letter-spacing: .06em; margin-bottom: .65rem;
         }
         .file-img-preview {
             width: 100%; border-radius: 6px; max-height: 200px;
@@ -116,12 +119,118 @@
         }
         .file-img-preview:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(0,0,0,.15); }
 
-        /* ─── Status Form ────────────────────────────────────── */
-        .status-form select {
-            width: 100%; padding: .55rem .75rem;
-            border: 1px solid #e2e8f0; border-radius: 8px;
-            font-size: .9rem; color: #1a2035;
-            background: #f8fafc; margin-bottom: .75rem;
+        /* ─── Custom Premium Dropdown ────────────────────────── */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .custom-dropdown-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 01rem;
+            font-weight: 600;
+            color: #1a2035;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        .custom-dropdown-trigger:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .custom-dropdown.active .custom-dropdown-trigger {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .custom-dropdown-trigger .chevron.icon {
+            font-size: 0.8rem;
+            color: #64748b;
+            transition: transform 0.2s ease;
+            margin: 0;
+        }
+        .custom-dropdown.active .custom-dropdown-trigger .chevron.icon {
+            transform: rotate(180deg);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            vertical-align: middle;
+        }
+        .status-dot.blue { background-color: #3b82f6; box-shadow: 0 0 6px rgba(59,130,246,0.6); }
+        .status-dot.yellow { background-color: #eab308; box-shadow: 0 0 6px rgba(234,179,8,0.6); }
+        .status-dot.teal { background-color: #14b8a6; box-shadow: 0 0 6px rgba(20,184,166,0.6); }
+        .status-dot.red { background-color: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+        .status-dot.grey { background-color: #64748b; box-shadow: 0 0 6px rgba(100,116,139,0.6); }
+
+        .custom-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            max-height: 260px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .custom-dropdown.active .custom-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .custom-dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            font-size: 01rem;
+            color: #334155;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .custom-dropdown-item:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+        .custom-dropdown-item.active {
+            background-color: #f8fafc;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .custom-dropdown-item.active .status-dot {
+            transform: scale(1.2);
+        }
+
+        .custom-dropdown-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-dropdown-menu::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-dropdown-menu::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-dropdown-menu::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
         /* ─── Accordion ──────────────────────────────────────── */
@@ -170,11 +279,11 @@
         .detail-field { margin-bottom: 1rem; }
         .detail-field:last-child { margin-bottom: 0; }
         .detail-field-label {
-            font-size: .75rem; font-weight: 700; color: #64748b;
-            text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem;
+            font-size: 0.9rem; font-weight: 700; color: #64748b;
+            letter-spacing: .06em; margin-bottom: .3rem;
         }
         .detail-field-value {
-            font-size: .9rem; color: #1a2035; white-space: pre-line;
+            font-size: 1rem; color: #1a2035; white-space: pre-line;
             line-height: 1.6;
         }
         .detail-field-divider { border: none; border-top: 1px solid #f1f5f9; margin: 1rem 0; }
@@ -301,7 +410,7 @@
                                                             @php $buktiFileUrl = route('modules::pendaftar.file', ['path' => $buktiFile]); @endphp
                                                             <div style="margin-bottom: 1.25rem;">
                                                                 @if(count($kontribusi->bukti_dukung) > 1)
-                                                                    <div style="font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; font-weight:700; text-transform:uppercase;">Berkas {{ $fileIdx + 1 }}</div>
+                                                                    <div style="font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; font-weight:700; ">Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if($isImage($buktiFile))
                                                                     <img src="{{ $buktiFileUrl }}"
@@ -317,7 +426,7 @@
                                                                 @endif
                                                                 <x-volt-link-button url="{{ route('modules::pendaftar.file', ['path' => $buktiFile, 'download' => 1]) }}"
                                                                                      icon="download"
-                                                                                     class="mini basic blue"
+                                                                                     class="basic blue"
                                                                                      style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
                                                                                      target="_blank"
                                                                                      data-no-loader="true">
@@ -382,7 +491,7 @@
                                                             @php $buktiFileUrl = route('modules::pendaftar.file', ['path' => $buktiFile]); @endphp
                                                             <div style="margin-bottom: 1.25rem;">
                                                                 @if(count($penghargaan->bukti_dukung) > 1)
-                                                                    <div style="font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; font-weight:700; text-transform:uppercase;">Berkas {{ $fileIdx + 1 }}</div>
+                                                                    <div style="font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; font-weight:700; ">Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if($isImage($buktiFile))
                                                                     <img src="{{ $buktiFileUrl }}"
@@ -398,7 +507,7 @@
                                                                 @endif
                                                                 <x-volt-link-button url="{{ route('modules::pendaftar.file', ['path' => $buktiFile, 'download' => 1]) }}"
                                                                                      icon="download"
-                                                                                     class="mini basic blue"
+                                                                                     class="basic blue"
                                                                                      style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
                                                                                      target="_blank"
                                                                                      data-no-loader="true">
@@ -436,7 +545,7 @@
                     <div class="show-card-body">
                         {{-- Current status badge --}}
                         <div style="text-align:center; margin-bottom:1.25rem;">
-                            <div style="font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#94a3b8; margin-bottom:.5rem;">Status Saat Ini</div>
+                            <div style="font-size:1rem; font-weight:700;  letter-spacing:.08em; color:#94a3b8; margin-bottom:.5rem;">Status Saat Ini</div>
                             <div class="ui label {{ $statusColor }} large" style="font-weight: 700;">{{ $pendaftar->status ?? 'Diajukan' }}</div>
                         </div>
 
@@ -445,14 +554,40 @@
                         {{-- Update status form --}}
                         <form class="status-form" action="{{ route('modules::pendaftar.update-status', $pendaftar->id) }}" method="POST">
                             @csrf
-                            <div style="font-size:.8rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.5rem;">Ubah Status Pendaftar</div>
-                            <select name="status">
-                                @foreach($statuses as $status)
-                                    <option value="{{ $status }}" {{ ($pendaftar->status ?? 'Diajukan') === $status ? 'selected' : '' }}>
-                                        {{ $status }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <div style="font-size:1rem; font-weight:700; color:#64748b;  letter-spacing:.06em; margin-bottom:.5rem;">Ubah Status Pendaftar</div>
+                            
+                            <input type="hidden" name="status" id="status-input" value="{{ $pendaftar->status ?? 'Diajukan' }}">
+                            <div class="custom-dropdown" id="status-dropdown">
+                                <div class="custom-dropdown-trigger">
+                                    <div>
+                                        <span class="status-dot {{ $statusColor }}"></span>
+                                        <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
+                                    </div>
+                                    <i class="chevron down icon"></i>
+                                </div>
+                                <div class="custom-dropdown-menu">
+                                    @foreach($statuses as $status)
+                                        @php
+                                            $optColor = match ($status) {
+                                                'Diajukan'               => 'blue',
+                                                'Lolos Verifikasi Berkas'=> 'yellow',
+                                                'Lolos Penilaian Tahap 1'=> 'yellow',
+                                                'Lolos Penilaian Tahap 2'=> 'yellow',
+                                                'Lolos Penilaian Tahap 3'=> 'yellow',
+                                                'Lolos Tahap Wawancara'  => 'yellow',
+                                                'Lolos Tahap Final'      => 'teal',
+                                                'Tidak Lolos'            => 'red',
+                                                default                  => 'grey'
+                                            };
+                                        @endphp
+                                        <div class="custom-dropdown-item {{ ($pendaftar->status ?? 'Diajukan') === $status ? 'active' : '' }}" data-value="{{ $status }}" data-color="{{ $optColor }}">
+                                            <span class="status-dot {{ $optColor }}"></span>
+                                            <span class="item-text">{{ $status }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
                             <x-volt-button type="submit" icon="save" class="primary fluid">
                                 Perbarui Status
                             </x-volt-button>
@@ -495,7 +630,7 @@
                                 @endif
                                 <x-volt-link-button url="{{ route('modules::pendaftar.file', ['path' => $fotoRaw, 'download' => 1]) }}"
                                                      icon="download"
-                                                     class="mini basic blue"
+                                                     class="basic blue"
                                                      style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
                                                      target="_blank"
                                                      data-no-loader="true">
@@ -530,7 +665,7 @@
                                 @endif
                                 <x-volt-link-button url="{{ route('modules::pendaftar.file', ['path' => $ktpRaw, 'download' => 1]) }}"
                                                      icon="download"
-                                                     class="mini basic blue"
+                                                     class="basic blue"
                                                      style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
                                                      target="_blank"
                                                      data-no-loader="true">
@@ -612,6 +747,50 @@
             /* stop the page-loader that base.blade.php attaches */
             e.stopImmediatePropagation();
         }, true); /* capture phase so we run before the loader listener */
+
+        /* ── Custom Dropdown Interaction ───────────────────── */
+        var dropdown = document.getElementById('status-dropdown');
+        if (dropdown) {
+            var trigger = dropdown.querySelector('.custom-dropdown-trigger');
+            var input = document.getElementById('status-input');
+            var triggerDot = trigger.querySelector('.status-dot');
+            var triggerText = trigger.querySelector('.status-text');
+
+            trigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                dropdown.classList.toggle('active');
+            });
+
+            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (item) {
+                item.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var val = item.getAttribute('data-value');
+                    var color = item.getAttribute('data-color');
+                    var text = item.querySelector('.item-text').textContent;
+
+                    // Update hidden input
+                    input.value = val;
+
+                    // Update trigger text & dot color
+                    triggerText.textContent = text;
+                    triggerDot.className = 'status-dot ' + color;
+
+                    // Set active item class
+                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (i) {
+                        i.classList.remove('active');
+                    });
+                    item.classList.add('active');
+
+                    // Close menu
+                    dropdown.classList.remove('active');
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', function () {
+                dropdown.classList.remove('active');
+            });
+        }
     }());
 
     function closeLightbox() {

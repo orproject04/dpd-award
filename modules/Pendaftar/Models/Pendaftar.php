@@ -2,13 +2,14 @@
 
 namespace Modules\Pendaftar\Models;
 
+use App\Models\Kontribusi;
+use App\Models\Penghargaan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Laravolt\Suitable\AutoFilter;
 use Laravolt\Suitable\AutoSearch;
 use Laravolt\Suitable\AutoSort;
-use App\Models\Kontribusi;
-use App\Models\Penghargaan;
 
 class Pendaftar extends Model
 {
@@ -28,6 +29,25 @@ class Pendaftar extends Model
     protected static function newFactory()
     {
         return PendaftarFactory::new();
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($pendaftar) {
+            $ktp = $pendaftar->getRawOriginal('ktp');
+            $foto = $pendaftar->getRawOriginal('foto');
+            $dir = null;
+
+            if (! empty($ktp)) {
+                $dir = dirname(str_replace('\\', '/', $ktp));
+            } elseif (! empty($foto)) {
+                $dir = dirname(str_replace('\\', '/', $foto));
+            }
+
+            if (! empty($dir) && $dir !== '.' && $dir !== '/' && $dir !== 'pendaftar' && str_starts_with($dir, 'pendaftar/')) {
+                Storage::disk('local')->deleteDirectory($dir);
+            }
+        });
     }
 
     public function kontribusi()

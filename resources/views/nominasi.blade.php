@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>DPDRI AWARDS 2026</title>
     <link rel="icon" href="{{ asset('images/logo.png') }}">
 
@@ -14,6 +15,7 @@
         rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
     <style>
         @media (min-width: 1024px) {
@@ -62,6 +64,25 @@
         [x-cloak] {
             display: none !important;
         }
+
+        @media print {
+            body {
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            header,
+            .fixed,
+            .print-hide {
+                display: none !important;
+            }
+
+            .print-show {
+                display: block !important;
+            }
+        }
     </style>
 </head>
 
@@ -82,7 +103,7 @@
             </svg>
             Kembali
         </a>
-        
+
         <!-- Mobile Back Button -->
         <a href="{{ route('landing') }}"
             class="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 text-white/75 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10 md:hidden">
@@ -102,18 +123,66 @@
         </div>
     </header>
 
+    <!-- SUCCESS -->
+    <template x-if="submitted">
+        <div class="max-w-[640px] mx-auto px-6 pt-[70px] pb-[90px] text-center print-hide" x-cloak>
+            <div
+                class="w-24 h-24 rounded-full bg-gradient-to-br from-[#88c445] to-[#1b6e4c] flex items-center justify-center mx-auto mb-7 shadow-[0_16px_44px_rgba(27,110,76,.4)] animate-pop">
+                <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+            </div>
+            <h1 class="cz text-[clamp(30px,5vw,44px)] font-extrabold uppercase text-[#10131a]">Pendaftaran <span
+                    class="text-[#1b6e4c]">Terkirim</span></h1>
+            <p class="text-[#4b5262] text-[17px] leading-[1.65] mt-4 max-w-[480px] mx-auto">Terima kasih telah
+                berpartisipasi. Pendaftaran Anda telah kami terima dan akan diverifikasi oleh tim komite.</p>
+
+            <div
+                class="inline-block mt-6 bg-white border border-[#e8ddc4] rounded-2xl py-4 px-7 shadow-[0_8px_24px_rgba(11,42,91,.08)]">
+                <div class="text-[12px] text-[#8a7f66] font-bold tracking-[0.12em]">NOMOR REGISTRASI</div>
+                <div class="cz text-[26px] font-bold text-[#b8860b] mt-1 tracking-wide" x-text="regId"></div>
+                <div class="mt-4 flex gap-2 justify-center print-hide">
+                    <button
+                        @click="navigator.clipboard.writeText(regId); Swal.fire({title: 'Berhasil!', text: 'Nomor Registrasi disalin!', icon: 'success', confirmButtonColor: '#1b6e4c'})"
+                        class="cursor-pointer text-[13px] font-bold bg-[#f3ecdd] text-[#1b6e4c] px-3.5 py-2 rounded-lg hover:bg-[#e8ddc4] transition-colors border border-[#1b6e4c]/20">Salin
+                        Nomor</button>
+                    <button @click="window.print()"
+                        class="cursor-pointer text-[13px] font-bold bg-[#1b6e4c] text-white px-3.5 py-2 rounded-lg hover:bg-[#11563bff] transition-colors shadow-sm">Cetak
+                        Bukti</button>
+                </div>
+            </div>
+
+            <div class="mt-8 print-hide">
+                <a href="{{ route('landing') }}"
+                    class="cursor-pointer inline-flex items-center gap-2 bg-[#0a0c11] text-white font-bold text-[15px] px-[30px] py-[14px] rounded-xl hover:bg-black transition-colors">Kembali
+                    ke Beranda</a>
+            </div>
+        </div>
+    </template>
+
     <!-- FORM SHELL -->
-    <template x-if="!submitted">
-        <div class="max-w-[900px] mx-auto px-6 pt-11 pb-24">
+    <div x-show="!submitted" class="print:!block">
+        <div class="max-w-[900px] mx-auto px-6 pt-11 pb-24 print:pt-0 print:pb-0">
 
             <div class="text-center mb-9">
                 <span class="text-[#1b6e4c] text-[12px] font-extrabold tracking-[0.2em]">FORMULIR PENDAFTARAN</span>
                 <h1 class="cz text-[clamp(30px,5vw,46px)] font-extrabold uppercase mt-2">DPDRI <i>AWARDS</i> <span
                         class="text-[#b8860b]">2026</span></h1>
+
+                <template x-if="submitted">
+                    <div
+                        class="hidden print:inline-block mt-4 bg-white border border-[#e8ddc4] rounded-2xl py-3 px-6 shadow-sm text-center">
+                        <div class="text-[11px] text-[#8a7f66] font-bold tracking-[0.12em]">NOMOR REGISTRASI</div>
+                        <div class="cz text-[22px] font-bold text-[#b8860b] mt-0.5 tracking-wide" x-text="regId"></div>
+                        <div class="text-[11px] text-[#6b7280] mt-1 font-medium">Disubmit pada: <span
+                                x-text="submitTime"></span></div>
+                    </div>
+                </template>
             </div>
 
             <!-- STEPPER -->
-            <div class="flex items-start mb-3.5">
+            <div class="flex items-start mb-3.5 print-hide">
                 <template x-for="(s, index) in steps" :key="index">
                     <div class="flex items-start min-w-0"
                         :class="index === steps.length - 1 ? 'shrink-0 basis-[64px]' : 'flex-1'">
@@ -131,8 +200,8 @@
                                     <span x-text="index + 1"></span>
                                 </template>
                             </div>
-                            <span class="text-[10px] sm:text-[11.5px] text-center leading-[1.25]" :class="stepClasses(index).text"
-                                x-text="s.label"></span>
+                            <span class="text-[10px] sm:text-[11.5px] text-center leading-[1.25]"
+                                :class="stepClasses(index).text" x-text="s.label"></span>
                         </div>
                         <template x-if="index < steps.length - 1">
                             <div class="flex-1 h-0.5 mt-5 rounded-sm transition-colors duration-300"
@@ -155,8 +224,8 @@
                             <polyline points="22 4 12 14.01 9 11.01" />
                         </svg>
                         <div class="flex flex-col">
-                            <span class="font-bold">Kategori yang dipilih:</span>
-                            <span class="font-semibold opacity-90 mt-0.5" x-text="categories.find(c => c.id === data.kategori)?.en"></span>
+                            <span class="font-semibold opacity-90 mt-0.5"
+                                x-text="(categories.find(c => c.id === data.kategori)?.name || '') + ' : ' + (categories.find(c => c.id === data.kategori)?.en || '')"></span>
                         </div>
                     </div>
                 </template>
@@ -200,9 +269,16 @@
                 <!-- STEP 1: DATA DIRI -->
                 <div x-show="step === 1" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Data Diri</h2>
-                    <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Isi data diri Anda sebelum melanjutkan pendaftaran.</p>
+                    <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Isi data diri Anda sebelum melanjutkan
+                        pendaftaran.</p>
 
                     <div class="flex flex-col gap-5">
+
+                        <!-- Honeypot Field -->
+                        <div class="hidden" aria-hidden="true">
+                            <label>Leave this empty if you are human</label>
+                            <input type="text" x-model="data.website_url" tabindex="-1" autocomplete="off">
+                        </div>
 
                         <div>
                             <label class="block text-[14px] font-bold mb-2">Nama Lengkap <span
@@ -219,17 +295,19 @@
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Tempat Lahir <span
                                         class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.wilayah" type="text" placeholder="Tempat lahir" class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                <input x-model="data.wilayah" type="text" placeholder="Tempat lahir"
+                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
                                 <template x-if="showErr && errs.wilayah">
-                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.wilayah"></p>
+                                    <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.wilayah">
+                                    </p>
                                 </template>
                             </div>
 
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Tanggal Lahir <span
                                         class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.tanggalLahir" type="date"
-                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
+                                <input x-model="data.tanggalLahir" type="date" onclick="this.showPicker()"
+                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200 cursor-pointer">
                                 <template x-if="showErr && errs.tanggalLahir">
                                     <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5"
                                         x-text="errs.tanggalLahir">
@@ -320,7 +398,8 @@
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Nomor WhatsApp <span
                                         class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.telp" type="tel" placeholder="08xxxxxxxxxx"
+                                <input x-model="data.telp" @input="data.telp = data.telp.replace(/[^0-9]/g, '')"
+                                    type="tel" placeholder="08xxxxxxxxxx"
                                     class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
                                 <template x-if="showErr && errs.telp">
                                     <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.telp"></p>
@@ -381,6 +460,8 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="text-[15px] font-bold text-[#10131a]">
                                                     <span x-text="u.title"></span>
+                                                    <template x-if="!u.optional"><span
+                                                            class="text-[#c0392b] ml-1">*</span></template>
                                                     <template x-if="u.optional"><span
                                                             class="text-[#9aa2b1] font-medium text-[13px] ml-1">(opsional)</span></template>
                                                 </div>
@@ -435,25 +516,33 @@
                             </div>
 
                             <template x-for="(item, index) in data.capaianList" :key="index">
-                                <div class="flex flex-col gap-4 bg-[#faf6ec] p-4 sm:p-5 rounded-xl border border-[#ece2ca]">
+                                <div
+                                    class="flex flex-col gap-4 bg-[#faf6ec] p-4 sm:p-5 rounded-xl border border-[#ece2ca]">
                                     <div class="flex items-center justify-between pb-3 border-b border-[#ece2ca]/60">
                                         <div class="font-bold text-[#1b6e4c] flex items-center gap-2.5">
-                                            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b6e4c]/10 text-[14px]" x-text="index + 1"></span>
+                                            <span
+                                                class="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b6e4c]/10 text-[14px]"
+                                                x-text="index + 1"></span>
                                             <span class="text-[15px]">Data Kontribusi / Inovasi</span>
                                         </div>
                                         <button x-show="data.capaianList.length > 1"
                                             @click="data.capaianList.splice(index, 1)" type="button"
-                                            class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors" title="Hapus">
+                                            class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors"
+                                            title="Hapus">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                                stroke-linejoin="round">
                                                 <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path>
+                                                <path
+                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2">
+                                                </path>
                                             </svg>
                                         </button>
                                     </div>
                                     <div class="flex flex-col gap-3">
                                         <div class="mb-1">
-                                            <label class="block text-[13.5px] font-bold mb-2">Judul Inovasi / Kontribusi</label>
+                                            <label class="block text-[13.5px] font-bold mb-2">Judul Inovasi /
+                                                Kontribusi</label>
                                             <input x-model="item.judul" placeholder="Judul capaian/inovasi..."
                                                 class="w-full h-[45px] px-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[15px] text-[#10131a] transition-all duration-200">
                                         </div>
@@ -465,8 +554,7 @@
                                                     x-text="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length + '/200 kata'">
                                                 </span>
                                             </div>
-                                            <textarea x-model="item.deskripsi"
-                                                @input="
+                                            <textarea x-model="item.deskripsi" @input="
                                                     let val = item.deskripsi || '';
                                                     let words = val.split(' ').filter(w => w.trim().length > 0);
                                                     if (words.length > 200) {
@@ -481,7 +569,8 @@
                                                 class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden md:overflow-y-auto md:max-h-[250px] leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
                                         <div class="mb-1">
-                                            <label class="block text-[13.5px] font-bold mb-2">Dampak & Pencapaian</label>
+                                            <label class="block text-[13.5px] font-bold mb-2">Dampak &
+                                                Pencapaian</label>
                                             <textarea x-model="item.dampak"
                                                 @input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"
                                                 x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
@@ -491,7 +580,8 @@
 
                                         <div class="mt-2">
                                             <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung
-                                                (Evidence)</label>
+                                                (Evidence) <template x-if="item.judul.trim()"><span
+                                                        class="text-[#c0392b] ml-1">*</span></template></label>
                                             <div class="relative group cursor-pointer">
                                                 <input type="file" multiple
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -586,25 +676,33 @@
                         <!-- DAFTAR PENGHARGAAN -->
                         <div class="flex flex-col gap-4 mt-2 pt-4 border-t border-[#d8cdb4]/50">
                             <div>
-                                <label class="block text-[16px] font-bold mb-1 text-[#10131a]">Daftar Penghargaan</label>
+                                <label class="block text-[16px] font-bold mb-1 text-[#10131a]">Daftar
+                                    Penghargaan</label>
                                 <p class="text-[#6b7280] text-[13px]">Lampirkan bukti penghargaan berupa
                                     sertifikat/piagam dalam bentuk <i>softcopy</i>.</p>
                             </div>
 
                             <template x-for="(item, index) in data.penghargaanList" :key="index">
-                                <div class="flex flex-col gap-4 bg-[#faf6ec] p-4 sm:p-5 rounded-xl border border-[#ece2ca]">
+                                <div
+                                    class="flex flex-col gap-4 bg-[#faf6ec] p-4 sm:p-5 rounded-xl border border-[#ece2ca]">
                                     <div class="flex items-center justify-between pb-3 border-b border-[#ece2ca]/60">
                                         <div class="font-bold text-[#1b6e4c] flex items-center gap-2.5">
-                                            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b6e4c]/10 text-[14px]" x-text="index + 1"></span>
+                                            <span
+                                                class="flex items-center justify-center w-7 h-7 rounded-full bg-[#1b6e4c]/10 text-[14px]"
+                                                x-text="index + 1"></span>
                                             <span class="text-[15px]">Data Penghargaan</span>
                                         </div>
                                         <button x-show="data.penghargaanList.length > 1"
                                             @click="data.penghargaanList.splice(index, 1)" type="button"
-                                            class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors" title="Hapus">
+                                            class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-[#c0392b]/10 text-[#c0392b] hover:bg-[#c0392b] hover:text-white transition-colors"
+                                            title="Hapus">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                                stroke-linejoin="round">
                                                 <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path>
+                                                <path
+                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2">
+                                                </path>
                                             </svg>
                                         </button>
                                     </div>
@@ -616,13 +714,15 @@
                                         </div>
                                         <div class="sm:col-span-3">
                                             <label class="block text-[13.5px] font-bold mb-2">Tahun</label>
-                                            <input x-model="item.tahun" type="text" inputmode="numeric" pattern="[0-9]*"
-                                                maxlength="4" placeholder="Tahun"
+                                            <input x-model="item.tahun"
+                                                @input="item.tahun = item.tahun.replace(/[^0-9]/g, '')" type="text"
+                                                inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Tahun"
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="sm:col-span-12 mt-2">
                                             <label class="block text-[13.5px] font-bold mb-2">Evidence / Bukti
-                                                Dukung</label>
+                                                Dukung <template x-if="item.nama.trim()"><span
+                                                        class="text-[#c0392b] ml-1">*</span></template></label>
                                             <div class="relative group cursor-pointer">
                                                 <input type="file" multiple
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -719,54 +819,84 @@
 
                 <!-- STEP 3: TINJAU -->
                 <div x-show="step === 3" x-cloak>
-                    <h2 class="cz text-[26px] font-bold text-[#10131a]">Tinjau &amp; Kirim</h2>
-                    <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Periksa kembali data Anda sebelum mengirim
-                        pendaftaran.</p>
+                    <div class="print-hide">
+                        <h2 class="cz text-[26px] font-bold text-[#10131a]">Tinjau &amp; Kirim</h2>
+                        <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Periksa kembali data Anda sebelum mengirim
+                            pendaftaran.</p>
+                    </div>
 
                     <!-- Kategori & Data Diri Card -->
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
                                 Informasi Personal
                             </h3>
                         </div>
                         <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Kategori</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="categories.find(c => c.id === data.kategori)?.en || '-'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Kategori</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="(categories.find(c => c.id === data.kategori)?.name || '') + ' : ' + (categories.find(c => c.id === data.kategori)?.en || '')"></span>
                             </div>
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Nama Lengkap</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.namaNominee || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Nama
+                                    Lengkap</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.namaNominee || '—'"></span>
                             </div>
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Tempat Lahir</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.wilayah || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Tempat
+                                    Lahir</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.wilayah || '—'"></span>
                             </div>
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Tanggal Lahir</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.tanggalLahir || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Tanggal
+                                    Lahir</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.tanggalLahir || '—'"></span>
                             </div>
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Jenis Kelamin</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.jenisKelamin || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Jenis
+                                    Kelamin</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.jenisKelamin || '—'"></span>
                             </div>
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Pendidikan</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.pendidikan || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Pendidikan</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.pendidikan || '—'"></span>
                             </div>
                             <div class="sm:col-span-2">
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Alamat</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.alamat || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Alamat</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.alamat || '—'"></span>
                             </div>
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Nomor WhatsApp</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.telp || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Nomor
+                                    WhatsApp</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.telp || '—'"></span>
                             </div>
                             <div>
-                                <span class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Alamat Email</span>
-                                <span class="block text-[14.5px] text-[#10131a] font-medium" x-text="data.email || '—'"></span>
+                                <span
+                                    class="block text-[12px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1">Alamat
+                                    Email</span>
+                                <span class="block text-[14.5px] text-[#10131a] font-medium"
+                                    x-text="data.email || '—'"></span>
                             </div>
                         </div>
                     </div>
@@ -775,7 +905,14 @@
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
                                 Dokumen Pribadi
                             </h3>
                         </div>
@@ -783,35 +920,54 @@
                             <!-- KTP -->
                             <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
                                 <template x-if="data.previews.ktp">
-                                    <div class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
+                                    <div
+                                        class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
                                         <img :src="data.previews.ktp.url" class="w-full h-full object-cover">
                                     </div>
                                 </template>
                                 <template x-if="!data.previews.ktp">
-                                    <div class="w-12 h-12 rounded-lg bg-[#ece2ca] flex items-center justify-center shrink-0 text-[#8a7f66]">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    <div
+                                        class="w-12 h-12 rounded-lg bg-[#ece2ca] flex items-center justify-center shrink-0 text-[#8a7f66]">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
                                     </div>
                                 </template>
                                 <div class="flex-1 min-w-0">
-                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">KTP</span>
-                                    <span class="block text-[13.5px] text-[#10131a] font-medium truncate" x-text="data.files.ktp ? data.files.ktp.name : 'Belum diunggah'"></span>
+                                    <span
+                                        class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">KTP</span>
+                                    <span class="block text-[13.5px] text-[#10131a] font-medium truncate"
+                                        x-text="data.files.ktp ? data.files.ktp.name : 'Belum diunggah'"></span>
                                 </div>
                             </div>
                             <!-- Foto Diri -->
                             <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
                                 <template x-if="data.previews.foto">
-                                    <div class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
+                                    <div
+                                        class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
                                         <img :src="data.previews.foto.url" class="w-full h-full object-cover">
                                     </div>
                                 </template>
                                 <template x-if="!data.previews.foto">
-                                    <div class="w-12 h-12 rounded-lg bg-[#ece2ca] flex items-center justify-center shrink-0 text-[#8a7f66]">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    <div
+                                        class="w-12 h-12 rounded-lg bg-[#ece2ca] flex items-center justify-center shrink-0 text-[#8a7f66]">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
                                     </div>
                                 </template>
                                 <div class="flex-1 min-w-0">
-                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">Foto Diri</span>
-                                    <span class="block text-[13.5px] text-[#10131a] font-medium truncate" x-text="data.files.foto ? data.files.foto.name : 'Belum diunggah'"></span>
+                                    <span
+                                        class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">Foto
+                                        Diri</span>
+                                    <span class="block text-[13.5px] text-[#10131a] font-medium truncate"
+                                        x-text="data.files.foto ? data.files.foto.name : 'Belum diunggah'"></span>
                                 </div>
                             </div>
                         </div>
@@ -821,7 +977,12 @@
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
                                 Capaian &amp; Inovasi
                             </h3>
                         </div>
@@ -830,57 +991,121 @@
                                 <template x-if="c.judul || c.deskripsi || c.dampak || (c.files && c.files.length)">
                                     <div class="bg-[#faf6ec]/30 border border-[#ece2ca] rounded-xl p-4">
                                         <div class="flex items-center gap-2 mb-3 pb-3 border-b border-[#ece2ca]/60">
-                                            <span class="w-6 h-6 rounded-full bg-[#1b6e4c]/10 text-[#1b6e4c] flex items-center justify-center text-[12px] font-bold shrink-0" x-text="i + 1"></span>
-                                            <strong class="text-[14.5px] text-[#10131a]" x-text="c.judul || 'Tanpa Judul'"></strong>
+                                            <span
+                                                class="w-6 h-6 rounded-full bg-[#1b6e4c]/10 text-[#1b6e4c] flex items-center justify-center text-[12px] font-bold shrink-0"
+                                                x-text="i + 1"></span>
+                                            <strong class="text-[14.5px] text-[#10131a] break-all"
+                                                x-text="c.judul || 'Tanpa Judul'"></strong>
                                         </div>
                                         <div class="space-y-3">
                                             <template x-if="c.deskripsi">
                                                 <div>
-                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-0.5">Deskripsi Singkat</span>
-                                                    <p class="text-[13.5px] text-[#10131a] leading-relaxed" x-text="c.deskripsi"></p>
+                                                    <span
+                                                        class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-0.5">Deskripsi
+                                                        Singkat</span>
+                                                    <p class="text-[13.5px] text-[#10131a] leading-relaxed break-all"
+                                                        x-text="c.deskripsi"></p>
                                                 </div>
                                             </template>
                                             <template x-if="c.dampak">
                                                 <div>
-                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-0.5">Dampak &amp; Pencapaian</span>
-                                                    <p class="text-[13.5px] text-[#10131a] leading-relaxed" x-text="c.dampak"></p>
+                                                    <span
+                                                        class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-0.5">Dampak
+                                                        &amp; Pencapaian</span>
+                                                    <p class="text-[13.5px] text-[#10131a] leading-relaxed break-all"
+                                                        x-text="c.dampak"></p>
                                                 </div>
                                             </template>
                                             <template x-if="c.files && c.files.length > 0">
                                                 <div>
-                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1.5">Bukti Dukung</span>
+                                                    <span
+                                                        class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1.5">Bukti
+                                                        Dukung</span>
                                                     <div class="flex flex-wrap gap-2">
                                                         <template x-for="(f, fi) in c.files" :key="fi">
                                                             <a :href="f.url" :download="f.name" target="_blank"
                                                                 class="flex items-center gap-2 p-2 max-w-[280px] w-full sm:w-auto bg-white border border-[#ece2ca] rounded-xl shadow-sm hover:border-[#1b6e4c]/40 transition-colors text-left group">
                                                                 <template x-if="f.type === 'image'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
-                                                                        <img :src="f.url" class="w-full h-full object-cover">
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
+                                                                        <img :src="f.url"
+                                                                            class="w-full h-full object-cover">
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'pdf'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z"></path></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                                            </path>
+                                                                            <polyline points="14 2 14 8 20 8">
+                                                                            </polyline>
+                                                                            <path
+                                                                                d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z">
+                                                                            </path>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'word'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9h4"></path></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                                            </path>
+                                                                            <polyline points="14 2 14 8 20 8">
+                                                                            </polyline>
+                                                                            <path d="M8 13h8"></path>
+                                                                            <path d="M8 17h8"></path>
+                                                                            <path d="M10 9h4"></path>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'zip'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                                                            </path>
+                                                                            <polyline
+                                                                                points="3.27 6.96 12 12.01 20.73 6.96">
+                                                                            </polyline>
+                                                                            <line x1="12" y1="22.08" x2="12" y2="12">
+                                                                            </line>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'doc'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                                            </path>
+                                                                            <polyline points="14 2 14 8 20 8">
+                                                                            </polyline>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <div class="flex-1 min-w-0 pr-1">
-                                                                    <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors" x-text="f.name"></div>
-                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase" x-text="f.type"></div>
+                                                                    <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
+                                                                        x-text="f.name"></div>
+                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase"
+                                                                        x-text="f.type"></div>
                                                                 </div>
                                                             </a>
                                                         </template>
@@ -891,8 +1116,10 @@
                                     </div>
                                 </template>
                             </template>
-                            <template x-if="data.capaianList.length === 0 || !data.capaianList.some(c => c.judul || c.deskripsi || c.dampak || (c.files && c.files.length))">
-                                <div class="text-[13.5px] text-[#8a7f66] italic text-center py-2">Belum ada data capaian.</div>
+                            <template
+                                x-if="data.capaianList.length === 0 || !data.capaianList.some(c => c.judul || c.deskripsi || c.dampak || (c.files && c.files.length))">
+                                <div class="text-[13.5px] text-[#8a7f66] italic text-center py-2">Belum ada data
+                                    capaian.</div>
                             </template>
                         </div>
                     </div>
@@ -901,7 +1128,12 @@
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-3.09 1.62.59-3.44L7 10.76l3.46-.5L12 7l1.54 3.26 3.46.5-2.5 2.42.59 3.44z"></path></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M12 15l-3.09 1.62.59-3.44L7 10.76l3.46-.5L12 7l1.54 3.26 3.46.5-2.5 2.42.59 3.44z">
+                                    </path>
+                                </svg>
                                 Penghargaan
                             </h3>
                         </div>
@@ -910,48 +1142,108 @@
                                 <template x-if="p.nama || p.tahun || (p.files && p.files.length)">
                                     <div class="bg-[#faf6ec]/30 border border-[#ece2ca] rounded-xl p-4">
                                         <div class="flex items-center gap-2 mb-3 pb-3 border-b border-[#ece2ca]/60">
-                                            <span class="w-6 h-6 rounded-full bg-[#1b6e4c]/10 text-[#1b6e4c] flex items-center justify-center text-[12px] font-bold shrink-0" x-text="i + 1"></span>
-                                            <strong class="text-[14.5px] text-[#10131a] flex-1 min-w-0" x-text="p.nama || 'Tanpa Nama'"></strong>
+                                            <span
+                                                class="w-6 h-6 rounded-full bg-[#1b6e4c]/10 text-[#1b6e4c] flex items-center justify-center text-[12px] font-bold shrink-0"
+                                                x-text="i + 1"></span>
+                                            <strong class="text-[14.5px] text-[#10131a] flex-1 min-w-0 break-all"
+                                                x-text="p.nama || 'Tanpa Nama'"></strong>
                                             <template x-if="p.tahun">
-                                                <span class="px-2.5 py-1 rounded-md bg-[#1b6e4c] text-white text-[12px] font-bold shrink-0" x-text="p.tahun"></span>
+                                                <span
+                                                    class="px-2.5 py-1 rounded-md bg-[#1b6e4c] text-white text-[12px] font-bold shrink-0"
+                                                    x-text="p.tahun"></span>
                                             </template>
                                         </div>
                                         <div>
                                             <template x-if="p.files && p.files.length > 0">
                                                 <div>
-                                                    <span class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1.5">Sertifikat / Piagam</span>
+                                                    <span
+                                                        class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider mb-1.5">Sertifikat
+                                                        / Piagam</span>
                                                     <div class="flex flex-wrap gap-2">
                                                         <template x-for="(f, fi) in p.files" :key="fi">
                                                             <a :href="f.url" :download="f.name" target="_blank"
                                                                 class="flex items-center gap-2 p-2 max-w-[280px] w-full sm:w-auto bg-white border border-[#ece2ca] rounded-xl shadow-sm hover:border-[#1b6e4c]/40 transition-colors text-left group">
                                                                 <template x-if="f.type === 'image'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
-                                                                        <img :src="f.url" class="w-full h-full object-cover">
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[#d8cdb4]">
+                                                                        <img :src="f.url"
+                                                                            class="w-full h-full object-cover">
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'pdf'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z"></path></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#c0392b]/10 text-[#c0392b] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                                            </path>
+                                                                            <polyline points="14 2 14 8 20 8">
+                                                                            </polyline>
+                                                                            <path
+                                                                                d="M10 18v-4h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2z">
+                                                                            </path>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'word'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9h4"></path></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#2980b9]/10 text-[#2980b9] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                                            </path>
+                                                                            <polyline points="14 2 14 8 20 8">
+                                                                            </polyline>
+                                                                            <path d="M8 13h8"></path>
+                                                                            <path d="M8 17h8"></path>
+                                                                            <path d="M10 9h4"></path>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'zip'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#f39c12]/10 text-[#f39c12] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                                                            </path>
+                                                                            <polyline
+                                                                                points="3.27 6.96 12 12.01 20.73 6.96">
+                                                                            </polyline>
+                                                                            <line x1="12" y1="22.08" x2="12" y2="12">
+                                                                            </line>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="f.type === 'doc'">
-                                                                    <div class="w-8 h-8 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
-                                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                                                    <div
+                                                                        class="w-8 h-8 shrink-0 rounded-lg bg-[#9aa2b1]/10 text-[#9aa2b1] flex items-center justify-center">
+                                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round">
+                                                                            <path
+                                                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                                            </path>
+                                                                            <polyline points="14 2 14 8 20 8">
+                                                                            </polyline>
+                                                                        </svg>
                                                                     </div>
                                                                 </template>
                                                                 <div class="flex-1 min-w-0 pr-1">
-                                                                    <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors" x-text="f.name"></div>
-                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase" x-text="f.type"></div>
+                                                                    <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
+                                                                        x-text="f.name"></div>
+                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase"
+                                                                        x-text="f.type"></div>
                                                                 </div>
                                                             </a>
                                                         </template>
@@ -962,8 +1254,10 @@
                                     </div>
                                 </template>
                             </template>
-                            <template x-if="data.penghargaanList.length === 0 || !data.penghargaanList.some(p => p.nama || p.tahun || (p.files && p.files.length))">
-                                <div class="text-[13.5px] text-[#8a7f66] italic text-center py-2">Belum ada data penghargaan.</div>
+                            <template
+                                x-if="data.penghargaanList.length === 0 || !data.penghargaanList.some(p => p.nama || p.tahun || (p.files && p.files.length))">
+                                <div class="text-[13.5px] text-[#8a7f66] italic text-center py-2">Belum ada data
+                                    penghargaan.</div>
                             </template>
                         </div>
                     </div>
@@ -983,7 +1277,7 @@
                 </div>
 
                 <!-- NAV BUTTONS -->
-                <div class="flex gap-3.5 mt-8 pt-6 border-t border-[#eee6d4]"
+                <div class="flex gap-3.5 mt-8 pt-6 border-t border-[#eee6d4] print-hide"
                     :class="step > 0 ? 'justify-between' : 'justify-end'">
                     <template x-if="step > 0">
                         <button @click="back()"
@@ -1007,10 +1301,12 @@
                         </button>
                     </template>
                     <template x-if="step === 3">
-                        <button @click="submitForm()"
-                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#424140] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform cursor-pointer whitespace-nowrap">Kirim
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                        <button @click="submitForm()" :disabled="isSubmitting"
+                            class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#424140] font-extrabold text-[14px] sm:text-[15px] px-2 sm:px-[32px] py-[13px] rounded-xl shadow-[0_10px_30px_rgba(224,181,60,.35)] hover:scale-105 transition-transform cursor-pointer whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-text="isSubmitting ? 'Mengirim...' : 'Kirim'"></span>
+                            <svg x-show="!isSubmitting" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                class="shrink-0">
                                 <path d="M22 2 11 13" />
                                 <path d="M22 2 15 22l-4-9-9-4z" />
                             </svg>
@@ -1020,36 +1316,9 @@
 
             </div>
         </div>
-    </template>
+    </div>
 
-    <!-- SUCCESS -->
-    <template x-if="submitted">
-        <div class="max-w-[640px] mx-auto px-6 pt-[70px] pb-[90px] text-center" x-cloak>
-            <div
-                class="w-24 h-24 rounded-full bg-gradient-to-br from-[#88c445] to-[#1b6e4c] flex items-center justify-center mx-auto mb-7 shadow-[0_16px_44px_rgba(27,110,76,.4)] animate-pop">
-                <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                </svg>
-            </div>
-            <h1 class="cz text-[clamp(30px,5vw,44px)] font-extrabold uppercase text-[#10131a]">Pendaftaran <span
-                    class="text-[#1b6e4c]">Terkirim</span></h1>
-            <p class="text-[#4b5262] text-[17px] leading-[1.65] mt-4 max-w-[480px] mx-auto">Terima kasih telah
-                berpartisipasi. Pendaftaran Anda telah kami terima dan akan diverifikasi oleh tim komite.</p>
 
-            <div
-                class="inline-block mt-6 bg-white border border-[#e8ddc4] rounded-2xl py-4 px-7 shadow-[0_8px_24px_rgba(11,42,91,.08)]">
-                <div class="text-[12px] text-[#8a7f66] font-bold tracking-[0.12em]">NOMOR REGISTRASI</div>
-                <div class="cz text-[26px] font-bold text-[#b8860b] mt-1 tracking-wide" x-text="regId"></div>
-            </div>
-
-            <div class="mt-8">
-                <a href="{{ route('landing') }}"
-                    class="inline-flex items-center gap-2 bg-[#0a0c11] text-white font-bold text-[15px] px-[30px] py-[14px] rounded-xl hover:bg-black transition-colors">Kembali
-                    ke Beranda</a>
-            </div>
-        </div>
-    </template>
 
     <script>
         const DB_NAME = 'NominasiDB';
@@ -1081,11 +1350,13 @@
             Alpine.data('nominasiForm', () => ({
                 step: 0,
                 submitted: false,
+                isSubmitting: false,
                 showErr: false,
                 regId: '',
+                submitTime: '',
                 errs: {},
                 data: {
-                    kategori: '', namaNominee: '', wilayah: '', tanggalLahir: '', jenisKelamin: '', pendidikan: '', alamat: '', email: '', telp: '', judul: '', setuju: false,
+                    website_url: '', kategori: '', namaNominee: '', wilayah: '', tanggalLahir: '', jenisKelamin: '', pendidikan: '', alamat: '', email: '', telp: '', judul: '', setuju: false,
                     capaianList: [{ judul: '', deskripsi: '', dampak: '', files: [] }],
                     penghargaanList: [{ nama: '', tahun: '', files: [] }],
                     files: { ktp: '', foto: '' },
@@ -1107,7 +1378,7 @@
                     'Maluku', 'Maluku Utara', 'Papua Barat', 'Papua', 'Papua Selatan', 'Papua Tengah', 'Papua Pegunungan', 'Papua Barat Daya'
                 ],
                 uploads: [
-                    { key: 'ktp', title: 'KTP / Identitas', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v14H3z"/><path d="M7 9h4M7 13h6"/></svg>', optional: false },
+                    { key: 'ktp', title: 'KTP', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v14H3z"/><path d="M7 9h4M7 13h6"/></svg>', optional: false },
                     { key: 'foto', title: 'Foto Diri', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM21 15l-5-5L5 21"/></svg>', optional: true }
                 ],
 
@@ -1281,7 +1552,7 @@
                         let capaianInvalid = false;
                         d.capaianList.forEach(item => {
                             let wCount = (item.deskripsi || '').split(' ').filter(w => w.trim().length > 0).length;
-                            if (!item.judul.trim() || !item.deskripsi.trim() || !item.dampak?.trim() || wCount > 200) {
+                            if (!item.judul.trim() || !item.deskripsi.trim() || !item.dampak?.trim() || wCount > 200 || !item.files || item.files.length === 0) {
                                 capaianInvalid = true;
                             }
                         });
@@ -1291,16 +1562,23 @@
                         }
 
                         let penghargaanInvalid = false;
+                        let tahunInvalid = false;
                         d.penghargaanList.forEach((item, idx) => {
-                            const isRowEmpty = !item.nama.trim() && !item.tahun.toString().trim() && (!item.files || item.files.length === 0);
+                            const tahunStr = item.tahun.toString().trim();
+                            const isRowEmpty = !item.nama.trim() && !tahunStr && (!item.files || item.files.length === 0);
                             if (!isRowEmpty) {
-                                if (!item.nama.trim() || !item.tahun.toString().trim()) {
+                                if (!item.nama.trim() || !tahunStr || !item.files || item.files.length === 0) {
                                     penghargaanInvalid = true;
+                                } else if (tahunStr.length !== 4) {
+                                    tahunInvalid = true;
                                 }
                             }
                         });
                         if (penghargaanInvalid) {
                             this.errs.penghargaanList = "Harap lengkapi uraian dan tahun untuk penghargaan yang ditambahkan.";
+                            hasErr = true;
+                        } else if (tahunInvalid) {
+                            this.errs.penghargaanList = "Tahun penghargaan harus diisi dengan persis 4 digit angka (contoh: 2023).";
                             hasErr = true;
                         }
                     }
@@ -1325,14 +1603,103 @@
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
-                submitForm() {
+                async submitForm() {
                     if (this.validate(3)) {
                         this.showErr = true;
                         return;
                     }
-                    this.regId = 'DPD-2026-' + Math.floor(1000 + Math.random() * 9000);
-                    this.submitted = true;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    this.isSubmitting = true;
+                    this.showErr = false;
+
+                    if (this.data.website_url) {
+                        this.isSubmitting = false;
+                        return; // Silent fail for bots
+                    }
+
+                    try {
+                        let formData = new FormData();
+
+                        const primitives = ['kategori', 'namaNominee', 'wilayah', 'tanggalLahir', 'jenisKelamin', 'pendidikan', 'alamat', 'email', 'telp', 'judul'];
+                        primitives.forEach(p => formData.append(p, this.data[p] || ''));
+
+                        if (this.data._rawFiles && this.data._rawFiles.ktp) {
+                            formData.append('ktp', this.data._rawFiles.ktp);
+                        }
+                        if (this.data._rawFiles && this.data._rawFiles.foto) {
+                            formData.append('foto', this.data._rawFiles.foto);
+                        }
+
+                        this.data.capaianList.forEach((item, index) => {
+                            formData.append(`capaianList[${index}][judul]`, item.judul);
+                            formData.append(`capaianList[${index}][deskripsi]`, item.deskripsi);
+                            formData.append(`capaianList[${index}][dampak]`, item.dampak);
+                            if (item.files) {
+                                item.files.forEach(f => {
+                                    if (f.file) formData.append(`capaianFiles_${index}[]`, f.file);
+                                });
+                            }
+                        });
+
+                        this.data.penghargaanList.forEach((item, index) => {
+                            formData.append(`penghargaanList[${index}][nama]`, item.nama);
+                            formData.append(`penghargaanList[${index}][tahun]`, item.tahun);
+                            if (item.files) {
+                                item.files.forEach(f => {
+                                    if (f.file) formData.append(`penghargaanFiles_${index}[]`, f.file);
+                                });
+                            }
+                        });
+
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                        const res = await fetch('{{ route('nominasi.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+                            },
+                            body: formData
+                        });
+
+                        const result = await res.json();
+
+                        if (result.success) {
+                            this.regId = result.regId;
+                            this.submitTime = new Date().toLocaleString('id-ID', {
+                                day: '2-digit', month: 'short', year: 'numeric',
+                                hour: '2-digit', minute: '2-digit', second: '2-digit'
+                            }) + ' WIB';
+                            this.submitted = true;
+                            saveToDB('formData', null);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                            Swal.fire({
+                                title: 'Pendaftaran Terkirim!',
+                                text: 'Terima kasih, pendaftaran Anda telah berhasil disubmit.',
+                                icon: 'success',
+                                confirmButtonColor: '#1b6e4c'
+                            }).then(() => {
+                                // Otomatis membuka dialog print/save as PDF
+                                window.print();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: result.message || 'Terjadi kesalahan saat menyimpan data.',
+                                icon: 'error',
+                                confirmButtonColor: '#1b6e4c'
+                            });
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan saat mengirim data. Pastikan ukuran file tidak melebihi batas atau koneksi internet Anda stabil.',
+                            icon: 'error',
+                            confirmButtonColor: '#1b6e4c'
+                        });
+                    } finally {
+                        this.isSubmitting = false;
+                    }
                 }
             }));
         });

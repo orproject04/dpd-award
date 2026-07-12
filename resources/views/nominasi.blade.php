@@ -399,7 +399,7 @@
                                 <label class="block text-[14px] font-bold mb-2">Nomor WhatsApp <span
                                         class="text-[#c0392b]">*</span></label>
                                 <input x-model="data.telp" @input="data.telp = data.telp.replace(/[^0-9]/g, '')"
-                                    type="tel" placeholder="08xxxxxxxxxx"
+                                    type="tel" placeholder="08xxxxxxxxxx" maxlength="15"
                                     class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
                                 <template x-if="showErr && errs.telp">
                                     <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.telp"></p>
@@ -468,6 +468,8 @@
                                                 <div class="text-[13px] mt-0.5 truncate"
                                                     :class="data.files[u.key] ? 'text-[#1b6e4c]' : 'text-[#9aa2b1]'"
                                                     x-text="data.files[u.key] || 'Belum ada file'"></div>
+                                                <div x-show="data.sizes[u.key]" class="text-[11px] text-[#8a7f66] mt-0.5" 
+                                                    x-text="formatBytes(data.sizes[u.key])"></div>
                                             </div>
 
                                             <div class="flex items-center gap-3 shrink-0">
@@ -542,13 +544,13 @@
                                     <div class="flex flex-col gap-3">
                                         <div class="mb-1">
                                             <label class="block text-[13.5px] font-bold mb-2">Judul Inovasi /
-                                                Kontribusi</label>
+                                                Kontribusi <span class="text-[#c0392b] ml-1">*</span></label>
                                             <input x-model="item.judul" placeholder="Judul capaian/inovasi..."
                                                 class="w-full h-[45px] px-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[15px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="mb-1">
                                             <div class="flex justify-between items-end mb-2">
-                                                <label class="block text-[13.5px] font-bold">Deskripsi</label>
+                                                <label class="block text-[13.5px] font-bold">Deskripsi <span class="text-[#c0392b] ml-1">*</span></label>
                                                 <span class="text-[12px] font-medium transition-colors duration-200"
                                                     :class="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? 'text-[#c0392b]' : 'text-[#8a7f66]'"
                                                     x-text="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length + '/200 kata'">
@@ -569,12 +571,26 @@
                                                 class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden md:overflow-y-auto md:max-h-[250px] leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
                                         <div class="mb-1">
-                                            <label class="block text-[13.5px] font-bold mb-2">Dampak &
-                                                Pencapaian</label>
-                                            <textarea x-model="item.dampak"
-                                                @input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"
+                                            <div class="flex justify-between items-end mb-2">
+                                                <label class="block text-[13.5px] font-bold">Dampak &
+                                                    Pencapaian <span class="text-[#c0392b] ml-1">*</span></label>
+                                                <span class="text-[12px] font-medium transition-colors duration-200"
+                                                    :class="((item.dampak || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? 'text-[#c0392b]' : 'text-[#8a7f66]'"
+                                                    x-text="((item.dampak || '').split(' ').filter(w => w.trim().length > 0)).length + '/200 kata'">
+                                                </span>
+                                            </div>
+                                            <textarea x-model="item.dampak" @input="
+                                                    let val = item.dampak || '';
+                                                    let words = val.split(' ').filter(w => w.trim().length > 0);
+                                                    if (words.length > 200) {
+                                                        item.dampak = words.slice(0, 200).join(' ');
+                                                    }
+                                                    $el.style.height = 'auto';
+                                                    $el.style.height = $el.scrollHeight + 'px';
+                                                "
                                                 x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                 placeholder="Contoh: menjangkau 1.200 anak, 8 desa, sejak 2019..."
+                                                :class="((item.dampak || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? '!border-[#c0392b] !ring-1 !ring-[#c0392b]/30 bg-[#fdf5f5]' : ''"
                                                 class="w-full min-h-[90px] p-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[14.5px] text-[#10131a] resize-none overflow-hidden md:overflow-y-auto md:max-h-[250px] leading-[1.55] transition-all duration-200"></textarea>
                                         </div>
 
@@ -636,8 +652,10 @@
                                                         <div class="flex-1 min-w-0 pr-8">
                                                             <div class="text-[13px] font-bold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                 x-text="f.name"></div>
-                                                            <div class="text-[11px] font-medium text-[#8a7f66] uppercase mt-0.5"
-                                                                x-text="f.type"></div>
+                                                            <div class="text-[11px] font-medium text-[#8a7f66] uppercase mt-0.5">
+                                                                <span x-text="f.type"></span>
+                                                                <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                            </div>
                                                         </div>
 
                                                         <button type="button"
@@ -720,9 +738,8 @@
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="sm:col-span-12 mt-2">
-                                            <label class="block text-[13.5px] font-bold mb-2">Evidence / Bukti
-                                                Dukung <template x-if="item.nama.trim()"><span
-                                                        class="text-[#c0392b] ml-1">*</span></template></label>
+                                            <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung (Evidence)
+                                                <template x-if="item.nama.trim() || item.tahun.toString().trim()"><span class="text-[#c0392b] ml-1">*</span></template></label>
                                             <div class="relative group cursor-pointer">
                                                 <input type="file" multiple
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
@@ -777,8 +794,10 @@
                                                         <div class="flex-1 min-w-0 pr-7">
                                                             <div class="text-[12px] font-bold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                 x-text="f.name"></div>
-                                                            <div class="text-[10px] font-medium text-[#8a7f66] uppercase"
-                                                                x-text="f.type"></div>
+                                                            <div class="text-[10px] font-medium text-[#8a7f66] uppercase">
+                                                                <span x-text="f.type"></span>
+                                                                <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                            </div>
                                                         </div>
 
                                                         <button type="button"
@@ -920,10 +939,10 @@
                             <!-- KTP -->
                             <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
                                 <template x-if="data.previews.ktp">
-                                    <div
-                                        class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
+                                    <a :href="data.previews.ktp.url" target="_blank"
+                                        class="block w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white hover:opacity-80 transition-opacity">
                                         <img :src="data.previews.ktp.url" class="w-full h-full object-cover">
-                                    </div>
+                                    </a>
                                 </template>
                                 <template x-if="!data.previews.ktp">
                                     <div
@@ -940,16 +959,18 @@
                                     <span
                                         class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">KTP</span>
                                     <span class="block text-[13.5px] text-[#10131a] font-medium truncate"
-                                        x-text="data.files.ktp ? data.files.ktp.name : 'Belum diunggah'"></span>
+                                        x-text="data.files.ktp || 'Belum diunggah'"></span>
+                                    <span x-show="data.sizes.ktp" class="block text-[11px] text-[#8a7f66] mt-0.5" 
+                                        x-text="formatBytes(data.sizes.ktp)"></span>
                                 </div>
                             </div>
                             <!-- Foto Diri -->
                             <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
                                 <template x-if="data.previews.foto">
-                                    <div
-                                        class="w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white">
+                                    <a :href="data.previews.foto.url" target="_blank"
+                                        class="block w-12 h-12 rounded-lg overflow-hidden border border-[#d8cdb4] shrink-0 bg-white hover:opacity-80 transition-opacity">
                                         <img :src="data.previews.foto.url" class="w-full h-full object-cover">
-                                    </div>
+                                    </a>
                                 </template>
                                 <template x-if="!data.previews.foto">
                                     <div
@@ -967,7 +988,9 @@
                                         class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">Foto
                                         Diri</span>
                                     <span class="block text-[13.5px] text-[#10131a] font-medium truncate"
-                                        x-text="data.files.foto ? data.files.foto.name : 'Belum diunggah'"></span>
+                                        x-text="data.files.foto || 'Belum diunggah'"></span>
+                                    <span x-show="data.sizes.foto" class="block text-[11px] text-[#8a7f66] mt-0.5" 
+                                        x-text="formatBytes(data.sizes.foto)"></span>
                                 </div>
                             </div>
                         </div>
@@ -1104,8 +1127,10 @@
                                                                 <div class="flex-1 min-w-0 pr-1">
                                                                     <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                         x-text="f.name"></div>
-                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase"
-                                                                        x-text="f.type"></div>
+                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase">
+                                                                        <span x-text="f.type"></span>
+                                                                        <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                                    </div>
                                                                 </div>
                                                             </a>
                                                         </template>
@@ -1242,8 +1267,10 @@
                                                                 <div class="flex-1 min-w-0 pr-1">
                                                                     <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                         x-text="f.name"></div>
-                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase"
-                                                                        x-text="f.type"></div>
+                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase">
+                                                                        <span x-text="f.type"></span>
+                                                                        <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                                    </div>
                                                                 </div>
                                                             </a>
                                                         </template>
@@ -1360,6 +1387,7 @@
                     capaianList: [{ judul: '', deskripsi: '', dampak: '', files: [] }],
                     penghargaanList: [{ nama: '', tahun: '', files: [] }],
                     files: { ktp: '', foto: '' },
+                    sizes: { ktp: 0, foto: 0 },
                     previews: { ktp: '', foto: '' }
                 },
                 steps: [
@@ -1386,12 +1414,18 @@
                     getFromDB('formData').then(saved => {
                         if (saved) {
                             this.data = saved;
+                            if (!this.data.sizes) this.data.sizes = { ktp: 0, foto: 0 };
                             this.step = saved._step || 0;
 
                             if (this.data._rawFiles) {
                                 Object.entries(this.data._rawFiles).forEach(([key, file]) => {
-                                    if (file && this.data.previews[key]) {
-                                        this.data.previews[key].url = URL.createObjectURL(file);
+                                    if (file) {
+                                        if (this.data.previews[key]) {
+                                            this.data.previews[key].url = URL.createObjectURL(file);
+                                        }
+                                        if (file.size && (!this.data.sizes[key] || this.data.sizes[key] === 0)) {
+                                            this.data.sizes[key] = file.size;
+                                        }
                                     }
                                 });
                             }
@@ -1399,7 +1433,12 @@
                                 list.forEach(item => {
                                     if (item.files) {
                                         item.files.forEach(f => {
-                                            if (f.file) f.url = URL.createObjectURL(f.file);
+                                            if (f.file) {
+                                                f.url = URL.createObjectURL(f.file);
+                                                if (!f.size && f.file.size) {
+                                                    f.size = f.file.size;
+                                                }
+                                            }
                                         });
                                     }
                                 });
@@ -1410,7 +1449,7 @@
 
                         const params = new URLSearchParams(window.location.search);
                         const kat = params.get('kategori');
-                        if (kat && this.categories.some(c => c.id === kat) && !saved) {
+                        if (kat && this.categories.some(c => c.id === kat)) {
                             this.data.kategori = kat;
                             this.step = 1;
                         }
@@ -1423,6 +1462,14 @@
                             saveToDB('formData', cloneData).catch(e => console.error('Failed to save state:', e));
                         });
                     });
+                },
+
+                formatBytes(bytes) {
+                    if (!bytes || bytes === 0) return '0 B';
+                    const k = 1024;
+                    const sizes = ['B', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
                 },
 
 
@@ -1457,6 +1504,7 @@
                     const file = e.target.files[0];
                     if (file) {
                         this.data.files[key] = file.name;
+                        this.data.sizes[key] = file.size;
                         if (!this.data._rawFiles) this.data._rawFiles = {};
                         this.data._rawFiles[key] = file;
                         const ext = file.name.split('.').pop().toLowerCase();
@@ -1475,6 +1523,7 @@
                         }
                     } else {
                         this.data.files[key] = '';
+                        this.data.sizes[key] = 0;
                         this.data.previews[key] = null;
                     }
                 },
@@ -1503,6 +1552,7 @@
                         list[index].files.push({
                             file: file,
                             name: file.name,
+                            size: file.size,
                             type: type,
                             url: fileUrl
                         });
@@ -1552,12 +1602,13 @@
                         let capaianInvalid = false;
                         d.capaianList.forEach(item => {
                             let wCount = (item.deskripsi || '').split(' ').filter(w => w.trim().length > 0).length;
-                            if (!item.judul.trim() || !item.deskripsi.trim() || !item.dampak?.trim() || wCount > 200 || !item.files || item.files.length === 0) {
+                            let dCount = (item.dampak || '').split(' ').filter(w => w.trim().length > 0).length;
+                            if (!item.judul.trim() || !item.deskripsi.trim() || !item.dampak?.trim() || wCount > 200 || dCount > 200 || !item.files || item.files.length === 0) {
                                 capaianInvalid = true;
                             }
                         });
                         if (d.capaianList.length === 0 || capaianInvalid) {
-                            this.errs.capaianList = "Harap lengkapi judul, deskripsi (maksimal 200 kata), dan dampak pada setiap baris capaian/inovasi.";
+                            this.errs.capaianList = "Harap lengkapi judul, deskripsi (maksimal 200 kata), dan dampak (maksimal 200 kata) pada setiap baris capaian/inovasi.";
                             hasErr = true;
                         }
 
@@ -1652,43 +1703,88 @@
 
                         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-                        const res = await fetch('{{ route('nominasi.store') }}', {
-                            method: 'POST',
-                            headers: {
-                                ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
-                            },
-                            body: formData
+                        Swal.fire({
+                            title: 'Mengunggah Data...',
+                            html: `
+                                <div class="mt-4 mb-2 h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+                                    <div id="upload-progress-bar" class="h-full bg-[#1b6e4c] transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                                <div id="upload-progress-text" class="text-[13px] text-gray-500 font-medium">Mempersiapkan...</div>
+                            `,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
                         });
 
-                        const result = await res.json();
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', '{{ route('nominasi.store') }}', true);
+                        if (csrfToken) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                        }
+                        xhr.setRequestHeader('Accept', 'application/json');
 
-                        if (result.success) {
-                            this.regId = result.regId;
-                            this.submitTime = new Date().toLocaleString('id-ID', {
-                                day: '2-digit', month: 'short', year: 'numeric',
-                                hour: '2-digit', minute: '2-digit', second: '2-digit'
-                            }) + ' WIB';
-                            this.submitted = true;
-                            saveToDB('formData', null);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        xhr.upload.onprogress = (e) => {
+                            if (e.lengthComputable) {
+                                const percentComplete = Math.round((e.loaded / e.total) * 100);
+                                const bar = document.getElementById('upload-progress-bar');
+                                const text = document.getElementById('upload-progress-text');
+                                if (bar) bar.style.width = percentComplete + '%';
+                                if (text) text.innerText = `${percentComplete}% (${this.formatBytes(e.loaded)} / ${this.formatBytes(e.total)})`;
+                            }
+                        };
 
-                            Swal.fire({
-                                title: 'Pendaftaran Terkirim!',
-                                text: 'Terima kasih, pendaftaran Anda telah berhasil disubmit.',
-                                icon: 'success',
-                                confirmButtonColor: '#1b6e4c'
-                            }).then(() => {
-                                // Otomatis membuka dialog print/save as PDF
-                                window.print();
-                            });
-                        } else {
+                        xhr.onload = () => {
+                            this.isSubmitting = false;
+                            let result = {};
+                            try {
+                                result = JSON.parse(xhr.responseText);
+                            } catch (e) {
+                                result = { success: false, message: 'Respons server tidak valid.' };
+                            }
+
+                            if (xhr.status >= 200 && xhr.status < 300 && result.success) {
+                                this.regId = result.regId;
+                                this.submitTime = new Date().toLocaleString('id-ID', {
+                                    day: '2-digit', month: 'short', year: 'numeric',
+                                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                                }) + ' WIB';
+                                this.submitted = true;
+                                saveToDB('formData', null);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                                Swal.fire({
+                                    title: 'Pendaftaran Terkirim!',
+                                    text: 'Terima kasih, pendaftaran Anda telah berhasil disubmit.',
+                                    icon: 'success',
+                                    confirmButtonColor: '#1b6e4c'
+                                }).then(() => {
+                                    // Otomatis membuka dialog print/save as PDF
+                                    window.print();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: result.message || 'Terjadi kesalahan saat menyimpan data.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#1b6e4c'
+                                });
+                            }
+                        };
+
+                        xhr.onerror = () => {
+                            this.isSubmitting = false;
                             Swal.fire({
                                 title: 'Gagal!',
-                                text: result.message || 'Terjadi kesalahan saat menyimpan data.',
+                                text: 'Terjadi kesalahan koneksi saat mengirim data. Silakan periksa koneksi internet Anda.',
                                 icon: 'error',
                                 confirmButtonColor: '#1b6e4c'
                             });
-                        }
+                        };
+
+                        xhr.send(formData);
                     } catch (err) {
                         console.error(err);
                         Swal.fire({

@@ -37,9 +37,6 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Disable Laravolt's global sidebar cache so menu changes apply instantly when roles change
-        \Illuminate\Support\Facades\Cache::forget('sidebar-items');
-
         if (request()->header('x-forwarded-proto') === 'https' || request()->isSecure()) {
             URL::forceScheme('https');
         }

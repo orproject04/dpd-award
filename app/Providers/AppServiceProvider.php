@@ -38,7 +38,7 @@ final class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Disable Laravolt's global sidebar cache so menu changes apply instantly when roles change
-        if (! $this->app->runningInConsole()) {
+        if (!$this->app->runningInConsole()) {
             try {
                 \Illuminate\Support\Facades\Cache::forget('sidebar-items');
             } catch (\Throwable $e) {

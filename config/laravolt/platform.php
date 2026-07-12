@@ -14,7 +14,7 @@ return [
         'verification' => true,
         'captcha' => false,
         'workflow' => false,
-        'enable_default_menu' => true,
+        'enable_default_menu' => false,
     ],
     'settings' => [
         [

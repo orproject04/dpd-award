@@ -51,6 +51,30 @@ final class AppServiceProvider extends ServiceProvider
                 ->data('icon', 'user')
                 ->data('order', 1)
                 ->active('pendaftar/*');
+
+            // System menu
+            $systemMenu = $menu->add('System')
+                ->data('order', 99);
+
+            $systemMenu->add('Users', route('epicentrum::users.index'))
+                ->active('epicentrum/users/*')
+                ->data('icon', 'user-friends')
+                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_USER]);
+
+            $systemMenu->add('Roles', route('epicentrum::roles.index'))
+                ->active('epicentrum/roles/*')
+                ->data('icon', 'user-astronaut')
+                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_ROLE]);
+
+            $systemMenu->add('Permissions', route('epicentrum::permissions.edit'))
+                ->active('epicentrum/permissions/*')
+                ->data('icon', 'shield-check')
+                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_PERMISSION]);
+
+            $systemMenu->add('Settings', route('platform::settings.edit'))
+                ->active('platform/settings/*')
+                ->data('icon', 'sliders-v')
+                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_SETTINGS]);
         });
     }
 }

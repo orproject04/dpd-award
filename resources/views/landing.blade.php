@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DPDRI AWARDS 2026</title>
+    <meta name="description" content="DPDRI AWARDS 2026 - Penghargaan bagi inovator di bidang pendidikan, kesehatan, pangan, dan pelestari budaya daerah.">
     <link rel="icon" href="{{ asset('images/logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -132,6 +133,7 @@
             </a>
 
             <button @click="mobileMenuOpen = !mobileMenuOpen"
+                aria-label="Menu"
                 class="lg:hidden text-white p-2 focus:outline-none cursor-pointer mt-2.5 sm:mt-3.5">
                 <svg x-show="!mobileMenuOpen" width="28" height="28" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -649,6 +651,7 @@
                         :style="`object-position: ${activeCat?.pos || 'center'}`">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     <button @click="modalOpen = false"
+                        aria-label="Tutup"
                         class="absolute top-4 right-4 w-10 h-10 bg-black/40 hover:bg-black/70 backdrop-blur text-white rounded-full flex items-center justify-center transition-colors">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -675,7 +678,7 @@
 
                 <!-- Modal Body -->
                 <div class="p-6 sm:p-8 overflow-y-auto">
-                    <h4 class="text-[14px] font-bold text-[#b8860b] tracking-wider mb-2">PENJELASAN KATEGORI</h4>
+                    <h3 class="text-[14px] font-bold text-[#b8860b] tracking-wider mb-2">PENJELASAN KATEGORI</h3>
                     <p class="text-[#4b5262] text-[15px] sm:text-[16px] leading-[1.7]" x-text="activeCat?.penjelasan">
                     </p>
                 </div>
@@ -691,9 +694,7 @@
                             <template x-for="(cp, i) in activeCat?.cp" :key="i">
                                 <div>
                                     <template x-if="cp.phone">
-                                        <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo,
-                                            Saya ingin bertanya tentang DPDRI AWARDS pada ' + activeCat?.title + ' -
-                                            ' + activeCat?.desc)"
+                                        <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI AWARDS pada ' + activeCat?.title + ' - ' + activeCat?.desc)"
                                             target="_blank"
                                             class="px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 whitespace-nowrap flex items-center gap-2 cursor-pointer group">
                                             <svg width="15" height="15" viewBox="0 0 24 24" fill="#25d366"
@@ -1233,7 +1234,8 @@
     <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"
-                alt="" class="w-full h-full object-cover opacity-30 blur-[2px]">
+                alt="DPDRI AWARDS" loading="lazy"
+                class="w-full h-full object-cover opacity-30 blur-[2px]">
             <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
         </div>
         <div class="relative z-10 max-w-[1000px] mx-auto">
@@ -1495,7 +1497,7 @@
                         Jawab</a>
                 </div>
                 <div class="flex items-center gap-3.5">
-                    <a href="#"
+                    <a href="#" aria-label="Instagram"
                         class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#88c445] hover:text-[#0a0c11] transition-all text-white/50">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1504,7 +1506,7 @@
                             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                         </svg>
                     </a>
-                    <a href="#"
+                    <a href="#" aria-label="YouTube"
                         class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#88c445] hover:text-[#0a0c11] transition-all text-white/50">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

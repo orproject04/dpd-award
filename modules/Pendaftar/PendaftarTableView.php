@@ -26,6 +26,7 @@ class PendaftarTableView extends CustomTableView
         }
 
         return $query
+            ->withCount(['kontribusi', 'penghargaan'])
             ->autoSort()
             ->latest('updated_at')
             ->autoSearch(request('search'))
@@ -76,6 +77,12 @@ class PendaftarTableView extends CustomTableView
             Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;'>" . $data->kategori . "</span>";
             }, 'Kategori')->sortable('kategori'),
+            Raw::make(function ($data) {
+                return "<span style='display:block;text-align:center;'>" . $data->kontribusi_count . "</span>";
+            }, 'Kontribusi')->sortable('kontribusi_count'),
+            Raw::make(function ($data) {
+                return "<span style='display:block;text-align:center;'>" . $data->penghargaan_count . "</span>";
+            }, 'Penghargaan')->sortable('penghargaan_count'),
             MyLabel::make('status')->map([
                 'Diajukan' => 'blue',
                 'Lolos Verifikasi Berkas' => 'yellow',

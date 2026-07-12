@@ -160,7 +160,16 @@ final class HomeController
         }
 
         \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        \Illuminate\Support\Facades\Artisan::call('route:clear');
 
-        return redirect()->route('dashboard')->withSuccess(__('Cache berhasil dibersihkan.'));
+        try {
+            app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        } catch (\Exception $e) {
+            // ignore if not installed
+        }
+
+        return redirect()->back()->withSuccess(__('Cache berhasil dibersihkan.'));
     }
 }

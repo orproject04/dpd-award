@@ -13,7 +13,7 @@ class NominasiController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = [
             'kategori' => 'required|string',
             'namaNominee' => 'required|string|max:255',
             'wilayah' => 'required|string|max:50',
@@ -23,9 +23,20 @@ class NominasiController extends Controller
             'alamat' => 'required|string',
             'telp' => 'required|string|max:15',
             'email' => 'required|email|max:50',
-            'ktp' => 'required|file',
-            'foto' => 'nullable|file',
-        ]);
+            'ktp' => 'required|file|mimes:jpeg,png,jpg,pdf|max:51200',
+            'foto' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
+        ];
+
+        foreach ($request->allFiles() as $key => $file) {
+            if (str_starts_with($key, 'capaianFiles_')) {
+                $rules[$key . '.*'] = 'file|mimes:jpeg,png,jpg,pdf,doc,docx,xls,xlsx,ppt,pptx,zip|max:51200';
+            }
+            if (str_starts_with($key, 'penghargaanFiles_')) {
+                $rules[$key . '.*'] = 'file|mimes:jpeg,png,jpg,pdf,doc,docx,xls,xlsx,ppt,pptx,zip|max:51200';
+            }
+        }
+
+        $request->validate($rules);
 
         try {
             DB::beginTransaction();
@@ -41,10 +52,16 @@ class NominasiController extends Controller
             $kategoriCode = $kodeKategori[$request->kategori] ?? 'XX';
             $tglLahir = date('ymd', strtotime($request->tanggalLahir));
 
-            // Get the latest number suffix for this specific prefix (e.g., DPD-BSB26-991003)
-            // The requirement says: XXXX adalah incement 1 dari setiap pendaftar
-            // This means it's a global increment or category specific. Let's make it a global increment of all registrations to be safe and robust, or count total + 1.
-            $count = Pendaftar::count() + 1;
+            $namaKategoriFull = [
+                'pendidikan' => 'Bidang Pendidikan',
+                'kesehatan' => 'Bidang Kesehatan',
+                'pangan' => 'Bidang Ketahanan Pangan',
+                'budaya' => 'Bidang Seni dan Budaya',
+            ];
+            $kategoriFull = $namaKategoriFull[$request->kategori] ?? $request->kategori;
+
+            // Get the latest number suffix for this specific category
+            $count = Pendaftar::where('kategori', $kategoriFull)->count() + 1;
             $increment = str_pad($count, 4, '0', STR_PAD_LEFT);
 
             $nomorRegistrasi = "DPD-{$kategoriCode}26-{$tglLahir}{$increment}";
@@ -66,13 +83,7 @@ class NominasiController extends Controller
             }
 
             // 3. Save Pendaftar
-            $namaKategoriFull = [
-                'pendidikan' => 'Bidang Pendidikan',
-                'kesehatan' => 'Bidang Kesehatan',
-                'pangan' => 'Bidang Ketahanan Pangan',
-                'budaya' => 'Bidang Seni dan Budaya',
-            ];
-            $kategoriFull = $namaKategoriFull[$request->kategori] ?? $request->kategori;
+            // $namaKategoriFull and $kategoriFull have been moved up
 
             $pendaftar = Pendaftar::create([
                 'nomor_registrasi' => $nomorRegistrasi,
@@ -135,7 +146,7 @@ class NominasiController extends Controller
                     Penghargaan::create([
                         'pendaftar_id' => $pendaftar->id,
                         'uraian' => $penghargaan['nama'] ?? '',
-                        'tahun' => (isset($penghargaan['tahun']) && is_numeric($penghargaan['tahun'])) ? (int)$penghargaan['tahun'] : (int)date('Y'),
+                        'tahun' => (isset($penghargaan['tahun']) && is_numeric($penghargaan['tahun'])) ? (int) $penghargaan['tahun'] : (int) date('Y'),
                         'bukti_dukung' => $evidencePaths,
                     ]);
                 }

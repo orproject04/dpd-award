@@ -423,9 +423,16 @@
                             <div class="flex flex-col gap-3.5">
                                 <template x-for="u in uploads.filter(x => ['ktp', 'foto'].includes(x.key))"
                                     :key="u.key">
-                                    <div class="flex flex-col">
-                                        <div class="flex items-center gap-4 border-[1.5px] border-dashed rounded-[14px] py-[16px] px-5 transition-all duration-200"
-                                            :class="data.files[u.key] ? 'border-[#1b6e4c] bg-[#f0f8f2]' : 'border-[#d8cdb4] bg-[#faf6ec]'">
+                                    <div class="flex flex-col relative group" x-data="{ isDragging: false }"
+                                        @dragenter.prevent="isDragging = true"
+                                        @dragover.prevent="isDragging = true"
+                                        @dragleave.prevent="if($event.target === $refs.overlay) isDragging = false"
+                                        @drop.prevent="isDragging = false; handleFileChange($event, u.key)">
+                                        
+                                        <div x-ref="overlay" x-show="isDragging" class="absolute inset-0 z-20 cursor-copy" x-cloak></div>
+
+                                        <div class="flex items-center gap-4 border-[1.5px] border-dashed rounded-[14px] py-[16px] px-5 transition-all duration-200 group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c]"
+                                            :class="isDragging ? 'border-[#1b6e4c] bg-[#f0f8f2] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'">
                                             <template x-if="data.previews[u.key]?.type === 'image'">
                                                 <a :href="data.previews[u.key].url" target="_blank"
                                                     class="shrink-0 w-11 h-11 rounded-[11px] overflow-hidden border border-[#1b6e4c]/20 hover:opacity-80 transition-opacity"
@@ -468,7 +475,8 @@
                                                 <div class="text-[13px] mt-0.5 truncate"
                                                     :class="data.files[u.key] ? 'text-[#1b6e4c]' : 'text-[#9aa2b1]'"
                                                     x-text="data.files[u.key] || 'Belum ada file'"></div>
-                                                <div x-show="data.sizes[u.key]" class="text-[11px] text-[#8a7f66] mt-0.5" 
+                                                <div x-show="data.sizes[u.key]"
+                                                    class="text-[11px] text-[#8a7f66] mt-0.5"
                                                     x-text="formatBytes(data.sizes[u.key])"></div>
                                             </div>
 
@@ -484,7 +492,7 @@
                                                     class="cursor-pointer px-4 py-2 rounded-xl text-[13px] font-bold transition-colors"
                                                     :class="data.files[u.key] ? 'border border-[#1b6e4c] text-[#1b6e4c] hover:bg-[#1b6e4c] hover:text-white' : 'bg-[#e0b53c] text-[#0a0c11] hover:bg-[#c9a030] shadow-sm'">
                                                     <span x-text="data.files[u.key] ? 'Ganti' : 'Pilih File'"></span>
-                                                    <input type="file" class="hidden"
+                                                    <input type="file" class="hidden" accept="image/*,application/pdf"
                                                         @change="handleFileChange($event, u.key)">
                                                 </label>
                                             </div>
@@ -550,7 +558,8 @@
                                         </div>
                                         <div class="mb-1">
                                             <div class="flex justify-between items-end mb-2">
-                                                <label class="block text-[13.5px] font-bold">Deskripsi <span class="text-[#c0392b] ml-1">*</span></label>
+                                                <label class="block text-[13.5px] font-bold">Deskripsi <span
+                                                        class="text-[#c0392b] ml-1">*</span></label>
                                                 <span class="text-[12px] font-medium transition-colors duration-200"
                                                     :class="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? 'text-[#c0392b]' : 'text-[#8a7f66]'"
                                                     x-text="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length + '/200 kata'">
@@ -598,12 +607,17 @@
                                             <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung
                                                 (Evidence) <template x-if="item.judul.trim()"><span
                                                         class="text-[#c0392b] ml-1">*</span></template></label>
-                                            <div class="relative group cursor-pointer">
+                                            <div class="relative group cursor-pointer" x-data="{ isDragging: false }">
                                                 <input type="file" multiple
+                                                    accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                                    @dragenter="isDragging = true"
+                                                    @dragleave="isDragging = false"
+                                                    @drop="isDragging = false"
                                                     @change="handleMultiFileChange($event, 'capaianList', index)">
                                                 <div
-                                                    class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-[#d8cdb4] rounded-xl bg-[#faf6ec] group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
+                                                    :class="isDragging ? 'bg-[#f0f8f2] border-[#1b6e4c] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'"
+                                                    class="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
                                                     <div
                                                         class="w-12 h-12 mb-3 rounded-full bg-white shadow-sm flex items-center justify-center text-[#b8860b] group-hover:text-[#1b6e4c] group-hover:scale-110 transition-all duration-300">
                                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -616,7 +630,8 @@
                                                     </div>
                                                     <p class="text-[14px] font-bold text-[#10131a] mb-1">Klik atau seret
                                                         file ke sini</p>
-                                                    <p class="text-[12px] text-[#8a7f66]">Format JPG, PNG, PDF, DOC, ZIP
+                                                    <p class="text-[12px] text-[#8a7f66]">Format JPG, PNG, PDF, DOC,
+                                                        XLS, PPT, ZIP
                                                     </p>
                                                 </div>
                                             </div>
@@ -652,9 +667,10 @@
                                                         <div class="flex-1 min-w-0 pr-8">
                                                             <div class="text-[13px] font-bold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                 x-text="f.name"></div>
-                                                            <div class="text-[11px] font-medium text-[#8a7f66] uppercase mt-0.5">
+                                                            <div
+                                                                class="text-[11px] font-medium text-[#8a7f66] uppercase mt-0.5">
                                                                 <span x-text="f.type"></span>
-                                                                <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                                <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
                                                             </div>
                                                         </div>
 
@@ -739,13 +755,19 @@
                                         </div>
                                         <div class="sm:col-span-12 mt-2">
                                             <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung (Evidence)
-                                                <template x-if="item.nama.trim() || item.tahun.toString().trim()"><span class="text-[#c0392b] ml-1">*</span></template></label>
-                                            <div class="relative group cursor-pointer">
+                                                <template x-if="item.nama.trim() || item.tahun.toString().trim()"><span
+                                                        class="text-[#c0392b] ml-1">*</span></template></label>
+                                            <div class="relative group cursor-pointer" x-data="{ isDragging: false }">
                                                 <input type="file" multiple
+                                                    accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                                    @dragenter="isDragging = true"
+                                                    @dragleave="isDragging = false"
+                                                    @drop="isDragging = false"
                                                     @change="handleMultiFileChange($event, 'penghargaanList', index)">
                                                 <div
-                                                    class="flex flex-col items-center justify-center p-5 border-2 border-dashed border-[#d8cdb4] rounded-xl bg-[#faf6ec] group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
+                                                    :class="isDragging ? 'bg-[#f0f8f2] border-[#1b6e4c] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'"
+                                                    class="flex flex-col items-center justify-center p-5 border-2 border-dashed rounded-xl group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
                                                     <div
                                                         class="w-10 h-10 mb-2 rounded-full bg-white shadow-sm flex items-center justify-center text-[#b8860b] group-hover:text-[#1b6e4c] group-hover:scale-110 transition-all duration-300">
                                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -758,7 +780,8 @@
                                                     </div>
                                                     <p class="text-[13px] font-bold text-[#10131a] mb-0.5">Klik atau
                                                         seret file ke sini</p>
-                                                    <p class="text-[11px] text-[#8a7f66]">Format JPG, PNG, PDF, DOC, ZIP
+                                                    <p class="text-[11px] text-[#8a7f66]">Format JPG, PNG, PDF, DOC,
+                                                        XLS, PPT, ZIP
                                                     </p>
                                                 </div>
                                             </div>
@@ -794,9 +817,10 @@
                                                         <div class="flex-1 min-w-0 pr-7">
                                                             <div class="text-[12px] font-bold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                 x-text="f.name"></div>
-                                                            <div class="text-[10px] font-medium text-[#8a7f66] uppercase">
+                                                            <div
+                                                                class="text-[10px] font-medium text-[#8a7f66] uppercase">
                                                                 <span x-text="f.type"></span>
-                                                                <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                                <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
                                                             </div>
                                                         </div>
 
@@ -960,7 +984,7 @@
                                         class="block text-[11px] font-bold text-[#8a7f66] uppercase tracking-wider">KTP</span>
                                     <span class="block text-[13.5px] text-[#10131a] font-medium truncate"
                                         x-text="data.files.ktp || 'Belum diunggah'"></span>
-                                    <span x-show="data.sizes.ktp" class="block text-[11px] text-[#8a7f66] mt-0.5" 
+                                    <span x-show="data.sizes.ktp" class="block text-[11px] text-[#8a7f66] mt-0.5"
                                         x-text="formatBytes(data.sizes.ktp)"></span>
                                 </div>
                             </div>
@@ -989,7 +1013,7 @@
                                         Diri</span>
                                     <span class="block text-[13.5px] text-[#10131a] font-medium truncate"
                                         x-text="data.files.foto || 'Belum diunggah'"></span>
-                                    <span x-show="data.sizes.foto" class="block text-[11px] text-[#8a7f66] mt-0.5" 
+                                    <span x-show="data.sizes.foto" class="block text-[11px] text-[#8a7f66] mt-0.5"
                                         x-text="formatBytes(data.sizes.foto)"></span>
                                 </div>
                             </div>
@@ -1127,9 +1151,10 @@
                                                                 <div class="flex-1 min-w-0 pr-1">
                                                                     <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                         x-text="f.name"></div>
-                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase">
+                                                                    <div
+                                                                        class="text-[10px] font-medium text-[#8a7f66] uppercase">
                                                                         <span x-text="f.type"></span>
-                                                                        <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                                        <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
                                                                     </div>
                                                                 </div>
                                                             </a>
@@ -1267,9 +1292,10 @@
                                                                 <div class="flex-1 min-w-0 pr-1">
                                                                     <div class="text-[12px] font-semibold text-[#10131a] truncate group-hover:text-[#1b6e4c] transition-colors"
                                                                         x-text="f.name"></div>
-                                                                    <div class="text-[10px] font-medium text-[#8a7f66] uppercase">
+                                                                    <div
+                                                                        class="text-[10px] font-medium text-[#8a7f66] uppercase">
                                                                         <span x-text="f.type"></span>
-                                                                        <span x-show="f.size" class="lowercase" x-text="', ' + formatBytes(f.size)"></span>
+                                                                        <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
                                                                     </div>
                                                                 </div>
                                                             </a>
@@ -1501,13 +1527,38 @@
                 },
 
                 handleFileChange(e, key) {
-                    const file = e.target.files[0];
+                    const file = e.dataTransfer ? e.dataTransfer.files[0] : (e.target.files ? e.target.files[0] : null);
                     if (file) {
+                        if (file.size > 50 * 1024 * 1024) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Ukuran Terlalu Besar',
+                                text: 'Maksimal ukuran file adalah 50 MB.',
+                                confirmButtonColor: '#1b6e4c'
+                            });
+                            e.target.value = '';
+                            return;
+                        }
                         this.data.files[key] = file.name;
                         this.data.sizes[key] = file.size;
                         if (!this.data._rawFiles) this.data._rawFiles = {};
                         this.data._rawFiles[key] = file;
                         const ext = file.name.split('.').pop().toLowerCase();
+
+                        const isImage = file.type.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp'].includes(ext);
+                        const isPdf = file.type === 'application/pdf' || ext === 'pdf';
+
+                        if (!isImage && !isPdf) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Tipe File Tidak Valid',
+                                text: 'Hanya file Gambar (JPG/PNG) atau PDF yang diizinkan.',
+                                confirmButtonColor: '#1b6e4c'
+                            });
+                            e.target.value = '';
+                            return;
+                        }
+
                         const fileUrl = URL.createObjectURL(file);
 
                         if (file.type.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
@@ -1532,10 +1583,52 @@
                     const files = Array.from(e.target.files);
                     if (!files.length) return;
 
+                    let hasOversized = false;
+                    let hasInvalidType = false;
+                    const validFiles = files.filter(file => {
+                        if (file.size > 50 * 1024 * 1024) {
+                            hasOversized = true;
+                            return false;
+                        }
+
+                        const ext = file.name.split('.').pop().toLowerCase();
+                        const isImage = file.type.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp'].includes(ext);
+                        const isPdf = file.type === 'application/pdf' || ext === 'pdf';
+                        const isWord = file.type.includes('word') || ['doc', 'docx'].includes(ext);
+                        const isExcel = file.type.includes('excel') || file.type.includes('spreadsheet') || ['xls', 'xlsx'].includes(ext);
+                        const isPpt = file.type.includes('powerpoint') || file.type.includes('presentation') || ['ppt', 'pptx'].includes(ext);
+                        const isZip = file.type.includes('zip') || file.type.includes('compressed') || ['zip', 'rar', '7z'].includes(ext);
+
+                        if (!isImage && !isPdf && !isWord && !isExcel && !isPpt && !isZip) {
+                            hasInvalidType = true;
+                            return false;
+                        }
+
+                        return true;
+                    });
+
+                    if (hasOversized || hasInvalidType) {
+                        let msg = '';
+                        if (hasOversized) msg += 'File melebihi batas maksimal 50 MB. ';
+                        if (hasInvalidType) msg += 'File memiliki format yang tidak diizinkan.';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File Tidak Valid',
+                            text: msg.trim(),
+                            confirmButtonColor: '#1b6e4c'
+                        });
+                    }
+
+                    if (!validFiles.length) {
+                        e.target.value = '';
+                        return;
+                    }
+
                     const list = this.data[listName];
                     if (!list[index].files) list[index].files = [];
 
-                    files.forEach(file => {
+                    validFiles.forEach(file => {
                         const ext = file.name.split('.').pop().toLowerCase();
                         const fileUrl = URL.createObjectURL(file);
                         let type = 'doc';

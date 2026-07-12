@@ -127,6 +127,8 @@ fi
 echo "👉 Running: php artisan migrate"
 php artisan migrate --force
 
+php artisan laravolt:sync-permission
+
 # Default value jika environment variable tidak ada
 LARAVOLT_ADMIN_NAME=${LARAVOLT_ADMIN_NAME:-Administrator}
 LARAVOLT_ADMIN_EMAIL=${LARAVOLT_ADMIN_EMAIL:-admin@dpd.go.id}

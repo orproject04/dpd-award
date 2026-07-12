@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravolt\Ui\Filters\BaseFilter;
 use Lavary\Menu\Builder;
+use Laravolt\Platform\Enums\Permission;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -53,28 +54,41 @@ final class AppServiceProvider extends ServiceProvider
                 ->active('pendaftar/*');
 
             // System menu
-            $systemMenu = $menu->add('System')
-                ->data('order', 99);
+            $user = auth()->user();
 
-            $systemMenu->add('Users', route('epicentrum::users.index'))
-                ->active('epicentrum/users/*')
-                ->data('icon', 'user-friends')
-                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_USER]);
+            if (
+                $user->hasPermission('*') || $user->hasPermission(Permission::MANAGE_USER)
+                || $user->hasPermission(Permission::MANAGE_ROLE)
+                || $user->hasPermission(Permission::MANAGE_PERMISSION)
+                || $user->hasPermission(Permission::MANAGE_SETTINGS)
+            ) {
+                $systemMenu = $menu->add('System')
+                    ->data('order', 99);
 
-            $systemMenu->add('Roles', route('epicentrum::roles.index'))
-                ->active('epicentrum/roles/*')
-                ->data('icon', 'user-astronaut')
-                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_ROLE]);
+                if ($user->hasPermission('*') || $user->hasPermission(Permission::MANAGE_USER)) {
+                    $systemMenu->add('Users', route('epicentrum::users.index'))
+                        ->active('epicentrum/users/*')
+                        ->data('icon', 'user-friends');
+                }
 
-            $systemMenu->add('Permissions', route('epicentrum::permissions.edit'))
-                ->active('epicentrum/permissions/*')
-                ->data('icon', 'shield-check')
-                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_PERMISSION]);
+                if ($user->hasPermission('*') || $user->hasPermission(Permission::MANAGE_ROLE)) {
+                    $systemMenu->add('Roles', route('epicentrum::roles.index'))
+                        ->active('epicentrum/roles/*')
+                        ->data('icon', 'user-astronaut');
+                }
 
-            $systemMenu->add('Settings', route('platform::settings.edit'))
-                ->active('platform/settings/*')
-                ->data('icon', 'sliders-v')
-                ->data('permissions', [\Laravolt\Platform\Enums\Permission::MANAGE_SETTINGS]);
+                if ($user->hasPermission('*') || $user->hasPermission(Permission::MANAGE_PERMISSION)) {
+                    $systemMenu->add('Permissions', route('epicentrum::permissions.edit'))
+                        ->active('epicentrum/permissions/*')
+                        ->data('icon', 'shield-check');
+                }
+
+                if ($user->hasPermission('*') || $user->hasPermission(Permission::MANAGE_SETTINGS)) {
+                    $systemMenu->add('Settings', route('platform::settings.edit'))
+                        ->active('platform/settings/*')
+                        ->data('icon', 'sliders-v');
+                }
+            }
         });
     }
 }

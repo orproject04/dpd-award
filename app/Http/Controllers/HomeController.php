@@ -149,4 +149,18 @@ final class HomeController
             'ageGroups'
         ));
     }
+
+    /**
+     * Clear the application cache.
+     */
+    public function clearCache(): \Illuminate\Http\RedirectResponse
+    {
+        if (!auth()->user() || !auth()->user()->hasPermission('*')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+
+        return redirect()->route('dashboard')->withSuccess(__('Cache berhasil dibersihkan.'));
+    }
 }

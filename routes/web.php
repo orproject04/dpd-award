@@ -22,6 +22,7 @@ Route::get('/', LandingController::class)->name('landing');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', HomeController::class)->name('dashboard');
     Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');
+    Route::post('/clear-cache', [HomeController::class, 'clearCache'])->name('clear-cache');
 });
 
 Route::view('/nominasi', 'nominasi')->name('nominasi');

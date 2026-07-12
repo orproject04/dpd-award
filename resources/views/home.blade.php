@@ -844,6 +844,21 @@
                             <div style="font-size:11px;color:var(--text-muted);">Perbarui semua statistik</div>
                         </div>
                     </button>
+                    @if (auth()->user()->hasPermission('*'))
+                        <form action="{{ route('clear-cache') }}" method="POST" style="margin: 0; width: 100%;">
+                            @csrf
+                            <button type="submit" class="quick-action"
+                                style="cursor:pointer;border:none;background:none;width:100%;font-family:inherit;text-align:left;">
+                                <div class="quick-action-icon" style="background:#fef2f2;color:#dc2626;"><i
+                                        class="trash alternate icon"></i></div>
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:var(--text-main);">Clear Cache
+                                    </div>
+                                    <div style="font-size:11px;color:var(--text-muted);">Bersihkan cache aplikasi</div>
+                                </div>
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

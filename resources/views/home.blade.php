@@ -493,9 +493,13 @@
                     </div>
                     <div
                         style="background:rgba(0,181,173,.2);border:1px solid rgba(0,181,173,.4);border-radius:14px;padding:16px 22px;text-align:center;min-width:90px;">
+                        @php
+                            $reviewedCount = $totalPendaftar - $pendingCount;
+                            $reviewRate = $totalPendaftar > 0 ? round(($reviewedCount / $totalPendaftar) * 100, 1) : 0;
+                        @endphp
                         <div class="db-head" style="font-size:1.6rem;font-weight:800;color:#4dd9d5;">
-                            {{ $conversionRate }}%</div>
-                        <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;">Konversi
+                            {{ $reviewRate }}%</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;">Ditinjau
                         </div>
                     </div>
                 </div>
@@ -516,58 +520,65 @@
                 </div>
             </div>
 
-            <div class="stat-card anim-in anim-delay-2" style="--stat-accent:#f59e0b;">
+            <div class="stat-card anim-in anim-delay-2" style="--stat-accent:#3b82f6;">
                 <div class="flex items-start justify-between">
-                    <div class="stat-icon" style="background:#fffbeb;color:#d97706;"><i class="clock icon"></i></div>
-                    <span class="stat-badge" style="background:#fffbeb;color:#d97706;"><i
-                            class="exclamation circle icon" style="font-size:9px;"></i> Pending</span>
+                    <div class="stat-icon" style="background:#eff6ff;color:#3b82f6;"><i class="graduation cap icon"></i>
+                    </div>
+                    <span class="stat-badge" style="background:#eff6ff;color:#3b82f6;"><i class="chart pie icon"
+                            style="font-size:9px;"></i>
+                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Pendidikan'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
-                    <div class="stat-number" style="color:#d97706;" id="cnt-pending">{{ number_format($pendingCount) }}
+                    <div class="stat-number" style="color:#3b82f6;" id="cnt-pendidikan">
+                        {{ number_format($kategoriCounts['Bidang Pendidikan'] ?? 0) }}
                     </div>
-                    <div class="stat-label mt-1">Menunggu Verifikasi</div>
+                    <div class="stat-label mt-1">Bidang Pendidikan</div>
                 </div>
             </div>
 
-            <div class="stat-card anim-in anim-delay-3" style="--stat-accent:#10b981;">
+            <div class="stat-card anim-in anim-delay-3" style="--stat-accent:#ec4899;">
                 <div class="flex items-start justify-between">
-                    <div class="stat-icon" style="background:#ecfdf5;color:#059669;"><i class="trophy icon"></i>
+                    <div class="stat-icon" style="background:#fdf2f8;color:#ec4899;"><i class="heartbeat icon"></i>
                     </div>
-                    <span class="stat-badge" style="background:#ecfdf5;color:#059669;"><i class="check circle icon"
-                            style="font-size:9px;"></i> Final</span>
+                    <span class="stat-badge" style="background:#fdf2f8;color:#ec4899;"><i class="chart pie icon"
+                            style="font-size:9px;"></i>
+                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Kesehatan'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
-                    <div class="stat-number" style="color:#059669;" id="cnt-finalist">
-                        {{ number_format($finalistCount) }}</div>
-                    <div class="stat-label mt-1">Lolos Tahap Final</div>
+                    <div class="stat-number" style="color:#ec4899;" id="cnt-kesehatan">
+                        {{ number_format($kategoriCounts['Bidang Kesehatan'] ?? 0) }}</div>
+                    <div class="stat-label mt-1">Bidang Kesehatan</div>
                 </div>
             </div>
 
-            <div class="stat-card anim-in anim-delay-4" style="--stat-accent:#ef4444;">
+            <div class="stat-card anim-in anim-delay-4" style="--stat-accent:#10b981;">
                 <div class="flex items-start justify-between">
-                    <div class="stat-icon" style="background:#fef2f2;color:#dc2626;"><i class="times circle icon"></i>
+                    <div class="stat-icon" style="background:#ecfdf5;color:#10b981;"><i class="leaf icon"></i>
                     </div>
-                    <span class="stat-badge" style="background:#fef2f2;color:#dc2626;"><i class="ban icon"
-                            style="font-size:9px;"></i> Ditolak</span>
+                    <span class="stat-badge" style="background:#ecfdf5;color:#10b981;"><i class="chart pie icon"
+                            style="font-size:9px;"></i>
+                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Ketahanan Pangan'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
-                    <div class="stat-number" style="color:#dc2626;" id="cnt-rejected">
-                        {{ number_format($rejectedCount) }}</div>
-                    <div class="stat-label mt-1">Tidak Lolos</div>
+                    <div class="stat-number" style="color:#10b981;" id="cnt-pangan">
+                        {{ number_format($kategoriCounts['Bidang Ketahanan Pangan'] ?? 0) }}</div>
+                    <div class="stat-label mt-1">Bidang Ketahanan Pangan</div>
                 </div>
             </div>
 
-            <div class="stat-card anim-in anim-delay-5" style="--stat-accent:#6366f1;">
+            <div class="stat-card anim-in anim-delay-5" style="--stat-accent:#f59e0b;">
                 <div class="flex items-start justify-between">
-                    <div class="stat-icon" style="background:#eef2ff;color:#4f46e5;"><i class="lightbulb icon"></i>
+                    <div class="stat-icon" style="background:#fffbeb;color:#f59e0b;"><i
+                            class="theater masks icon"></i>
                     </div>
-                    <span class="stat-badge" style="background:#eef2ff;color:#4f46e5;"><i class="plus icon"
-                            style="font-size:9px;"></i> Program</span>
+                    <span class="stat-badge" style="background:#fffbeb;color:#f59e0b;"><i class="chart pie icon"
+                            style="font-size:9px;"></i>
+                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Seni dan Budaya'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
-                    <div class="stat-number" style="color:#4f46e5;" id="cnt-kontribusi">
-                        {{ number_format($totalKontribusi) }}</div>
-                    <div class="stat-label mt-1">Total Kontribusi</div>
+                    <div class="stat-number" style="color:#f59e0b;" id="cnt-budaya">
+                        {{ number_format($kategoriCounts['Bidang Seni dan Budaya'] ?? 0) }}</div>
+                    <div class="stat-label mt-1">Bidang Seni dan Budaya</div>
                 </div>
             </div>
         </div>
@@ -590,47 +601,48 @@
             </div>
 
             <div class="card p-3 anim-in anim-delay-3">
-                <div class="sec-title">Tingkat Konversi</div>
-                <div class="sec-sub mb-5">Rasio Lolos Final vs Total</div>
+                <div class="sec-title">Progres Review Berkas</div>
+                <div class="sec-sub mb-5">Persentase berkas yang telah ditinjau</div>
                 <div class="flex flex-col items-center gap-4">
                     @php
+                        $reviewedCount = $totalPendaftar - $pendingCount;
+                        $reviewRate = $totalPendaftar > 0 ? round(($reviewedCount / $totalPendaftar) * 100, 1) : 0;
                         $r = 68;
                         $circ = 2 * pi() * $r;
-                        $dash = ($conversionRate / 100) * $circ;
+                        $dash = ($reviewRate / 100) * $circ;
                         $gap = $circ - $dash;
                     @endphp
                     <div class="ring-wrap">
                         <svg width="180" height="180" viewBox="0 0 180 180">
                             <circle cx="90" cy="90" r="{{ $r }}" fill="none"
-                                stroke="#f0f2f7" stroke-width="14" />
+                                stroke="#f0f2f7" stroke-width="18" />
                             <circle cx="90" cy="90" r="{{ $r }}" fill="none"
-                                stroke="#00b5ad" stroke-width="14"
+                                stroke="#00b5ad" stroke-width="18"
                                 stroke-dasharray="{{ round($dash, 2) }} {{ round($gap, 2) }}"
                                 stroke-linecap="round" />
                         </svg>
-                        <div class="ring-val">{{ $conversionRate }}%</div>
+                        <div class="ring-val">{{ $reviewRate }}%</div>
                     </div>
                     <div class="w-full space-y-3" style="font-size:13px;">
                         <div class="flex justify-between items-center">
-                            <span style="color:var(--text-muted)"><i class="users teal icon"
-                                    style="margin-right:6px;"></i>Total Pendaftar</span>
+                            <span style="color:var(--text-muted)"><i class="folder open icon"
+                                    style="color:#3b82f6;margin-right:6px;"></i>Total Berkas</span>
                             <strong>{{ number_format($totalPendaftar) }}</strong>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span style="color:var(--text-muted)"><i class="trophy icon"
-                                    style="color:#059669;margin-right:6px;"></i>Lolos Final</span>
-                            <strong style="color:#059669;">{{ number_format($finalistCount) }}</strong>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span style="color:var(--text-muted)"><i class="ban icon"
-                                    style="color:#dc2626;margin-right:6px;"></i>Tidak Lolos</span>
-                            <strong style="color:#dc2626;">{{ number_format($rejectedCount) }}</strong>
+                            <span style="color:var(--text-muted)"><i class="check circle icon"
+                                    style="color:#059669;margin-right:6px;"></i>Sudah Ditinjau</span>
+                            <strong style="color:#059669;">{{ number_format($reviewedCount) }}</strong>
                         </div>
                         <div class="flex justify-between items-center">
                             <span style="color:var(--text-muted)"><i class="clock icon"
-                                    style="color:#d97706;margin-right:6px;"></i>Sedang Proses</span>
-                            <strong
-                                style="color:#d97706;">{{ number_format($totalPendaftar - $finalistCount - $rejectedCount) }}</strong>
+                                    style="color:#f59e0b;margin-right:6px;"></i>Belum Ditinjau</span>
+                            <strong style="color:#d97706;">{{ number_format($pendingCount) }}</strong>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span style="color:var(--text-muted)"><i class="trophy icon"
+                                    style="color:#8b5cf6;margin-right:6px;"></i>Lolos Final</span>
+                            <strong style="color:#8b5cf6;">{{ number_format($finalistCount) }}</strong>
                         </div>
                     </div>
                 </div>
@@ -825,15 +837,6 @@
                         </div>
                     </button>
                 </div>
-                <div
-                    style="margin-top:20px;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:12px;color:#fff;text-align:center;">
-                    <div
-                        style="font-size:11px;opacity:.8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">
-                        Total Penghargaan</div>
-                    <div class="db-head" style="font-size:2rem;font-weight:800;margin-top:4px;">
-                        {{ number_format($totalPenghargaan) }}</div>
-                    <div style="font-size:11px;opacity:.7;margin-top:2px;">rekam jejak terdaftar</div>
-                </div>
             </div>
         </div>
 
@@ -843,7 +846,7 @@
                 <div class="flex items-center justify-between mb-5">
                     <div>
                         <div class="sec-title">Pendaftar Terbaru</div>
-                        <div class="sec-sub">5 peserta terakhir yang mengirimkan berkas</div>
+                        <div class="sec-sub">6 peserta terakhir yang mengirimkan berkas</div>
                     </div>
                     <a href="{{ route('modules::pendaftar.index') }}"
                         style="font-size:12px;font-weight:700;color:#00b5ad;display:flex;align-items:center;gap:4px;text-decoration:none;">
@@ -980,7 +983,7 @@
                 @endif
 
                 <div style="border-top:1px solid var(--border);padding-top:16px;">
-                    <div class="sec-title" style="font-size:.875rem;margin-bottom:10px;">Tingkat Pendidikan</div>
+                    <div class="sec-title" style="font-size:1.1rem;margin-bottom:10px;">Tingkat Pendidikan</div>
                     @php
                         $eduOrder = ['SD', 'SMP', 'SMA', 'Diploma', 'S1', 'S2', 'S3'];
                         $maxEdu = max(array_merge([1], array_values($pendidikanCounts)));
@@ -1104,7 +1107,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '68%',
+                    cutout: '50%',
                     plugins: {
                         legend: {
                             display: false
@@ -1118,7 +1121,7 @@
             const gLabels = Object.keys(rawG).length ? Object.keys(rawG) : ['Laki-laki', 'Perempuan'];
             const gVals = Object.keys(rawG).length ? Object.values(rawG) : [0, 0];
             new Chart(document.getElementById('genderChart').getContext('2d'), {
-                type: 'doughnut',
+                type: 'pie',
                 data: {
                     labels: gLabels,
                     datasets: [{
@@ -1132,7 +1135,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '60%',
                     plugins: {
                         legend: {
                             position: 'bottom',

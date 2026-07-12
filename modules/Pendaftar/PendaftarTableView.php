@@ -39,7 +39,13 @@ class PendaftarTableView extends CustomTableView
             Raw::make(
                 function ($data) {
                     $path = $data->getFotoAttribute();
-                    $src = asset('assets/images/default.png');
+                    $src = '';
+                    $defaultPath = resource_path('images/avatar.png');
+                    if (file_exists($defaultPath) && is_file($defaultPath)) {
+                        $type = pathinfo($defaultPath, PATHINFO_EXTENSION);
+                        $fileData = file_get_contents($defaultPath);
+                        $src = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+                    }
                     if (!empty($path) && file_exists($path) && is_file($path)) {
                         $type = pathinfo($path, PATHINFO_EXTENSION);
                         $fileData = file_get_contents($path);

@@ -78,7 +78,7 @@ final class HomeController
 
         // 7. Recent Registrants (latest 5)
         $recentPendaftar = Pendaftar::orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit(6)
             ->get();
 
         // 8. Funnel / pipeline counts per stage

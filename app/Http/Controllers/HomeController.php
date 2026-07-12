@@ -78,7 +78,7 @@ final class HomeController
 
         // 7. Recent Registrants (latest 5)
         $recentPendaftar = Pendaftar::orderBy('created_at', 'desc')
-            ->limit(6)
+            ->limit(10)
             ->get();
 
         // 8. Funnel / pipeline counts per stage
@@ -127,12 +127,6 @@ final class HomeController
             else $ageGroups['55+']++;
         }
 
-        // 12. Top finalists (latest Lolos Tahap Final)
-        $topFinalists = Pendaftar::where('status', 'Lolos Tahap Final')
-            ->orderBy('updated_at', 'desc')
-            ->limit(4)
-            ->get();
-
         // Pass all stats to the dashboard view
         return view('home', compact(
             'totalPendaftar',
@@ -152,8 +146,7 @@ final class HomeController
             'conversionRate',
             'newToday',
             'newThisWeek',
-            'ageGroups',
-            'topFinalists'
+            'ageGroups'
         ));
     }
 }

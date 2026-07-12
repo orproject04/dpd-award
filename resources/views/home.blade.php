@@ -23,6 +23,15 @@
             'Pangan' => ['icon' => 'leaf', 'color' => '#10b981', 'bg' => '#ecfdf5'],
             'Budaya' => ['icon' => 'theater masks', 'color' => '#f59e0b', 'bg' => '#fffbeb'],
         ];
+
+        // Default avatar source
+        $defaultAvatarSrc = '';
+        $defaultPath = resource_path('images/avatar.png');
+        if (file_exists($defaultPath) && is_file($defaultPath)) {
+            $type = pathinfo($defaultPath, PATHINFO_EXTENSION);
+            $fileData = file_get_contents($defaultPath);
+            $defaultAvatarSrc = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+        }
     @endphp
 
     {{-- Fonts & Chart.js --}}
@@ -472,7 +481,8 @@
                         Selamat datang, <span style="color:#4dd9d5;">{{ auth()->user()->name }}</span> 👋
                     </h1>
                     <p style="color:rgba(255,255,255,.65);margin-top:8px;font-size:14px;">
-                        Berikut ringkasan terkini program <strong style="color:rgba(255,255,255,.9)">DPD Award</strong>.
+                        Berikut ringkasan terkini program <strong style="color:rgba(255,255,255,.9)">DPDRI
+                            <i>AWARDS</i></strong>.
                         Pantau seluruh progres seleksi dari satu tempat.
                     </p>
                 </div>
@@ -481,15 +491,16 @@
                         style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:16px 22px;text-align:center;min-width:90px;">
                         <div class="db-head" style="font-size:1.6rem;font-weight:800;color:#fff;">{{ $newToday }}
                         </div>
-                        <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;">Hari ini
+                        <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;">Pendaftar
+                            hari ini
                         </div>
                     </div>
                     <div
                         style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:16px 22px;text-align:center;min-width:90px;">
                         <div class="db-head" style="font-size:1.6rem;font-weight:800;color:#fff;">{{ $newThisWeek }}
                         </div>
-                        <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;">Minggu
-                            ini</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;">Pendaftar
+                            minggu ini</div>
                     </div>
                     <div
                         style="background:rgba(0,181,173,.2);border:1px solid rgba(0,181,173,.4);border-radius:14px;padding:16px 22px;text-align:center;min-width:90px;">
@@ -655,7 +666,7 @@
             {{-- Category Doughnut --}}
             <div class="card p-3 anim-in anim-delay-1">
                 <div class="sec-title">Distribusi Kategori</div>
-                <div class="sec-sub mb-4">Proporsi per bidang penghargaan</div>
+                <div class="sec-sub mb-4">Proporsi peserta per bidang penghargaan</div>
                 <div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;">
                     <canvas id="categoryChart"></canvas>
                 </div>
@@ -687,42 +698,39 @@
                 </div>
             </div>
 
-            {{-- Selection Pipeline Funnel --}}
+            {{-- Tingkat Pendidikan --}}
             <div class="card p-3 anim-in anim-delay-2">
-                <div class="sec-title">Pipeline Seleksi</div>
-                <div class="sec-sub mb-4">Jumlah peserta per tahap</div>
+                <div class="sec-title">Tingkat Pendidikan</div>
+                <div class="sec-sub mb-4">Profil jenjang pendidikan peserta</div>
                 @php
-                    $funnelColors = [
-                        'Diajukan' => '#3b82f6',
-                        'Lolos Verifikasi Berkas' => '#f97316',
-                        'Lolos Penilaian Tahap 1' => '#eab308',
-                        'Lolos Penilaian Tahap 2' => '#eab308',
-                        'Lolos Penilaian Tahap 3' => '#eab308',
-                        'Lolos Tahap Wawancara' => '#8b5cf6',
-                        'Lolos Tahap Final' => '#10b981',
-                        'Tidak Lolos' => '#ef4444',
+                    $eduOrder = [
+                        'SMA/Sederajat',
+                        'Diploma I',
+                        'Diploma II',
+                        'Diploma III',
+                        'Diploma IV',
+                        'Sarjana (S1)',
+                        'Magister (S2)',
+                        'Doktor (S3)',
                     ];
-                    $maxFunnel = max(array_merge([1], array_values($funnelCounts)));
+                    $maxEdu = max(array_merge([1], array_values($pendidikanCounts)));
                 @endphp
                 <div class="space-y-1">
-                    @foreach ($funnelCounts as $stageName => $stageCount)
-                        @php
-                            $color = $funnelColors[$stageName] ?? '#94a3b8';
-                            $shortName = str_replace(['Lolos ', 'Tahap '], '', $stageName);
-                            $barPct = round(($stageCount / $maxFunnel) * 100);
-                        @endphp
-                        <div class="funnel-item">
-                            <div class="funnel-dot" style="background:{{ $color }};"></div>
-                            <div style="min-width:120px;font-size:12px;color:var(--text-muted);">{{ $shortName }}
-                            </div>
-                            <div class="funnel-bar-wrap">
-                                <div class="funnel-bar"
-                                    style="width:{{ $barPct }}%;background:{{ $color }};opacity:.85;">
+                    @foreach ($eduOrder as $edu)
+                        @php $eduVal = $pendidikanCounts[$edu] ?? 0; @endphp
+                        @if ($eduVal >= 0)
+                            <div class="flex items-center gap-2 mb-2" style="font-size:11.5px;">
+                                <span
+                                    style="min-width:100px;color:var(--text-muted);white-space:nowrap;">{{ $edu }}</span>
+                                <div style="flex:1;height:6px;background:#f0f2f7;border-radius:6px;overflow:hidden;">
+                                    <div
+                                        style="height:100%;width:{{ round(($eduVal / $maxEdu) * 100) }}%;background:#6366f1;border-radius:6px;transition:width .8s;">
+                                    </div>
                                 </div>
+                                <span
+                                    style="min-width:18px;text-align:right;font-weight:700;">{{ $eduVal }}</span>
                             </div>
-                            <div style="min-width:28px;text-align:right;font-weight:700;font-size:13px;">
-                                {{ $stageCount }}</div>
-                        </div>
+                        @endif
                     @endforeach
                 </div>
             </div>
@@ -840,13 +848,13 @@
             </div>
         </div>
 
-        {{-- ═══════════════ ROW 5: Recent Table + Top Finalists ═══════════════ --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-6">
-            <div class="card p-3 lg:col-span-2 anim-in anim-delay-1">
+        {{-- ═══════════════ ROW 5: Recent Table ═══════════════ --}}
+        <div class="mb-6">
+            <div class="card p-3 anim-in anim-delay-1">
                 <div class="flex items-center justify-between mb-5">
                     <div>
                         <div class="sec-title">Pendaftar Terbaru</div>
-                        <div class="sec-sub">6 peserta terakhir yang mengirimkan berkas</div>
+                        <div class="sec-sub">10 peserta terakhir yang mengirimkan berkas</div>
                     </div>
                     <a href="{{ route('modules::pendaftar.index') }}"
                         style="font-size:12px;font-weight:700;color:#00b5ad;display:flex;align-items:center;gap:4px;text-decoration:none;">
@@ -881,14 +889,20 @@
                                         ->keys()
                                         ->first(fn($k) => str_contains($item->kategori, $k));
                                     $katMeta = $katKey ? $kategoriIcons[$katKey] : null;
+
+                                    $itemPath = $item->getFotoAttribute();
+                                    $itemAvatarSrc = $defaultAvatarSrc;
+                                    if (!empty($itemPath) && file_exists($itemPath) && is_file($itemPath)) {
+                                        $type = pathinfo($itemPath, PATHINFO_EXTENSION);
+                                        $fileData = file_get_contents($itemPath);
+                                        $itemAvatarSrc = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+                                    }
                                 @endphp
                                 <tr>
                                     <td>
                                         <div style="display:flex;align-items:center;gap:10px;">
-                                            <div class="avatar-initials"
-                                                style="background:{{ $avatarBg }}20;color:{{ $avatarBg }};">
-                                                {{ substr($item->nama, 0, 2) }}
-                                            </div>
+                                            <img src="{{ $itemAvatarSrc }}" alt="{{ $item->nama }}"
+                                                style="width:36px;height:36px;border-radius:10px;object-fit:cover;flex-shrink:0;">
                                             <div>
                                                 <div style="font-weight:700;font-size:13px;">{{ $item->nama }}</div>
                                                 <div style="font-size:11px;color:var(--text-muted);">
@@ -935,74 +949,6 @@
                             @endforelse
                         </tbody>
                     </table>
-                </div>
-            </div>
-
-            {{-- Top Finalists + Education --}}
-            <div class="card p-3 anim-in anim-delay-2">
-                <div class="sec-title mb-4">🏆 Top Finalis</div>
-                @if ($topFinalists->isEmpty())
-                    <div style="text-align:center;padding:40px 0;color:var(--text-muted);">
-                        <i class="trophy icon" style="font-size:2rem;display:block;margin-bottom:8px;opacity:.3;"></i>
-                        <span style="font-size:13px;">Belum ada finalis</span>
-                    </div>
-                @else
-                    <div class="space-y-3 mb-5">
-                        @foreach ($topFinalists as $idx => $finalist)
-                            @php
-                                $medals = ['🥇', '🥈', '🥉', '🏅'];
-                                $medal = $medals[$idx] ?? '🏅';
-                                $fAvatarColors = ['#00b5ad', '#3b82f6', '#8b5cf6', '#ec4899'];
-                                $fAvatarBg = $fAvatarColors[$idx % 4];
-                                $fKatKey = collect($kategoriIcons)
-                                    ->keys()
-                                    ->first(fn($k) => str_contains($finalist->kategori, $k));
-                                $fKatMeta = $fKatKey ? $kategoriIcons[$fKatKey] : null;
-                            @endphp
-                            <div class="finalist-card">
-                                <div style="font-size:1.3rem;flex-shrink:0;">{{ $medal }}</div>
-                                <div class="avatar-initials"
-                                    style="background:{{ $fAvatarBg }}20;color:{{ $fAvatarBg }};width:38px;height:38px;border-radius:10px;font-size:12px;">
-                                    {{ substr($finalist->nama, 0, 2) }}
-                                </div>
-                                <div style="flex:1;min-width:0;">
-                                    <div
-                                        style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        {{ $finalist->nama }}</div>
-                                    <div style="font-size:11px;color:var(--text-muted);">
-                                        @if ($fKatMeta)
-                                            <i class="{{ $fKatMeta['icon'] }} icon"
-                                                style="color:{{ $fKatMeta['color'] }};"></i>
-                                        @endif
-                                        {{ $fKatKey ?? $finalist->kategori }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-
-                <div style="border-top:1px solid var(--border);padding-top:16px;">
-                    <div class="sec-title" style="font-size:1.1rem;margin-bottom:10px;">Tingkat Pendidikan</div>
-                    @php
-                        $eduOrder = ['SD', 'SMP', 'SMA', 'Diploma', 'S1', 'S2', 'S3'];
-                        $maxEdu = max(array_merge([1], array_values($pendidikanCounts)));
-                    @endphp
-                    @foreach ($eduOrder as $edu)
-                        @php $eduVal = $pendidikanCounts[$edu] ?? 0; @endphp
-                        @if ($eduVal > 0)
-                            <div class="flex items-center gap-2 mb-2" style="font-size:11.5px;">
-                                <span style="min-width:44px;color:var(--text-muted);">{{ $edu }}</span>
-                                <div style="flex:1;height:6px;background:#f0f2f7;border-radius:6px;overflow:hidden;">
-                                    <div
-                                        style="height:100%;width:{{ round(($eduVal / $maxEdu) * 100) }}%;background:#6366f1;border-radius:6px;transition:width .8s;">
-                                    </div>
-                                </div>
-                                <span
-                                    style="min-width:18px;text-align:right;font-weight:700;">{{ $eduVal }}</span>
-                            </div>
-                        @endif
-                    @endforeach
                 </div>
             </div>
         </div>

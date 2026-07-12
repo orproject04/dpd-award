@@ -78,5 +78,58 @@ return [
             'label' => 'Layout',
             'inline' => true,
         ],
+        [
+            'type' => 'html',
+            'content' => '<h3 class="ui horizontal divider section m-t-3">Halaman Landing</h3>',
+        ],
+        [
+            'type' => 'date',
+            'name' => 'tanggal_penutupan_pendaftaran',
+            'label' => 'Tanggal Penutupan Pendaftaran',
+        ],
+        [
+            'type' => 'html',
+            'content' => '<h4 class="ui horizontal divider section m-t-3">Timeline Kegiatan</h4>',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_pembukaan_pendaftaran',
+            'label' => 'Tanggal Pembukaan Pendaftaran',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_periode_pendaftaran',
+            'label' => 'Tanggal Periode Pendaftaran',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_verifikasi_identifikasi',
+            'label' => 'Tanggal Verifikasi & Identifikasi Data',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_penilaian_tahap_1',
+            'label' => 'Tanggal Penilaian Tahap 1',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_penilaian_tahap_2',
+            'label' => 'Tanggal Penilaian Tahap 2',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_penilaian_tahap_3',
+            'label' => 'Tanggal Penilaian Tahap 3',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_wawancara',
+            'label' => 'Tanggal Wawancara',
+        ],
+        [
+            'type' => 'text',
+            'name' => 'timeline_malam_penganugerahan',
+            'label' => 'Tanggal Malam Penganugerahan',
+        ],
     ],
 ];

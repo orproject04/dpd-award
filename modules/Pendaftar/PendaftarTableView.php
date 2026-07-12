@@ -82,7 +82,7 @@ class PendaftarTableView extends CustomTableView
                 'Lolos Penilaian Tahap 1' => 'yellow',
                 'Lolos Penilaian Tahap 2' => 'yellow',
                 'Lolos Penilaian Tahap 3' => 'yellow',
-                'Lolos Tahap Wawancara' => 'yellow',
+                'Lolos Tahap Wawancara' => 'purple',
                 'Lolos Tahap Final' => 'teal',
                 'Tidak Lolos' => 'red',
             ])->addClass('large')->sortable(),

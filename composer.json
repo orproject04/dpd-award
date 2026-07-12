@@ -13,7 +13,8 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "laravolt/avatar": "^6.2",
-        "laravolt/laravolt": "^6.6"
+        "laravolt/laravolt": "^6.6",
+        "phpoffice/phpspreadsheet": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

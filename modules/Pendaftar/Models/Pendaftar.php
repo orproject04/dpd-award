@@ -4,6 +4,7 @@ namespace Modules\Pendaftar\Models;
 
 use App\Models\Kontribusi;
 use App\Models\Penghargaan;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +14,7 @@ use Laravolt\Suitable\AutoSort;
 
 class Pendaftar extends Model
 {
-    use AutoFilter, AutoSearch, AutoSort, HasFactory;
+    use AutoFilter, AutoSearch, AutoSort, HasFactory, HasUuids;
 
     protected $table = 'pendaftar';
 

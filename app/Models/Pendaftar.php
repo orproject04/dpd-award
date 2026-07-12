@@ -26,4 +26,14 @@ class Pendaftar extends Model
     {
         return $this->hasMany(Penghargaan::class, 'pendaftar_id');
     }
+
+    public function getFotoAttribute(): string
+    {
+        $foto = $this->getRawOriginal('foto');
+        if (empty($foto)) {
+            return '';
+        }
+
+        return storage_path('app/private/' . $foto);
+    }
 }

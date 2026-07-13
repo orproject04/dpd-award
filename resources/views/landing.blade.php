@@ -1109,14 +1109,26 @@
                         <button type="submit" :disabled="isLoading"
                             class="shrink-0 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-bold text-[14px] px-6 py-3 rounded-xl hover:scale-[1.05] hover:shadow-[0_4px_15px_rgba(224,181,60,0.4)] hover:brightness-110 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none cursor-pointer flex items-center gap-2">
                             <span x-show="!isLoading">Cek Status</span>
-                            <span x-show="isLoading" x-cloak>Mencari...</span>
+                            <span x-show="isLoading" x-cloak class="flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4 text-[#10131a]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Mencari...
+                            </span>
                         </button>
                     </div>
                 </form>
 
                 <!-- Hasil Pencarian -->
-                <div x-show="result" x-cloak x-transition.opacity.duration.300ms
-                    class="mt-8 text-left bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xl max-w-[500px] mx-auto">
+                <div x-show="result" x-cloak 
+                    x-transition:enter="transition ease-out duration-500"
+                    x-transition:enter-start="opacity-0 translate-y-10 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-10 scale-95"
+                    class="mt-8 text-left bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xl max-w-[500px] mx-auto transform">
                     <template x-if="success">
                         <div>
                             <div class="flex items-center gap-3 mb-4">

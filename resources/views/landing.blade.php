@@ -7,6 +7,7 @@
     <title>DPDRI AWARDS 2026</title>
     <meta name="description" content="DPDRI AWARDS 2026 - Penghargaan bagi inovator di bidang pendidikan, kesehatan, pangan, dan pelestari budaya daerah.">
     <link rel="icon" href="{{ asset('images/logo.png') }}">
+    <link rel="preload" as="image" href="{{ asset('images/hero-bg.jpg') }}" fetchpriority="high">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -193,7 +194,8 @@
     <!-- 1. BERANDA (HERO) -->
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-[#0a0c11]">
-            <img src="{{ asset('images/hero-bg.jpg') }}" alt=""
+            <img src="{{ asset('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero"
+                width="1920" height="1080" fetchpriority="high"
                 class="w-full h-full object-cover object-[40%_center] md:object-center">
         </div>
 

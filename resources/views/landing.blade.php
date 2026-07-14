@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DPDRI AWARDS 2026</title>
-    <meta name="description" content="DPDRI AWARDS 2026 - Penghargaan bagi inovator di bidang pendidikan, kesehatan, pangan, dan pelestari budaya daerah.">
+    <meta name="description"
+        content="DPDRI AWARDS 2026 - Penghargaan bagi inovator di bidang pendidikan, kesehatan, pangan, dan pelestari budaya daerah.">
     <link rel="icon" href="{{ asset('images/logo.png') }}">
     <link rel="preload" as="image" href="{{ asset('images/hero-bg.jpg') }}" fetchpriority="high">
 
@@ -106,8 +107,7 @@
     </style>
 </head>
 
-<body class="bg-[#050608] text-white antialiased selection:bg-[#88c445] selection:text-[#0a0c11]"
-    x-data="{
+<body class="bg-[#050608] text-white antialiased selection:bg-[#88c445] selection:text-[#0a0c11]" x-data="{
         scrolled: false,
         mobileMenuOpen: false
     }" @scroll.window="scrolled = (window.pageYOffset > 60)">
@@ -133,8 +133,7 @@
                     class="h-14 sm:h-16 md:h-16 lg:h-[85px] object-contain transition-all duration-300">
             </a>
 
-            <button @click="mobileMenuOpen = !mobileMenuOpen"
-                aria-label="Menu"
+            <button @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Menu"
                 class="lg:hidden text-white p-2 focus:outline-none cursor-pointer mt-2.5 sm:mt-3.5">
                 <svg x-show="!mobileMenuOpen" width="28" height="28" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -194,9 +193,8 @@
     <!-- 1. BERANDA (HERO) -->
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-[#0a0c11]">
-            <img src="{{ asset('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero"
-                width="1920" height="1080" fetchpriority="high"
-                class="w-full h-full object-cover object-[40%_center] md:object-center">
+            <img src="{{ asset('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero" width="1920" height="1080"
+                fetchpriority="high" class="w-full h-full object-cover object-[40%_center] md:object-center">
         </div>
 
 
@@ -361,9 +359,9 @@
                                 class="absolute top-0 -left-[100%] w-[120%] h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg] shimmer-effect"></span>
                             <span class="relative z-10 flex items-center gap-2.5">
                                 Daftar Sekarang
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                    class="group-hover:translate-x-1 transition-transform">
                                     <line x1="5" y1="12" x2="19" y2="12" />
                                     <polyline points="12 5 19 12 12 19" />
                                 </svg>
@@ -382,8 +380,7 @@
     <!-- 2. COUNTDOWN -->
     <section id="countdown"
         class="py-16 px-6 bg-gradient-to-b from-[#10131a] to-[#0a0c11] border-y border-[#e0b53c]/15">
-        <div x-data="countdown()" x-init="start()" x-intersect="shown = true"
-            x-intersect:leave="shown = false"
+        <div x-data="countdown()" x-init="start()" x-intersect="shown = true" x-intersect:leave="shown = false"
             class="max-w-[1000px] mx-auto bg-gradient-to-br from-[#191d27] to-[#10131a] border border-[#e0b53c]/30 rounded-[24px] sm:rounded-[28px] p-6 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-[0_30px_70px_rgba(0,0,0,0.5)] transition-all duration-[800ms] ease-out text-center lg:text-left"
             :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
             <div>
@@ -565,6 +562,11 @@
                                     'phone' => '628567009410',
                                     'display' => '0856-7009-410',
                                 ],
+                                [
+                                    'name' => 'MUHAMMAD RAMDHANI',
+                                    'phone' => '6285697571514',
+                                    'display' => '0856-9757-1514',
+                                ],
                             ],
                             'penjelasan' =>
                                 'Diberikan kepada individu yang menjadi penggerak dalam membangun desa mandiri pangan melalui pemanfaatan potensi pangan lokal, pemberdayaan masyarakat, dan penguatan ketahanan pangan secara berkelanjutan yang memberikan manfaat bagi masyarakat desa.',
@@ -645,10 +647,10 @@
                 x-transition:leave="ease-in duration-200"
                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                 x-transition:leave-end="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
-                class="relative bg-white rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)] max-w-2xl w-full flex flex-col max-h-[90vh]">
+                class="relative bg-white rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)] max-w-3xl w-full flex flex-col max-h-[95vh]">
 
                 <!-- Modal Header Image -->
-                <div class="relative h-[200px] sm:h-[220px] md:h-[200px] w-full shrink-0">
+                <div class="relative h-[200px] sm:h-[220px] md:h-[180px] w-full shrink-0">
                     <img :src="activeCat?.img" alt="" class="w-full h-full object-cover"
                         :style="`object-position: ${activeCat?.pos || 'center'}`">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
@@ -687,32 +689,61 @@
 
                 <!-- Modal Footer -->
                 <div
-                    class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col-reverse sm:flex-row justify-between items-center gap-4 shrink-0">
-                    <div class="w-full sm:w-auto">
+                    class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col w-full gap-4 shrink-0">
+                    <div class="w-full">
                         <span class="text-[#1da851] font-bold text-[12px] uppercase flex items-center gap-1.5 mb-1.5">
                             Contact Person
                         </span>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full flex-wrap">
+                        <div class="flex flex-col sm:flex-row gap-2 w-full" :class="activeCat?.cp?.length < 3 ? 'flex-wrap' : ''">
                             <template x-for="(cp, i) in activeCat?.cp" :key="i">
-                                <div>
+                                <div :class="activeCat?.cp?.length < 3 ? 'grow' : 'flex-1 min-w-0'">
                                     <template x-if="cp.phone">
                                         <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI AWARDS pada ' + activeCat?.title + ' - ' + activeCat?.desc)"
                                             target="_blank"
-                                            class="px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 whitespace-nowrap flex items-center gap-2 cursor-pointer group">
+                                            class="w-full h-full justify-center px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 flex items-center gap-2 cursor-pointer group"
+                                            :class="activeCat?.cp?.length < 3 ? 'whitespace-nowrap' : ''">
                                             <svg width="15" height="15" viewBox="0 0 24 24" fill="#25d366"
-                                                class="group-hover:scale-110 transition-transform">
+                                                class="shrink-0 group-hover:scale-110 transition-transform">
                                                 <path
                                                     d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
                                             </svg>
-                                            <div class="text-[#10131a] font-medium text-[12px] leading-relaxed"
+                                            <!-- Logic <= 2 CP -->
+                                            <div x-show="activeCat?.cp?.length < 3" class="text-[#10131a] font-medium text-[12px] leading-relaxed truncate"
                                                 x-text="cp.name + ' (' + cp.display + ')'"></div>
+                                                
+                                            <!-- Logic >= 3 CP -->
+                                            <div x-show="activeCat?.cp?.length >= 3" class="sm:w-full" x-cloak>
+                                                <!-- Mobile: Sama persis dengan < 3 CP -->
+                                                <div class="sm:hidden text-[#10131a] font-medium text-[12px] leading-relaxed truncate"
+                                                    x-text="cp.name + ' (' + cp.display + ')'"></div>
+                                                <!-- Desktop: 2 Baris -->
+                                                <div class="hidden sm:flex text-[#10131a] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
+                                                    <span x-text="cp.name" class="w-full truncate text-center"></span>
+                                                    <span x-text="'(' + cp.display + ')'" class="shrink-0 text-[#10131a] text-center"></span>
+                                                </div>
+                                            </div>
                                         </a>
                                     </template>
                                     <template x-if="!cp.phone">
                                         <div
-                                            class="px-3 py-2 bg-gray-100/50 rounded-xl border border-gray-200 whitespace-nowrap flex items-center">
-                                            <div class="text-[#64748b] font-medium text-[12px] leading-relaxed"
+                                            class="w-full h-full justify-center px-3 py-2 bg-gray-100/50 rounded-xl border border-gray-200 flex items-center gap-2"
+                                            :class="activeCat?.cp?.length < 3 ? 'whitespace-nowrap' : ''">
+                                            
+                                            <!-- Logic <= 2 CP -->
+                                            <div x-show="activeCat?.cp?.length < 3" class="text-[#64748b] font-medium text-[12px] leading-relaxed truncate"
                                                 x-text="cp.name + ' (Belum ada nomor)'"></div>
+                                                
+                                            <!-- Logic >= 3 CP -->
+                                            <div x-show="activeCat?.cp?.length >= 3" class="sm:w-full" x-cloak>
+                                                <!-- Mobile: Sama persis dengan < 3 CP -->
+                                                <div class="sm:hidden text-[#64748b] font-medium text-[12px] leading-relaxed truncate"
+                                                    x-text="cp.name + ' (Belum ada nomor)'"></div>
+                                                <!-- Desktop: 2 Baris -->
+                                                <div class="hidden sm:flex text-[#64748b] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
+                                                    <span x-text="cp.name" class="w-full truncate text-center"></span>
+                                                    <span class="shrink-0 text-center">(Belum ada nomor)</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </template>
                                 </div>

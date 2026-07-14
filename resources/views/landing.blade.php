@@ -553,14 +553,14 @@
                             'img' => asset('images/kat-pangan.png'),
                             'cp' => [
                                 [
-                                    'name' => 'NOVA AULIA FADJAR',
-                                    'phone' => '6281808880109',
-                                    'display' => '0818-0888-0109',
-                                ],
-                                [
                                     'name' => 'PUGO SURYA ADHITAMA',
                                     'phone' => '628567009410',
                                     'display' => '0856-7009-410',
+                                ],
+                                [
+                                    'name' => 'NOVA AULIA FADJAR',
+                                    'phone' => '6281808880109',
+                                    'display' => '0818-0888-0109',
                                 ],
                                 [
                                     'name' => 'MUHAMMAD RAMDHANI',
@@ -610,8 +610,8 @@
                         </div>
                         <div
                             class="absolute top-5 right-5 z-40 w-10 h-10 rounded-full bg-[#88c445] flex items-center justify-center opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out shadow-[0_4px_14px_rgba(136,196,69,0.6)]">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0c11"
-                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0c11" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M5 12h14M12 5l7 7-7 7" />
                             </svg>
                         </div>
@@ -620,8 +620,7 @@
                             <h3 class="cz text-[20px] sm:text-[28px] font-bold text-white mb-2 leading-tight">
                                 {{ $cat['title'] }}
                             </h3>
-                            <p
-                                class="text-white/80 text-[12px] sm:text-[14px] leading-[1.55] max-w-full sm:max-w-[80%]">
+                            <p class="text-white/80 text-[12px] sm:text-[14px] leading-[1.55] max-w-full sm:max-w-[80%]">
                                 {{ $cat['desc'] }}
                             </p>
                         </div>
@@ -654,8 +653,7 @@
                     <img :src="activeCat?.img" alt="" class="w-full h-full object-cover"
                         :style="`object-position: ${activeCat?.pos || 'center'}`">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                    <button @click="modalOpen = false"
-                        aria-label="Tutup"
+                    <button @click="modalOpen = false" aria-label="Tutup"
                         class="absolute top-4 right-4 w-10 h-10 bg-black/40 hover:bg-black/70 backdrop-blur text-white rounded-full flex items-center justify-center transition-colors">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -688,13 +686,13 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div
-                    class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col w-full gap-4 shrink-0">
+                <div class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col w-full gap-4 shrink-0">
                     <div class="w-full">
                         <span class="text-[#1da851] font-bold text-[12px] uppercase flex items-center gap-1.5 mb-1.5">
                             Contact Person
                         </span>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full" :class="activeCat?.cp?.length < 3 ? 'flex-wrap' : ''">
+                        <div class="flex flex-col sm:flex-row gap-2 w-full"
+                            :class="activeCat?.cp?.length < 3 ? 'flex-wrap' : ''">
                             <template x-for="(cp, i) in activeCat?.cp" :key="i">
                                 <div :class="activeCat?.cp?.length < 3 ? 'grow' : 'flex-1 min-w-0'">
                                     <template x-if="cp.phone">
@@ -708,38 +706,42 @@
                                                     d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
                                             </svg>
                                             <!-- Logic <= 2 CP -->
-                                            <div x-show="activeCat?.cp?.length < 3" class="text-[#10131a] font-medium text-[12px] leading-relaxed truncate"
+                                            <div x-show="activeCat?.cp?.length < 3"
+                                                class="text-[#10131a] font-medium text-[12px] leading-relaxed truncate"
                                                 x-text="cp.name + ' (' + cp.display + ')'"></div>
-                                                
+
                                             <!-- Logic >= 3 CP -->
                                             <div x-show="activeCat?.cp?.length >= 3" class="sm:w-full" x-cloak>
                                                 <!-- Mobile: Sama persis dengan < 3 CP -->
                                                 <div class="sm:hidden text-[#10131a] font-medium text-[12px] leading-relaxed truncate"
                                                     x-text="cp.name + ' (' + cp.display + ')'"></div>
                                                 <!-- Desktop: 2 Baris -->
-                                                <div class="hidden sm:flex text-[#10131a] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
+                                                <div
+                                                    class="hidden sm:flex text-[#10131a] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
                                                     <span x-text="cp.name" class="w-full truncate text-center"></span>
-                                                    <span x-text="'(' + cp.display + ')'" class="shrink-0 text-[#10131a] text-center"></span>
+                                                    <span x-text="'(' + cp.display + ')'"
+                                                        class="shrink-0 text-[#10131a] text-center"></span>
                                                 </div>
                                             </div>
                                         </a>
                                     </template>
                                     <template x-if="!cp.phone">
-                                        <div
-                                            class="w-full h-full justify-center px-3 py-2 bg-gray-100/50 rounded-xl border border-gray-200 flex items-center gap-2"
+                                        <div class="w-full h-full justify-center px-3 py-2 bg-gray-100/50 rounded-xl border border-gray-200 flex items-center gap-2"
                                             :class="activeCat?.cp?.length < 3 ? 'whitespace-nowrap' : ''">
-                                            
+
                                             <!-- Logic <= 2 CP -->
-                                            <div x-show="activeCat?.cp?.length < 3" class="text-[#64748b] font-medium text-[12px] leading-relaxed truncate"
+                                            <div x-show="activeCat?.cp?.length < 3"
+                                                class="text-[#64748b] font-medium text-[12px] leading-relaxed truncate"
                                                 x-text="cp.name + ' (Belum ada nomor)'"></div>
-                                                
+
                                             <!-- Logic >= 3 CP -->
                                             <div x-show="activeCat?.cp?.length >= 3" class="sm:w-full" x-cloak>
                                                 <!-- Mobile: Sama persis dengan < 3 CP -->
                                                 <div class="sm:hidden text-[#64748b] font-medium text-[12px] leading-relaxed truncate"
                                                     x-text="cp.name + ' (Belum ada nomor)'"></div>
                                                 <!-- Desktop: 2 Baris -->
-                                                <div class="hidden sm:flex text-[#64748b] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
+                                                <div
+                                                    class="hidden sm:flex text-[#64748b] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
                                                     <span x-text="cp.name" class="w-full truncate text-center"></span>
                                                     <span class="shrink-0 text-center">(Belum ada nomor)</span>
                                                 </div>
@@ -758,8 +760,7 @@
 
     <!-- 4. KETENTUAN UMUM & ALUR PENDAFTARAN -->
     <section id="syarat" class="py-[110px] px-6 bg-gradient-to-br from-[#0c3b28] to-[#0a0c11]">
-        <div
-            class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.2fr] gap-14 items-start">
+        <div class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.2fr] gap-14 items-start">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
                 class="transition-all duration-[800ms] ease-out"
                 :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[30px]'">
@@ -775,8 +776,8 @@
                     <span
                         class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]"></span>
                     <span class="relative z-10">Daftar Sekarang</span>
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round"
                         class="relative z-10 group-hover:translate-x-1 transition-transform">
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <polyline points="12 5 19 12 12 19" />
@@ -813,9 +814,8 @@
                         style="transition-delay: {{ $index * 100 }}ms;">
                         <div
                             class="shrink-0 w-[30px] h-[30px] rounded-lg bg-[#88c445]/15 flex items-center justify-center group-hover:bg-[#88c445] transition-colors duration-300">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                                stroke-linejoin="round"
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
                                 class="text-[#88c445] group-hover:text-[#0a0c11] transition-colors duration-300">
                                 <polyline points="20 6 9 17 4 12" />
                             </svg>
@@ -988,11 +988,13 @@
 
                                 <h3
                                     class="font-semibold text-center tracking-wide text-[14.5px] leading-snug relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]' : 'text-white' }}">
-                                    {{ $step['title'] }}</h3>
+                                    {{ $step['title'] }}
+                                </h3>
                                 @if (!empty($step['date']))
                                     <p
                                         class="text-center text-[12.5px] font-normal leading-tight mt-1 relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]/80' : 'text-white/80' }}">
-                                        {{ $step['date'] }}</p>
+                                        {{ $step['date'] }}
+                                    </p>
                                 @endif
                             </div>
                         </div>
@@ -1052,11 +1054,13 @@
 
                                 <h3
                                     class="font-semibold text-center tracking-wide text-[14.5px] leading-snug relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]' : 'text-white' }}">
-                                    {{ $step['title'] }}</h3>
+                                    {{ $step['title'] }}
+                                </h3>
                                 @if (!empty($step['date']))
                                     <p
                                         class="text-center text-[12.5px] font-normal leading-tight mt-1 relative z-10 {{ $step['n'] == '8' ? 'text-[#fceabb]/80' : 'text-white/80' }}">
-                                        {{ $step['date'] }}</p>
+                                        {{ $step['date'] }}
+                                    </p>
                                 @endif
                             </div>
                         </div>
@@ -1110,8 +1114,8 @@
                 class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#1b6e4c]/5 rounded-full blur-[100px]">
             </div>
         </div>
-        <div class="relative z-10 max-w-[700px] mx-auto text-center" x-data="tracking()"
-            x-intersect="shown = true" x-intersect:leave="shown = false">
+        <div class="relative z-10 max-w-[700px] mx-auto text-center" x-data="tracking()" x-intersect="shown = true"
+            x-intersect:leave="shown = false">
             <div class="transition-all duration-[800ms] ease-out"
                 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
                 <span class="text-[#1b6e4c] text-[12.5px] font-extrabold tracking-[0.22em]">CEK STATUS</span>
@@ -1130,9 +1134,8 @@
                     <div
                         class="relative flex items-center bg-white border border-gray-200 rounded-2xl p-2 shadow-lg focus-within:border-[#e0b53c]/50 focus-within:ring-2 focus-within:ring-[#e0b53c]/20 transition-all">
                         <div class="pl-4 text-[#e0b53c]">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
@@ -1143,9 +1146,13 @@
                             class="shrink-0 bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-bold text-[14px] px-6 py-3 rounded-xl hover:scale-[1.05] hover:shadow-[0_4px_15px_rgba(224,181,60,0.4)] hover:brightness-110 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none cursor-pointer flex items-center gap-2">
                             <span x-show="!isLoading">Cek Status</span>
                             <span x-show="isLoading" x-cloak class="flex items-center gap-2">
-                                <svg class="animate-spin h-4 w-4 text-[#10131a]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                <svg class="animate-spin h-4 w-4 text-[#10131a]" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
                                 </svg>
                                 Mencari...
                             </span>
@@ -1154,8 +1161,7 @@
                 </form>
 
                 <!-- Hasil Pencarian -->
-                <div x-show="result" x-cloak 
-                    x-transition:enter="transition ease-out duration-500"
+                <div x-show="result" x-cloak x-transition:enter="transition ease-out duration-500"
                     x-transition:enter-start="opacity-0 translate-y-10 scale-95"
                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                     x-transition:leave="transition ease-in duration-300"
@@ -1167,9 +1173,8 @@
                             <div class="flex items-center gap-3 mb-4">
                                 <div
                                     class="w-12 h-12 rounded-full bg-[#1b6e4c]/10 flex items-center justify-center shrink-0">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        stroke="#1b6e4c" stroke-width="2.5" stroke-linecap="round"
-                                        stroke-linejoin="round">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1b6e4c"
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                     </svg>
@@ -1184,8 +1189,8 @@
                             <div class="space-y-4 pt-4 border-t border-gray-100">
                                 <div>
                                     <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">NAMA</div>
-                                    <div class="text-[#10131a] font-semibold text-[16px] cz"
-                                        x-text="resultData?.nama"></div>
+                                    <div class="text-[#10131a] font-semibold text-[16px] cz" x-text="resultData?.nama">
+                                    </div>
                                 </div>
                                 <div>
                                     <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">KATEGORI</div>
@@ -1206,11 +1211,9 @@
                     </template>
                     <template x-if="!success">
                         <div class="text-center py-4">
-                            <div
-                                class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
-                                    stroke="#e74c3c" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                            <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e74c3c"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="15" y1="9" x2="9" y2="15"></line>
                                     <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -1279,8 +1282,7 @@
     <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"
-                alt="DPDRI AWARDS" loading="lazy"
-                class="w-full h-full object-cover opacity-30 blur-[2px]">
+                alt="DPDRI AWARDS" loading="lazy" class="w-full h-full object-cover opacity-30 blur-[2px]">
             <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
         </div>
         <div class="relative z-10 max-w-[1000px] mx-auto">
@@ -1407,7 +1409,8 @@
                 @endphp
 
                 @foreach ($faqData as $index => $f)
-                    <div x-data="{ shown: false, isHovered: false, isClicked: false, forceClose: false, get isOpen() { return this.isClicked || (this.isHovered && !this.forceClose); } }" x-intersect="shown = true" x-intersect:leave="shown = false"
+                    <div x-data="{ shown: false, isHovered: false, isClicked: false, forceClose: false, get isOpen() { return this.isClicked || (this.isHovered && !this.forceClose); } }"
+                        x-intersect="shown = true" x-intersect:leave="shown = false"
                         @mouseenter="isHovered = true; forceClose = false"
                         @mouseleave="isHovered = false; forceClose = false"
                         @click="isClicked = !isClicked; forceClose = !isClicked"
@@ -1504,9 +1507,8 @@
                         <a href="{{ route('nominasi') }}"
                             class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[15px] tracking-wide px-7 py-3 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
                             Daftar Sekarang
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                stroke-linejoin="round">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                                 <polyline points="12 5 19 12 12 19"></polyline>
                             </svg>
@@ -1571,13 +1573,13 @@
 
     <!-- Floating Scroll to Top -->
     <div x-data="{ showScroll: false }" @scroll.window="showScroll = (window.pageYOffset > 500)">
-        <button @click="customScrollToTop()" x-show="showScroll"
-            x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-12"
-            x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-300"
-            x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-12"
+        <button @click="customScrollToTop()" x-show="showScroll" x-transition:enter="transition ease-out duration-700"
+            x-transition:enter-start="opacity-0 translate-y-12" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 translate-y-12"
             class="cursor-pointer fixed bottom-8 right-8 z-50 w-11 h-11 rounded-[14px] bg-gradient-to-tr from-[#1b6e4c] to-[#259b6b] hover:scale-105 hover:shadow-[0_12px_24px_rgba(27,110,76,0.4)] text-white flex items-center justify-center shadow-[0_8px_16px_rgba(27,110,76,0.3)] transition-all duration-300">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="18 15 12 9 6 15"></polyline>
             </svg>
         </button>

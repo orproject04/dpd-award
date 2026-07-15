@@ -23,7 +23,7 @@ class SetSecurityHeaders
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
         // Content Security Policy
-        if (app()->environment('production')) {
+        if (env('APP_ENV') === 'production') {
             $response->headers->set('Content-Security-Policy', "upgrade-insecure-requests; default-src 'self' https: wss: data: blob: 'unsafe-inline' 'unsafe-eval';");
         }
 
@@ -47,7 +47,7 @@ class SetSecurityHeaders
 
         // Remove server information disclosure
         $response->headers->set('Server', 'Application Server');
-        
+
         // Remove X-Powered-By header that exposes PHP
         $response->headers->remove('X-Powered-By');
 

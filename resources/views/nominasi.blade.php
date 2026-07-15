@@ -605,7 +605,7 @@
 
                                         <div class="mt-2">
                                             <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung
-                                                (Evidence) <template x-if="item.judul.trim()"><span
+                                                (<i>Evidences</i>) <template x-if="item.judul.trim()"><span
                                                         class="text-[#c0392b] ml-1">*</span></template></label>
                                             <div class="relative group cursor-pointer" x-data="{ isDragging: false }">
                                                 <input type="file" multiple
@@ -754,7 +754,7 @@
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="sm:col-span-12 mt-2">
-                                            <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung (Evidence)
+                                            <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung (<i>Evidences</i>)
                                                 <template x-if="item.nama.trim() || item.tahun.toString().trim()"><span
                                                         class="text-[#c0392b] ml-1">*</span></template></label>
                                             <div class="relative group cursor-pointer" x-data="{ isDragging: false }">

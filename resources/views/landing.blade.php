@@ -194,7 +194,7 @@
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-[#0a0c11]">
             <img src="{{ asset('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero" width="1920" height="1080"
-                fetchpriority="high" class="w-full h-full object-cover object-[40%_center] md:object-center">
+                fetchpriority="high" class="w-full h-full object-cover object-[40%_center] md:object-center scale-[1.2] sm:scale-100 origin-[40%_center] sm:origin-center">
         </div>
 
 
@@ -1456,7 +1456,7 @@
 
         <!-- Giant Golden Trophy (Background Watermark on Mobile, Left Image on Desktop) -->
         <div
-            class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 md:left-[-6%] md:translate-x-0 w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-auto md:h-[140%] pointer-events-none select-none opacity-20 md:opacity-100 mix-blend-screen md:mix-blend-normal">
+            class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 md:left-[-1%] md:translate-x-0 w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-auto md:h-[140%] pointer-events-none select-none opacity-20 md:opacity-100 mix-blend-screen md:mix-blend-normal">
             <!-- This layer creates a massive soft golden glow that stretches to the right -->
             <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[35%] hidden md:block">
             </div>
@@ -1526,9 +1526,9 @@
             <div class="text-center md:text-left md:flex-1">
                 <div class="flex items-center justify-center md:justify-start gap-3.5">
                     <img src="/images/logo.png" alt="Logo DPD" class="w-11 h-11 object-contain">
-                    <div class="flex flex-col text-left">
-                        <span class="cz text-[28px] font-extrabold tracking-wide text-white leading-[1.1]">DPDRI <span
-                                class="text-[#88c445]"><i>AWARDS</i></span></span>
+                    <div class="flex flex-col w-full text-left">
+                        <span class="cz text-[22px] font-extrabold tracking-wide text-white leading-[1.1]">DPDRI <span
+                                class="text-[#88c445]"><i>AWARDS</i></span> 2026</span>
                         <span class="text-white/40 text-[13px] tracking-wide">Dari Daerah untuk Indonesia</span>
                     </div>
                 </div>

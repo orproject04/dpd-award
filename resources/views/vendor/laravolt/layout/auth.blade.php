@@ -1,16 +1,16 @@
 <x-volt-base>
     @push('style')
-    <style>
-        .layout--auth.is-modern,
-        .layout--auth.is-classic {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
-            min-height: 100vh !important;
-            padding-top: 0 !important;
-        }
-    </style>
+        <style>
+            .layout--auth.is-modern,
+            .layout--auth.is-classic {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                min-height: 100vh !important;
+                padding-top: 0 !important;
+            }
+        </style>
     @endpush
     <div class="layout--auth is-{!! config('laravolt.ui.login_layout') !!}">
         <div class="layout--auth__container">
@@ -31,8 +31,8 @@
                                 style="width: 44px; height: 44px; object-fit: contain;">
                             <div style="display: flex; flex-direction: column; text-align: left;">
                                 <span
-                                    style="font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: 0.025em; color: #10131a; line-height: 1.1;">DPDRI
-                                    <span style="color: #88c445;"><i>AWARDS</i></span></span>
+                                    style="font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 0.025em; color: #10131a; line-height: 1.1;">DPDRI
+                                    <span style="color: #88c445;"><i>AWARDS</i></span> 2026</span>
                                 <span style="color: #6b7280; font-size: 13px; letter-spacing: 0.025em;">Dari Daerah
                                     untuk Indonesia</span>
                             </div>

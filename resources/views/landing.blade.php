@@ -1309,8 +1309,8 @@
                             'img' => asset('images/kat-kesehatan.png'),
                         ],
                         [
-                            'value' => $kategoriCounts['Bidang Ketahan Pangan'] ?? 0,
-                            'label' => 'Bidang Ketahan Pangan',
+                            'value' => $kategoriCounts['Bidang Ketahanan Pangan'] ?? 0,
+                            'label' => 'Bidang Ketahanan Pangan',
                             'img' => asset('images/kat-pangan.png'),
                         ],
                         [

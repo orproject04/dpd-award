@@ -306,8 +306,15 @@
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Tanggal Lahir <span
                                         class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.tanggalLahir" type="date" onclick="this.showPicker()"
-                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200 cursor-pointer bg-white min-w-0">
+                                <div class="relative w-full h-[50px] border-[1.5px] border-[#d8cdb4] rounded-xl bg-white overflow-hidden transition-all duration-200">
+                                    <input x-model="data.tanggalLahir" type="date" onclick="this.showPicker()"
+                                        class="w-full h-full px-4 text-[15px] text-[#10131a] bg-transparent outline-none border-none shadow-none appearance-none min-w-0 [&::-webkit-calendar-picker-indicator]:hidden">
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
                                 <template x-if="showErr && errs.tanggalLahir">
                                     <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5"
                                         x-text="errs.tanggalLahir">

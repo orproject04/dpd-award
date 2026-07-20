@@ -26,8 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::view('/nominasi', 'nominasi')->name('nominasi');
-Route::post('/nominasi', [\App\Http\Controllers\NominasiController::class, 'store'])->middleware('throttle:3,1')->name('nominasi.store');
-Route::post('/track', [LandingController::class, 'track'])->middleware('throttle:5,1')->name('track');
+Route::post('/nominasi', [\App\Http\Controllers\NominasiController::class, 'store'])->middleware('throttle:150,1')->name('nominasi.store');
+Route::post('/track', [LandingController::class, 'track'])->middleware('throttle:200,1')->name('track');
 
 Route::get('/admin', [LoginController::class, 'show'])->name('admin.login');
 

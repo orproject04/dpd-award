@@ -307,7 +307,7 @@
                                 <label class="block text-[14px] font-bold mb-2">Tanggal Lahir <span
                                         class="text-[#c0392b]">*</span></label>
                                 <input x-model="data.tanggalLahir" type="date" onclick="this.showPicker()"
-                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200 cursor-pointer appearance-none bg-white min-w-0">
+                                    class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200 cursor-pointer bg-white min-w-0">
                                 <template x-if="showErr && errs.tanggalLahir">
                                     <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5"
                                         x-text="errs.tanggalLahir">

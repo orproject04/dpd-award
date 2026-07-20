@@ -194,7 +194,8 @@
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-[#0a0c11]">
             <img src="{{ asset('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero" width="1920" height="1080"
-                fetchpriority="high" class="w-full h-full object-cover object-[40%_center] md:object-center scale-[1.2] sm:scale-100 origin-[40%_center] sm:origin-center">
+                fetchpriority="high"
+                class="w-full h-full object-cover object-[40%_center] md:object-center scale-[1.2] sm:scale-100 origin-[40%_center] sm:origin-center">
         </div>
 
 
@@ -562,11 +563,11 @@
                                     'phone' => '6281808880109',
                                     'display' => '0818-0888-0109',
                                 ],
-                                [
-                                    'name' => 'MUHAMMAD RAMDHANI',
-                                    'phone' => '6285697571514',
-                                    'display' => '0856-9757-1514',
-                                ],
+                                // [
+                                //     'name' => 'MUHAMMAD RAMDHANI',
+                                //     'phone' => '6285697571514',
+                                //     'display' => '0856-9757-1514',
+                                // ],
                             ],
                             'penjelasan' =>
                                 'Diberikan kepada individu yang menjadi penggerak dalam membangun desa mandiri pangan melalui pemanfaatan potensi pangan lokal, pemberdayaan masyarakat, dan penguatan ketahanan pangan secara berkelanjutan yang memberikan manfaat bagi masyarakat desa.',

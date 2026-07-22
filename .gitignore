@@ -27,3 +27,7 @@ yarn-error.log
 /pestphp-execution-result.xml
 
 Mungkin Media DPD Award/
+
+# HLS-encoded video segments (large binary files, regenerated via `php artisan video:hls`)
+/public/videos/*/*.ts
+/public/videos/*/*.m3u8

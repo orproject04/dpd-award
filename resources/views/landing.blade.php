@@ -39,7 +39,7 @@
                 },
                 play() {
                     this.started = true;
-                    this.$nextTick(() => this.$refs.video.play().catch(() => {}));
+                    this.$nextTick(() => this.$refs.video.play().catch(() => { }));
                 }
             }
         }
@@ -139,7 +139,7 @@
             width: 320px;
             height: 320px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(242,207,110,0.28) 0%, rgba(230,184,75,0) 70%);
+            background: radial-gradient(circle, rgba(242, 207, 110, 0.28) 0%, rgba(230, 184, 75, 0) 70%);
             animation: floatSlow 7s ease-in-out infinite;
             pointer-events: none;
         }
@@ -151,7 +151,7 @@
             width: 360px;
             height: 360px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(230,184,75,0.20) 0%, rgba(230,184,75,0) 70%);
+            background: radial-gradient(circle, rgba(230, 184, 75, 0.20) 0%, rgba(230, 184, 75, 0) 70%);
             animation: floatSlow 9s ease-in-out infinite reverse;
             pointer-events: none;
         }
@@ -163,14 +163,21 @@
             width: 320px;
             height: 320px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(242,207,110,0.28) 0%, rgba(230,184,75,0) 70%);
+            background: radial-gradient(circle, rgba(242, 207, 110, 0.28) 0%, rgba(230, 184, 75, 0) 70%);
             animation: floatSlow 7s ease-in-out infinite;
             pointer-events: none;
         }
 
         @keyframes floatSlow {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, -25px); }
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(20px, -25px);
+            }
         }
 
         .twinkle-star {
@@ -185,11 +192,18 @@
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.15; transform: scale(0.7); }
-            50% { opacity: 1; transform: scale(1.15); }
+
+            0%,
+            100% {
+                opacity: 0.15;
+                transform: scale(0.7);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.15);
+            }
         }
-
-
     </style>
 </head>
 
@@ -250,7 +264,8 @@
                 <a href="#statistik"
                     class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">STATISTIK</a>
                 <a href="#faq"
-                    class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors whitespace-nowrap">TANYA JAWAB</a>
+                    class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors whitespace-nowrap">TANYA
+                    JAWAB</a>
                 <a href="{{ route('nominasi') }}"
                     class="bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] font-extrabold text-[14px] tracking-wide px-6 py-2.5 rounded-full shadow-[0_8px_30px_rgba(224,181,60,0.28)] hover:scale-105 transition-transform">DAFTAR</a>
             </nav>
@@ -468,17 +483,22 @@
     <!-- HIGHLIGHT MALAM ANUGERAH -->
     <section id="highlight" class="relative py-[50px] md:py-[90px] px-6 bg-[#0a0c11] overflow-hidden">
         <span class="twinkle-star" style="top: 8%; left: 12%; width: 10px; height: 10px; animation-delay: 0.5s;"></span>
-        <span class="twinkle-star" style="top: 14%; right: 18%; width: 12px; height: 12px; animation-delay: 1.6s;"></span>
-        <span class="twinkle-star" style="bottom: 10%; left: 20%; width: 9px; height: 9px; animation-delay: 2.4s;"></span>
-        <span class="twinkle-star" style="bottom: 16%; right: 10%; width: 11px; height: 11px; animation-delay: 0.9s;"></span>
+        <span class="twinkle-star"
+            style="top: 14%; right: 18%; width: 12px; height: 12px; animation-delay: 1.6s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 10%; left: 20%; width: 9px; height: 9px; animation-delay: 2.4s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 16%; right: 10%; width: 11px; height: 11px; animation-delay: 0.9s;"></span>
 
         <div class="relative max-w-5xl mx-auto">
-            
 
-            <div x-data="hlsPlayer('{{ asset('videos/highlight/index.m3u8') }}', '{{ asset('images/hero-bg.jpg') }}')" x-init="init()"
+
+            <div x-data="hlsPlayer('{{ asset('videos/highlight/index.m3u8') }}', '{{ asset('images/hero-bg.jpg') }}')"
+                x-init="init()"
                 class="relative bg-[#0a1e15]/70 border border-[#e0b53c]/25 rounded-[28px] overflow-hidden backdrop-blur-sm shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
                 <div class="absolute top-5 left-5 z-20 pointer-events-none">
-                    <span class="inline-flex items-center gap-1.5 bg-[#e0b53c] text-[#0a0c11] text-[11px] font-extrabold tracking-wider px-3 py-1.5 rounded-full">
+                    <span
+                        class="inline-flex items-center gap-1.5 bg-[#e0b53c] text-[#0a0c11] text-[11px] font-extrabold tracking-wider px-3 py-1.5 rounded-full">
                         <span class="w-1.5 h-1.5 rounded-full bg-[#0a0c11] animate-pulse"></span>
                         The Tribata, Jakarta
                     </span>
@@ -486,40 +506,362 @@
 
                 <div class="relative aspect-video bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] overflow-hidden group">
                     <video autoplay muted loop playsinline x-ref="video" :poster="poster" playsinline preload="metadata"
-                        class="w-full h-full object-cover"
-                        :controls="started"
-                        @play="started = true"></video>
+                        class="w-full h-full object-cover" :controls="started" @play="started = true"></video>
 
                     <button x-show="!started" @click="play()"
                         class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer bg-black/20 hover:bg-black/10 transition-colors"
                         aria-label="Putar video">
-                        <div class="w-20 h-20 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center group-hover:bg-[#e0b53c] group-hover:border-[#e0b53c] group-hover:scale-110 transition-all duration-300 shadow-[0_0_40px_rgba(224,181,60,0.35)]">
-                            <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" class="text-white group-hover:text-[#0a0c11] ml-1 transition-colors">
-                                <polygon points="6 4 20 12 6 20 6 4"/>
+                        <div
+                            class="w-20 h-20 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center group-hover:bg-[#e0b53c] group-hover:border-[#e0b53c] group-hover:scale-110 transition-all duration-300 shadow-[0_0_40px_rgba(224,181,60,0.35)]">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"
+                                class="text-white group-hover:text-[#0a0c11] ml-1 transition-colors">
+                                <polygon points="6 4 20 12 6 20 6 4" />
                             </svg>
                         </div>
                         <p class="mt-5 text-white/70 text-[13px] font-semibold tracking-wide">Putar Highlight</p>
                     </button>
                 </div>
 
-                <div class="text-center mt-4 mb-4 md:mt-6 md:mb-8" x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false">
-                <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
-                    class="inline-flex items-center gap-2 bg-[#e0b53c]/15 border border-[#e0b53c]/40 text-[#f5da8b] px-5 py-2 rounded-full text-[12px] font-bold tracking-[0.2em] mb-6 transition-all duration-[700ms] ease-out">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M4 4h16v12H5.17L4 17.17V4m0-2a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4z"/>
-                    </svg>
-                    SOROTAN TAHUN LALU
+                <div class="text-center mt-4 mb-4 md:mt-6 md:mb-8" x-data="{ shown: false }" x-intersect="shown = true"
+                    x-intersect:leave="shown = false">
+                    <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
+                        class="inline-flex items-center gap-2 bg-[#e0b53c]/15 border border-[#e0b53c]/40 text-[#f5da8b] px-5 py-2 rounded-full text-[12px] font-bold tracking-[0.2em] mb-6 transition-all duration-[700ms] ease-out">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M4 4h16v12H5.17L4 17.17V4m0-2a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4z" />
+                        </svg>
+                        SOROTAN TAHUN LALU
+                    </div>
+                    <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
+                        class="cz text-[clamp(28px,5vw,48px)] font-extrabold uppercase text-white mb-4 transition-all duration-[800ms] ease-out delay-100">
+                        HIGHLIGHT DPDRI <span class="text-[#e0b53c]"><i>Awards</i> 2025</span>
+                    </h2>
                 </div>
-                <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                    class="cz text-[clamp(28px,5vw,48px)] font-extrabold uppercase text-white mb-4 transition-all duration-[800ms] ease-out delay-100">
-                    HIGHLIGHT <span class="text-[#e0b53c]">MALAM ANUGERAH</span>
-                </h2>
-                <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                    class="text-white/70 text-[clamp(15px,1.6vw,17px)] leading-[1.7] max-w-2xl mx-auto transition-all duration-[800ms] ease-out delay-200">
-                    Rasakan kembali momen puncak DPD RI Awards, mulai dari karpet merah hingga pidato para penerima penghargaan.
-                </p>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 1.6 KILAS BALIK PEMENANG -->
+    <section id="pemenang"
+        class="relative pt-[50px] pb-[75px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden">
+        <span class="twinkle-star" style="top: 6%;  left: 8%;  width: 10px; height: 10px; animation-delay: 0s;"></span>
+        <span class="twinkle-star"
+            style="top: 12%; right: 12%; width: 14px; height: 14px; animation-delay: 0.7s;"></span>
+        <span class="twinkle-star"
+            style="top: 22%; left: 22%; width: 8px;  height: 8px;  animation-delay: 1.4s;"></span>
+        <span class="twinkle-star"
+            style="top: 4%;  right: 32%; width: 12px; height: 12px; animation-delay: 2.1s;"></span>
+        <span class="twinkle-star"
+            style="top: 38%; left: 4%;  width: 11px; height: 11px; animation-delay: 0.4s;"></span>
+        <span class="twinkle-star"
+            style="top: 48%; right: 5%; width: 13px; height: 13px; animation-delay: 1.8s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 20%; left: 10%; width: 9px; height: 9px; animation-delay: 2.6s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 12%; right: 18%; width: 12px; height: 12px; animation-delay: 1.1s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 30%; right: 40%; width: 8px; height: 8px; animation-delay: 3s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 6%;  left: 32%; width: 11px; height: 11px; animation-delay: 0.9s;"></span>
+
+        <div class="radial-gradient-bg1"></div>
+        <div class="radial-gradient-bg2"></div>
+
+        <div>
+            <div class="relative max-w-6xl mx-auto">
+                <div class="text-center mb-8" x-data="{ shown: false }" x-intersect="shown = true"
+                    x-intersect:leave="shown = false">
+                    <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
+                        class="inline-flex items-center gap-2 bg-[#e0b53c]/15 border border-[#e0b53c]/40 text-[#f5da8b] px-5 py-2 rounded-full text-[12px] font-bold tracking-[0.2em] mb-6 transition-all duration-[700ms] ease-out">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" />
+                        </svg>
+                        KENANG KEMBALI
+                    </div>
+                    <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
+                        class="cz text-[clamp(30px,5vw,52px)] font-extrabold uppercase text-white mb-4 transition-all duration-[800ms] ease-out delay-100">
+                        KILAS BALIK <span class="text-[#e0b53c]">PEMENANG</span>
+                    </h2>
+                    <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
+                        class="text-white/70 text-[clamp(15px,1.6vw,18px)] leading-[1.7] max-w-2xl mx-auto transition-all duration-[800ms] ease-out delay-200">
+                        Sosok-sosok inspiratif yang telah diapresiasi DPD RI Awards atas dedikasi nyata mereka bagi
+                        bangsa.
+                    </p>
+                </div>
+
+                <div x-data="pemenangCarousel()" x-init="init()" class="relative">
+
+                    <div
+                        class="relative min-h-[400px] md:min-h-[540px] flex items-center justify-center overflow-hidden">
+                        <template x-for="(it, i) in items" :key="i">
+                            <div class="absolute top-1/2 left-1/2 transition-all duration-[600ms] ease-out cursor-pointer will-change-transform"
+                                :style="cardStyle(i)" @click="i !== index && goTo(i)">
+                                <div
+                                    class="group relative w-[300px] sm:w-[260px] md:w-[360px] aspect-[4/5] rounded-[26px] overflow-hidden border border-[#e0b53c]/25 bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+                                    <template x-if="it.type !== 'video'">
+                                        <img :src="it.image" :alt="it.name"
+                                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-[600ms] group-hover:scale-105"
+                                            onerror="this.style.opacity='0.2'">
+                                    </template>
+
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-t from-[#0a0c11] via-[#0a0c11]/30 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500">
+                                    </div>
+
+                                    <div class="absolute inset-x-0 bottom-0 p-4 sm:p-6 transition-all duration-500 ease-out"
+                                        :class="i === index ? 'opacity-100 translate-y-0 md:opacity-0 md:translate-y-6 md:group-hover:opacity-100 md:group-hover:translate-y-0' : 'opacity-0 translate-y-6'">
+                                        <template x-if="it.category">
+                                            <span
+                                                class="inline-block bg-[#e0b53c] text-[#0a0c11] text-[9px] sm:text-[11px] font-extrabold tracking-wider px-2 py-0.5 sm:py-1 rounded-full mb-1.5 sm:mb-2"
+                                                x-text="it.category"></span>
+                                        </template>
+                                        <h3 class="cz text-white text-[15px] sm:text-[20px] md:text-[22px] font-extrabold leading-tight mb-1"
+                                            x-text="it.name"></h3>
+                                        <div class="text-[#e0b53c] text-[9px] sm:text-[11px] md:text-[12px] font-bold tracking-[0.16em] uppercase mb-1.5 sm:mb-2"
+                                            x-text="it.role"></div>
+                                        <p class="text-white/80 text-[11px] sm:text-[13px] md:text-[14px] leading-[1.55] line-clamp-3 sm:line-clamp-none"
+                                            x-text="it.description"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <button @click="prev()" aria-label="Sebelumnya"
+                            class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center bg-[#0a0c11]/80 hover:bg-[#e0b53c] hover:text-[#0a0c11] text-white/80 border border-white/10 rounded-full backdrop-blur-sm transition-all">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                        </button>
+                        <button @click="next()" aria-label="Berikutnya"
+                            class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center bg-[#0a0c11]/80 hover:bg-[#e0b53c] hover:text-[#0a0c11] text-white/80 border border-white/10 rounded-full backdrop-blur-sm transition-all">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div
+                        class="hidden sm:flex flex-wrap justify-center gap-3 mt-8 max-w-4xl mx-auto sm:[&>*]:w-32 md:[&>*]:w-36">
+                        <template x-for="(it, i) in items" :key="`thumb-${i}`">
+                            <button @click="goTo(i)"
+                                class="relative aspect-[4/5] rounded-xl overflow-hidden border-2 transition-all group"
+                                :class="index === i ? 'border-[#e0b53c] shadow-[0_0_20px_rgba(224,181,60,0.35)]' : 'border-white/10 hover:border-white/30'">
+                                <template x-if="it.type !== 'video'">
+                                    <div class="relative w-full h-full bg-gradient-to-br from-[#0c3b28] to-[#0a0c11]">
+                                        <img :src="it.image" alt=""
+                                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+                                            onerror="this.style.display='none'">
+                                        <div
+                                            class="absolute inset-0 bg-gradient-to-t from-[#0a0c11] via-[#0a0c11]/30 to-transparent">
+                                        </div>
+                                    </div>
+                                </template>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function pemenangCarousel() {
+                return {
+                    index: 0,
+                    autoplayTimer: null,
+                    items: [
+                        {
+                            type: 'image',
+                            short: 'Aqsa',
+                            name: 'Aqsa Aufa Syauqi S.',
+                            role: 'Peneliti Medis Muda & Penggagas Riset',
+                            category: 'Pembangunan Sosial & Kesehatan',
+                            description: 'Pemuda pelopor bidang teknologi dan inovasi yang membawa semangat anak muda Indonesia ke tingkat lebih tinggi.',
+                            image: '{{ asset('images/Aqsa.jpg') }}'
+                        },
+                        {
+                            type: 'image',
+                            short: 'Sugeng',
+                            name: 'Sugeng Handoko',
+                            role: 'Penggerak Wisata Desa Nglanggeran',
+                            category: 'Pariwisata & Kebudayaan',
+                            description: 'Pelopor pemuda pariwisata desa yang mengantar Nglanggeran menjadi salah satu desa wisata terbaik dunia versi UNWTO.',
+                            image: '{{ asset('images/Sugeng.jpg') }}'
+                        },
+                        {
+                            type: 'image',
+                            short: 'Febrita',
+                            name: 'Febrita Lustia',
+                            role: 'TP-PKK Provinsi Sumatera Selatan',
+                            category: 'Ekonomi Kreatif',
+                            description: 'Tokoh inspiratif yang memberikan kontribusi luar biasa bagi masyarakat melalui pengabdiannya di berbagai bidang.',
+                            image: '{{ asset('images/Febrita.jpg') }}'
+                        },
+                        {
+                            type: 'image',
+                            short: 'Khofifah',
+                            name: 'Khofifah Indar Parawansa',
+                            role: 'Gubernur Jawa Timur',
+                            category: 'Perlindungan Anak & Pemberdayaan Perempuan',
+                            description: 'Perempuan inspiratif dengan kontribusi luar biasa mewujudkan kesetaraan gender, perlindungan dan pemberdayaan perempuan tahun 2025.',
+                            image: '{{ asset('images/Gubjatim.jpg') }}'
+                        },
+                        {
+                            type: 'image',
+                            short: 'Bayu',
+                            name: 'Bayu Krisnamurthi',
+                            role: 'Tokoh Ketahanan Pangan',
+                            category: 'Ketahanan Pangan',
+                            description: 'Kontribusi nyata dalam pembangunan sektor pangan nasional dan pemberdayaan petani Indonesia.',
+                            image: '{{ asset('images/Bayu.jpg') }}'
+                        }
+                    ],
+                    init() {
+                        this.startAutoplay();
+                    },
+                    cardStyle(i) {
+                        const n = this.items.length;
+                        let offset = i - this.index;
+                        if (offset > n / 2) offset -= n;
+                        if (offset < -n / 2) offset += n;
+                        const abs = Math.abs(offset);
+                        const w = window.innerWidth;
+                        const isMobile = w < 640;
+                        if (isMobile) {
+                            const opacity = abs === 0 ? 1 : 0;
+                            const z = 20 - abs;
+                            return `transform: translate(-50%, -50%); opacity: ${opacity}; z-index: ${z}; pointer-events: ${abs === 0 ? 'auto' : 'none'};`;
+                        }
+                        const step = w >= 768 ? 260 : 220;
+                        const x = offset * step;
+                        const scale = abs === 0 ? 1 : abs === 1 ? 0.82 : abs === 2 ? 0.66 : 0.55;
+                        const opacity = abs === 0 ? 1 : abs === 1 ? 0.55 : abs === 2 ? 0.25 : 0;
+                        const rotateY = offset === 0 ? 0 : offset > 0 ? -12 : 12;
+                        const z = 20 - abs;
+                        return `transform: translate(-50%, -50%) translateX(${x}px) scale(${scale}) perspective(1200px) rotateY(${rotateY}deg); opacity: ${opacity}; z-index: ${z}; pointer-events: ${abs > 2 ? 'none' : 'auto'};`;
+                    },
+                    next() {
+                        this.index = (this.index + 1) % this.items.length;
+                        this.restartAutoplay();
+                    },
+                    prev() {
+                        this.index = (this.index - 1 + this.items.length) % this.items.length;
+                        this.restartAutoplay();
+                    },
+                    goTo(i) {
+                        this.index = i;
+                        this.restartAutoplay();
+                    },
+                    startAutoplay() {
+                        this.autoplayTimer = setInterval(() => this.next(), 6000);
+                    },
+                    restartAutoplay() {
+                        clearInterval(this.autoplayTimer);
+                        this.startAutoplay();
+                    }
+                }
+            }
+        </script>
+    </section>
+
+
+
+    <!-- 1.8 SOROTAN MEDIA -->
+    <section id="sorotan-media"
+        class="relative pt-[45px] pb-[90px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden">
+        <span class="twinkle-star"
+            style="top: 20%; right: 22%; width: 10px; height: 10px; animation-delay: 1.2s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 12%; left: 8%; width: 12px; height: 12px; animation-delay: 2s;"></span>
+
+        <div class="radial-gradient-bg3"></div>
+
+        <div class="relative max-w-6xl mx-auto">
+            <div
+                class="flex items-center justify-center gap-4 mb-10 text-[#e0b53c]/60 text-[12px] font-bold tracking-[0.3em]">
+                <span class="h-px w-16 sm:w-24 bg-[#e0b53c]/25"></span>
+                <span class="flex items-center gap-2 whitespace-nowrap">
+                    <span>&#10022;</span>
+                    KILAS BALIK BERITA
+                    <span>&#10022;</span>
+                </span>
+                <span class="h-px w-16 sm:w-24 bg-[#e0b53c]/25"></span>
             </div>
 
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10" x-data="{ shown: false }"
+                x-intersect="shown = true" x-intersect:leave="shown = false">
+                <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
+                    class="transition-all duration-[700ms] ease-out">
+                    <h2 class="cz text-[clamp(30px,5vw,48px)] font-extrabold uppercase text-white leading-none">
+                        SOROTAN <span class="text-[#e0b53c]">MEDIA</span>
+                    </h2>
+                </div>
+            </div>
+
+            @php
+                $mediaHighlights = [
+                    [
+                        'source' => 'detikNews',
+                        'date' => '28 Oktober 2025',
+                        'title' => 'DPD Award 2025 Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
+                        'excerpt' => 'Jakarta - Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
+                        'image' => asset('images/artikel1.jpeg'),
+                        'url' => 'https://news.detik.com/berita/d-8183015/dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
+                    ],
+                    [
+                        'source' => '20detik',
+                        'date' => '29 Oktober 2025',
+                        'title' => 'Video DPD Award 2025, Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
+                        'excerpt' => 'Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award 2025. Acara tersebut diselenggarakan sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
+                        'image' => asset('images/artikel2.jpg'),
+                        'url' => 'https://20.detik.com/detikupdate/20251029-251029002/video-dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
+                    ],
+                    [
+                        'source' => 'detikNews',
+                        'date' => '28 Oktober 2025',
+                        'title' => 'Daftar Pemenang DPD RI Awards 2025, Khofifah Terima Penghargaan',
+                        'excerpt' => 'Jakarta - DPD RI menggelar acara DPD RI Awards 2025. Ada sejumlah bidang yang dianugerahi penghargaan. Pemberian penghargaan DPD RI Awards ini digelar di Tribrata Hotel and Convention, Jakarta Selatan, Selasa (28/10/2025). Ada 5 kategori yang dianugerahi penghargaan.',
+                        'image' => asset('images/artikel3.jpeg'),
+                        'url' => 'https://news.detik.com/berita/d-8183132/daftar-pemenang-dpd-ri-awards-2025-khofifah-terima-penghargaan',
+                    ],
+                ];
+            @endphp
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach ($mediaHighlights as $article)
+                    <a href="{{ $article['url'] }}" target="_blank" rel="noopener noreferrer"
+                        class="group bg-[#fbf7ee] rounded-2xl overflow-hidden border border-[#e0b53c]/10 hover:border-[#e0b53c]/40 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.25)] flex flex-col">
+                        <div class="relative aspect-[16/10] bg-[#efe6ce] overflow-hidden">
+                            <img src="{{ $article['image'] }}" alt="{{ $article['title'] }}"
+                                class="w-full h-full object-cover object-top scale-145 group-hover:scale-[1.55] transition-transform duration-[600ms]"
+                                onerror="this.style.opacity='0.15'">
+                            <div class="absolute top-4 left-4">
+                                <span
+                                    class="inline-block bg-[#e0b53c] text-[#0a0c11] text-[11px] font-extrabold tracking-wider px-3 py-1 rounded-full shadow">{{ $article['source'] }}</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="text-[#8a6d1c] text-[11px] font-bold tracking-wider mb-2">{{ $article['date'] }}
+                            </div>
+                            <h3
+                                class="text-[#10131a] text-[17px] font-extrabold leading-snug mb-3 group-hover:text-[#8a6d1c] transition-colors">
+                                {{ $article['title'] }}
+                            </h3>
+                            <p class="text-[#4b5262] text-[13.5px] leading-[1.65] mb-5">{{ $article['excerpt'] }}</p>
+                            <div
+                                class="mt-auto inline-flex items-center gap-1.5 text-[#8a6d1c] text-[12.5px] font-bold tracking-wider group-hover:gap-2.5 transition-all">
+                                Baca Selengkapnya
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                    <polyline points="12 5 19 12 12 19" />
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
             </div>
         </div>
     </section>
@@ -1259,94 +1601,6 @@
         </div>
     </section>
 
-
-    <!-- 6. STATISTIK PENDAFTAR -->
-    <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"
-                alt="DPDRI AWARDS" loading="lazy" class="w-full h-full object-cover opacity-30 blur-[2px]">
-            <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
-        </div>
-        <div class="relative z-10 max-w-[1000px] mx-auto">
-            <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
-                class="text-center mb-[60px] transition-all duration-[800ms] ease-out"
-                :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
-                <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">ANTUSIASME NASIONAL</span>
-                <h2 class="cz text-[clamp(38px,6vw,64px)] font-extrabold uppercase text-white mt-3 leading-none">
-                    Statistik <span class="text-[#e0b53c]">Pendaftar</span></h2>
-            </div>
-
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-                @php
-                    $stats = [
-                        [
-                            'value' => $kategoriCounts['Bidang Pendidikan'] ?? 0,
-                            'label' => 'Bidang Pendidikan',
-                            'img' => asset('images/kat-pendidikan.png'),
-                        ],
-                        [
-                            'value' => $kategoriCounts['Bidang Kesehatan'] ?? 0,
-                            'label' => 'Bidang Kesehatan',
-                            'img' => asset('images/kat-kesehatan.png'),
-                        ],
-                        [
-                            'value' => $kategoriCounts['Bidang Ketahanan Pangan'] ?? 0,
-                            'label' => 'Bidang Ketahanan Pangan',
-                            'img' => asset('images/kat-pangan.png'),
-                        ],
-                        [
-                            'value' => $kategoriCounts['Bidang Seni dan Budaya'] ?? 0,
-                            'label' => 'Bidang Seni dan Budaya',
-                            'img' => asset('images/kat-budaya.png'),
-                        ],
-                    ];
-                @endphp
-                @foreach ($stats as $index => $st)
-                    <div x-data="counter({{ $st['value'] }})" x-intersect="startCount()"
-                        class="relative overflow-hidden border border-[#e0b53c]/20 hover:border-[#88c445]/55 bg-gradient-to-br from-[#191d27] to-[#10131a] rounded-xl py-6 px-3 text-center transition-colors duration-300">
-
-                        <!-- Background Image for statistics card -->
-                        <img src="{{ $st['img'] }}" alt=""
-                            class="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none z-0">
-
-                        <div class="relative z-10">
-                            <div class="cz text-[clamp(32px,3vw,42px)] font-bold text-[#e0b53c] leading-none"
-                                x-text="display">0
-                            </div>
-                            <p class="text-white/60 text-[12px] font-bold tracking-[0.1em] uppercase mt-3 px-2">
-                                {{ $st['label'] }}
-                            </p>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-        <script>
-            function counter(target) {
-                return {
-                    display: '0',
-                    animationId: null,
-                    startCount() {
-                        if (this.animationId) cancelAnimationFrame(this.animationId);
-                        this.display = '0';
-                        let start = null;
-                        const duration = 2000;
-                        const fmt = new Intl.NumberFormat('id-ID');
-                        const step = (ts) => {
-                            if (!start) start = ts;
-                            const progress = Math.min((ts - start) / duration, 1);
-                            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-                            this.display = fmt.format(Math.floor(easeProgress * target));
-                            if (progress < 1) this.animationId = requestAnimationFrame(step);
-                            else this.display = fmt.format(target);
-                        };
-                        this.animationId = requestAnimationFrame(step);
-                    }
-                }
-            }
-        </script>
-    </section>
-
     <!-- 5. LACAK PENDAFTARAN -->
     <section id="lacak" class="py-[90px] px-6 bg-white border-t border-gray-200 relative overflow-hidden">
         <div class="absolute inset-0 z-0 pointer-events-none">
@@ -1518,290 +1772,91 @@
         </script>
     </section>
 
-    <!-- 1.6 KILAS BALIK PEMENANG -->
-    <section id="pemenang" class="relative pt-[50px] pb-[75px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden">
-        <span class="twinkle-star" style="top: 6%;  left: 8%;  width: 10px; height: 10px; animation-delay: 0s;"></span>
-        <span class="twinkle-star" style="top: 12%; right: 12%; width: 14px; height: 14px; animation-delay: 0.7s;"></span>
-        <span class="twinkle-star" style="top: 22%; left: 22%; width: 8px;  height: 8px;  animation-delay: 1.4s;"></span>
-        <span class="twinkle-star" style="top: 4%;  right: 32%; width: 12px; height: 12px; animation-delay: 2.1s;"></span>
-        <span class="twinkle-star" style="top: 38%; left: 4%;  width: 11px; height: 11px; animation-delay: 0.4s;"></span>
-        <span class="twinkle-star" style="top: 48%; right: 5%; width: 13px; height: 13px; animation-delay: 1.8s;"></span>
-        <span class="twinkle-star" style="bottom: 20%; left: 10%; width: 9px; height: 9px; animation-delay: 2.6s;"></span>
-        <span class="twinkle-star" style="bottom: 12%; right: 18%; width: 12px; height: 12px; animation-delay: 1.1s;"></span>
-        <span class="twinkle-star" style="bottom: 30%; right: 40%; width: 8px; height: 8px; animation-delay: 3s;"></span>
-        <span class="twinkle-star" style="bottom: 6%;  left: 32%; width: 11px; height: 11px; animation-delay: 0.9s;"></span>
+    <!-- 6. STATISTIK PENDAFTAR -->
+    <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"
+                alt="DPDRI AWARDS" loading="lazy" class="w-full h-full object-cover opacity-30 blur-[2px]">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
+        </div>
+        <div class="relative z-10 max-w-[1000px] mx-auto">
+            <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
+                class="text-center mb-[60px] transition-all duration-[800ms] ease-out"
+                :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
+                <span class="text-[#88c445] text-[12.5px] font-extrabold tracking-[0.22em]">ANTUSIASME NASIONAL</span>
+                <h2 class="cz text-[clamp(38px,6vw,64px)] font-extrabold uppercase text-white mt-3 leading-none">
+                    Statistik <span class="text-[#e0b53c]">Pendaftar</span></h2>
+            </div>
 
-        <div class="radial-gradient-bg1"></div>
-        <div class="radial-gradient-bg2"></div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                @php
+                    $stats = [
+                        [
+                            'value' => $kategoriCounts['Bidang Pendidikan'] ?? 0,
+                            'label' => 'Bidang Pendidikan',
+                            'img' => asset('images/kat-pendidikan.png'),
+                        ],
+                        [
+                            'value' => $kategoriCounts['Bidang Kesehatan'] ?? 0,
+                            'label' => 'Bidang Kesehatan',
+                            'img' => asset('images/kat-kesehatan.png'),
+                        ],
+                        [
+                            'value' => $kategoriCounts['Bidang Ketahanan Pangan'] ?? 0,
+                            'label' => 'Bidang Ketahanan Pangan',
+                            'img' => asset('images/kat-pangan.png'),
+                        ],
+                        [
+                            'value' => $kategoriCounts['Bidang Seni dan Budaya'] ?? 0,
+                            'label' => 'Bidang Seni dan Budaya',
+                            'img' => asset('images/kat-budaya.png'),
+                        ],
+                    ];
+                @endphp
+                @foreach ($stats as $index => $st)
+                    <div x-data="counter({{ $st['value'] }})" x-intersect="startCount()"
+                        class="relative overflow-hidden border border-[#e0b53c]/20 hover:border-[#88c445]/55 bg-gradient-to-br from-[#191d27] to-[#10131a] rounded-xl py-6 px-3 text-center transition-colors duration-300">
 
-        <div>
-            <div class="relative max-w-6xl mx-auto">
-                <div class="text-center mb-8" x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false">
-                    <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
-                        class="inline-flex items-center gap-2 bg-[#e0b53c]/15 border border-[#e0b53c]/40 text-[#f5da8b] px-5 py-2 rounded-full text-[12px] font-bold tracking-[0.2em] mb-6 transition-all duration-[700ms] ease-out">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
-                        </svg>
-                        KENANG KEMBALI
-                    </div>
-                    <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                        class="cz text-[clamp(30px,5vw,52px)] font-extrabold uppercase text-white mb-4 transition-all duration-[800ms] ease-out delay-100">
-                        KILAS BALIK <span class="text-[#e0b53c]">PEMENANG</span>
-                    </h2>
-                    <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                        class="text-white/70 text-[clamp(15px,1.6vw,18px)] leading-[1.7] max-w-2xl mx-auto transition-all duration-[800ms] ease-out delay-200">
-                        Sosok-sosok inspiratif yang telah diapresiasi DPD RI Awards atas dedikasi nyata mereka bagi bangsa.
-                    </p>
-                </div>
+                        <!-- Background Image for statistics card -->
+                        <img src="{{ $st['img'] }}" alt=""
+                            class="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none z-0">
 
-                <div x-data="pemenangCarousel()" x-init="init()" class="relative">
-
-                    <div class="relative min-h-[400px] md:min-h-[540px] flex items-center justify-center overflow-hidden">
-                        <template x-for="(it, i) in items" :key="i">
-                            <div class="absolute top-1/2 left-1/2 transition-all duration-[600ms] ease-out cursor-pointer will-change-transform"
-                                :style="cardStyle(i)"
-                                @click="i !== index && goTo(i)">
-                                <div class="group relative w-[300px] sm:w-[260px] md:w-[360px] aspect-[4/5] rounded-[26px] overflow-hidden border border-[#e0b53c]/25 bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
-                                    <template x-if="it.type !== 'video'">
-                                        <img :src="it.image" :alt="it.name"
-                                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-[600ms] group-hover:scale-105"
-                                            onerror="this.style.opacity='0.2'">
-                                    </template>
-
-                                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0c11] via-[#0a0c11]/30 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                                    <div class="absolute inset-x-0 bottom-0 p-4 sm:p-6 transition-all duration-500 ease-out"
-                                        :class="i === index ? 'opacity-100 translate-y-0 md:opacity-0 md:translate-y-6 md:group-hover:opacity-100 md:group-hover:translate-y-0' : 'opacity-0 translate-y-6'">
-                                        <template x-if="it.category">
-                                            <span class="inline-block bg-[#e0b53c] text-[#0a0c11] text-[9px] sm:text-[11px] font-extrabold tracking-wider px-2 py-0.5 sm:py-1 rounded-full mb-1.5 sm:mb-2" x-text="it.category"></span>
-                                        </template>
-                                        <h3 class="cz text-white text-[15px] sm:text-[20px] md:text-[22px] font-extrabold leading-tight mb-1" x-text="it.name"></h3>
-                                        <div class="text-[#e0b53c] text-[9px] sm:text-[11px] md:text-[12px] font-bold tracking-[0.16em] uppercase mb-1.5 sm:mb-2" x-text="it.role"></div>
-                                        <p class="text-white/80 text-[11px] sm:text-[13px] md:text-[14px] leading-[1.55] line-clamp-3 sm:line-clamp-none" x-text="it.description"></p>
-                                    </div>
-                                </div>
+                        <div class="relative z-10">
+                            <div class="cz text-[clamp(32px,3vw,42px)] font-bold text-[#e0b53c] leading-none"
+                                x-text="display">0
                             </div>
-                        </template>
-
-                        <button @click="prev()" aria-label="Sebelumnya"
-                            class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center bg-[#0a0c11]/80 hover:bg-[#e0b53c] hover:text-[#0a0c11] text-white/80 border border-white/10 rounded-full backdrop-blur-sm transition-all">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="15 18 9 12 15 6"/>
-                            </svg>
-                        </button>
-                        <button @click="next()" aria-label="Berikutnya"
-                            class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center bg-[#0a0c11]/80 hover:bg-[#e0b53c] hover:text-[#0a0c11] text-white/80 border border-white/10 rounded-full backdrop-blur-sm transition-all">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="9 18 15 12 9 6"/>
-                            </svg>
-                        </button>
+                            <p class="text-white/60 text-[12px] font-bold tracking-[0.1em] uppercase mt-3 px-2">
+                                {{ $st['label'] }}
+                            </p>
+                        </div>
                     </div>
-
-                    <div class="hidden sm:flex flex-wrap justify-center gap-3 mt-8 max-w-4xl mx-auto sm:[&>*]:w-32 md:[&>*]:w-36">
-                        <template x-for="(it, i) in items" :key="`thumb-${i}`">
-                            <button @click="goTo(i)"
-                                class="relative aspect-[4/5] rounded-xl overflow-hidden border-2 transition-all group"
-                                :class="index === i ? 'border-[#e0b53c] shadow-[0_0_20px_rgba(224,181,60,0.35)]' : 'border-white/10 hover:border-white/30'">
-                                <template x-if="it.type !== 'video'">
-                                    <div class="relative w-full h-full bg-gradient-to-br from-[#0c3b28] to-[#0a0c11]">
-                                        <img :src="it.image" alt="" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" onerror="this.style.display='none'">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0c11] via-[#0a0c11]/30 to-transparent"></div>
-                                    </div>
-                                </template>
-                            </button>
-                        </template>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
-
         <script>
-            function pemenangCarousel() {
+            function counter(target) {
                 return {
-                    index: 0,
-                    autoplayTimer: null,
-                    items: [
-                        {
-                            type: 'image',
-                            short: 'Aqsa',
-                            name: 'Aqsa Aufa Syauqi S.',
-                            role: 'Peneliti Medis Muda & Penggagas Riset',
-                            category: 'Pembangunan Sosial & Kesehatan',
-                            description: 'Pemuda pelopor bidang teknologi dan inovasi yang membawa semangat anak muda Indonesia ke tingkat lebih tinggi.',
-                            image: '{{ asset('images/Aqsa.jpg') }}'
-                        },
-                        {
-                            type: 'image',
-                            short: 'Sugeng',
-                            name: 'Sugeng Handoko',
-                            role: 'Penggerak Wisata Desa Nglanggeran',
-                            category: 'Pariwisata & Kebudayaan',
-                            description: 'Pelopor pemuda pariwisata desa yang mengantar Nglanggeran menjadi salah satu desa wisata terbaik dunia versi UNWTO.',
-                            image: '{{ asset('images/Sugeng.jpg') }}'
-                        },
-                        {
-                            type: 'image',
-                            short: 'Febrita',
-                            name: 'Febrita Lustia',
-                            role: 'TP-PKK Provinsi Sumatera Selatan',
-                            category: 'Ekonomi Kreatif',
-                            description: 'Tokoh inspiratif yang memberikan kontribusi luar biasa bagi masyarakat melalui pengabdiannya di berbagai bidang.',
-                            image: '{{ asset('images/Febrita.jpg') }}'
-                        },
-                        {
-                            type: 'image',
-                            short: 'Khofifah',
-                            name: 'Khofifah Indar Parawansa',
-                            role: 'Gubernur Jawa Timur',
-                            category: 'Perlindungan Anak & Pemberdayaan Perempuan',
-                            description: 'Perempuan inspiratif dengan kontribusi luar biasa mewujudkan kesetaraan gender, perlindungan dan pemberdayaan perempuan tahun 2025.',
-                            image: '{{ asset('images/Gubjatim.jpg') }}'
-                        },
-                        {
-                            type: 'image',
-                            short: 'Bayu',
-                            name: 'Bayu Krisnamurthi',
-                            role: 'Tokoh Ketahanan Pangan',
-                            category: 'Ketahanan Pangan',
-                            description: 'Kontribusi nyata dalam pembangunan sektor pangan nasional dan pemberdayaan petani Indonesia.',
-                            image: '{{ asset('images/Bayu.jpg') }}'
-                        }
-                    ],
-                    init() {
-                        this.startAutoplay();
-                    },
-                    cardStyle(i) {
-                        const n = this.items.length;
-                        let offset = i - this.index;
-                        if (offset > n / 2) offset -= n;
-                        if (offset < -n / 2) offset += n;
-                        const abs = Math.abs(offset);
-                        const w = window.innerWidth;
-                        const isMobile = w < 640;
-                        if (isMobile) {
-                            const opacity = abs === 0 ? 1 : 0;
-                            const z = 20 - abs;
-                            return `transform: translate(-50%, -50%); opacity: ${opacity}; z-index: ${z}; pointer-events: ${abs === 0 ? 'auto' : 'none'};`;
-                        }
-                        const step = w >= 768 ? 260 : 220;
-                        const x = offset * step;
-                        const scale = abs === 0 ? 1 : abs === 1 ? 0.82 : abs === 2 ? 0.66 : 0.55;
-                        const opacity = abs === 0 ? 1 : abs === 1 ? 0.55 : abs === 2 ? 0.25 : 0;
-                        const rotateY = offset === 0 ? 0 : offset > 0 ? -12 : 12;
-                        const z = 20 - abs;
-                        return `transform: translate(-50%, -50%) translateX(${x}px) scale(${scale}) perspective(1200px) rotateY(${rotateY}deg); opacity: ${opacity}; z-index: ${z}; pointer-events: ${abs > 2 ? 'none' : 'auto'};`;
-                    },
-                    next() {
-                        this.index = (this.index + 1) % this.items.length;
-                        this.restartAutoplay();
-                    },
-                    prev() {
-                        this.index = (this.index - 1 + this.items.length) % this.items.length;
-                        this.restartAutoplay();
-                    },
-                    goTo(i) {
-                        this.index = i;
-                        this.restartAutoplay();
-                    },
-                    startAutoplay() {
-                        this.autoplayTimer = setInterval(() => this.next(), 6000);
-                    },
-                    restartAutoplay() {
-                        clearInterval(this.autoplayTimer);
-                        this.startAutoplay();
+                    display: '0',
+                    animationId: null,
+                    startCount() {
+                        if (this.animationId) cancelAnimationFrame(this.animationId);
+                        this.display = '0';
+                        let start = null;
+                        const duration = 2000;
+                        const fmt = new Intl.NumberFormat('id-ID');
+                        const step = (ts) => {
+                            if (!start) start = ts;
+                            const progress = Math.min((ts - start) / duration, 1);
+                            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                            this.display = fmt.format(Math.floor(easeProgress * target));
+                            if (progress < 1) this.animationId = requestAnimationFrame(step);
+                            else this.display = fmt.format(target);
+                        };
+                        this.animationId = requestAnimationFrame(step);
                     }
                 }
             }
         </script>
-    </section>
-
-    
-
-    <!-- 1.8 SOROTAN MEDIA -->
-    <section id="sorotan-media" class="relative pt-[45px] pb-[90px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden">
-        <span class="twinkle-star" style="top: 20%; right: 22%; width: 10px; height: 10px; animation-delay: 1.2s;"></span>
-        <span class="twinkle-star" style="bottom: 12%; left: 8%; width: 12px; height: 12px; animation-delay: 2s;"></span>
-
-        <div class="radial-gradient-bg3"></div>
-
-        <div class="relative max-w-6xl mx-auto">
-            <div class="flex items-center justify-center gap-4 mb-10 text-[#e0b53c]/60 text-[12px] font-bold tracking-[0.3em]">
-                <span class="h-px w-16 sm:w-24 bg-[#e0b53c]/25"></span>
-                <span class="flex items-center gap-2 whitespace-nowrap">
-                    <span>&#10022;</span>
-                    KILAS BALIK BERITA
-                    <span>&#10022;</span>
-                </span>
-                <span class="h-px w-16 sm:w-24 bg-[#e0b53c]/25"></span>
-            </div>
-
-            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
-                x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false">
-                <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
-                    class="transition-all duration-[700ms] ease-out">
-                    <h2 class="cz text-[clamp(30px,5vw,48px)] font-extrabold uppercase text-white leading-none">
-                        SOROTAN <span class="text-[#e0b53c]">MEDIA</span>
-                    </h2>
-                </div>
-            </div>
-
-            @php
-                $mediaHighlights = [
-                    [
-                        'source' => 'detikNews',
-                        'date' => '28 Oktober 2025',
-                        'title' => 'DPD Award 2025 Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
-                        'excerpt' => 'Jakarta - Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
-                        'image' => asset('images/artikel1.jpeg'),
-                        'url' => 'https://news.detik.com/berita/d-8183015/dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
-                    ],
-                    [
-                        'source' => '20detik',
-                        'date' => '29 Oktober 2025',
-                        'title' => 'Video DPD Award 2025, Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
-                        'excerpt' => 'Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award 2025. Acara tersebut diselenggarakan sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
-                        'image' => asset('images/artikel2.jpg'),
-                        'url' => 'https://20.detik.com/detikupdate/20251029-251029002/video-dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
-                    ],
-                    [
-                        'source' => 'detikNews',
-                        'date' => '28 Oktober 2025',
-                        'title' => 'Daftar Pemenang DPD RI Awards 2025, Khofifah Terima Penghargaan',
-                        'excerpt' => 'Jakarta - DPD RI menggelar acara DPD RI Awards 2025. Ada sejumlah bidang yang dianugerahi penghargaan. Pemberian penghargaan DPD RI Awards ini digelar di Tribrata Hotel and Convention, Jakarta Selatan, Selasa (28/10/2025). Ada 5 kategori yang dianugerahi penghargaan.',
-                        'image' => asset('images/artikel3.jpeg'),
-                        'url' => 'https://news.detik.com/berita/d-8183132/daftar-pemenang-dpd-ri-awards-2025-khofifah-terima-penghargaan',
-                    ],
-                ];
-            @endphp
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @foreach ($mediaHighlights as $article)
-                    <a href="{{ $article['url'] }}" target="_blank" rel="noopener noreferrer"
-                        class="group bg-[#fbf7ee] rounded-2xl overflow-hidden border border-[#e0b53c]/10 hover:border-[#e0b53c]/40 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.25)] flex flex-col">
-                        <div class="relative aspect-[16/10] bg-[#efe6ce] overflow-hidden">
-                            <img src="{{ $article['image'] }}" alt="{{ $article['title'] }}"
-                                class="w-full h-full object-cover object-top scale-145 group-hover:scale-[1.55] transition-transform duration-[600ms]"
-                                onerror="this.style.opacity='0.15'">
-                            <div class="absolute top-4 left-4">
-                                <span class="inline-block bg-[#e0b53c] text-[#0a0c11] text-[11px] font-extrabold tracking-wider px-3 py-1 rounded-full shadow">{{ $article['source'] }}</span>
-                            </div>
-                        </div>
-                        <div class="p-6 flex-1 flex flex-col">
-                            <div class="text-[#8a6d1c] text-[11px] font-bold tracking-wider mb-2">{{ $article['date'] }}</div>
-                            <h3 class="text-[#10131a] text-[17px] font-extrabold leading-snug mb-3 group-hover:text-[#8a6d1c] transition-colors">{{ $article['title'] }}</h3>
-                            <p class="text-[#4b5262] text-[13.5px] leading-[1.65] mb-5">{{ $article['excerpt'] }}</p>
-                            <div class="mt-auto inline-flex items-center gap-1.5 text-[#8a6d1c] text-[12.5px] font-bold tracking-wider group-hover:gap-2.5 transition-all">
-                                Baca Selengkapnya
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="5" y1="12" x2="19" y2="12"/>
-                                    <polyline points="12 5 19 12 12 19"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
-            </div>
-        </div>
     </section>
 
     <!-- 7. QNA (FAQ) -->

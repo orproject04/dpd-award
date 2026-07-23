@@ -497,11 +497,6 @@
                 x-init="init()"
                 class="relative bg-[#0a1e15]/70 border border-[#e0b53c]/25 rounded-[28px] overflow-hidden backdrop-blur-sm shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
                 <div class="absolute top-5 left-5 z-20 pointer-events-none">
-                    <span
-                        class="inline-flex items-center gap-1.5 bg-[#e0b53c] text-[#0a0c11] text-[11px] font-extrabold tracking-wider px-3 py-1.5 rounded-full">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#0a0c11] animate-pulse"></span>
-                        The Tribata, Jakarta
-                    </span>
                 </div>
 
                 <div class="relative aspect-video bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] overflow-hidden group">
@@ -524,18 +519,14 @@
 
                 <div class="text-center mt-4 mb-4 md:mt-6 md:mb-8" x-data="{ shown: false }" x-intersect="shown = true"
                     x-intersect:leave="shown = false">
-                    <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
-                        class="inline-flex items-center gap-2 bg-[#e0b53c]/15 border border-[#e0b53c]/40 text-[#f5da8b] px-5 py-2 rounded-full text-[12px] font-bold tracking-[0.2em] mb-6 transition-all duration-[700ms] ease-out">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M4 4h16v12H5.17L4 17.17V4m0-2a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4z" />
-                        </svg>
-                        SOROTAN TAHUN LALU
-                    </div>
                     <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                        class="cz text-[clamp(28px,5vw,48px)] font-extrabold uppercase text-white mb-4 transition-all duration-[800ms] ease-out delay-100">
-                        HIGHLIGHT DPDRI <span class="text-[#e0b53c]"><i>Awards</i> 2025</span>
+                        class="cz text-[clamp(28px,5vw,48px)] font-extrabold uppercase text-white mb-2 transition-all duration-[800ms] ease-out delay-100">
+                        AWARDS <span class="text-[#e0b53c]">HIGHLIGHT</span>
                     </h2>
+                    <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
+                        class="text-white/80 text-[clamp(16px,2vw,22px)] tracking-widest font-medium transition-all duration-[800ms] ease-out delay-200">
+                        <i>DPDRI Awards</i> 2025
+                    </p>
                 </div>
 
             </div>
@@ -572,13 +563,6 @@
             <div class="relative max-w-6xl mx-auto">
                 <div class="text-center mb-8" x-data="{ shown: false }" x-intersect="shown = true"
                     x-intersect:leave="shown = false">
-                    <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
-                        class="inline-flex items-center gap-2 bg-[#e0b53c]/15 border border-[#e0b53c]/40 text-[#f5da8b] px-5 py-2 rounded-full text-[12px] font-bold tracking-[0.2em] mb-6 transition-all duration-[700ms] ease-out">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" />
-                        </svg>
-                        KENANG KEMBALI
-                    </div>
                     <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                         class="cz text-[clamp(30px,5vw,52px)] font-extrabold uppercase text-white mb-4 transition-all duration-[800ms] ease-out delay-100">
                         KILAS BALIK <span class="text-[#e0b53c]">PEMENANG</span>

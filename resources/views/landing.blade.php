@@ -226,12 +226,17 @@
 
         <div class="relative w-full px-4 lg:px-12 flex items-start lg:items-center justify-between">
             <a href="#beranda"
-                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-0 lg:gap-2 mt-0.5 sm:mt-0">
-                <img src="{{ asset('images/detik.png') }}" alt="Logo Detik.com"
-                    class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
+                class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center mt-0.5 sm:mt-0">
+
                 <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
-                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI"
+
+                <!-- ATUR JARAK MANUAL: Ubah nilai margin-left di bawah ini (bisa minus misal -10px, atau positif misal 10px) -->
+                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" style="margin-left: 15px;"
+                    class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
+
+                <!-- ATUR JARAK MANUAL: Ubah nilai margin-left di bawah ini untuk mengatur jarak logo Detik -->
+                <img src="{{ asset('images/detik.png') }}" alt="Logo Detik.com" style="margin-left: 12px;"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
             </a>
 
@@ -499,7 +504,8 @@
                 <div class="absolute top-5 left-5 z-20 pointer-events-none">
                 </div>
 
-                <div class="relative aspect-video bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] overflow-hidden group">
+                <div class="relative aspect-video bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] overflow-hidden group"
+                    x-intersect:enter="$refs.video.play()" x-intersect:leave="$refs.video.pause()">
                     <video autoplay muted loop playsinline x-ref="video" :poster="poster" playsinline preload="metadata"
                         class="w-full h-full object-cover" :controls="started" @play="started = true"></video>
 
@@ -578,7 +584,9 @@
                     </p>
                 </div>
 
-                <div x-data="pemenangCarousel()" x-init="init()" class="relative">
+                <div x-data="pemenangCarousel()" x-init="init()" class="relative"
+                    @touchstart="touchstartX = $event.changedTouches[0].screenX"
+                    @touchend="touchendX = $event.changedTouches[0].screenX; handleSwipe()">
 
                     <div
                         class="relative min-h-[400px] md:min-h-[540px] flex items-center justify-center overflow-hidden">
@@ -660,6 +668,12 @@
                 return {
                     index: 0,
                     autoplayTimer: null,
+                    touchstartX: 0,
+                    touchendX: 0,
+                    handleSwipe() {
+                        if (this.touchendX < this.touchstartX - 50) this.next();
+                        if (this.touchendX > this.touchstartX + 50) this.prev();
+                    },
                     items: [
                         {
                             type: 'image',

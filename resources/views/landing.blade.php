@@ -585,8 +585,9 @@
                 </div>
 
                 <div x-data="pemenangCarousel()" x-init="init()" class="relative"
-                    @touchstart="touchstartX = $event.changedTouches[0].screenX"
-                    @touchend="touchendX = $event.changedTouches[0].screenX; handleSwipe()">
+                    @touchstart="handleTouchStart($event)"
+                    @touchend="handleTouchEnd($event)"
+                    style="touch-action: pan-y;">
 
                     <div
                         class="relative min-h-[400px] md:min-h-[540px] flex items-center justify-center overflow-hidden">
@@ -670,9 +671,20 @@
                     autoplayTimer: null,
                     touchstartX: 0,
                     touchendX: 0,
-                    handleSwipe() {
-                        if (this.touchendX < this.touchstartX - 50) this.next();
-                        if (this.touchendX > this.touchstartX + 50) this.prev();
+                    handleTouchStart(e) {
+                        this.touchstartX = e.touches[0].clientX;
+                    },
+                    handleTouchEnd(e) {
+                        this.touchendX = e.changedTouches[0].clientX;
+                        const diff = this.touchstartX - this.touchendX;
+                        // Deteksi swipe minimal sejauh 40px
+                        if (Math.abs(diff) > 40) {
+                            if (diff > 0) {
+                                this.next(); // Swipe ke kiri
+                            } else {
+                                this.prev(); // Swipe ke kanan
+                            }
+                        }
                     },
                     items: [
                         {

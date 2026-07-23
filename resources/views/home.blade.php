@@ -8,9 +8,9 @@
         $statusLabels = [
             'Diajukan' => 'blue',
             'Lolos Verifikasi Berkas' => 'orange',
-            'Lolos Penilaian Tahap 1' => 'yellow',
-            'Lolos Penilaian Tahap 2' => 'yellow',
-            'Lolos Penilaian Tahap 3' => 'yellow',
+            'Lolos Pengumuman 50 Besar' => 'yellow',
+            'Lolos Pengumuman 10 Besar' => 'yellow',
+            'Lolos Pengumuman 5 Besar' => 'yellow',
             'Lolos Tahap Wawancara' => 'purple',
             'Lolos Tahap Final' => 'teal',
             'Tidak Lolos' => 'red',
@@ -1153,8 +1153,8 @@
             // ── 5. Status Bar Chart ───────────────────────────────────
             const rawStatus = {!! json_encode($statusCounts) !!};
             const stages = [
-                'Diajukan', 'Lolos Verifikasi Berkas', 'Lolos Penilaian Tahap 1',
-                'Lolos Penilaian Tahap 2', 'Lolos Penilaian Tahap 3',
+                'Diajukan', 'Lolos Verifikasi Berkas', 'Lolos Pengumuman 50 Besar',
+                'Lolos Pengumuman 10 Besar', 'Lolos Pengumuman 5 Besar',
                 'Lolos Tahap Wawancara', 'Lolos Tahap Final', 'Tidak Lolos'
             ];
             const stageBg = stages.map(s => {

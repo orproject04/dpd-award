@@ -521,11 +521,11 @@
                     x-intersect:leave="shown = false">
                     <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                         class="cz text-[clamp(28px,5vw,48px)] font-extrabold uppercase text-white mb-2 transition-all duration-[800ms] ease-out delay-100">
-                        AWARDS <span class="text-[#e0b53c]">HIGHLIGHT</span>
+                        DPDRI <span class="text-[#e0b53c]"><i>Awards</i> 2025</span>
                     </h2>
                     <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                         class="text-white/80 text-[clamp(16px,2vw,22px)] tracking-widest font-medium transition-all duration-[800ms] ease-out delay-200">
-                        <i>DPDRI Awards</i> 2025
+                        AWARDS HIGHLIGHT
                     </p>
                 </div>
 
@@ -564,9 +564,13 @@
                 <div class="text-center mb-8" x-data="{ shown: false }" x-intersect="shown = true"
                     x-intersect:leave="shown = false">
                     <h2 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
-                        class="cz text-[clamp(30px,5vw,52px)] font-extrabold uppercase text-white mb-4 transition-all duration-[800ms] ease-out delay-100">
+                        class="cz text-[clamp(30px,5vw,52px)] font-extrabold uppercase text-white mb-2 transition-all duration-[800ms] ease-out delay-100">
                         KILAS BALIK <span class="text-[#e0b53c]">PEMENANG</span>
                     </h2>
+                    <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
+                        class="text-[#e0b53c] text-[clamp(16px,2vw,22px)] tracking-widest font-bold mb-3 transition-all duration-[800ms] ease-out delay-200">
+                        DPDRI <i>Awards</i> 2025
+                    </p>
                     <p :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'"
                         class="text-white/70 text-[clamp(15px,1.6vw,18px)] leading-[1.7] max-w-2xl mx-auto transition-all duration-[800ms] ease-out delay-200">
                         Sosok-sosok inspiratif yang telah diapresiasi DPD RI Awards atas dedikasi nyata mereka bagi
@@ -580,7 +584,8 @@
                         class="relative min-h-[400px] md:min-h-[540px] flex items-center justify-center overflow-hidden">
                         <template x-for="(it, i) in items" :key="i">
                             <div class="absolute top-1/2 left-1/2 transition-all duration-[600ms] ease-out cursor-pointer will-change-transform"
-                                :style="cardStyle(i)" @click="i !== index && goTo(i)">
+                                :style="cardStyle(i)"
+                                @click="i !== index ? goTo(i) : $dispatch('open-modal', { image: it.popup || it.image })">
                                 <div
                                     class="group relative w-[300px] sm:w-[260px] md:w-[360px] aspect-[4/5] rounded-[26px] overflow-hidden border border-[#e0b53c]/25 bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
                                     <template x-if="it.type !== 'video'">
@@ -663,7 +668,8 @@
                             role: 'Peneliti Medis Muda & Penggagas Riset',
                             category: 'Pembangunan Sosial & Kesehatan',
                             description: 'Pemuda pelopor bidang teknologi dan inovasi yang membawa semangat anak muda Indonesia ke tingkat lebih tinggi.',
-                            image: '{{ asset('images/Aqsa.jpg') }}'
+                            image: '{{ asset('images/Aqsa.jpg') }}',
+                            popup: '{{ asset('images/profil/Profil Aqsa Aufa.jpg') }}'
                         },
                         {
                             type: 'image',
@@ -672,7 +678,8 @@
                             role: 'Penggerak Wisata Desa Nglanggeran',
                             category: 'Pariwisata & Kebudayaan',
                             description: 'Pelopor pemuda pariwisata desa yang mengantar Nglanggeran menjadi salah satu desa wisata terbaik dunia versi UNWTO.',
-                            image: '{{ asset('images/Sugeng.jpg') }}'
+                            image: '{{ asset('images/Sugeng.jpg') }}',
+                            popup: '{{ asset('images/profil/Profil Sugeng Handoko.jpg') }}'
                         },
                         {
                             type: 'image',
@@ -681,7 +688,8 @@
                             role: 'TP-PKK Provinsi Sumatera Selatan',
                             category: 'Ekonomi Kreatif',
                             description: 'Tokoh inspiratif yang memberikan kontribusi luar biasa bagi masyarakat melalui pengabdiannya di berbagai bidang.',
-                            image: '{{ asset('images/Febrita.jpg') }}'
+                            image: '{{ asset('images/Febrita.jpg') }}',
+                            popup: '{{ asset('images/profil/Profil Febrita Lustia.jpg') }}'
                         },
                         {
                             type: 'image',
@@ -690,16 +698,18 @@
                             role: 'Gubernur Jawa Timur',
                             category: 'Perlindungan Anak & Pemberdayaan Perempuan',
                             description: 'Perempuan inspiratif dengan kontribusi luar biasa mewujudkan kesetaraan gender, perlindungan dan pemberdayaan perempuan tahun 2025.',
-                            image: '{{ asset('images/Gubjatim.jpg') }}'
+                            image: '{{ asset('images/Gubjatim.jpg') }}',
+                            popup: '{{ asset('images/profil/Profil Khafifah Indar.jpg') }}'
                         },
                         {
                             type: 'image',
                             short: 'Bayu',
-                            name: 'Bayu Krisnamurthi',
-                            role: 'Tokoh Ketahanan Pangan',
-                            category: 'Ketahanan Pangan',
-                            description: 'Kontribusi nyata dalam pembangunan sektor pangan nasional dan pemberdayaan petani Indonesia.',
-                            image: '{{ asset('images/Bayu.jpg') }}'
+                            name: 'Bayu Satria',
+                            role: 'Pemerhati Anak dan Kelompok Rentan',
+                            category: 'Pejuang Kelompok Rentan',
+                            description: 'Kontribusi nyata dalam memperjuangkan kesetaraan, keadilan, dan inklusivitas bagi semua orang terutama pada kelompok rentan.',
+                            image: '{{ asset('images/Bayu.jpg') }}',
+                            popup: '{{ asset('images/profil/Profil Bayu Satria.jpg') }}'
                         }
                     ],
                     init() {
@@ -1349,21 +1359,21 @@
                     ],
                     [
                         'n' => '4',
-                        'title' => 'Penilaian Tahap 1',
+                        'title' => 'Pengumuman 50 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_1'),
                         'color_class' =>
                             'bg-gradient-to-br from-[#599955] via-[#337743] to-[#17542d] shadow-[inset_0_2px_5px_rgba(255,255,255,0.5),0_10px_20px_rgba(25,85,50,0.3)] text-white',
                     ],
                     [
                         'n' => '5',
-                        'title' => 'Penilaian Tahap 2',
+                        'title' => 'Pengumuman 10 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_2'),
                         'color_class' =>
                             'bg-gradient-to-br from-[#7eab56] via-[#4b8941] to-[#20612c] shadow-[inset_0_2px_5px_rgba(255,255,255,0.6),0_10px_20px_rgba(35,100,55,0.3)] text-white',
                     ],
                     [
                         'n' => '6',
-                        'title' => 'Penilaian Tahap 3',
+                        'title' => 'Pengumuman 5 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_3'),
                         'color_class' =>
                             'bg-gradient-to-br from-[#a7be53] via-[#6d9d3a] to-[#2c6e26] shadow-[inset_0_2px_5px_rgba(255,255,255,0.6),0_10px_20px_rgba(50,115,50,0.3)]  text-white',
@@ -2097,6 +2107,22 @@
         }
     </script>
 
+    <!-- Modal Template for Image Popup -->
+    <div x-data="{ modalOpen: false, modalImage: '' }"
+        @open-modal.window="modalOpen = true; modalImage = $event.detail.image" x-show="modalOpen"
+        @click="modalOpen = false" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 px-4"
+        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display: none;">
+        <div class="relative max-w-4xl w-full h-full flex items-center justify-center p-4">
+            <button @click="modalOpen = false" class="absolute top-6 right-6 text-white hover:text-[#e0b53c] z-50">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"></path>
+                </svg>
+            </button>
+            <img :src="modalImage" class="max-h-[90vh] max-w-full rounded-lg object-contain shadow-2xl" @click.stop>
+        </div>
+    </div>
 </body>
 
 </html>

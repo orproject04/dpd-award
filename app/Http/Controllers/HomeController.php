@@ -85,9 +85,9 @@ final class HomeController
         $allStages = [
             'Diajukan',
             'Lolos Verifikasi Berkas',
-            'Lolos Penilaian Tahap 1',
-            'Lolos Penilaian Tahap 2',
-            'Lolos Penilaian Tahap 3',
+            'Lolos Pengumuman 50 Besar',
+            'Lolos Pengumuman 10 Besar',
+            'Lolos Pengumuman 5 Besar',
             'Lolos Tahap Wawancara',
             'Lolos Tahap Final',
             'Tidak Lolos',

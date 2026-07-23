@@ -86,9 +86,9 @@ class PendaftarTableView extends CustomTableView
             MyLabel::make('status')->map([
                 'Diajukan' => 'blue',
                 'Lolos Verifikasi Berkas' => 'yellow',
-                'Lolos Penilaian Tahap 1' => 'yellow',
-                'Lolos Penilaian Tahap 2' => 'yellow',
-                'Lolos Penilaian Tahap 3' => 'yellow',
+                'Lolos Pengumuman 50 Besar' => 'yellow',
+                'Lolos Pengumuman 10 Besar' => 'yellow',
+                'Lolos Pengumuman 5 Besar' => 'yellow',
                 'Lolos Tahap Wawancara' => 'purple',
                 'Lolos Tahap Final' => 'teal',
                 'Tidak Lolos' => 'red',

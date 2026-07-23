@@ -109,17 +109,17 @@ return [
         [
             'type' => 'text',
             'name' => 'timeline_penilaian_tahap_1',
-            'label' => 'Tanggal Penilaian Tahap 1',
+            'label' => 'Tanggal Pengumuman 50 Besar',
         ],
         [
             'type' => 'text',
             'name' => 'timeline_penilaian_tahap_2',
-            'label' => 'Tanggal Penilaian Tahap 2',
+            'label' => 'Tanggal Pengumuman 10 Besar',
         ],
         [
             'type' => 'text',
             'name' => 'timeline_penilaian_tahap_3',
-            'label' => 'Tanggal Penilaian Tahap 3',
+            'label' => 'Tanggal Pengumuman 5 Besar',
         ],
         [
             'type' => 'text',

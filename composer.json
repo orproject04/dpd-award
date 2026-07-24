@@ -15,7 +15,8 @@
         "laravel/tinker": "^2.10.1",
         "laravolt/avatar": "^6.2",
         "laravolt/laravolt": "^6.6",
-        "phpoffice/phpspreadsheet": "*"
+        "phpoffice/phpspreadsheet": "*",
+        "spatie/laravel-responsecache": "^7.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -10,11 +10,15 @@ class LandingController extends Controller
 {
     public function __invoke()
     {
-        $kategoriCounts = Pendaftar::select('kategori', DB::raw('count(*) as total'))
-            ->groupBy('kategori')
-            ->pluck('total', 'kategori')
-            ->toArray();
-        return view('landing', compact('kategoriCounts'));
+        $kategoriCounts = \Illuminate\Support\Facades\Cache::remember('landing_kategori_counts', 3600, function () {
+            return Pendaftar::select('kategori', DB::raw('count(*) as total'))
+                ->groupBy('kategori')
+                ->pluck('total', 'kategori')
+                ->toArray();
+        });
+        $response = response()->view('landing', compact('kategoriCounts'));
+        $response->headers->set('Cache-Control', 'public, max-age=300, s-maxage=3600');
+        return $response;
     }
 
     public function track(Request $request)
@@ -32,11 +36,13 @@ class LandingController extends Controller
             ], 404);
         }
 
+        $displayStatus = Pendaftar::getDisplayStatus($pendaftar->status);
+
         return response()->json([
             'success' => true,
             'data' => [
                 'nama' => $pendaftar->nama,
-                'status' => $pendaftar->status,
+                'status' => $displayStatus,
                 'kategori' => $pendaftar->kategori,
             ]
         ]);

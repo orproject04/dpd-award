@@ -6,14 +6,14 @@
 
         // Map status names to Fomantic UI label colors
         $statusLabels = [
-            'Diajukan' => 'blue',
-            'Lolos Verifikasi Berkas' => 'orange',
-            'Lolos Pengumuman 50 Besar' => 'yellow',
-            'Lolos Pengumuman 10 Besar' => 'yellow',
-            'Lolos Pengumuman 5 Besar' => 'yellow',
-            'Lolos Tahap Wawancara' => 'purple',
-            'Lolos Tahap Final' => 'teal',
             'Tidak Lolos' => 'red',
+            'Diajukan' => 'blue',
+            'Lolos Verifikasi Berkas' => 'yellow',
+            'Lolos ke Tahap 50 Besar' => 'yellow',
+            'Lolos ke Tahap 10 Besar' => 'yellow',
+            'Lolos ke Tahap 5 Besar' => 'yellow',
+            'Lolos ke Tahap Wawancara' => 'purple',
+            'Lolos ke Tahap Final' => 'teal',
         ];
 
         // Kategori icon map
@@ -894,8 +894,8 @@
                                     $pillStyle = match ($item->status) {
                                         'Diajukan' => 'background:#eff6ff;color:#1d4ed8;',
                                         'Tidak Lolos' => 'background:#fef2f2;color:#dc2626;',
-                                        'Lolos Tahap Final' => 'background:#ecfdf5;color:#059669;',
-                                        'Lolos Tahap Wawancara' => 'background:#f5f3ff;color:#7c3aed;',
+                                        'Lolos ke Tahap Final' => 'background:#ecfdf5;color:#059669;',
+                                        'Lolos ke Tahap Wawancara' => 'background:#f5f3ff;color:#7c3aed;',
                                         default => 'background:#fffbeb;color:#d97706;',
                                     };
                                     $avatarPalette = ['#00b5ad', '#3b82f6', '#8b5cf6', '#ec4899', '#f97316'];
@@ -1153,13 +1153,14 @@
             // ── 5. Status Bar Chart ───────────────────────────────────
             const rawStatus = {!! json_encode($statusCounts) !!};
             const stages = [
-                'Diajukan', 'Lolos Verifikasi Berkas', 'Lolos Pengumuman 50 Besar',
-                'Lolos Pengumuman 10 Besar', 'Lolos Pengumuman 5 Besar',
-                'Lolos Tahap Wawancara', 'Lolos Tahap Final', 'Tidak Lolos'
+                'Tidak Lolos', 'Diajukan', 'Lolos Verifikasi Berkas',
+                'Lolos ke Tahap 50 Besar', 'Lolos ke Tahap 10 Besar',
+                'Lolos ke Tahap 5 Besar', 'Lolos ke Tahap Wawancara',
+                'Lolos ke Tahap Final'
             ];
             const stageBg = stages.map(s => {
                 if (s === 'Tidak Lolos') return '#ef4444';
-                if (s === 'Lolos Tahap Final') return '#10b981';
+                if (s === 'Lolos ke Tahap Final') return '#10b981';
                 if (s === 'Diajukan') return '#3b82f6';
                 if (s.includes('Wawancara')) return '#8b5cf6';
                 return '#f59e0b';
@@ -1167,7 +1168,7 @@
             new Chart(document.getElementById('statusChart').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: stages.map(s => s.replace('Lolos ', '').replace('Tahap ', '')),
+                    labels: stages.map(s => s.replace('Lolos ke ', '')),
                     datasets: [{
                         label: 'Jumlah Peserta',
                         data: stages.map(s => rawStatus[s] ?? 0),

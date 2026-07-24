@@ -92,6 +92,21 @@ return [
             'content' => '<h4 class="ui horizontal divider section m-t-3">Timeline Kegiatan</h4>',
         ],
         [
+            'type' => 'dropdown',
+            'name' => 'timeline_saat_ini',
+            'label' => 'Tahap Timeline Saat Ini (untuk Lacak Status)',
+            'options' => [
+                '' => 'Otomatis Sesuai Tanggal Timeline',
+                'Diajukan' => 'Diajukan / Periode Pendaftaran',
+                'Lolos Verifikasi Berkas' => 'Lolos Verifikasi Berkas',
+                'Lolos ke Tahap 50 Besar' => 'Lolos ke Tahap 50 Besar',
+                'Lolos ke Tahap 10 Besar' => 'Lolos ke Tahap 10 Besar',
+                'Lolos ke Tahap 5 Besar' => 'Lolos ke Tahap 5 Besar',
+                'Lolos ke Tahap Wawancara' => 'Lolos ke Tahap Wawancara',
+                'Lolos ke Tahap Final' => 'Lolos ke Tahap Final',
+            ],
+        ],
+        [
             'type' => 'text',
             'name' => 'timeline_pembukaan_pendaftaran',
             'label' => 'Tanggal Pembukaan Pendaftaran',

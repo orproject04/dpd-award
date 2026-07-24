@@ -52,8 +52,8 @@
         }
 
         .loader-logo {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
             animation: loader-pulse 2s infinite ease-in-out;
         }
@@ -63,8 +63,10 @@
             width: 130px;
             height: 130px;
             border: 4px solid transparent;
-            border-top-color: #88c445; /* primary color */
-            border-bottom-color: #22abe1; /* secondary color */
+            border-top-color: #88c445;
+            /* primary color */
+            border-bottom-color: #22abe1;
+            /* secondary color */
             border-radius: 50%;
             animation: loader-spin 1.5s linear infinite;
         }
@@ -81,18 +83,37 @@
         }
 
         @keyframes loader-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes loader-spin-reverse {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
+            0% {
+                transform: rotate(360deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
         }
 
         @keyframes loader-pulse {
-            0%, 100% { transform: scale(0.9); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
+
+            0%,
+            100% {
+                transform: scale(0.9);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
         }
 
         .loader-text {
@@ -106,8 +127,15 @@
         }
 
         @keyframes loader-fade {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
     </style>
     @stack('head')

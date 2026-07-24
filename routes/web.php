@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', LandingController::class)->name('landing');
+Route::get('/', LandingController::class)->middleware('cacheResponse')->name('landing');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', HomeController::class)->name('dashboard');
     Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');

@@ -164,6 +164,12 @@ class NominasiController extends Controller
             }
 
             DB::commit();
+            \Illuminate\Support\Facades\Cache::forget('landing_kategori_counts');
+            try {
+                \Spatie\ResponseCache\Facades\ResponseCache::clear();
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Artisan::call('responsecache:clear');
+            }
 
             // Kirim Email Bukti Pendaftaran di background menggunakan defer() (tersedia di Laravel 11/12)
             $waktuSubmit = date('d M Y, H:i:s');

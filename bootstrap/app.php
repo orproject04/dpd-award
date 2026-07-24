@@ -16,8 +16,8 @@ use Laravolt\Middleware\DetectFlashMessage;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -34,6 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => Authenticate::class,
             'guest' => RedirectIfAuthenticated::class,
+            'cacheResponse' => \Spatie\ResponseCache\Middlewares\CacheResponse::class,
+            'doNotCacheResponse' => \Spatie\ResponseCache\Middlewares\DoNotCacheResponse::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -48,7 +50,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        $exceptions->render(fn (TokenMismatchException $e) => back()->with(
+        $exceptions->render(fn(TokenMismatchException $e) => back()->with(
             'error',
             __('Kami mendeteksi tidak ada aktivitas cukup lama, silakan kirim ulang form.')
         ));

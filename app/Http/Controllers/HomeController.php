@@ -83,14 +83,14 @@ final class HomeController
 
         // 8. Funnel / pipeline counts per stage
         $allStages = [
+            'Tidak Lolos',
             'Diajukan',
             'Lolos Verifikasi Berkas',
-            'Lolos Pengumuman 50 Besar',
-            'Lolos Pengumuman 10 Besar',
-            'Lolos Pengumuman 5 Besar',
-            'Lolos Tahap Wawancara',
-            'Lolos Tahap Final',
-            'Tidak Lolos',
+            'Lolos ke Tahap 50 Besar',
+            'Lolos ke Tahap 10 Besar',
+            'Lolos ke Tahap 5 Besar',
+            'Lolos ke Tahap Wawancara',
+            'Lolos ke Tahap Final',
         ];
         $funnelCounts = [];
         foreach ($allStages as $stage) {
@@ -98,7 +98,7 @@ final class HomeController
         }
 
         // 9. Conversion rate: finalist / total (avoid division by zero)
-        $finalistCount = $statusCounts['Lolos Tahap Final'] ?? 0;
+        $finalistCount = $statusCounts['Lolos ke Tahap Final'] ?? 0;
         $pendingCount  = $statusCounts['Diajukan'] ?? 0;
         $rejectedCount = $statusCounts['Tidak Lolos'] ?? 0;
         $conversionRate = $totalPendaftar > 0
@@ -163,11 +163,18 @@ final class HomeController
         \Illuminate\Support\Facades\Artisan::call('view:clear');
         \Illuminate\Support\Facades\Artisan::call('config:clear');
         \Illuminate\Support\Facades\Artisan::call('route:clear');
+        \Illuminate\Support\Facades\Artisan::call('responsecache:clear');
 
         try {
             app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
         } catch (\Exception $e) {
             // ignore if not installed
+        }
+
+        try {
+            \Spatie\ResponseCache\Facades\ResponseCache::clear();
+        } catch (\Throwable $e) {
+            // ignore if not initialized
         }
 
         return redirect()->back()->withSuccess(__('Cache berhasil dibersihkan.'));

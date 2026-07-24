@@ -84,14 +84,14 @@ class PendaftarTableView extends CustomTableView
                 return "<span style='display:block;text-align:center;'>" . $data->penghargaan_count . "</span>";
             }, 'Penghargaan')->sortable('penghargaan_count'),
             MyLabel::make('status')->map([
+                'Tidak Lolos' => 'red',
                 'Diajukan' => 'blue',
                 'Lolos Verifikasi Berkas' => 'yellow',
-                'Lolos Pengumuman 50 Besar' => 'yellow',
-                'Lolos Pengumuman 10 Besar' => 'yellow',
-                'Lolos Pengumuman 5 Besar' => 'yellow',
-                'Lolos Tahap Wawancara' => 'purple',
-                'Lolos Tahap Final' => 'teal',
-                'Tidak Lolos' => 'red',
+                'Lolos ke Tahap 50 Besar' => 'yellow',
+                'Lolos ke Tahap 10 Besar' => 'yellow',
+                'Lolos ke Tahap 5 Besar' => 'yellow',
+                'Lolos ke Tahap Wawancara' => 'purple',
+                'Lolos ke Tahap Final' => 'teal',
             ])->addClass('large')->sortable(),
 
             MyRestfulButton::make('modules::pendaftar')->withoutEdit(),

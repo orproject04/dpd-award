@@ -26,14 +26,14 @@ class StatusFilter extends BaseFilter
     {
         return [
             '' => 'Semua ' . $this->label,
+            'Tidak Lolos' => 'Tidak Lolos',
             'Diajukan' => 'Diajukan',
             'Lolos Verifikasi Berkas' => 'Lolos Verifikasi Berkas',
-            'Lolos Pengumuman 50 Besar' => 'Lolos Pengumuman 50 Besar',
-            'Lolos Pengumuman 10 Besar' => 'Lolos Pengumuman 10 Besar',
-            'Lolos Pengumuman 5 Besar' => 'Lolos Pengumuman 5 Besar',
-            'Lolos Tahap Wawancara' => 'Lolos Tahap Wawancara',
-            'Lolos Tahap Final' => 'Lolos Tahap Final',
-            'Tidak Lolos' => 'Tidak Lolos',
+            'Lolos ke Tahap 50 Besar' => 'Lolos ke Tahap 50 Besar',
+            'Lolos ke Tahap 10 Besar' => 'Lolos ke Tahap 10 Besar',
+            'Lolos ke Tahap 5 Besar' => 'Lolos ke Tahap 5 Besar',
+            'Lolos ke Tahap Wawancara' => 'Lolos ke Tahap Wawancara',
+            'Lolos ke Tahap Final' => 'Lolos ke Tahap Final',
         ];
     }
 

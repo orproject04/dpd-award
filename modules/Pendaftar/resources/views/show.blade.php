@@ -3,25 +3,25 @@
 
     @php
         $statuses = [
+            'Tidak Lolos',
             'Diajukan',
             'Lolos Verifikasi Berkas',
-            'Lolos Pengumuman 50 Besar',
-            'Lolos Pengumuman 10 Besar',
-            'Lolos Pengumuman 5 Besar',
-            'Lolos Tahap Wawancara',
-            'Lolos Tahap Final',
-            'Tidak Lolos',
+            'Lolos ke Tahap 50 Besar',
+            'Lolos ke Tahap 10 Besar',
+            'Lolos ke Tahap 5 Besar',
+            'Lolos ke Tahap Wawancara',
+            'Lolos ke Tahap Final',
         ];
 
         $statusColor = match ($pendaftar->status) {
+            'Tidak Lolos' => 'red',
             'Diajukan' => 'blue',
             'Lolos Verifikasi Berkas' => 'yellow',
-            'Lolos Pengumuman 50 Besar' => 'yellow',
-            'Lolos Pengumuman 10 Besar' => 'yellow',
-            'Lolos Pengumuman 5 Besar' => 'yellow',
-            'Lolos Tahap Wawancara' => 'purple',
-            'Lolos Tahap Final' => 'teal',
-            'Tidak Lolos' => 'red',
+            'Lolos ke Tahap 50 Besar' => 'yellow',
+            'Lolos ke Tahap 10 Besar' => 'yellow',
+            'Lolos ke Tahap 5 Besar' => 'yellow',
+            'Lolos ke Tahap Wawancara' => 'purple',
+            'Lolos ke Tahap Final' => 'teal',
             default => 'grey',
         };
 
@@ -53,14 +53,11 @@
             /* ─── Page Chrome ─────────────────────────────────────── */
             .show-page {
                 --accent:
-                    {{ $themeColor }}
-                ;
+                    {{ $themeColor }};
                 --accent-hover:
-                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }}
-                ;
+                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }};
                 --accent-light:
-                    {{ $themeColorLight }}
-                ;
+                    {{ $themeColorLight }};
                 --radius: 10px;
             }
 
@@ -573,9 +570,11 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->kontribusi as $index => $kontribusi)
                             <div class="accordion-item">
-                                <button type="button" class="accordion-trigger" data-acc="kontribusi-{{ $index }}">
+                                <button type="button" class="accordion-trigger"
+                                    data-acc="kontribusi-{{ $index }}">
                                     <span>
-                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span
+                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ $kontribusi->judul }}
                                     </span>
                                     <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -616,7 +615,8 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}"
+                                                                        class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Kontribusi {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -666,9 +666,11 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->penghargaan as $index => $penghargaan)
                             <div class="accordion-item">
-                                <button type="button" class="accordion-trigger" data-acc="penghargaan-{{ $index }}">
+                                <button type="button" class="accordion-trigger"
+                                    data-acc="penghargaan-{{ $index }}">
                                     <span>
-                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span
+                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ \Illuminate\Support\Str::limit($penghargaan->uraian, 60) }}
                                     </span>
                                     <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -685,7 +687,8 @@
                                         <hr class="detail-field-divider">
                                         <div class="detail-field">
                                             <div class="detail-field-label">Tahun</div>
-                                            <div class="detail-field-value" style="font-weight:700; font-size:1.05rem;">
+                                            <div class="detail-field-value"
+                                                style="font-weight:700; font-size:1.05rem;">
                                                 {{ $penghargaan->tahun }}
                                             </div>
                                         </div>
@@ -704,7 +707,8 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}"
+                                                                        class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Penghargaan {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -783,7 +787,8 @@
                                 <div class="custom-dropdown-trigger">
                                     <div>
                                         <span class="status-dot {{ $statusColor }}"></span>
-                                        <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
+                                        <span
+                                            class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
                                     </div>
                                     <i class="chevron down icon"></i>
                                 </div>
@@ -791,14 +796,14 @@
                                     @foreach ($statuses as $status)
                                         @php
                                             $optColor = match ($status) {
+                                                'Tidak Lolos' => 'red',
                                                 'Diajukan' => 'blue',
                                                 'Lolos Verifikasi Berkas' => 'yellow',
-                                                'Lolos Pengumuman 50 Besar' => 'yellow',
-                                                'Lolos Pengumuman 10 Besar' => 'yellow',
-                                                'Lolos Pengumuman 5 Besar' => 'yellow',
-                                                'Lolos Tahap Wawancara' => 'purple',
-                                                'Lolos Tahap Final' => 'teal',
-                                                'Tidak Lolos' => 'red',
+                                                'Lolos ke Tahap 50 Besar' => 'yellow',
+                                                'Lolos ke Tahap 10 Besar' => 'yellow',
+                                                'Lolos ke Tahap 5 Besar' => 'yellow',
+                                                'Lolos ke Tahap Wawancara' => 'purple',
+                                                'Lolos ke Tahap Final' => 'teal',
                                                 default => 'grey',
                                             };
                                         @endphp
@@ -875,7 +880,8 @@
                                     <object data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
                                         type="application/pdf"
                                         style="width: 100%; height: 300px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
-                                        <iframe src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
+                                        <iframe
+                                            src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
                                             style="width: 100%; height: 300px; border: none;">
                                             <p>Browser Anda tidak mendukung pratinjau PDF.</p>
                                         </iframe>
@@ -914,19 +920,19 @@
 
     @push('script')
         <script>
-            (function () {
+            (function() {
                 /* ── Accordion ─────────────────────────────────────── */
-                document.querySelectorAll('.accordion-trigger').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
+                document.querySelectorAll('.accordion-trigger').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
                         var targetId = btn.getAttribute('data-acc');
                         var content = document.getElementById(targetId);
                         var isOpen = content.classList.contains('open');
 
                         /* Close all open accordions */
-                        document.querySelectorAll('.accordion-content.open').forEach(function (el) {
+                        document.querySelectorAll('.accordion-content.open').forEach(function(el) {
                             el.classList.remove('open');
                         });
-                        document.querySelectorAll('.accordion-trigger.open').forEach(function (el) {
+                        document.querySelectorAll('.accordion-trigger.open').forEach(function(el) {
                             el.classList.remove('open');
                         });
 
@@ -942,7 +948,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
 
-                document.addEventListener('click', function (e) {
+                document.addEventListener('click', function(e) {
                     var trigger = e.target.closest('.lightbox-trigger');
                     if (!trigger) return;
                     e.preventDefault();
@@ -951,18 +957,18 @@
                     lightbox.classList.add('active');
                 });
 
-                lightbox.addEventListener('click', function (e) {
+                lightbox.addEventListener('click', function(e) {
                     if (e.target === lightbox || e.target === lightboxImg) {
                         closeLightbox();
                     }
                 });
 
-                document.addEventListener('keydown', function (e) {
+                document.addEventListener('keydown', function(e) {
                     if (e.key === 'Escape') closeLightbox();
                 });
 
                 /* ── Prevent loader on download links ─────────────── */
-                document.addEventListener('click', function (e) {
+                document.addEventListener('click', function(e) {
                     var link = e.target.closest('a[data-no-loader]');
                     if (!link) return;
                     /* stop the page-loader that base.blade.php attaches */
@@ -977,13 +983,13 @@
                     var triggerDot = trigger.querySelector('.status-dot');
                     var triggerText = trigger.querySelector('.status-text');
 
-                    trigger.addEventListener('click', function (e) {
+                    trigger.addEventListener('click', function(e) {
                         e.stopPropagation();
                         dropdown.classList.toggle('active');
                     });
 
-                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (item) {
-                        item.addEventListener('click', function (e) {
+                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(item) {
+                        item.addEventListener('click', function(e) {
                             e.stopPropagation();
                             var val = item.getAttribute('data-value');
                             var color = item.getAttribute('data-color');
@@ -997,7 +1003,7 @@
                             triggerDot.className = 'status-dot ' + color;
 
                             // Set active item class
-                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (i) {
+                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(i) {
                                 i.classList.remove('active');
                             });
                             item.classList.add('active');
@@ -1008,7 +1014,7 @@
                     });
 
                     // Close when clicking outside
-                    document.addEventListener('click', function () {
+                    document.addEventListener('click', function() {
                         dropdown.classList.remove('active');
                     });
                 }
@@ -1018,7 +1024,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
                 lightbox.classList.remove('active');
-                setTimeout(function () {
+                setTimeout(function() {
                     lightboxImg.src = '';
                 }, 300);
             }

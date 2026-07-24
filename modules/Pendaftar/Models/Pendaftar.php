@@ -70,4 +70,14 @@ class Pendaftar extends Model
 
         return storage_path('app/private/' . $foto);
     }
+
+    public static function getCurrentTimelineStage(): string
+    {
+        return \App\Models\Pendaftar::getCurrentTimelineStage();
+    }
+
+    public static function getDisplayStatus(?string $actualStatus): string
+    {
+        return \App\Models\Pendaftar::getDisplayStatus($actualStatus);
+    }
 }

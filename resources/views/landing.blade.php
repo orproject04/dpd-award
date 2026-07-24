@@ -10,15 +10,19 @@
     <link rel="icon" href="{{ asset('images/logo.png') }}">
     <link rel="preload" as="image" href="{{ asset('images/hero-bg.jpg') }}" fetchpriority="high">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function() {});
+            });
+        }
+    </script>
+
+    <script src="{{ asset('js/hls.min.js') }}" defer></script>
     <script>
         function hlsPlayer(src, poster) {
             return {
@@ -39,7 +43,7 @@
                 },
                 play() {
                     this.started = true;
-                    this.$nextTick(() => this.$refs.video.play().catch(() => { }));
+                    this.$nextTick(() => this.$refs.video.play().catch(() => {}));
                 }
             }
         }
@@ -207,7 +211,8 @@
     </style>
 </head>
 
-<body class="bg-[#050608] text-white antialiased selection:bg-[#88c445] selection:text-[#0a0c11]" x-data="{
+<body class="bg-[#050608] text-white antialiased selection:bg-[#88c445] selection:text-[#0a0c11]"
+    x-data="{
         scrolled: false,
         mobileMenuOpen: false
     }" @scroll.window="scrolled = (window.pageYOffset > 60)">
@@ -467,9 +472,9 @@
                                 class="absolute top-0 -left-[100%] w-[120%] h-full bg-gradient-to-r from-transparent via-white/60 to-transparent skew-x-[-20deg] shimmer-effect"></span>
                             <span class="relative z-10 flex items-center gap-2.5">
                                 Daftar Sekarang
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                                    class="group-hover:translate-x-1 transition-transform">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
                                     <line x1="5" y1="12" x2="19" y2="12" />
                                     <polyline points="12 5 19 12 12 19" />
                                 </svg>
@@ -487,7 +492,8 @@
 
     <!-- HIGHLIGHT MALAM ANUGERAH -->
     <section id="highlight" class="relative py-[50px] md:py-[90px] px-6 bg-[#0a0c11] overflow-hidden">
-        <span class="twinkle-star" style="top: 8%; left: 12%; width: 10px; height: 10px; animation-delay: 0.5s;"></span>
+        <span class="twinkle-star"
+            style="top: 8%; left: 12%; width: 10px; height: 10px; animation-delay: 0.5s;"></span>
         <span class="twinkle-star"
             style="top: 14%; right: 18%; width: 12px; height: 12px; animation-delay: 1.6s;"></span>
         <span class="twinkle-star"
@@ -498,16 +504,16 @@
         <div class="relative max-w-5xl mx-auto">
 
 
-            <div x-data="hlsPlayer('{{ asset('videos/highlight/index.m3u8') }}', '{{ asset('images/hero-bg.jpg') }}')"
-                x-init="init()"
+            <div x-data="hlsPlayer('{{ asset('videos/highlight/index.m3u8') }}', '{{ asset('images/hero-bg.jpg') }}')" x-init="init()"
                 class="relative bg-[#0a1e15]/70 border border-[#e0b53c]/25 rounded-[28px] overflow-hidden backdrop-blur-sm shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
                 <div class="absolute top-5 left-5 z-20 pointer-events-none">
                 </div>
 
                 <div class="relative aspect-video bg-gradient-to-br from-[#0c3b28] to-[#0a0c11] overflow-hidden group"
                     x-intersect:enter="$refs.video.play()" x-intersect:leave="$refs.video.pause()">
-                    <video autoplay muted loop playsinline x-ref="video" :poster="poster" playsinline preload="metadata"
-                        class="w-full h-full object-cover" :controls="started" @play="started = true"></video>
+                    <video autoplay muted loop playsinline x-ref="video" :poster="poster" playsinline
+                        preload="metadata" class="w-full h-full object-cover" :controls="started"
+                        @play="started = true"></video>
 
                     <button x-show="!started" @click="play()"
                         class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer bg-black/20 hover:bg-black/10 transition-colors"
@@ -542,7 +548,8 @@
     <!-- 1.6 KILAS BALIK PEMENANG -->
     <section id="pemenang"
         class="relative pt-[50px] pb-[75px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden">
-        <span class="twinkle-star" style="top: 6%;  left: 8%;  width: 10px; height: 10px; animation-delay: 0s;"></span>
+        <span class="twinkle-star"
+            style="top: 6%;  left: 8%;  width: 10px; height: 10px; animation-delay: 0s;"></span>
         <span class="twinkle-star"
             style="top: 12%; right: 12%; width: 14px; height: 14px; animation-delay: 0.7s;"></span>
         <span class="twinkle-star"
@@ -585,8 +592,7 @@
                 </div>
 
                 <div x-data="pemenangCarousel()" x-init="init()" class="relative"
-                    @touchstart="handleTouchStart($event)"
-                    @touchend="handleTouchEnd($event)"
+                    @touchstart="handleTouchStart($event)" @touchend="handleTouchEnd($event)"
                     style="touch-action: pan-y;">
 
                     <div
@@ -608,7 +614,9 @@
                                     </div>
 
                                     <div class="absolute inset-x-0 bottom-0 p-4 sm:p-6 transition-all duration-500 ease-out"
-                                        :class="i === index ? 'opacity-100 translate-y-0 md:opacity-0 md:translate-y-6 md:group-hover:opacity-100 md:group-hover:translate-y-0' : 'opacity-0 translate-y-6'">
+                                        :class="i === index ?
+                                            'opacity-100 translate-y-0 md:opacity-0 md:translate-y-6 md:group-hover:opacity-100 md:group-hover:translate-y-0' :
+                                            'opacity-0 translate-y-6'">
                                         <template x-if="it.category">
                                             <span
                                                 class="inline-block bg-[#e0b53c] text-[#0a0c11] text-[9px] sm:text-[11px] font-extrabold tracking-wider px-2 py-0.5 sm:py-1 rounded-full mb-1.5 sm:mb-2"
@@ -627,15 +635,17 @@
 
                         <button @click="prev()" aria-label="Sebelumnya"
                             class="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center bg-[#0a0c11]/80 hover:bg-[#e0b53c] hover:text-[#0a0c11] text-white/80 border border-white/10 rounded-full backdrop-blur-sm transition-all">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <polyline points="15 18 9 12 15 6" />
                             </svg>
                         </button>
                         <button @click="next()" aria-label="Berikutnya"
                             class="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center bg-[#0a0c11]/80 hover:bg-[#e0b53c] hover:text-[#0a0c11] text-white/80 border border-white/10 rounded-full backdrop-blur-sm transition-all">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <polyline points="9 18 15 12 9 6" />
                             </svg>
                         </button>
@@ -646,7 +656,8 @@
                         <template x-for="(it, i) in items" :key="`thumb-${i}`">
                             <button @click="goTo(i)"
                                 class="relative aspect-[4/5] rounded-xl overflow-hidden border-2 transition-all group"
-                                :class="index === i ? 'border-[#e0b53c] shadow-[0_0_20px_rgba(224,181,60,0.35)]' : 'border-white/10 hover:border-white/30'">
+                                :class="index === i ? 'border-[#e0b53c] shadow-[0_0_20px_rgba(224,181,60,0.35)]' :
+                                    'border-white/10 hover:border-white/30'">
                                 <template x-if="it.type !== 'video'">
                                     <div class="relative w-full h-full bg-gradient-to-br from-[#0c3b28] to-[#0a0c11]">
                                         <img :src="it.image" alt=""
@@ -686,8 +697,7 @@
                             }
                         }
                     },
-                    items: [
-                        {
+                    items: [{
                             type: 'image',
                             short: 'Aqsa',
                             name: 'Aqsa Aufa Syauqi S.',
@@ -826,25 +836,31 @@
                         'source' => 'detikNews',
                         'date' => '28 Oktober 2025',
                         'title' => 'DPD Award 2025 Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
-                        'excerpt' => 'Jakarta - Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
+                        'excerpt' =>
+                            'Jakarta - Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
                         'image' => asset('images/artikel1.jpeg'),
-                        'url' => 'https://news.detik.com/berita/d-8183015/dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
+                        'url' =>
+                            'https://news.detik.com/berita/d-8183015/dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
                     ],
                     [
                         'source' => '20detik',
                         'date' => '29 Oktober 2025',
                         'title' => 'Video DPD Award 2025, Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
-                        'excerpt' => 'Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award 2025. Acara tersebut diselenggarakan sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
+                        'excerpt' =>
+                            'Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award 2025. Acara tersebut diselenggarakan sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
                         'image' => asset('images/artikel2.jpg'),
-                        'url' => 'https://20.detik.com/detikupdate/20251029-251029002/video-dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
+                        'url' =>
+                            'https://20.detik.com/detikupdate/20251029-251029002/video-dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
                     ],
                     [
                         'source' => 'detikNews',
                         'date' => '28 Oktober 2025',
                         'title' => 'Daftar Pemenang DPD RI Awards 2025, Khofifah Terima Penghargaan',
-                        'excerpt' => 'Jakarta - DPD RI menggelar acara DPD RI Awards 2025. Ada sejumlah bidang yang dianugerahi penghargaan. Pemberian penghargaan DPD RI Awards ini digelar di Tribrata Hotel and Convention, Jakarta Selatan, Selasa (28/10/2025). Ada 5 kategori yang dianugerahi penghargaan.',
+                        'excerpt' =>
+                            'Jakarta - DPD RI menggelar acara DPD RI Awards 2025. Ada sejumlah bidang yang dianugerahi penghargaan. Pemberian penghargaan DPD RI Awards ini digelar di Tribrata Hotel and Convention, Jakarta Selatan, Selasa (28/10/2025). Ada 5 kategori yang dianugerahi penghargaan.',
                         'image' => asset('images/artikel3.jpeg'),
-                        'url' => 'https://news.detik.com/berita/d-8183132/daftar-pemenang-dpd-ri-awards-2025-khofifah-terima-penghargaan',
+                        'url' =>
+                            'https://news.detik.com/berita/d-8183132/daftar-pemenang-dpd-ri-awards-2025-khofifah-terima-penghargaan',
                     ],
                 ];
             @endphp
@@ -863,7 +879,8 @@
                             </div>
                         </div>
                         <div class="p-6 flex-1 flex flex-col">
-                            <div class="text-[#8a6d1c] text-[11px] font-bold tracking-wider mb-2">{{ $article['date'] }}
+                            <div class="text-[#8a6d1c] text-[11px] font-bold tracking-wider mb-2">
+                                {{ $article['date'] }}
                             </div>
                             <h3
                                 class="text-[#10131a] text-[17px] font-extrabold leading-snug mb-3 group-hover:text-[#8a6d1c] transition-colors">
@@ -873,8 +890,9 @@
                             <div
                                 class="mt-auto inline-flex items-center gap-1.5 text-[#8a6d1c] text-[12.5px] font-bold tracking-wider group-hover:gap-2.5 transition-all">
                                 Baca Selengkapnya
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12" />
                                     <polyline points="12 5 19 12 12 19" />
                                 </svg>
@@ -890,7 +908,8 @@
     <!-- 2. COUNTDOWN -->
     <section id="countdown"
         class="py-10 md:py-16 px-6 bg-gradient-to-b from-[#10131a] to-[#0a0c11] border-y border-[#e0b53c]/15">
-        <div x-data="countdown()" x-init="start()" x-intersect="shown = true" x-intersect:leave="shown = false"
+        <div x-data="countdown()" x-init="start()" x-intersect="shown = true"
+            x-intersect:leave="shown = false"
             class="max-w-[1200px] mx-auto bg-gradient-to-br from-[#191d27] to-[#10131a] border border-[#e0b53c]/30 rounded-[24px] sm:rounded-[28px] p-6 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-[0_30px_70px_rgba(0,0,0,0.5)] transition-all duration-[800ms] ease-out text-center lg:text-left"
             :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
             <div>
@@ -954,7 +973,7 @@
                     hours: '00',
                     minutes: '00',
                     seconds: '00',
-                    endTime: (function () {
+                    endTime: (function() {
                         const raw = '{{ config('laravolt.ui.tanggal_penutupan_pendaftaran') }}';
                         const parsed = raw ? new Date(raw).getTime() : NaN;
                         return isNaN(parsed) ? new Date('{{ now()->addDays(30)->toDateString() }}').getTime() : parsed;
@@ -1124,8 +1143,8 @@
                         </div>
                         <div
                             class="absolute top-5 right-5 z-40 w-10 h-10 rounded-full bg-[#88c445] flex items-center justify-center opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out shadow-[0_4px_14px_rgba(136,196,69,0.6)]">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0c11" stroke-width="3"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0c11"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M5 12h14M12 5l7 7-7 7" />
                             </svg>
                         </div>
@@ -1134,7 +1153,8 @@
                             <h3 class="cz text-[20px] sm:text-[28px] font-bold text-white mb-2 leading-tight">
                                 {{ $cat['title'] }}
                             </h3>
-                            <p class="text-white/80 text-[12px] sm:text-[14px] leading-[1.55] max-w-full sm:max-w-[80%]">
+                            <p
+                                class="text-white/80 text-[12px] sm:text-[14px] leading-[1.55] max-w-full sm:max-w-[80%]">
                                 {{ $cat['desc'] }}
                             </p>
                         </div>
@@ -1210,7 +1230,9 @@
                             <template x-for="(cp, i) in activeCat?.cp" :key="i">
                                 <div :class="activeCat?.cp?.length < 3 ? 'grow' : 'flex-1 min-w-0'">
                                     <template x-if="cp.phone">
-                                        <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo, Saya ingin bertanya tentang DPDRI AWARDS pada ' + activeCat?.title + ' - ' + activeCat?.desc)"
+                                        <a :href="'https://wa.me/' + cp.phone + '?text=' + encodeURIComponent('Halo,
+                                            Saya ingin bertanya tentang DPDRI AWARDS pada ' + activeCat?.title + ' -
+                                            ' + activeCat?.desc)"
                                             target="_blank"
                                             class="w-full h-full justify-center px-3 py-2 bg-[#25d366]/10 hover:bg-[#25d366]/20 transition-colors rounded-xl border border-[#25d366]/30 flex items-center gap-2 cursor-pointer group"
                                             :class="activeCat?.cp?.length < 3 ? 'whitespace-nowrap' : ''">
@@ -1274,7 +1296,8 @@
 
     <!-- 4. KETENTUAN UMUM & ALUR PENDAFTARAN -->
     <section id="syarat" class="py-[110px] px-6 bg-gradient-to-br from-[#0c3b28] to-[#0a0c11]">
-        <div class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.2fr] gap-14 items-start">
+        <div
+            class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.2fr] gap-14 items-start">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
                 class="transition-all duration-[800ms] ease-out"
                 :class="shown ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[30px]'">
@@ -1290,8 +1313,8 @@
                     <span
                         class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]"></span>
                     <span class="relative z-10">Daftar Sekarang</span>
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round"
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                         class="relative z-10 group-hover:translate-x-1 transition-transform">
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <polyline points="12 5 19 12 12 19" />
@@ -1328,8 +1351,9 @@
                         style="transition-delay: {{ $index * 100 }}ms;">
                         <div
                             class="shrink-0 w-[30px] h-[30px] rounded-lg bg-[#88c445]/15 flex items-center justify-center group-hover:bg-[#88c445] transition-colors duration-300">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round"
                                 class="text-[#88c445] group-hover:text-[#0a0c11] transition-colors duration-300">
                                 <polyline points="20 6 9 17 4 12" />
                             </svg>
@@ -1534,7 +1558,7 @@
                             <div
                                 class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['color_class'] }}">
                                 <div
-                                    class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none">
+                                    class="absolute inset-0 z-0 bg-gradient-to-tr from-white/10 to-transparent opacity-30 mix-blend-overlay rounded-full pointer-events-none">
                                 </div>
                                 <span class="relative z-10">{{ $step['n'] }}</span>
                             </div>
@@ -1545,7 +1569,7 @@
 
                                 @if ($step['n'] == '8')
                                     <div
-                                        class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-40 animate-pulse mix-blend-screen pointer-events-none">
+                                        class="absolute inset-0 z-0 bg-gradient-to-tr from-white/10 to-transparent opacity-40 animate-pulse mix-blend-screen pointer-events-none">
                                     </div>
                                     <div
                                         class="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]">
@@ -1628,8 +1652,8 @@
                 class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#1b6e4c]/5 rounded-full blur-[100px]">
             </div>
         </div>
-        <div class="relative z-10 max-w-[700px] mx-auto text-center" x-data="tracking()" x-intersect="shown = true"
-            x-intersect:leave="shown = false">
+        <div class="relative z-10 max-w-[700px] mx-auto text-center" x-data="tracking()"
+            x-intersect="shown = true" x-intersect:leave="shown = false">
             <div class="transition-all duration-[800ms] ease-out"
                 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
                 <span class="text-[#1b6e4c] text-[12.5px] font-extrabold tracking-[0.22em]">CEK STATUS</span>
@@ -1648,8 +1672,9 @@
                     <div
                         class="relative flex items-center bg-white border border-gray-200 rounded-2xl p-2 shadow-lg focus-within:border-[#e0b53c]/50 focus-within:ring-2 focus-within:ring-[#e0b53c]/20 transition-all">
                         <div class="pl-4 text-[#e0b53c]">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
@@ -1662,8 +1687,8 @@
                             <span x-show="isLoading" x-cloak class="flex items-center gap-2">
                                 <svg class="animate-spin h-4 w-4 text-[#10131a]" xmlns="http://www.w3.org/2000/svg"
                                     fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                        stroke-width="4"></circle>
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor"
                                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                     </path>
@@ -1687,14 +1712,15 @@
                             <div class="flex items-center gap-3 mb-4">
                                 <div
                                     class="w-12 h-12 rounded-full bg-[#1b6e4c]/10 flex items-center justify-center shrink-0">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1b6e4c"
-                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        stroke="#1b6e4c" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
                                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                     </svg>
                                 </div>
                                 <div>
-                                    <h4 class="text-[#10131a] font-bold text-[18px]">Data Ditemukan</h4>
+                                    <h4 class="text-[#10131a] font-bold text-[18px]">Data Pendaftaran Ditemukan</h4>
                                     <p class="text-[#1b6e4c] text-[13px] font-semibold tracking-wide uppercase"
                                         x-text="resultData?.nomor_registrasi"></p>
                                 </div>
@@ -1703,7 +1729,8 @@
                             <div class="space-y-4 pt-4 border-t border-gray-100">
                                 <div>
                                     <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">NAMA</div>
-                                    <div class="text-[#10131a] font-semibold text-[16px] cz" x-text="resultData?.nama">
+                                    <div class="text-[#10131a] font-semibold text-[16px] cz"
+                                        x-text="resultData?.nama">
                                     </div>
                                 </div>
                                 <div>
@@ -1725,9 +1752,11 @@
                     </template>
                     <template x-if="!success">
                         <div class="text-center py-4">
-                            <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e74c3c"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <div
+                                class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                                    stroke="#e74c3c" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="15" y1="9" x2="9" y2="15"></line>
                                     <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -1795,8 +1824,8 @@
     <!-- 6. STATISTIK PENDAFTAR -->
     <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"
-                alt="DPDRI AWARDS" loading="lazy" class="w-full h-full object-cover opacity-30 blur-[2px]">
+            <img src="{{ asset('images/unsplash-bg.jpg') }}" alt="DPDRI AWARDS" loading="lazy" decoding="async"
+                class="w-full h-full object-cover opacity-30 blur-[2px]">
             <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
         </div>
         <div class="relative z-10 max-w-[1000px] mx-auto">
@@ -1928,8 +1957,7 @@
                 @endphp
 
                 @foreach ($faqData as $index => $f)
-                    <div x-data="{ shown: false, isHovered: false, isClicked: false, forceClose: false, get isOpen() { return this.isClicked || (this.isHovered && !this.forceClose); } }"
-                        x-intersect="shown = true" x-intersect:leave="shown = false"
+                    <div x-data="{ shown: false, isHovered: false, isClicked: false, forceClose: false, get isOpen() { return this.isClicked || (this.isHovered && !this.forceClose); } }" x-intersect="shown = true" x-intersect:leave="shown = false"
                         @mouseenter="isHovered = true; forceClose = false"
                         @mouseleave="isHovered = false; forceClose = false"
                         @click="isClicked = !isClicked; forceClose = !isClicked"
@@ -2026,8 +2054,9 @@
                         <a href="{{ route('nominasi') }}"
                             class="inline-flex items-center gap-2 bg-[#e0b53c] text-[#0a0c11] font-bold text-[15px] tracking-wide px-7 py-3 rounded-full shadow-[0_8px_20px_rgba(224,181,60,0.2)] hover:shadow-[0_12px_25px_rgba(224,181,60,0.4)] hover:-translate-y-1 transition-all">
                             Daftar Sekarang
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                                 <polyline points="12 5 19 12 12 19"></polyline>
                             </svg>
@@ -2074,8 +2103,9 @@
                     </a>
                     <a href="#" aria-label="YouTube"
                         class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#88c445] hover:text-[#0a0c11] transition-all text-white/50">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
                             <path
                                 d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z" />
                             <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
@@ -2092,13 +2122,14 @@
 
     <!-- Floating Scroll to Top -->
     <div x-data="{ showScroll: false }" @scroll.window="showScroll = (window.pageYOffset > 500)">
-        <button @click="customScrollToTop()" x-show="showScroll" x-transition:enter="transition ease-out duration-700"
+        <button @click="customScrollToTop()" x-show="showScroll"
+            x-transition:enter="transition ease-out duration-700"
             x-transition:enter-start="opacity-0 translate-y-12" x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 translate-y-12"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-12"
             class="cursor-pointer fixed bottom-8 right-8 z-50 w-11 h-11 rounded-[14px] bg-gradient-to-tr from-[#1b6e4c] to-[#259b6b] hover:scale-105 hover:shadow-[0_12px_24px_rgba(27,110,76,0.4)] text-white flex items-center justify-center shadow-[0_8px_16px_rgba(27,110,76,0.3)] transition-all duration-300">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="18 15 12 9 6 15"></polyline>
             </svg>
         </button>
@@ -2134,19 +2165,21 @@
     </script>
 
     <!-- Modal Template for Image Popup -->
-    <div x-data="{ modalOpen: false, modalImage: '' }"
-        @open-modal.window="modalOpen = true; modalImage = $event.detail.image" x-show="modalOpen"
-        @click="modalOpen = false" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 px-4"
+    <div x-data="{ modalOpen: false, modalImage: '' }" @open-modal.window="modalOpen = true; modalImage = $event.detail.image"
+        x-show="modalOpen" @click="modalOpen = false"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 px-4"
         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display: none;">
         <div class="relative max-w-4xl w-full h-full flex items-center justify-center p-4">
             <button @click="modalOpen = false" class="absolute top-6 right-6 text-white hover:text-[#e0b53c] z-50">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
                     <path d="M18 6L6 18M6 6l12 12"></path>
                 </svg>
             </button>
-            <img :src="modalImage" class="max-h-[90vh] max-w-full rounded-lg object-contain shadow-2xl" @click.stop>
+            <img :src="modalImage" class="max-h-[90vh] max-w-full rounded-lg object-contain shadow-2xl"
+                @click.stop>
         </div>
     </div>
 </body>

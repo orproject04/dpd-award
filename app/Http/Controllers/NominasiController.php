@@ -14,7 +14,7 @@ class NominasiController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'kategori' => 'required|string',
+            'kategori' => 'required|string|in:pendidikan,kesehatan,pangan,budaya',
             'namaNominee' => 'required|string|max:255',
             'wilayah' => 'required|string|max:50',
             'tanggalLahir' => 'required|date',
@@ -25,6 +25,17 @@ class NominasiController extends Controller
             'email' => 'required|email|max:50',
             'ktp' => 'required|file|mimes:jpeg,png,jpg,pdf|max:51200',
             'foto' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
+            
+            // Kontribusi limits
+            'capaianList' => 'nullable|array',
+            'capaianList.*.judul' => 'required_with:capaianList|string|max:500',
+            'capaianList.*.deskripsi' => 'nullable|string',
+            'capaianList.*.dampak' => 'nullable|string',
+
+            // Penghargaan limits
+            'penghargaanList' => 'nullable|array',
+            'penghargaanList.*.nama' => 'nullable|string|max:500',
+            'penghargaanList.*.tahun' => 'nullable|digits:4',
         ];
 
         foreach ($request->allFiles() as $key => $file) {
@@ -153,6 +164,17 @@ class NominasiController extends Controller
             }
 
             DB::commit();
+
+            // Kirim Email Bukti Pendaftaran di background menggunakan defer() (tersedia di Laravel 11/12)
+            $waktuSubmit = date('d M Y, H:i:s');
+            defer(function () use ($pendaftar, $waktuSubmit) {
+                try {
+                    \Illuminate\Support\Facades\Mail::to($pendaftar->email)
+                        ->send(new \App\Mail\BuktiDaftarEmail($pendaftar, $waktuSubmit));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Gagal mengirim email pendaftaran ke " . $pendaftar->email . ": " . $e->getMessage());
+                }
+            });
 
             return response()->json([
                 'success' => true,

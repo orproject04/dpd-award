@@ -283,7 +283,7 @@
                         <div>
                             <label class="block text-[14px] font-bold mb-2">Nama Lengkap <span
                                     class="text-[#c0392b]">*</span></label>
-                            <input x-model="data.namaNominee" type="text" placeholder="Nama lengkap"
+                            <input x-model="data.namaNominee" type="text" maxlength="255" placeholder="Nama lengkap"
                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
                             <template x-if="showErr && errs.namaNominee">
                                 <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.namaNominee">
@@ -295,7 +295,7 @@
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Tempat Lahir <span
                                         class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.wilayah" type="text" placeholder="Tempat lahir"
+                                <input x-model="data.wilayah" type="text" maxlength="50" placeholder="Tempat lahir"
                                     class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
                                 <template x-if="showErr && errs.wilayah">
                                     <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.wilayah">
@@ -416,7 +416,7 @@
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Alamat Email <span
                                         class="text-[#c0392b]">*</span></label>
-                                <input x-model="data.email" type="email" placeholder="nama@email.com"
+                                <input x-model="data.email" type="email" maxlength="50" placeholder="nama@email.com"
                                     class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] text-[#10131a] transition-all duration-200">
                                 <template x-if="showErr && errs.email">
                                     <p class="text-[#c0392b] text-[13px] font-semibold mt-1.5" x-text="errs.email"></p>
@@ -560,7 +560,7 @@
                                         <div class="mb-1">
                                             <label class="block text-[13.5px] font-bold mb-2">Judul Inovasi /
                                                 Kontribusi <span class="text-[#c0392b] ml-1">*</span></label>
-                                            <input x-model="item.judul" placeholder="Judul capaian/inovasi..."
+                                            <input x-model="item.judul" maxlength="500" placeholder="Judul capaian/inovasi..."
                                                 class="w-full h-[45px] px-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[15px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="mb-1">
@@ -750,7 +750,7 @@
                                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
                                         <div class="sm:col-span-9">
                                             <label class="block text-[13.5px] font-bold mb-2">Uraian Penghargaan</label>
-                                            <input x-model="item.nama" placeholder="Nama penghargaan..."
+                                            <input x-model="item.nama" maxlength="500" placeholder="Nama penghargaan..."
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="sm:col-span-3">
@@ -1860,9 +1860,6 @@
                                     text: 'Terima kasih, pendaftaran Anda telah berhasil disubmit.',
                                     icon: 'success',
                                     confirmButtonColor: '#1b6e4c'
-                                }).then(() => {
-                                    // Otomatis membuka dialog print/save as PDF
-                                    window.print();
                                 });
                             } else {
                                 Swal.fire({

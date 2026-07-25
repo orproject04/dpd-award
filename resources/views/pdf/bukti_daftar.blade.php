@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Bukti Pendaftaran - {{ $pendaftar->nomor_registrasi }}</title>
@@ -12,10 +13,12 @@
             margin: 0;
             padding: 20px;
         }
+
         .header {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .header .subtitle {
             color: #1b6e4c;
             font-size: 8pt;
@@ -23,15 +26,18 @@
             letter-spacing: 2px;
             margin-bottom: 3px;
         }
+
         .header h1 {
             font-size: 20pt;
             font-weight: 900;
             margin: 0;
             color: #10131a;
         }
+
         .header h1 span {
             color: #b8860b;
         }
+
         .reg-box {
             border: 1px solid #e8ddc4;
             background-color: #ffffff;
@@ -41,23 +47,26 @@
             margin: 15px auto;
             width: 320px;
         }
+
         .reg-label {
             font-size: 7pt;
             color: #8a7f66;
             font-weight: bold;
             letter-spacing: 1px;
         }
+
         .reg-number {
             font-size: 14pt;
             font-weight: bold;
             color: #b8860b;
             margin: 4px 0;
         }
+
         .reg-time {
             font-size: 7pt;
             color: #6b7280;
         }
-        
+
         .main-card {
             border: 1px solid #e8ddc4;
             border-radius: 12px;
@@ -82,6 +91,7 @@
             margin-bottom: 20px;
             overflow: hidden;
         }
+
         .section-header {
             background-color: #fcfbf7;
             padding: 10px 15px;
@@ -90,6 +100,7 @@
             font-weight: bold;
             font-size: 10pt;
         }
+
         .section-body {
             padding: 15px;
             background-color: #ffffff;
@@ -99,11 +110,13 @@
             width: 100%;
             border-collapse: collapse;
         }
+
         table.grid-table td {
             vertical-align: top;
             padding-bottom: 15px;
             width: 50%;
         }
+
         .field-label {
             font-size: 7pt;
             color: #8a7f66;
@@ -112,6 +125,7 @@
             text-transform: uppercase;
             margin-bottom: 3px;
         }
+
         .field-value {
             font-size: 9.5pt;
             color: #10131a;
@@ -128,12 +142,14 @@
             width: 45%;
             margin-right: 2%;
         }
+
         .doc-title {
             font-size: 7pt;
             color: #8a7f66;
             font-weight: bold;
             margin-bottom: 2px;
         }
+
         .doc-value {
             font-size: 8.5pt;
             font-weight: bold;
@@ -147,6 +163,7 @@
             padding: 15px;
             margin-bottom: 15px;
         }
+
         .item-title {
             font-size: 10pt;
             font-weight: bold;
@@ -154,7 +171,7 @@
             border-bottom: 1px solid #f0eae1;
             padding-bottom: 5px;
         }
-        
+
         .empty-text {
             font-size: 9pt;
             color: #8a7f66;
@@ -169,25 +186,27 @@
             color: #4b5262;
             margin-top: 10px;
         }
+
         .checkbox-area strong {
             color: #1b6e4c;
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="subtitle">BUKTI PENDAFTARAN</div>
         <h1>DPDRI <span>AWARDS 2026</span></h1>
-        
+
         <div class="reg-box">
             <div class="reg-label">NOMOR REGISTRASI</div>
             <div class="reg-number">{{ $pendaftar->nomor_registrasi }}</div>
-            <div class="reg-time">Disubmit pada: {{ $waktuSubmit }}</div>
+            <div class="reg-time">Diajukan pada: {{ $waktuSubmit }}</div>
         </div>
     </div>
 
     <div class="main-card">
-        
+
         <div class="success-banner">
             Kategori Pilihan: {{ $pendaftar->kategori }}
         </div>
@@ -312,10 +331,13 @@
         </div>
 
         <div class="checkbox-area">
-            <span style="display:inline-block; border: 1px solid #1b6e4c; background-color: #1b6e4c; width: 14px; height: 14px; text-align: center; line-height: 14px; margin-right: 5px; color: #ffffff; font-weight: bold; font-family: Arial, sans-serif; border-radius: 2px;">V</span>
-            Saya menyatakan bahwa seluruh data yang diisi adalah benar dan menyetujui <strong>syarat & ketentuan</strong> DPDRI AWARDS 2026.
+            <span
+                style="display:inline-block; border: 1px solid #1b6e4c; background-color: #1b6e4c; width: 14px; height: 14px; text-align: center; line-height: 14px; margin-right: 5px; color: #ffffff; font-weight: bold; font-family: Arial, sans-serif; border-radius: 2px;">V</span>
+            Saya menyatakan bahwa seluruh data yang diisi adalah benar dan menyetujui <strong>syarat &
+                ketentuan</strong> DPDRI AWARDS 2026.
         </div>
 
     </div>
 </body>
+
 </html>

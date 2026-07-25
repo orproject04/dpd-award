@@ -175,7 +175,7 @@
                         class="hidden print:inline-block mt-4 bg-white border border-[#e8ddc4] rounded-2xl py-3 px-6 shadow-sm text-center">
                         <div class="text-[11px] text-[#8a7f66] font-bold tracking-[0.12em]">NOMOR REGISTRASI</div>
                         <div class="cz text-[22px] font-bold text-[#b8860b] mt-0.5 tracking-wide" x-text="regId"></div>
-                        <div class="text-[11px] text-[#6b7280] mt-1 font-medium">Disubmit pada: <span
+                        <div class="text-[11px] text-[#6b7280] mt-1 font-medium">Diajukan pada: <span
                                 x-text="submitTime"></span></div>
                     </div>
                 </template>
@@ -306,12 +306,16 @@
                             <div class="space-y-3">
                                 <label class="block text-[14px] font-bold mb-2">Tanggal Lahir <span
                                         class="text-[#c0392b]">*</span></label>
-                                <div class="relative w-full h-[50px] border-[1.5px] border-[#d8cdb4] rounded-xl bg-white overflow-hidden transition-all duration-200">
+                                <div
+                                    class="relative w-full h-[50px] border-[1.5px] border-[#d8cdb4] rounded-xl bg-white overflow-hidden transition-all duration-200">
                                     <input x-model="data.tanggalLahir" type="date" onclick="this.showPicker()"
                                         class="w-full h-full px-4 text-[15px] text-[#10131a] bg-transparent outline-none border-none shadow-none appearance-none min-w-0 [&::-webkit-calendar-picker-indicator]:hidden">
-                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    <div
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                     </div>
                                 </div>
@@ -431,12 +435,12 @@
                                 <template x-for="u in uploads.filter(x => ['ktp', 'foto'].includes(x.key))"
                                     :key="u.key">
                                     <div class="flex flex-col relative group" x-data="{ isDragging: false }"
-                                        @dragenter.prevent="isDragging = true"
-                                        @dragover.prevent="isDragging = true"
+                                        @dragenter.prevent="isDragging = true" @dragover.prevent="isDragging = true"
                                         @dragleave.prevent="if($event.target === $refs.overlay) isDragging = false"
                                         @drop.prevent="isDragging = false; handleFileChange($event, u.key)">
-                                        
-                                        <div x-ref="overlay" x-show="isDragging" class="absolute inset-0 z-20 cursor-copy" x-cloak></div>
+
+                                        <div x-ref="overlay" x-show="isDragging"
+                                            class="absolute inset-0 z-20 cursor-copy" x-cloak></div>
 
                                         <div class="flex items-center gap-4 border-[1.5px] border-dashed rounded-[14px] py-[16px] px-5 transition-all duration-200 group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c]"
                                             :class="isDragging ? 'border-[#1b6e4c] bg-[#f0f8f2] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'">
@@ -560,7 +564,8 @@
                                         <div class="mb-1">
                                             <label class="block text-[13.5px] font-bold mb-2">Judul Inovasi /
                                                 Kontribusi <span class="text-[#c0392b] ml-1">*</span></label>
-                                            <input x-model="item.judul" maxlength="500" placeholder="Judul capaian/inovasi..."
+                                            <input x-model="item.judul" maxlength="500"
+                                                placeholder="Judul capaian/inovasi..."
                                                 class="w-full h-[45px] px-4 border-[1.5px] border-[#d8cdb4] rounded-lg text-[15px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="mb-1">
@@ -618,12 +623,10 @@
                                                 <input type="file" multiple
                                                     accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                                    @dragenter="isDragging = true"
-                                                    @dragleave="isDragging = false"
+                                                    @dragenter="isDragging = true" @dragleave="isDragging = false"
                                                     @drop="isDragging = false"
                                                     @change="handleMultiFileChange($event, 'capaianList', index)">
-                                                <div
-                                                    :class="isDragging ? 'bg-[#f0f8f2] border-[#1b6e4c] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'"
+                                                <div :class="isDragging ? 'bg-[#f0f8f2] border-[#1b6e4c] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'"
                                                     class="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
                                                     <div
                                                         class="w-12 h-12 mb-3 rounded-full bg-white shadow-sm flex items-center justify-center text-[#b8860b] group-hover:text-[#1b6e4c] group-hover:scale-110 transition-all duration-300">
@@ -677,7 +680,8 @@
                                                             <div
                                                                 class="text-[11px] font-medium text-[#8a7f66] uppercase mt-0.5">
                                                                 <span x-text="f.type"></span>
-                                                                <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
+                                                                <span x-show="f.size"
+                                                                    x-text="', ' + formatBytes(f.size)"></span>
                                                             </div>
                                                         </div>
 
@@ -761,19 +765,18 @@
                                                 class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[14.5px] text-[#10131a] transition-all duration-200">
                                         </div>
                                         <div class="sm:col-span-12 mt-2">
-                                            <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung (<i>Evidences</i>)
+                                            <label class="block text-[13.5px] font-bold mb-2">Bukti Dukung
+                                                (<i>Evidences</i>)
                                                 <template x-if="item.nama.trim() || item.tahun.toString().trim()"><span
                                                         class="text-[#c0392b] ml-1">*</span></template></label>
                                             <div class="relative group cursor-pointer" x-data="{ isDragging: false }">
                                                 <input type="file" multiple
                                                     accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                                    @dragenter="isDragging = true"
-                                                    @dragleave="isDragging = false"
+                                                    @dragenter="isDragging = true" @dragleave="isDragging = false"
                                                     @drop="isDragging = false"
                                                     @change="handleMultiFileChange($event, 'penghargaanList', index)">
-                                                <div
-                                                    :class="isDragging ? 'bg-[#f0f8f2] border-[#1b6e4c] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'"
+                                                <div :class="isDragging ? 'bg-[#f0f8f2] border-[#1b6e4c] scale-[1.02] shadow-[0_0_15px_rgba(27,110,76,0.15)]' : 'border-[#d8cdb4] bg-[#faf6ec]'"
                                                     class="flex flex-col items-center justify-center p-5 border-2 border-dashed rounded-xl group-hover:bg-[#f0f8f2] group-hover:border-[#1b6e4c] transition-all duration-300 text-center">
                                                     <div
                                                         class="w-10 h-10 mb-2 rounded-full bg-white shadow-sm flex items-center justify-center text-[#b8860b] group-hover:text-[#1b6e4c] group-hover:scale-110 transition-all duration-300">
@@ -827,7 +830,8 @@
                                                             <div
                                                                 class="text-[10px] font-medium text-[#8a7f66] uppercase">
                                                                 <span x-text="f.type"></span>
-                                                                <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
+                                                                <span x-show="f.size"
+                                                                    x-text="', ' + formatBytes(f.size)"></span>
                                                             </div>
                                                         </div>
 
@@ -1161,7 +1165,8 @@
                                                                     <div
                                                                         class="text-[10px] font-medium text-[#8a7f66] uppercase">
                                                                         <span x-text="f.type"></span>
-                                                                        <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
+                                                                        <span x-show="f.size"
+                                                                            x-text="', ' + formatBytes(f.size)"></span>
                                                                     </div>
                                                                 </div>
                                                             </a>
@@ -1302,7 +1307,8 @@
                                                                     <div
                                                                         class="text-[10px] font-medium text-[#8a7f66] uppercase">
                                                                         <span x-text="f.type"></span>
-                                                                        <span x-show="f.size" x-text="', ' + formatBytes(f.size)"></span>
+                                                                        <span x-show="f.size"
+                                                                            x-text="', ' + formatBytes(f.size)"></span>
                                                                     </div>
                                                                 </div>
                                                             </a>
@@ -1857,7 +1863,7 @@
 
                                 Swal.fire({
                                     title: 'Pendaftaran Terkirim!',
-                                    text: 'Terima kasih, pendaftaran Anda telah berhasil disubmit.',
+                                    text: 'Terima kasih, pendaftaran Anda telah berhasil dikirim.',
                                     icon: 'success',
                                     confirmButtonColor: '#1b6e4c'
                                 });

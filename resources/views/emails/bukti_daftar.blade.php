@@ -101,7 +101,7 @@
         <div class="card">
             <div class="label">NOMOR REGISTRASI</div>
             <div class="reg-id">{{ $pendaftar->nomor_registrasi }}</div>
-            <div class="date">Disubmit pada: {{ $waktuSubmit }} WIB</div>
+            <div class="date">Diajukan pada: {{ $waktuSubmit }} WIB</div>
         </div>
 
         <p class="footer">Simpan email ini sebagai bukti pendaftaran yang sah.<br>Pendaftaran Anda akan

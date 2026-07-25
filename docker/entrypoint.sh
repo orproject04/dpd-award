@@ -149,6 +149,7 @@ fi
 # Clear cache setiap kali start container
 echo "👉 Clearing Laravel cache"
 php artisan optimize:clear
+php artisan responsecache:clear
 
 echo "👉 Optimizing Laravel caches"
 php artisan optimize

@@ -67,6 +67,24 @@ class PendaftarController extends Controller
         return to_route('modules::pendaftar.index')->withSuccess('Pendaftar deleted');
     }
 
+    public function resendEmail(Pendaftar $pendaftar): RedirectResponse
+    {
+        try {
+            $waktuSubmit = $pendaftar->created_at->format('d M Y, H.i');
+            
+            // Cast to App\Models\Pendaftar to avoid TypeError in Mailable
+            $appPendaftar = \App\Models\Pendaftar::find($pendaftar->id);
+            
+            \Illuminate\Support\Facades\Mail::to($pendaftar->email)
+                ->send(new \App\Mail\BuktiDaftarEmail($appPendaftar, $waktuSubmit));
+            
+            return back()->withSuccess('Email pendaftaran berhasil dikirim ulang ke ' . $pendaftar->email);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal mengirim ulang email pendaftaran ke " . $pendaftar->email . ": " . $e->getMessage());
+            return back()->withError('Gagal mengirim email: ' . $e->getMessage());
+        }
+    }
+
     public function serveFile(\Illuminate\Http\Request $request)
     {
         $path = $request->query('path');

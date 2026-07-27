@@ -828,6 +828,17 @@
                             icon="archive" class="blue fluid" target="_blank" data-no-loader="true">
                             Unduh Semua Berkas (ZIP)
                         </x-volt-link-button>
+
+                        <hr class="show-divider">
+
+                        {{-- Resend Email --}}
+                        {{-- Resend Email --}}
+                        <form id="resend-email-form" action="{{ route('modules::pendaftar.resend-email', $pendaftar->id) }}" method="POST">
+                            @csrf
+                            <x-volt-button type="button" icon="envelope" class="green fluid" onclick="confirmResendEmail()">
+                                Kirim Ulang Email Bukti Pendaftaran
+                            </x-volt-button>
+                        </form>
                     </div>
                 </div>
 
@@ -1027,6 +1038,29 @@
                 setTimeout(function() {
                     lightboxImg.src = '';
                 }, 300);
+            }
+
+            function confirmResendEmail() {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Kirim Ulang Email?',
+                        text: "Apakah Anda yakin ingin mengirim ulang Email Bukti Pendaftaran ke pendaftar ini?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#1b6e4c',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Kirim Ulang!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('resend-email-form').submit();
+                        }
+                    });
+                } else {
+                    if (confirm("Apakah Anda yakin ingin mengirim ulang Email Bukti Pendaftaran ke pendaftar ini?")) {
+                        document.getElementById('resend-email-form').submit();
+                    }
+                }
             }
         </script>
     @endpush

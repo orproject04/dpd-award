@@ -14,6 +14,7 @@ Route::group(
         Route::get('pendaftar/export', [PendaftarController::class, 'exportExcel'])->name('pendaftar.export');
         Route::get('pendaftar/download-all-zip', [PendaftarController::class, 'downloadAllZip'])->name('pendaftar.download-all-zip');
         Route::get('pendaftar/{pendaftar}/download-all', [PendaftarController::class, 'downloadAllFiles'])->name('pendaftar.download-all');
+        Route::post('pendaftar/{pendaftar}/resend-email', [PendaftarController::class, 'resendEmail'])->name('pendaftar.resend-email');
         Route::post('pendaftar/{pendaftar}/status', [PendaftarController::class, 'updateStatus'])->name('pendaftar.update-status');
         Route::resource('pendaftar', PendaftarController::class);
     }

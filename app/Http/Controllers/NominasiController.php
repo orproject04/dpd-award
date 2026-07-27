@@ -193,7 +193,7 @@ class NominasiController extends Controller
                 \Illuminate\Support\Facades\Artisan::call('responsecache:clear');
             }
 
-            // Kirim Email Bukti Pendaftaran di background menggunakan defer() (tersedia di Laravel 11/12)
+            // Kirim Email Bukti Pendaftaran di background menggunakan defer()
             $waktuSubmit = date('d M Y, H:i:s');
             defer(function () use ($pendaftar, $waktuSubmit) {
                 try {

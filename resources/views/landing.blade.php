@@ -217,7 +217,7 @@
         mobileMenuOpen: false
     }" @scroll.window="scrolled = (window.pageYOffset > 60)">
 
-    <!-- HEADER -->
+    
     <header :class="(scrolled || mobileMenuOpen) ? 'pt-4 pb-3 lg:py-5' : 'py-4 lg:py-8'"
         class="fixed top-0 left-0 right-0 z-[100] transition-all duration-300">
 
@@ -236,11 +236,9 @@
                 <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
 
-                <!-- ATUR JARAK MANUAL: Ubah nilai margin-left di bawah ini (bisa minus misal -10px, atau positif misal 10px) -->
                 <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" style="margin-left: 15px;"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
 
-                <!-- ATUR JARAK MANUAL: Ubah nilai margin-left di bawah ini untuk mengatur jarak logo Detik -->
                 <img src="{{ asset('images/detik.png') }}" alt="Logo Detik.com" style="margin-left: 12px;"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
             </a>
@@ -302,7 +300,7 @@
         </div>
     </header>
 
-    <!-- 1. BERANDA (HERO) -->
+    
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-[#0a0c11]">
             <img src="{{ asset('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero" width="1920" height="1080"
@@ -311,12 +309,9 @@
         </div>
 
 
-        <!-- Full-Width Artistic Brush Stroke Background -->
         <div class="absolute bottom-0 left-0 w-full z-0 h-[250px] pointer-events-none overflow-visible">
-            <!-- Base gradient to ensure the absolute bottom is solid black -->
             <div class="absolute bottom-0 w-full h-[150px] bg-gradient-to-t from-[#020305] to-transparent"></div>
 
-            <!-- Layered blurred ellipses to create an organic, artistic brush stroke edge -->
             <div
                 class="absolute bottom-[-60px] left-[-10%] w-[120%] h-[200px] bg-[#05070a]/95 blur-[35px] rounded-[100%] rotate-2">
             </div>
@@ -346,11 +341,11 @@
                             opacity="0.6" />
                     </g>
                     <g id="laurelBranch" transform="translate(0, 5)">
-                        <!-- Stem -->
+                        
                         <path d="M 5 35 Q 120 75 240 10" stroke="url(#goldLaurel)" stroke-width="2.5"
                             stroke-linecap="round" />
 
-                        <!-- Top side Leaves -->
+                        
                         <use href="#laurelLeaf" transform="translate(8, 38) rotate(-10) scale(0.6)" />
                         <use href="#laurelLeaf" transform="translate(25, 40) rotate(-25) scale(0.7)" />
                         <use href="#laurelLeaf" transform="translate(45, 43) rotate(-35) scale(0.85)" />
@@ -361,7 +356,7 @@
                         <use href="#laurelLeaf" transform="translate(200, 31) rotate(-85) scale(0.9)" />
                         <use href="#laurelLeaf" transform="translate(225, 17) rotate(-95) scale(0.75)" />
 
-                        <!-- Bottom side Leaves -->
+                        
                         <use href="#laurelLeaf" transform="translate(35, 44) rotate(70) scale(0.7)" />
                         <use href="#laurelLeaf" transform="translate(58, 48) rotate(60) scale(0.85)" />
                         <use href="#laurelLeaf" transform="translate(85, 51) rotate(50) scale(1)" />
@@ -370,13 +365,13 @@
                         <use href="#laurelLeaf" transform="translate(185, 40) rotate(20) scale(1.05)" />
                         <use href="#laurelLeaf" transform="translate(212, 25) rotate(10) scale(0.85)" />
 
-                        <!-- Tip Leaf -->
+                        
                         <use href="#laurelLeaf" transform="translate(238, 10) rotate(-25) scale(0.9)" />
                     </g>
                 </defs>
             </svg>
 
-            <!-- Left Laurel Separator -->
+            
             <div
                 class="hidden md:block flex-1 max-w-[200px] lg:max-w-[330px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)]">
                 <svg viewBox="0 -10 260 90" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -384,9 +379,9 @@
                 </svg>
             </div>
 
-            <!-- Intertwined Trophies -->
+            
             <div class="flex items-center justify-center shrink-0">
-                <!-- 1. Far Left -->
+                
                 <div class="relative z-10 -mr-5 md:-mr-8 group" style="animation-delay: 0ms;">
                     <div
                         class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500">
@@ -398,7 +393,7 @@
                     </div>
                 </div>
 
-                <!-- 2. Left Middle -->
+                
                 <div class="relative z-20 -mr-4 md:-mr-6 group" style="animation-delay: 200ms;">
                     <div
                         class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500">
@@ -410,7 +405,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Right Middle -->
+                
                 <div class="relative z-30 -mr-5 md:-mr-8 group" style="animation-delay: 400ms;">
                     <div
                         class="absolute inset-0 bg-[#e0b53c]/40 blur-[20px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500">
@@ -422,7 +417,7 @@
                     </div>
                 </div>
 
-                <!-- 4. Far Right -->
+                
                 <div class="relative z-10 group" style="animation-delay: 600ms;">
                     <div
                         class="absolute inset-0 bg-[#e0b53c]/40 blur-[15px] rounded-full group-hover:bg-[#e0b53c]/60 transition-colors duration-500">
@@ -435,7 +430,7 @@
                 </div>
             </div>
 
-            <!-- Right Laurel Separator -->
+            
             <div
                 class="hidden md:block flex-1 max-w-[200px] lg:max-w-[330px] opacity-90 drop-shadow-[0_0_8px_rgba(224,181,60,0.5)] scale-x-[-1]">
                 <svg viewBox="0 -10 260 90" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -446,7 +441,7 @@
         </div>
     </section>
 
-    <!-- 1.5 PEMBUKAAN -->
+    
     <section class="py-8 px-6 bg-[#0a0c11] text-center border-b border-[#e0b53c]/15">
         <div class="mx-auto w-full">
             <div class="max-w-6xl mx-auto px-4" x-data="{ shown: false }" x-intersect="shown = true"
@@ -490,7 +485,7 @@
         </div>
     </section>
 
-    <!-- HIGHLIGHT MALAM ANUGERAH -->
+    
     <section id="highlight" class="relative py-[50px] md:py-[90px] px-6 bg-[#0a0c11] overflow-hidden">
         <span class="twinkle-star"
             style="top: 8%; left: 12%; width: 10px; height: 10px; animation-delay: 0.5s;"></span>
@@ -545,7 +540,7 @@
         </div>
     </section>
 
-    <!-- 1.6 KILAS BALIK PEMENANG -->
+    
     <section id="pemenang"
         class="relative pt-[50px] pb-[75px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden">
         <span class="twinkle-star"
@@ -798,7 +793,7 @@
 
 
 
-    <!-- 1.8 SOROTAN MEDIA -->
+    
     <section id="sorotan-media"
         class="relative pt-[45px] pb-[90px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden">
         <span class="twinkle-star"
@@ -905,7 +900,7 @@
     </section>
 
 
-    <!-- 2. COUNTDOWN -->
+    
     <section id="countdown"
         class="py-10 md:py-16 px-6 bg-gradient-to-b from-[#10131a] to-[#0a0c11] border-y border-[#e0b53c]/15">
         <div x-data="countdown()" x-init="start()" x-intersect="shown = true"
@@ -1026,7 +1021,7 @@
         </script>
     </section>
 
-    <!-- 3. KATEGORI -->
+    
     <section id="kategori" class="py-[110px] px-6 bg-[#fbf7ee]" x-data="{ modalOpen: false, activeCat: null }">
         <div class="max-w-7xl mx-auto">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
@@ -1165,17 +1160,17 @@
             </div>
         </div>
 
-        <!-- Modal Detail Kategori -->
+        
         <div x-show="modalOpen" x-cloak class="fixed inset-0 z-[200] flex items-center justify-center px-4"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Backdrop -->
+            
             <div x-show="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                 class="fixed inset-0 bg-[#0a0c11]/80 backdrop-blur-sm transition-opacity" @click="modalOpen = false">
             </div>
 
-            <!-- Modal Panel -->
+            
             <div x-show="modalOpen" x-transition:enter="ease-out duration-300"
                 x-transition:enter-start="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -1184,7 +1179,7 @@
                 x-transition:leave-end="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
                 class="relative bg-white rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)] max-w-3xl w-full flex flex-col max-h-[95vh]">
 
-                <!-- Modal Header Image -->
+                
                 <div class="relative h-[200px] sm:h-[220px] md:h-[180px] w-full shrink-0">
                     <img :src="activeCat?.img" alt="" class="w-full h-full object-cover"
                         :style="`object-position: ${activeCat?.pos || 'center'}`">
@@ -1214,14 +1209,14 @@
                     </a>
                 </div>
 
-                <!-- Modal Body -->
+                
                 <div class="p-6 sm:p-8 overflow-y-auto">
                     <h3 class="text-[14px] font-bold text-[#b8860b] tracking-wider mb-2">PENJELASAN KATEGORI</h3>
                     <p class="text-[#4b5262] text-[15px] sm:text-[16px] leading-[1.7]" x-text="activeCat?.penjelasan">
                     </p>
                 </div>
 
-                <!-- Modal Footer -->
+                
                 <div class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col w-full gap-4 shrink-0">
                     <div class="w-full">
                         <span class="text-[#1da851] font-bold text-[12px] uppercase flex items-center gap-1.5 mb-1.5">
@@ -1243,17 +1238,17 @@
                                                 <path
                                                     d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
                                             </svg>
-                                            <!-- Logic <= 2 CP -->
+                                            
                                             <div x-show="activeCat?.cp?.length < 3"
                                                 class="text-[#10131a] font-medium text-[12px] leading-relaxed truncate"
                                                 x-text="cp.name + ' (' + cp.display + ')'"></div>
 
-                                            <!-- Logic >= 3 CP -->
+                                            
                                             <div x-show="activeCat?.cp?.length >= 3" class="sm:w-full" x-cloak>
-                                                <!-- Mobile: Sama persis dengan < 3 CP -->
+                                                
                                                 <div class="sm:hidden text-[#10131a] font-medium text-[12px] leading-relaxed truncate"
                                                     x-text="cp.name + ' (' + cp.display + ')'"></div>
-                                                <!-- Desktop: 2 Baris -->
+                                                
                                                 <div
                                                     class="hidden sm:flex text-[#10131a] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
                                                     <span x-text="cp.name" class="w-full truncate text-center"></span>
@@ -1267,17 +1262,17 @@
                                         <div class="w-full h-full justify-center px-3 py-2 bg-gray-100/50 rounded-xl border border-gray-200 flex items-center gap-2"
                                             :class="activeCat?.cp?.length < 3 ? 'whitespace-nowrap' : ''">
 
-                                            <!-- Logic <= 2 CP -->
+                                            
                                             <div x-show="activeCat?.cp?.length < 3"
                                                 class="text-[#64748b] font-medium text-[12px] leading-relaxed truncate"
                                                 x-text="cp.name + ' (Belum ada nomor)'"></div>
 
-                                            <!-- Logic >= 3 CP -->
+                                            
                                             <div x-show="activeCat?.cp?.length >= 3" class="sm:w-full" x-cloak>
-                                                <!-- Mobile: Sama persis dengan < 3 CP -->
+                                                
                                                 <div class="sm:hidden text-[#64748b] font-medium text-[12px] leading-relaxed truncate"
                                                     x-text="cp.name + ' (Belum ada nomor)'"></div>
-                                                <!-- Desktop: 2 Baris -->
+                                                
                                                 <div
                                                     class="hidden sm:flex text-[#64748b] font-semibold text-[11.5px] leading-tight flex-col items-center w-full overflow-hidden">
                                                     <span x-text="cp.name" class="w-full truncate text-center"></span>
@@ -1296,7 +1291,7 @@
         </div>
     </section>
 
-    <!-- 4. KETENTUAN UMUM & ALUR PENDAFTARAN -->
+    
     <section id="syarat" class="py-[110px] px-6 bg-gradient-to-br from-[#0c3b28] to-[#0a0c11]">
         <div
             class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.2fr] gap-14 items-start">
@@ -1373,7 +1368,7 @@
         </div>
     </section>
 
-    <!-- 5. TIMELINE KEGIATAN -->
+    
     <section id="alur" class="relative py-[90px] px-6 bg-[#f8f9fa] border-y border-black/5 overflow-hidden">
         <div class="max-w-[1200px] mx-auto relative z-10">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
@@ -1447,7 +1442,7 @@
                 ];
             @endphp
 
-            <!-- Desktop Snake Timeline (Hidden on mobile/tablet) -->
+            
             <div class="relative hidden lg:block w-full py-10 mt-10">
                 <style>
                     @keyframes sparkle {
@@ -1480,7 +1475,7 @@
                         animation: sparkle 2.2s infinite ease-in-out 1.5s;
                     }
                 </style>
-                <!-- Row 1 -->
+                
                 <div class="grid grid-cols-4 relative z-10">
                     <div
                         class="absolute top-[27px] left-[12.5%] right-[12.5%] border-t-[3px] border-dashed border-[#1b6e4c]/30 z-[-1]">
@@ -1490,7 +1485,7 @@
                     </div>
                     @foreach (array_slice($timeline, 0, 4) as $index => $step)
                         <div class="relative z-10 flex flex-col items-center px-4 group">
-                            <!-- Circle -->
+                            
                             <div
                                 class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['color_class'] }}">
                                 <div
@@ -1499,7 +1494,7 @@
                                 <span class="relative z-10">{{ $step['n'] }}</span>
                             </div>
 
-                            <!-- Card -->
+                            
                             <div
                                 class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
 
@@ -1511,7 +1506,7 @@
                                         class="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]">
                                     </div>
 
-                                    <!-- Subtle Sprinkles -->
+                                    
                                     <div
                                         class="absolute top-2 left-3 w-1 h-1 bg-[#e0b53c] rounded-full sparkle-1 shadow-[0_0_4px_#e0b53c]">
                                     </div>
@@ -1546,7 +1541,7 @@
                         class="absolute top-[27px] left-[5%] right-[12.5%] border-t-[3px] border-dashed border-[#1b6e4c]/30 z-[-1]">
                     </div>
 
-                    <!-- Arrow at the end (left side) -->
+                    
                     <div class="absolute top-[16px] left-[5%] -translate-x-[50%] text-[#1b6e4c]/50 z-[-1]">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -1556,7 +1551,7 @@
 
                     @foreach (array_reverse(array_slice($timeline, 4, 4)) as $index => $step)
                         <div class="relative z-10 flex flex-col items-center px-4 group">
-                            <!-- Circle -->
+                            
                             <div
                                 class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['color_class'] }}">
                                 <div
@@ -1565,7 +1560,7 @@
                                 <span class="relative z-10">{{ $step['n'] }}</span>
                             </div>
 
-                            <!-- Card -->
+                            
                             <div
                                 class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
 
@@ -1577,7 +1572,7 @@
                                         class="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:animate-[sheen_1.5s_infinite]">
                                     </div>
 
-                                    <!-- Subtle Sprinkles -->
+                                    
                                     <div
                                         class="absolute top-2 left-3 w-1 h-1 bg-[#e0b53c] rounded-full sparkle-1 shadow-[0_0_4px_#e0b53c]">
                                     </div>
@@ -1608,12 +1603,9 @@
                 </div>
             </div>
 
-            <!-- Mobile & Tablet Timeline (Standard Vertical) -->
+            
             <div class="relative block lg:hidden w-full mt-10 pl-2 sm:pl-4">
-                <!--
-                     pl-2 = 8px padding. Circle is w-14 (56px). Center is 8 + (56/2) = 36px.
-                     sm:pl-4 = 16px padding. Center is 16 + 28 = 44px.
-                -->
+                
                 <div
                     class="absolute left-[36px] sm:left-[44px] top-2 bottom-2 w-[3px] bg-gradient-to-b from-[#1b6e4c]/50 to-transparent">
                 </div>
@@ -1647,7 +1639,7 @@
         </div>
     </section>
 
-    <!-- 5. LACAK PENDAFTARAN -->
+    
     <section id="lacak" class="py-[90px] px-6 bg-white border-t border-gray-200 relative overflow-hidden">
         <div class="absolute inset-0 z-0 pointer-events-none">
             <div
@@ -1666,7 +1658,7 @@
                     Masukkan nomor registrasi untuk melihat status pendaftaran Anda.
                 </p>
 
-                <!-- Form Tracking -->
+                
                 <form @submit.prevent="cekStatus" class="relative group max-w-[500px] mx-auto">
                     <div
                         class="absolute inset-0 bg-gradient-to-r from-[#1b6e4c] to-[#e0b53c] rounded-2xl blur opacity-15 group-hover:opacity-25 transition duration-500">
@@ -1701,7 +1693,7 @@
                     </div>
                 </form>
 
-                <!-- Hasil Pencarian -->
+                
                 <div x-show="result" x-cloak x-transition:enter="transition ease-out duration-500"
                     x-transition:enter-start="opacity-0 translate-y-10 scale-95"
                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
@@ -1823,7 +1815,7 @@
         </script>
     </section>
 
-    <!-- 6. STATISTIK PENDAFTAR -->
+    
     <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('images/unsplash-bg.jpg') }}" alt="DPDRI AWARDS" loading="lazy" decoding="async"
@@ -1868,7 +1860,7 @@
                     <div x-data="counter({{ $st['value'] }})" x-intersect="startCount()"
                         class="relative overflow-hidden border border-[#e0b53c]/20 hover:border-[#88c445]/55 bg-gradient-to-br from-[#191d27] to-[#10131a] rounded-xl py-6 px-3 text-center transition-colors duration-300">
 
-                        <!-- Background Image for statistics card -->
+                        
                         <img src="{{ $st['img'] }}" alt=""
                             class="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none z-0">
 
@@ -1910,7 +1902,7 @@
         </script>
     </section>
 
-    <!-- 7. QNA (FAQ) -->
+    
     <section id="faq" class="py-[110px] px-6 bg-[#fbf7ee] text-[#10131a]">
         <div class="max-w-[820px] mx-auto">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
@@ -1988,11 +1980,11 @@
         </div>
     </section>
 
-    <!-- 8. STATEMENT PENUTUP & CTA -->
+    
     <section
         class="py-[80px] px-6 bg-gradient-to-br from-[#0c2619] via-[#16422b] to-[#05110a] border-t border-[#e0b53c]/20 relative overflow-hidden flex items-center min-h-[400px]">
 
-        <!-- Metallic Reflection Layers -->
+        
         <div
             class="absolute inset-0 bg-[linear-gradient(110deg,rgba(255,255,255,0.08)_0%,transparent_20%,rgba(0,0,0,0.6)_100%)] pointer-events-none">
         </div>
@@ -2003,10 +1995,10 @@
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_30%,rgba(224,181,60,0.08),transparent_30%)] pointer-events-none">
         </div>
 
-        <!-- Giant Golden Trophy (Background Watermark on Mobile, Left Image on Desktop) -->
+        
         <div
             class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 md:left-[5%] md:translate-x-0 w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] md:w-auto md:h-[140%] pointer-events-none select-none opacity-20 md:opacity-100 mix-blend-screen md:mix-blend-normal">
-            <!-- This layer creates a massive soft golden glow that stretches to the right -->
+            
             <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[35%] hidden md:block">
             </div>
 
@@ -2014,7 +2006,7 @@
                 class="relative z-10 w-full h-full md:w-auto object-contain brightness-75 md:brightness-100 contrast-80 saturate-80 drop-shadow-none md:drop-shadow-[10px_0_20px_rgba(255,215,0,0.6)]">
         </div>
 
-        <!-- Content on the right -->
+        
         <div class="relative max-w-8xl mx-auto w-full flex justify-center md:justify-end">
             <div class="w-full md:w-[70%] lg:w-[60%] text-center md:text-right" x-data="{ shown: false }"
                 x-intersect.half="shown = true" x-intersect:leave="shown = false">
@@ -2023,7 +2015,7 @@
                     class="transition-all duration-[1000ms] ease-out flex flex-col items-center md:items-end px-6 md:px-0">
 
                     <div class="relative py-4 md:pr-6 w-full">
-                        <!-- Subtle Quote Marks -->
+                        
                         <div
                             class="absolute -top-6 right-0 md:-right-2 text-[#e0b53c]/15 text-[60px] md:text-[80px] font-serif leading-none select-none">
                             "</div>
@@ -2070,7 +2062,7 @@
     </section>
 
 
-    <!-- 9. FOOTER -->
+    
     <footer class="bg-black pt-10 pb-6 px-6 border-t border-[#e0b53c]/15">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
             <div class="text-center md:text-left md:flex-1">
@@ -2122,7 +2114,7 @@
         </div>
     </footer>
 
-    <!-- Floating Scroll to Top -->
+    
     <div x-data="{ showScroll: false }" @scroll.window="showScroll = (window.pageYOffset > 500)">
         <button @click="customScrollToTop()" x-show="showScroll"
             x-transition:enter="transition ease-out duration-700"
@@ -2166,7 +2158,7 @@
         }
     </script>
 
-    <!-- Modal Template for Image Popup -->
+    
     <div x-data="{ modalOpen: false, modalImage: '' }" @open-modal.window="modalOpen = true; modalImage = $event.detail.image"
         x-show="modalOpen" @click="modalOpen = false"
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 px-4"

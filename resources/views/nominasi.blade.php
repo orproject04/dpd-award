@@ -91,9 +91,9 @@
     <div class="fixed inset-0 pointer-events-none z-[-1] bg-[radial-gradient(circle_at_50%_-10%,#fff8ea,#f3ecdd_45%)]">
     </div>
 
-    <!-- HEADER -->
+    
     <header class="sticky top-0 z-50 bg-[#0a0c11]/96 backdrop-blur-[10px] border-b border-[#e0b53c]/20 relative">
-        <!-- Desktop Back Button -->
+        
         <a href="{{ route('landing') }}"
             class="absolute left-6 top-1/2 -translate-y-1/2 items-center gap-2.5 text-white/75 hover:text-white text-[16px] lg:text-[18px] font-semibold transition-colors z-10 hidden md:flex">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
@@ -104,7 +104,7 @@
             Kembali
         </a>
 
-        <!-- Mobile Back Button -->
+        
         <a href="{{ route('landing') }}"
             class="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 text-white/75 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10 md:hidden">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
@@ -123,7 +123,7 @@
         </div>
     </header>
 
-    <!-- SUCCESS -->
+    
     <template x-if="submitted">
         <div class="max-w-[640px] mx-auto px-6 pt-[70px] pb-[90px] text-center print-hide" x-cloak>
             <div
@@ -161,7 +161,7 @@
         </div>
     </template>
 
-    <!-- FORM SHELL -->
+    
     <div x-show="!submitted" class="print:!block">
         <div class="max-w-[900px] mx-auto px-6 pt-11 pb-24 print:pt-0 print:pb-0">
 
@@ -181,7 +181,7 @@
                 </template>
             </div>
 
-            <!-- STEPPER & FORM -->
+            
             @if(isset($isClosed) && $isClosed)
                 <div class="bg-white border border-[#e8ddc4] rounded-[22px] shadow-[0_18px_48px_rgba(11,42,91,0.10)] p-[clamp(24px,4vw,44px)] mt-6 text-center">
                     <div class="mx-auto w-[72px] h-[72px] bg-[#f8e5e5] text-[#d93838] rounded-full flex items-center justify-center mb-5">
@@ -196,7 +196,7 @@
                     </a>
                 </div>
             @else
-                <!-- STEPPER -->
+                
                 <div class="flex items-start mb-3.5 print-hide">
                     <template x-for="(s, index) in steps" :key="index">
                         <div class="flex items-start min-w-0"
@@ -226,7 +226,7 @@
                     </template>
                 </div>
 
-                <!-- CARD -->
+                
                 <div
                     class="bg-white border border-[#e8ddc4] rounded-[22px] shadow-[0_18px_48px_rgba(11,42,91,0.10)] p-[clamp(24px,4vw,44px)] mt-6">
 
@@ -245,7 +245,7 @@
                     </div>
                 </template>
 
-                <!-- STEP 0: KATEGORI -->
+                
                 <div x-show="step === 0">
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Pilih Kategori</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Tentukan bidang yang paling sesuai dengan
@@ -281,7 +281,7 @@
                     </template>
                 </div>
 
-                <!-- STEP 1: DATA DIRI -->
+                
                 <div x-show="step === 1" x-cloak>
                     <h2 class="cz text-[26px] font-bold text-[#10131a]">Data Diri</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Isi data diri Anda sebelum melanjutkan
@@ -289,7 +289,7 @@
 
                     <div class="flex flex-col gap-5">
 
-                        <!-- Honeypot Field -->
+                        
                         <div class="hidden" aria-hidden="true">
                             <label>Leave this empty if you are human</label>
                             <input type="text" x-model="data.website_url" tabindex="-1" autocomplete="off">
@@ -443,7 +443,7 @@
                             </div>
                         </div>
 
-                        <!-- BERKAS IDENTITAS -->
+                        
                         <div class="mt-8 pt-6 border-t border-[#d8cdb4]/50">
                             <h3 class="text-[16px] font-bold text-[#10131a] mb-4">Berkas Identitas</h3>
                             <div class="flex flex-col gap-3.5">
@@ -535,14 +535,14 @@
                     </div>
                 </div>
 
-                <!-- STEP 2: KONTRIBUSI -->
+                
                 <div x-show="step === 2" x-cloak>
                     <h2 class="cz text-[22px] md:text-[26px] font-bold text-[#10131a]">Daftar Kontribusi / Inovasi</h2>
                     <p class="text-[#6b7280] text-[15px] mt-1.5 mb-6">Ceritakan karya dan dampak nyata yang telah
                         diberikan.</p>
 
                     <div class="flex flex-col gap-5">
-                        <!-- KONTRIBUSI / INOVASI -->
+                        
                         <div class="flex flex-col gap-4 mt-2 pt-4 border-t border-[#d8cdb4]/50">
                             <div>
                                 <label class="block text-[16px] font-bold mb-1">Kontribusi / Inovasi <span
@@ -733,7 +733,7 @@
                             </button>
                         </div>
 
-                        <!-- DAFTAR PENGHARGAAN -->
+                        
                         <div class="flex flex-col gap-4 mt-2 pt-4 border-t border-[#d8cdb4]/50">
                             <div>
                                 <label class="block text-[16px] font-bold mb-1 text-[#10131a]">Daftar
@@ -886,7 +886,7 @@
                     </div>
                 </div>
 
-                <!-- STEP 3: TINJAU -->
+                
                 <div x-show="step === 3" x-cloak>
                     <div class="print-hide">
                         <h2 class="cz text-[26px] font-bold text-[#10131a]">Tinjau &amp; Kirim</h2>
@@ -894,7 +894,7 @@
                             pendaftaran.</p>
                     </div>
 
-                    <!-- Kategori & Data Diri Card -->
+                    
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
@@ -970,7 +970,7 @@
                         </div>
                     </div>
 
-                    <!-- Dokumen Pribadi -->
+                    
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
@@ -986,7 +986,7 @@
                             </h3>
                         </div>
                         <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- KTP -->
+                            
                             <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
                                 <template x-if="data.previews.ktp">
                                     <a :href="data.previews.ktp.url" target="_blank"
@@ -1014,7 +1014,7 @@
                                         x-text="formatBytes(data.sizes.ktp)"></span>
                                 </div>
                             </div>
-                            <!-- Foto Diri -->
+                            
                             <div class="flex items-center gap-3 p-3 rounded-xl border border-[#ece2ca] bg-[#faf6ec]/50">
                                 <template x-if="data.previews.foto">
                                     <a :href="data.previews.foto.url" target="_blank"
@@ -1046,7 +1046,7 @@
                         </div>
                     </div>
 
-                    <!-- Capaian & Inovasi -->
+                    
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
@@ -1201,7 +1201,7 @@
                         </div>
                     </div>
 
-                    <!-- Penghargaan -->
+                    
                     <div class="mb-6 bg-white border border-[#ece2ca] rounded-2xl overflow-hidden shadow-sm">
                         <div class="bg-[#faf6ec] px-5 py-3 border-b border-[#ece2ca]">
                             <h3 class="font-bold text-[#1b6e4c] text-[15px] flex items-center gap-2">
@@ -1357,7 +1357,7 @@
                     </template>
                 </div>
 
-                <!-- NAV BUTTONS -->
+                
                 <div class="flex gap-3.5 mt-8 pt-6 border-t border-[#eee6d4] print-hide"
                     :class="step > 0 ? 'justify-between' : 'justify-end'">
                     <template x-if="step > 0">
@@ -1810,7 +1810,7 @@
 
                     if (this.data.website_url) {
                         this.isSubmitting = false;
-                        return; // Silent fail for bots
+                        return;
                     }
 
                     try {

@@ -11,8 +11,30 @@ use Illuminate\Support\Facades\Log;
 
 class NominasiController extends Controller
 {
+    public function create()
+    {
+        $tanggalPenutupan = config('laravolt.ui.tanggal_penutupan_pendaftaran');
+        $isClosed = false;
+        
+        if ($tanggalPenutupan) {
+            $closedDate = \Carbon\Carbon::parse($tanggalPenutupan);
+            if (now()->greaterThan($closedDate)) {
+                $isClosed = true;
+            }
+        }
+
+        return view('nominasi', compact('isClosed', 'tanggalPenutupan'));
+    }
+
     public function store(Request $request)
     {
+        $tanggalPenutupan = config('laravolt.ui.tanggal_penutupan_pendaftaran');
+        if ($tanggalPenutupan) {
+            $closedDate = \Carbon\Carbon::parse($tanggalPenutupan);
+            if (now()->greaterThan($closedDate)) {
+                return response()->json(['message' => 'Mohon maaf, pendaftaran telah ditutup.'], 403);
+            }
+        }
         $rules = [
             'kategori' => 'required|string|in:pendidikan,kesehatan,pangan,budaya',
             'namaNominee' => 'required|string|max:255',

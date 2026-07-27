@@ -974,9 +974,11 @@
                     minutes: '00',
                     seconds: '00',
                     endTime: (function() {
-                        const raw = '{{ config('laravolt.ui.tanggal_penutupan_pendaftaran') }}';
-                        const parsed = raw ? new Date(raw).getTime() : NaN;
-                        return isNaN(parsed) ? new Date('{{ now()->addDays(30)->toDateString() }}').getTime() : parsed;
+                        @if(config('laravolt.ui.tanggal_penutupan_pendaftaran'))
+                            return {{ \Carbon\Carbon::parse(config('laravolt.ui.tanggal_penutupan_pendaftaran'))->timestamp * 1000 }};
+                        @else
+                            return new Date('{{ now()->addDays(30)->toDateString() }}').getTime();
+                        @endif
                     })(),
 
                     initialized: false,

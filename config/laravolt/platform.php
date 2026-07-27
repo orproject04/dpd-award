@@ -83,9 +83,9 @@ return [
             'content' => '<h3 class="ui horizontal divider section m-t-3">Halaman Landing</h3>',
         ],
         [
-            'type' => 'date',
+            'type' => 'datetime',
             'name' => 'tanggal_penutupan_pendaftaran',
-            'label' => 'Tanggal Penutupan Pendaftaran',
+            'label' => 'Batas Waktu Penutupan Pendaftaran',
         ],
         [
             'type' => 'html',

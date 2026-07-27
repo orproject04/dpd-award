@@ -181,39 +181,54 @@
                 </template>
             </div>
 
-            <!-- STEPPER -->
-            <div class="flex items-start mb-3.5 print-hide">
-                <template x-for="(s, index) in steps" :key="index">
-                    <div class="flex items-start min-w-0"
-                        :class="index === steps.length - 1 ? 'shrink-0 basis-[64px]' : 'flex-1'">
-                        <div class="flex flex-col items-center gap-2 shrink-0 w-16 cursor-pointer hover:opacity-80 transition-opacity"
-                            @click="jumpTo(index)">
-                            <div class="w-[42px] h-[42px] rounded-full flex items-center justify-center font-bold text-[15px] transition-all duration-300 border-2"
-                                :class="stepClasses(index).circle">
-                                <template x-if="index < step">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff"
-                                        stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="20 6 9 17 4 12" />
-                                    </svg>
-                                </template>
-                                <template x-if="index >= step">
-                                    <span x-text="index + 1"></span>
-                                </template>
-                            </div>
-                            <span class="text-[10px] sm:text-[11.5px] text-center leading-[1.25]"
-                                :class="stepClasses(index).text" x-text="s.label"></span>
-                        </div>
-                        <template x-if="index < steps.length - 1">
-                            <div class="flex-1 h-0.5 mt-5 rounded-sm transition-colors duration-300"
-                                :class="index < step ? 'bg-[#88c445]' : 'bg-[#e0d6bd]'"></div>
-                        </template>
+            <!-- STEPPER & FORM -->
+            @if(isset($isClosed) && $isClosed)
+                <div class="bg-white border border-[#e8ddc4] rounded-[22px] shadow-[0_18px_48px_rgba(11,42,91,0.10)] p-[clamp(24px,4vw,44px)] mt-6 text-center">
+                    <div class="mx-auto w-[72px] h-[72px] bg-[#f8e5e5] text-[#d93838] rounded-full flex items-center justify-center mb-5">
+                        <svg class="w-[36px] h-[36px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     </div>
-                </template>
-            </div>
+                    <h2 class="cz text-[24px] md:text-[28px] font-bold text-[#10131a] mb-3">Pendaftaran Telah Ditutup</h2>
+                    <p class="text-[#6b7280] text-[15px] md:text-[16px] leading-relaxed max-w-lg mx-auto mb-8">
+                        Mohon maaf, periode pendaftaran DPDRI <i>AWARDS</i> 2026 telah resmi berakhir pada tanggal <strong class="text-[#10131a]">{{ \Carbon\Carbon::parse($tanggalPenutupan)->locale('id')->translatedFormat('d F Y') }}</strong> pukul {{ \Carbon\Carbon::parse($tanggalPenutupan)->format('H:i') }} WIB.
+                    </p>
+                    <a href="{{ route('landing') }}" class="inline-flex items-center gap-2 bg-[#0a0c11] text-white font-bold text-[15px] px-[32px] py-[14px] rounded-xl hover:bg-black transition-colors">
+                        Kembali ke Beranda
+                    </a>
+                </div>
+            @else
+                <!-- STEPPER -->
+                <div class="flex items-start mb-3.5 print-hide">
+                    <template x-for="(s, index) in steps" :key="index">
+                        <div class="flex items-start min-w-0"
+                            :class="index === steps.length - 1 ? 'shrink-0 basis-[64px]' : 'flex-1'">
+                            <div class="flex flex-col items-center gap-2 shrink-0 w-16 cursor-pointer hover:opacity-80 transition-opacity"
+                                @click="jumpTo(index)">
+                                <div class="w-[42px] h-[42px] rounded-full flex items-center justify-center font-bold text-[15px] transition-all duration-300 border-2"
+                                    :class="stepClasses(index).circle">
+                                    <template x-if="index < step">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff"
+                                            stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                    </template>
+                                    <template x-if="index >= step">
+                                        <span x-text="index + 1"></span>
+                                    </template>
+                                </div>
+                                <span class="text-[10px] sm:text-[11.5px] text-center leading-[1.25]"
+                                    :class="stepClasses(index).text" x-text="s.label"></span>
+                            </div>
+                            <template x-if="index < steps.length - 1">
+                                <div class="flex-1 h-0.5 mt-5 rounded-sm transition-colors duration-300"
+                                    :class="index < step ? 'bg-[#88c445]' : 'bg-[#e0d6bd]'"></div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
 
-            <!-- CARD -->
-            <div
-                class="bg-white border border-[#e8ddc4] rounded-[22px] shadow-[0_18px_48px_rgba(11,42,91,0.10)] p-[clamp(24px,4vw,44px)] mt-6">
+                <!-- CARD -->
+                <div
+                    class="bg-white border border-[#e8ddc4] rounded-[22px] shadow-[0_18px_48px_rgba(11,42,91,0.10)] p-[clamp(24px,4vw,44px)] mt-6">
 
                 <template x-if="step > 0 && step < 4 && data.kategori">
                     <div
@@ -1381,6 +1396,7 @@
                 </div>
 
             </div>
+            @endif
         </div>
     </div>
 
@@ -1421,6 +1437,27 @@
                 regId: '',
                 submitTime: '',
                 errs: {},
+                endTime: (function() {
+                    @if(config('laravolt.ui.tanggal_penutupan_pendaftaran'))
+                        return {{ \Carbon\Carbon::parse(config('laravolt.ui.tanggal_penutupan_pendaftaran'))->timestamp * 1000 }};
+                    @else
+                        return null;
+                    @endif
+                })(),
+                checkTime() {
+                    if (this.endTime && Date.now() > this.endTime) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Pendaftaran Ditutup',
+                            text: 'Mohon maaf, waktu pendaftaran telah berakhir.',
+                            confirmButtonColor: '#1b6e4c'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                        return false;
+                    }
+                    return true;
+                },
                 data: {
                     website_url: '', kategori: '', namaNominee: '', wilayah: '', tanggalLahir: '', jenisKelamin: '', pendidikan: '', alamat: '', email: '', telp: '', judul: '', setuju: false,
                     capaianList: [{ judul: '', deskripsi: '', dampak: '', files: [] }],
@@ -1525,6 +1562,7 @@
                 },
 
                 jumpTo(target) {
+                    if (target > 0 && !this.checkTime()) return;
                     if (target < this.step) {
                         this.step = target;
                         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1745,6 +1783,7 @@
                 },
 
                 next() {
+                    if (!this.checkTime()) return;
                     if (this.validate(this.step)) {
                         this.showErr = true;
                         return;
@@ -1761,6 +1800,7 @@
                 },
 
                 async submitForm() {
+                    if (!this.checkTime()) return;
                     if (this.validate(3)) {
                         this.showErr = true;
                         return;

@@ -50,6 +50,39 @@ final class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        if (class_exists(\Laravolt\SemanticForm\SemanticForm::class)) {
+            \Laravolt\SemanticForm\SemanticForm::macro('datetime', function ($name, $value = null) {
+                $label = null;
+                $hint = null;
+                $attributes = [];
+
+                if (is_array($name)) {
+                    $field = $name;
+                    $name = $field['name'];
+                    $value = $field['value'] ?? null;
+                    $label = $field['label'] ?? null;
+                    $hint = $field['hint'] ?? null;
+                    $attributes = $field['attributes'] ?? [];
+                }
+
+                $element = $this->text($name, $value)
+                                ->attribute('type', 'datetime-local')
+                                ->attribute('onclick', 'this.showPicker()');
+
+                if ($label) {
+                    $element->label($label);
+                }
+                if ($hint) {
+                    $element->hint($hint);
+                }
+                if (!empty($attributes)) {
+                    $element->attributes($attributes);
+                }
+
+                return $element;
+            });
+        }
+
         app('laravolt.menu.sidebar')->register(function (Builder $menu) {
             // Main menu
             $mainMenu = $menu->add('Main Menu');

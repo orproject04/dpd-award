@@ -535,9 +535,6 @@
                 <div class="flex items-start justify-between">
                     <div class="stat-icon" style="background:#eff6ff;color:#3b82f6;"><i class="graduation cap icon"></i>
                     </div>
-                    <span class="stat-badge" style="background:#eff6ff;color:#3b82f6;"><i class="chart pie icon"
-                            style="font-size:9px;"></i>
-                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Pendidikan'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
                     <div class="stat-number" style="color:#3b82f6;" id="cnt-pendidikan">
@@ -551,9 +548,6 @@
                 <div class="flex items-start justify-between">
                     <div class="stat-icon" style="background:#fdf2f8;color:#ec4899;"><i class="heartbeat icon"></i>
                     </div>
-                    <span class="stat-badge" style="background:#fdf2f8;color:#ec4899;"><i class="chart pie icon"
-                            style="font-size:9px;"></i>
-                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Kesehatan'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
                     <div class="stat-number" style="color:#ec4899;" id="cnt-kesehatan">
@@ -566,9 +560,6 @@
                 <div class="flex items-start justify-between">
                     <div class="stat-icon" style="background:#ecfdf5;color:#10b981;"><i class="leaf icon"></i>
                     </div>
-                    <span class="stat-badge" style="background:#ecfdf5;color:#10b981;"><i class="chart pie icon"
-                            style="font-size:9px;"></i>
-                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Ketahanan Pangan'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
                     <div class="stat-number" style="color:#10b981;" id="cnt-pangan">
@@ -579,12 +570,8 @@
 
             <div class="stat-card anim-in anim-delay-5" style="--stat-accent:#f59e0b;">
                 <div class="flex items-start justify-between">
-                    <div class="stat-icon" style="background:#fffbeb;color:#f59e0b;"><i
-                            class="theater masks icon"></i>
+                    <div class="stat-icon" style="background:#fffbeb;color:#f59e0b;"><i class="theater masks icon"></i>
                     </div>
-                    <span class="stat-badge" style="background:#fffbeb;color:#f59e0b;"><i class="chart pie icon"
-                            style="font-size:9px;"></i>
-                        {{ $totalPendaftar > 0 ? round((($kategoriCounts['Bidang Seni dan Budaya'] ?? 0) / $totalPendaftar) * 100) : 0 }}%</span>
                 </div>
                 <div>
                     <div class="stat-number" style="color:#f59e0b;" id="cnt-budaya">
@@ -754,7 +741,7 @@
                         <canvas id="genderChart"></canvas>
                     </div>
                     <div class="mt-3 grid grid-cols-2 gap-2">
-                        @php $gColors = ['Laki-laki' => '#60a5fa', 'Perempuan' => '#f472b6']; @endphp
+                        @php $gColors = ['Laki-laki' => '#60a5fa', 'laki-laki' => '#60a5fa', 'L' => '#60a5fa', 'Perempuan' => '#f472b6', 'perempuan' => '#f472b6', 'P' => '#f472b6']; @endphp
                         @foreach ($genderCounts as $g => $gc)
                             @php $gPct = $totalPendaftar > 0 ? round(($gc / $totalPendaftar) * 100, 1) : 0; @endphp
                             <div style="background:#f9fafb;border-radius:10px;padding:10px 12px;text-align:center;">
@@ -1081,13 +1068,23 @@
             const rawG = {!! json_encode($genderCounts) !!};
             const gLabels = Object.keys(rawG).length ? Object.keys(rawG) : ['Laki-laki', 'Perempuan'];
             const gVals = Object.keys(rawG).length ? Object.values(rawG) : [0, 0];
+            const genderColorMap = {
+                'Laki-laki': '#60a5fa',
+                'laki-laki': '#60a5fa',
+                'L': '#60a5fa',
+                'Perempuan': '#f472b6',
+                'perempuan': '#f472b6',
+                'P': '#f472b6'
+            };
+            const gColors = gLabels.map(label => genderColorMap[label] || '#94a3b8');
+
             new Chart(document.getElementById('genderChart').getContext('2d'), {
                 type: 'pie',
                 data: {
                     labels: gLabels,
                     datasets: [{
                         data: gVals,
-                        backgroundColor: ['#60a5fa', '#f472b6'],
+                        backgroundColor: gColors,
                         borderWidth: 3,
                         borderColor: '#fff',
                         hoverOffset: 6

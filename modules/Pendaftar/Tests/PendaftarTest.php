@@ -127,4 +127,33 @@ class PendaftarTest extends TestCase
         @unlink(storage_path('app/private/' . $ktpPath));
         @rmdir($tempDir);
     }
+
+    #[Test]
+    public function it_can_serve_file_with_double_dots_in_filename(): void
+    {
+        $tempDir = storage_path('app/private/pendaftar/pendidikan/test_reg/penghargaan');
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+        $filename = '1785212849_2019 -  Juara 3 lomba video Literasi Masyarakat, Kemendikbud..jpg';
+        $relativeFilePath = 'pendaftar/pendidikan/test_reg/penghargaan/' . $filename;
+        $fullPath = storage_path('app/private/' . $relativeFilePath);
+
+        file_put_contents($fullPath, 'fake image content');
+
+        $response = $this->get(route('modules::pendaftar.file', ['path' => $relativeFilePath]));
+        $response->assertStatus(200);
+
+        @unlink($fullPath);
+        @rmdir($tempDir);
+        @rmdir(dirname($tempDir));
+        @rmdir(dirname(dirname($tempDir)));
+    }
+
+    #[Test]
+    public function it_blocks_directory_traversal_in_serve_file(): void
+    {
+        $response = $this->get(route('modules::pendaftar.file', ['path' => 'pendaftar/../.env']));
+        $response->assertStatus(403);
+    }
 }

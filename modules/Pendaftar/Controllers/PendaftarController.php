@@ -96,7 +96,8 @@ class PendaftarController extends Controller
         $cleanPath = str_replace('\\', '/', $path);
 
         // Security check: prevent directory traversal and ensure it stays within pendaftar folder
-        if (str_contains($cleanPath, '..') || !str_starts_with($cleanPath, 'pendaftar/')) {
+        $segments = explode('/', $cleanPath);
+        if (in_array('..', $segments, true) || in_array('.', $segments, true) || !str_starts_with($cleanPath, 'pendaftar/')) {
             abort(403, 'Unauthorized access.');
         }
 
@@ -104,6 +105,13 @@ class PendaftarController extends Controller
 
         if (!file_exists($fullPath) || !is_file($fullPath)) {
             abort(404, 'File not found.');
+        }
+
+        $basePath = realpath(storage_path('app/private/pendaftar'));
+        $realPath = realpath($fullPath);
+
+        if ($basePath === false || $realPath === false || !str_starts_with($realPath, $basePath . DIRECTORY_SEPARATOR)) {
+            abort(403, 'Unauthorized access.');
         }
 
         if ($request->has('download')) {

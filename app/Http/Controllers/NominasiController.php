@@ -15,7 +15,7 @@ class NominasiController extends Controller
     {
         $tanggalPenutupan = config('laravolt.ui.tanggal_penutupan_pendaftaran');
         $isClosed = false;
-        
+
         if ($tanggalPenutupan) {
             $closedDate = \Carbon\Carbon::parse($tanggalPenutupan);
             if (now()->greaterThan($closedDate)) {
@@ -54,7 +54,7 @@ class NominasiController extends Controller
             'email' => 'required|email|max:50',
             'ktp' => 'required|file|mimes:jpeg,png,jpg,pdf|max:51200',
             'foto' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
-            
+
             // Kontribusi limits
             'capaianList' => 'nullable|array',
             'capaianList.*.judul' => 'required_with:capaianList|string|max:500',

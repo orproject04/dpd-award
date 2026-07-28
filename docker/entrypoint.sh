@@ -25,6 +25,7 @@ if [ ! -f /usr/local/etc/php/conf.d/upload-limits.ini ]; then
     cat > /usr/local/etc/php/conf.d/upload-limits.ini << EOF
 upload_max_filesize = 500M
 post_max_size = 500M
+max_file_uploads = 500
 EOF
     echo "✅ PHP upload limits configured!"
 else

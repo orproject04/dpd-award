@@ -28,10 +28,17 @@ class NominasiController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('API Request Nominasi Masuk', [
+            'nama' => $request->namaNominee,
+            'kategori' => $request->kategori,
+            'email' => $request->email,
+        ]);
+
         $tanggalPenutupan = config('laravolt.ui.tanggal_penutupan_pendaftaran');
         if ($tanggalPenutupan) {
             $closedDate = \Carbon\Carbon::parse($tanggalPenutupan);
             if (now()->greaterThan($closedDate)) {
+                Log::warning('Nominasi Ditolak: Pendaftaran sudah ditutup', ['email' => $request->email]);
                 return response()->json(['message' => 'Mohon maaf, pendaftaran telah ditutup.'], 403);
             }
         }
@@ -203,6 +210,8 @@ class NominasiController extends Controller
                     \Illuminate\Support\Facades\Log::error("Gagal mengirim email pendaftaran ke " . $pendaftar->email . ": " . $e->getMessage());
                 }
             });
+
+            Log::info('API Response Nominasi Berhasil', ['regId' => $nomorRegistrasi, 'email' => $pendaftar->email]);
 
             return response()->json([
                 'success' => true,

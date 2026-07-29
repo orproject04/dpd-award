@@ -691,6 +691,8 @@
                 <div class="sec-sub mb-4">Profil jenjang pendidikan peserta</div>
                 @php
                     $eduOrder = [
+                        'SD/Sederajat',
+                        'SMP/Sederajat',
                         'SMA/Sederajat',
                         'Diploma I',
                         'Diploma II',

@@ -387,7 +387,7 @@
                                 <div class="space-y-3">
                                     <label class="block text-[14px] font-bold mb-2">Pendidikan<span
                                             class="text-[#c0392b]">*</span></label>
-                                    <div x-data="{ open: false, options: ['SMA/Sederajat', 'Diploma I', 'Diploma II', 'Diploma III', 'Diploma IV', 'Sarjana (S1)', 'Magister (S2)', 'Doktor (S3)'] }"
+                                    <div x-data="{ open: false, options: ['SD/Sederajat', 'SMP/Sederajat', 'SMA/Sederajat', 'Diploma I', 'Diploma II', 'Diploma III', 'Diploma IV', 'Sarjana (S1)', 'Magister (S2)', 'Doktor (S3)'] }"
                                         class="relative" @click.outside="open = false">
                                         <button type="button" @click="open = !open"
                                             class="w-full h-[50px] px-4 border-[1.5px] border-[#d8cdb4] rounded-xl text-[15px] transition-all duration-200 flex justify-between items-center bg-white text-left focus:border-[#1b6e4c] focus:ring-[3px] focus:ring-[#1b6e4c]/15"

@@ -52,8 +52,8 @@ class NominasiController extends Controller
             'alamat' => 'required|string',
             'telp' => 'required|string|max:15',
             'email' => 'required|email|max:50',
-            'ktp' => 'required|file|mimes:jpeg,png,jpg,pdf|max:51200',
-            'foto' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
+            'ktp' => 'required|file|mimes:jpeg,png,jpg,webp,pdf|max:51200',
+            'foto' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:51200',
 
             // Kontribusi limits
             'capaianList' => 'nullable|array',
@@ -69,10 +69,10 @@ class NominasiController extends Controller
 
         foreach ($request->allFiles() as $key => $file) {
             if (str_starts_with($key, 'capaianFiles_')) {
-                $rules[$key . '.*'] = 'file|mimes:jpeg,png,jpg,pdf,doc,docx,xls,xlsx,ppt,pptx,zip|max:51200';
+                $rules[$key . '.*'] = 'file|mimes:jpeg,png,jpg,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,7z|max:51200';
             }
             if (str_starts_with($key, 'penghargaanFiles_')) {
-                $rules[$key . '.*'] = 'file|mimes:jpeg,png,jpg,pdf,doc,docx,xls,xlsx,ppt,pptx,zip|max:51200';
+                $rules[$key . '.*'] = 'file|mimes:jpeg,png,jpg,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,7z|max:51200';
             }
         }
 

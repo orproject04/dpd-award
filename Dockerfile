@@ -67,13 +67,17 @@ RUN rm -rf bootstrap/cache/*.php \
  && php artisan config:clear \
  && composer dump-autoload --optimize \
  && php artisan storage:link \
- && chown -R www-data:www-data public/storage
+ && php artisan laravolt:link \
+ && chown -R www-data:www-data public/storage public/laravolt
 
 # Configure PHP timezone
 RUN echo "date.timezone = Asia/Jakarta" > /usr/local/etc/php/conf.d/timezone.ini
 
 # Disable runtime signature/header that reveals PHP version
 RUN echo "expose_php = Off" > /usr/local/etc/php/conf.d/security.ini
+
+# Increase upload limits and execution time
+RUN echo -e "upload_max_filesize = 500M\npost_max_size = 500M\nmemory_limit = 512M\nmax_execution_time = 300\nmax_input_time = 300" > /usr/local/etc/php/conf.d/uploads.ini
 
 # Copy config files
 COPY docker/nginx-laravel.conf /etc/nginx/http.d/laravel.conf

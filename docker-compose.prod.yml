@@ -1,5 +1,4 @@
-services:
-  app:
+x-app-prod: &app-prod-template
     restart: always
     logging:
       driver: "json-file"
@@ -7,12 +6,18 @@ services:
         max-size: "10m"
         max-file: "3"
     environment:
-      - APP_ENV=local
+      - APP_ENV=production
       - APP_DEBUG=false
     # Resource limits untuk production
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 2G
         reservations:
           memory: 512M
+
+services:
+  app-blue:
+    <<: *app-prod-template
+  app-green:
+    <<: *app-prod-template

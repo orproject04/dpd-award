@@ -1,22 +1,39 @@
+x-app: &app-template
+    env_file:
+        - .env
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: dpd-award-app:latest
+    extra_hosts:
+        - 'host.docker.internal:host-gateway'
+    volumes:
+        - './storage:/var/www/html/storage'
+    networks:
+        - dpd-award
+    restart: unless-stopped
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost/"]
+        interval: 5s
+        timeout: 5s
+        retries: 15
+
 services:
-    app:
-        env_file:
-            - .env
-        build:
-            context: .
-            dockerfile: Dockerfile
-        image: dpd-award-app:latest
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
+    proxy:
+        image: nginx:alpine
         ports:
             - '8005:80'
         volumes:
-            - './storage:/var/www/html/storage'
-            - './bootstrap/cache:/var/www/html/bootstrap/cache'
-            - './public/storage:/var/www/html/public/storage'
+            - ./docker/proxy:/etc/nginx/conf.d
         networks:
             - dpd-award
-        restart: unless-stopped
+        restart: always
+
+    app-blue:
+        <<: *app-template
+
+    app-green:
+        <<: *app-template
 
 networks:
     dpd-award:

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# DPDRI Award App Docker Deployment Script for AWS EC2
+# DPDRI Award App Docker Deployment Script for AWS EC2 (BLUE-GREEN DEPLOYMENT)
 # Usage: ./docker-deploy.sh [branch] [environment]
-# Example: ./docker-deploy.sh develop production
+# Example: ./docker-deploy.sh master local
 
 set -e
 
@@ -19,24 +19,20 @@ ENVIRONMENT=${2:-production}
 APP_DIR="/www/wwwroot/awards.dpd.go.id"
 BACKUP_DIR="/home/ubuntu/backups"
 
-echo -e "${GREEN}🚀 Starting DPDRI Award App Docker Deployment...${NC}"
+echo -e "${GREEN}🚀 Starting DPDRI Award App Blue-Green Deployment...${NC}"
 echo -e "${YELLOW}Branch: $BRANCH${NC}"
 echo -e "${YELLOW}Environment: $ENVIRONMENT${NC}"
-echo -e "${YELLOW}Directory: $APP_DIR${NC}"
 
 # Function to print status
 print_status() {
     echo -e "${GREEN}✓ $1${NC}"
 }
-
 print_error() {
     echo -e "${RED}✗ $1${NC}"
 }
-
 print_warning() {
     echo -e "${YELLOW}⚠ $1${NC}"
 }
-
 print_info() {
     echo -e "${BLUE}ℹ $1${NC}"
 }
@@ -47,22 +43,6 @@ if [ ! -f "docker-compose.yml" ]; then
     exit 1
 fi
 
-# # Create backup directory if not exists
-# mkdir -p $BACKUP_DIR
-
-# # Navigate to application directory
-# cd $APP_DIR || { print_error "Application directory not found"; exit 1; }
-
-# print_info "Creating pre-deployment backup..."
-# # Backup database before deployment
-# if docker-compose ps pgsql | grep -q "Up"; then
-#     BACKUP_FILE="$BACKUP_DIR/pre_deploy_$(date +%Y%m%d_%H%M%S).sql.gz"
-#     docker-compose exec -T pgsql pg_dump -U dpd_user dpd_app | gzip > "$BACKUP_FILE"
-#     print_status "Database backup created: $BACKUP_FILE"
-# else
-#     print_warning "Database container not running, skipping backup"
-# fi
-
 # Pull latest changes
 print_info "Pulling latest changes from repository..."
 git fetch origin
@@ -70,106 +50,101 @@ git checkout $BRANCH
 git pull origin $BRANCH
 print_status "Repository updated to latest $BRANCH"
 
-# Stop containers
-print_info "Stopping existing containers..."
-# Stop dengan project name yang sekarang (TANPA menghapus volume untuk menjaga data database)
-docker-compose -p dpd-award-app -f docker-compose.yml -f docker-compose.prod.yml down || true
-# Stop tanpa project name (default) - TANPA menghapus volume
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml down || true
-
-# Optional: Remove only specific volumes if needed (uncomment if you want to reset data)
-# print_warning "Removing application cache volumes only (keeping database data)..."
-# docker volume rm dpd-award-redis 2>/dev/null || true
-
-# Hapus container yang mungkin masih ada dengan nama pattern tertentu
-print_info "Cleaning up any remaining containers..."
-docker ps -a | grep -E "(dpd-award|dpd-award-app)" | awk '{print $1}' | xargs -r docker rm -f || true
-
-docker network prune -f || true
-print_status "Containers stopped and cleaned"
-
-# Remove old images to free space (optional)
+# Remove old images to free space
 print_info "Cleaning up old Docker images..."
-docker image prune -f
-print_status "Old images cleaned"
+docker image prune -f || true
 
-# Build and start containers
-print_info "Building and starting containers..."
-if [ "$ENVIRONMENT" = "production" ]; then
-    if [ -f "docker-compose.prod.yml" ]; then
-        docker-compose -p dpd-award-app -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-    else
-        docker-compose -p dpd-award-app up -d --build
-    fi
-else
-    docker-compose -p dpd-award-app up -d --build
+# Determine Compose Files
+COMPOSE_ARGS="-p dpd-award-app -f docker-compose.yml"
+if [ "$ENVIRONMENT" = "production" ] && [ -f "docker-compose.prod.yml" ]; then
+    COMPOSE_ARGS="$COMPOSE_ARGS -f docker-compose.prod.yml"
 fi
 
-print_status "Containers built and started"
+# ==========================================
+# BLUE-GREEN DEPLOYMENT LOGIC
+# ==========================================
 
-# Wait for services to be ready
-print_info "Waiting for services to start..."
-sleep 30
+# Make sure proxy is running
+print_info "Ensuring Nginx proxy is running..."
+docker-compose $COMPOSE_ARGS up -d proxy
 
-# Check if containers are running
-print_info "Checking container health..."
-if ! docker-compose -p dpd-award-app ps | grep -q "Up"; then
-    print_error "Some containers failed to start"
-    docker-compose -p dpd-award-app logs
+# Detect Active Container
+ACTIVE_COLOR="blue"
+if docker-compose $COMPOSE_ARGS ps --status=running | grep -q "app-green"; then
+    ACTIVE_COLOR="green"
+fi
+
+if [ "$ACTIVE_COLOR" = "blue" ]; then
+    IDLE_COLOR="green"
+else
+    IDLE_COLOR="blue"
+fi
+
+print_info "Current active environment: $ACTIVE_COLOR"
+print_info "Deploying new version to: $IDLE_COLOR"
+
+# 1. Build and start idle container
+docker-compose $COMPOSE_ARGS up -d --build app-$IDLE_COLOR
+print_status "Started app-$IDLE_COLOR"
+
+# 2. Wait for idle container to become healthy
+print_info "Waiting for app-$IDLE_COLOR to initialize (entrypoint.sh)..."
+MAX_ATTEMPTS=20
+ATTEMPT=1
+HEALTHY=false
+
+while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+    # Check if container is physically up
+    if ! docker-compose $COMPOSE_ARGS ps | grep -q "app-$IDLE_COLOR"; then
+        print_error "Container app-$IDLE_COLOR crashed during startup!"
+        exit 1
+    fi
+    
+    # We check if Nginx inside the app container has started responding
+    STATUS_CODE=$(docker-compose $COMPOSE_ARGS exec -T app-$IDLE_COLOR curl -s -o /dev/null -w "%{http_code}" http://localhost || echo "000")
+    if [ "$STATUS_CODE" = "200" ] || [ "$STATUS_CODE" = "302" ]; then
+        HEALTHY=true
+        print_status "app-$IDLE_COLOR is healthy and ready!"
+        break
+    fi
+    
+    echo "Wait... (Attempt $ATTEMPT/$MAX_ATTEMPTS)"
+    sleep 5
+    ATTEMPT=$((ATTEMPT+1))
+done
+
+if [ "$HEALTHY" = false ]; then
+    print_error "app-$IDLE_COLOR failed to become healthy. Aborting deployment."
+    docker-compose $COMPOSE_ARGS logs --tail=50 app-$IDLE_COLOR
+    print_warning "Rolling back (keeping $ACTIVE_COLOR active)."
+    docker-compose $COMPOSE_ARGS stop app-$IDLE_COLOR
     exit 1
 fi
 
-print_status "All containers are running"
+# 3. Swap Proxy
+print_info "Swapping proxy traffic to $IDLE_COLOR..."
+sed -i "s/app-$ACTIVE_COLOR/app-$IDLE_COLOR/g" docker/proxy/default.conf
+docker-compose $COMPOSE_ARGS exec -T proxy nginx -s reload || docker-compose $COMPOSE_ARGS restart proxy
+print_status "Traffic successfully routed to app-$IDLE_COLOR! (ZERO DOWNTIME)"
 
-# Wait for application container to finish initialization
-print_info "Waiting for application container to complete initialization..."
-sleep 10
-
-# Check if application container started successfully
-print_info "Checking application container logs..."
-if docker-compose -p dpd-award-app logs app | grep -q "✅ PostgreSQL is ready"; then
-    print_status "Application container initialized successfully"
-else
-    print_warning "Application container may still be initializing. Checking logs:"
-    docker-compose -p dpd-award-app logs --tail=20 app
-fi
-
-# Run seeders if requested (only thing not handled by entrypoint.sh)
-if [ "$3" = "--seed" ]; then
-    print_info "Running database seeders..."
-    docker-compose -p dpd-award-app exec app php artisan db:seed --force
-    print_status "Database seeders completed"
-fi
-
-# Test application
-print_info "Testing application..."
-sleep 5
-if curl -f -s --head http://localhost:8000 > /dev/null; then
-    print_status "Application is responding correctly"
-else
-    print_warning "Application might not be responding on port 8000. Check logs:"
-    docker-compose -p dpd-award-app logs app | tail -10
-fi
+# 4. Stop and remove old container
+print_info "Shutting down old environment ($ACTIVE_COLOR)..."
+docker-compose $COMPOSE_ARGS stop app-$ACTIVE_COLOR || true
+docker-compose $COMPOSE_ARGS rm -f app-$ACTIVE_COLOR || true
 
 # Display deployment summary
 echo -e "${GREEN}"
 echo "========================================"
-echo "   DOCKER DEPLOYMENT COMPLETED! 🎉"
+echo "   BLUE-GREEN DEPLOYMENT COMPLETED! 🎉"
 echo "========================================"
 echo -e "${NC}"
 
 print_info "Deployment Summary:"
 echo "  - Branch: $BRANCH"
 echo "  - Environment: $ENVIRONMENT"
-echo "  - Backup created: $(ls -t $BACKUP_DIR/pre_deploy_*.sql.gz 2>/dev/null | head -1 || echo 'None')"
-echo "  - Application URL: http://$(curl -s http://checkip.amazonaws.com || echo 'localhost'):8000"
+echo "  - Now Active: app-$IDLE_COLOR"
+echo "  - Application URL: http://$(curl -s http://checkip.amazonaws.com || echo 'localhost'):8005"
 
 # Show container status
 echo -e "${YELLOW}Container Status:${NC}"
-docker-compose -p dpd-award-app ps
-
-# Show recent logs
-echo -e "${YELLOW}Recent Application Logs:${NC}"
-docker-compose -p dpd-award-app logs --tail=10 app
-
-print_status "Deployment completed successfully!"
+docker-compose $COMPOSE_ARGS ps

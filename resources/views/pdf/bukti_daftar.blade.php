@@ -303,22 +303,12 @@
                 @if(isset($pendaftar->penghargaan) && count($pendaftar->penghargaan) > 0)
                     @foreach($pendaftar->penghargaan as $index => $penghargaan)
                         <div class="item-box">
-                            <div class="item-title">{{ $index + 1 }}. {{ $penghargaan->nama_penghargaan }}</div>
+                            <div class="item-title">{{ $index + 1 }}. {{ $penghargaan->uraian }}</div>
                             <table class="grid-table" style="margin-bottom: 0;">
                                 <tr>
-                                    <td>
-                                        <div class="field-label">Tingkat</div>
-                                        <div class="field-value">{{ $penghargaan->tingkat }}</div>
-                                    </td>
-                                    <td>
+                                    <td colspan="2">
                                         <div class="field-label">Tahun</div>
                                         <div class="field-value">{{ $penghargaan->tahun }}</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" style="padding-bottom: 0;">
-                                        <div class="field-label">Pemberi Penghargaan</div>
-                                        <div class="field-value">{{ $penghargaan->pemberi }}</div>
                                     </td>
                                 </tr>
                             </table>

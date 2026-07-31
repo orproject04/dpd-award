@@ -78,6 +78,7 @@ final class HomeController
 
         // 7. Recent Registrants (latest 5)
         $recentPendaftar = Pendaftar::orderBy('created_at', 'desc')
+            ->withCount(['kontribusi', 'penghargaan'])
             ->limit(10)
             ->get();
 

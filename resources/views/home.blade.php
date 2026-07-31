@@ -872,6 +872,8 @@
                                 <th>Peserta</th>
                                 <th>Kategori</th>
                                 <th>No. Registrasi</th>
+                                <th>Kontribusi</th>
+                                <th>Penghargaan</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
                                 <th style="text-align:center;">Aksi</th>
@@ -928,6 +930,8 @@
                                     </td>
                                     <td style="font-family:monospace;font-size:12px;color:var(--text-muted);">
                                         {{ $item->nomor_registrasi }}</td>
+                                    <td style="text-align:center;font-size:13px;">{{ $item->kontribusi_count }}</td>
+                                    <td style="text-align:center;font-size:13px;">{{ $item->penghargaan_count }}</td>
                                     <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">
                                         {{ $item->created_at->format('d M Y') }}</td>
                                     <td><span class="status-pill"

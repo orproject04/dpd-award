@@ -72,17 +72,33 @@ class PendaftarTableView extends CustomTableView
             ),
             Text::make('nama')->sortable(),
             Raw::make(function ($data) {
-                return "<span style='display:block;text-align:center;'>" . $data->nomor_registrasi . "</span>";
-            }, 'Nomor Registrasi')->sortable('nomor_registrasi'),
-            Raw::make(function ($data) {
+                $kategoriIcons = [
+                    'Pendidikan' => ['icon' => 'graduation cap', 'color' => '#3b82f6'],
+                    'Kesehatan' => ['icon' => 'heartbeat', 'color' => '#ec4899'],
+                    'Pangan' => ['icon' => 'leaf', 'color' => '#10b981'],
+                    'Budaya' => ['icon' => 'theater masks', 'color' => '#f59e0b'],
+                ];
+                $katKey = collect($kategoriIcons)->keys()->first(fn($k) => str_contains($data->kategori, $k));
+                
+                if ($katKey) {
+                    $meta = $kategoriIcons[$katKey];
+                    return "<div style='text-align:center;'><span style='color:{$meta['color']};font-weight:600;font-size:13px;'><i class='{$meta['icon']} icon' style='margin-right:4px;'></i>{$katKey}</span></div>";
+                }
+                
                 return "<span style='display:block;text-align:center;'>" . $data->kategori . "</span>";
             }, 'Kategori')->sortable('kategori'),
+            Raw::make(function ($data) {
+                return "<span style='display:block;text-align:center;font-family:monospace;font-size:12px;color:var(--text-muted);'>" . $data->nomor_registrasi . "</span>";
+            }, 'Nomor Registrasi')->sortable('nomor_registrasi'),
             Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;'>" . $data->kontribusi_count . "</span>";
             }, 'Kontribusi')->sortable('kontribusi_count'),
             Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;'>" . $data->penghargaan_count . "</span>";
             }, 'Penghargaan')->sortable('penghargaan_count'),
+            Raw::make(function ($data) {
+                return "<span style='display:block;text-align:center;white-space:nowrap;font-size:12px;color:var(--text-muted);'>" . $data->created_at->format('d M Y') . "</span>";
+            }, 'Tanggal')->sortable('created_at'),
             MyLabel::make('status')->map([
                 'Tidak Lolos' => 'red',
                 'Diajukan' => 'blue',

@@ -84,7 +84,9 @@ print_info "Current active environment: $ACTIVE_COLOR"
 print_info "Deploying new version to: $IDLE_COLOR"
 
 # 1. Build and start idle container
-docker-compose $COMPOSE_ARGS up -d --build app-$IDLE_COLOR
+print_info "Building new image without cache..."
+docker-compose $COMPOSE_ARGS build --no-cache app-$IDLE_COLOR
+docker-compose $COMPOSE_ARGS up -d app-$IDLE_COLOR
 print_status "Started app-$IDLE_COLOR"
 
 # 2. Wait for idle container to become healthy
@@ -131,6 +133,11 @@ print_status "Traffic successfully routed to app-$IDLE_COLOR! (ZERO DOWNTIME)"
 print_info "Shutting down old environment ($ACTIVE_COLOR)..."
 docker-compose $COMPOSE_ARGS stop app-$ACTIVE_COLOR || true
 docker-compose $COMPOSE_ARGS rm -f app-$ACTIVE_COLOR || true
+
+# 5. Clear cache on the new container again (to prevent old container from poisoning shared cache)
+print_info "Clearing cache on new environment ($IDLE_COLOR) to ensure fresh views..."
+docker-compose $COMPOSE_ARGS exec -T app-$IDLE_COLOR php artisan view:clear || true
+docker-compose $COMPOSE_ARGS exec -T app-$IDLE_COLOR php artisan responsecache:clear || true
 
 # Display deployment summary
 echo -e "${GREEN}"

@@ -522,8 +522,6 @@
             <div class="stat-card anim-in anim-delay-1" style="--stat-accent:#00b5ad;">
                 <div class="flex items-start justify-between">
                     <div class="stat-icon" style="background:#e6faf9;color:#00b5ad;"><i class="users icon"></i></div>
-                    <span class="stat-badge" style="background:#e6faf9;color:#00b5ad;"><i class="arrow up icon"
-                            style="font-size:9px;"></i> Aktif</span>
                 </div>
                 <div>
                     <div class="stat-number" id="cnt-total">{{ number_format($totalPendaftar) }}</div>
@@ -659,15 +657,29 @@
                 </div>
                 <div class="mt-4 space-y-2">
                     @php
-                        $catColors = ['#3b82f6', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6'];
-                        $ci = 0;
+                        $orderedCategories = [
+                            'Bidang Pendidikan',
+                            'Bidang Kesehatan',
+                            'Bidang Ketahanan Pangan',
+                            'Bidang Seni dan Budaya'
+                        ];
+                        $catColorMap = [
+                            'Bidang Pendidikan' => '#3b82f6',
+                            'Bidang Kesehatan' => '#ec4899',
+                            'Bidang Ketahanan Pangan' => '#10b981',
+                            'Bidang Seni dan Budaya' => '#f59e0b',
+                        ];
                     @endphp
-                    @foreach ($kategoriCounts as $katName => $katCount)
-                        @php $pct = $totalPendaftar > 0 ? round(($katCount / $totalPendaftar) * 100, 1) : 0; @endphp
+                    @foreach ($orderedCategories as $katName)
+                        @php 
+                            $katCount = $kategoriCounts[$katName] ?? 0;
+                            $pct = $totalPendaftar > 0 ? round(($katCount / $totalPendaftar) * 100, 1) : 0; 
+                            $bgColor = $catColorMap[$katName] ?? '#8b5cf6';
+                        @endphp
                         <div class="flex items-center justify-between" style="font-size:12.5px;">
                             <div class="flex items-center gap-2">
                                 <div
-                                    style="width:10px;height:10px;border-radius:3px;background:{{ $catColors[$ci % 5] }};flex-shrink:0;">
+                                    style="width:10px;height:10px;border-radius:3px;background:{{ $bgColor }};flex-shrink:0;">
                                 </div>
                                 <span
                                     style="color:var(--text-muted);">{{ Str::limit(str_replace('Bidang ', '', $katName), 20) }}</span>
@@ -677,7 +689,6 @@
                                 <span style="color:var(--text-muted);">({{ $pct }}%)</span>
                             </div>
                         </div>
-                        @php $ci++; @endphp
                     @endforeach
                     @if (empty($kategoriCounts))
                         <p style="font-size:12px;color:var(--text-muted);text-align:center;">Belum ada data</p>
@@ -743,9 +754,15 @@
                         <canvas id="genderChart"></canvas>
                     </div>
                     <div class="mt-3 grid grid-cols-2 gap-2">
-                        @php $gColors = ['Laki-laki' => '#60a5fa', 'laki-laki' => '#60a5fa', 'L' => '#60a5fa', 'Perempuan' => '#f472b6', 'perempuan' => '#f472b6', 'P' => '#f472b6']; @endphp
-                        @foreach ($genderCounts as $g => $gc)
-                            @php $gPct = $totalPendaftar > 0 ? round(($gc / $totalPendaftar) * 100, 1) : 0; @endphp
+                        @php 
+                            $gColors = ['Laki-laki' => '#60a5fa', 'laki-laki' => '#60a5fa', 'L' => '#60a5fa', 'Perempuan' => '#f472b6', 'perempuan' => '#f472b6', 'P' => '#f472b6']; 
+                            $orderedGenders = ['Laki-laki', 'Perempuan'];
+                        @endphp
+                        @foreach ($orderedGenders as $g)
+                            @php 
+                                $gc = $genderCounts[$g] ?? 0;
+                                $gPct = $totalPendaftar > 0 ? round(($gc / $totalPendaftar) * 100, 1) : 0; 
+                            @endphp
                             <div style="background:#f9fafb;border-radius:10px;padding:10px 12px;text-align:center;">
                                 <div
                                     style="width:12px;height:12px;border-radius:3px;background:{{ $gColors[$g] ?? '#94a3b8' }};margin:0 auto 4px;">
@@ -1035,15 +1052,30 @@
 
             // ── 2. Category Doughnut ──────────────────────────────────
             const rawCat = {!! json_encode($kategoriCounts) !!};
+            const orderedCatKeys = [
+                'Bidang Pendidikan',
+                'Bidang Kesehatan',
+                'Bidang Ketahanan Pangan',
+                'Bidang Seni dan Budaya'
+            ];
+            const catColorMapJS = {
+                'Bidang Pendidikan': '#3b82f6',
+                'Bidang Kesehatan': '#ec4899',
+                'Bidang Ketahanan Pangan': '#10b981',
+                'Bidang Seni dan Budaya': '#f59e0b'
+            };
             let catLabels = [],
-                catValues = [];
-            for (const [k, v] of Object.entries(rawCat)) {
+                catValues = [],
+                catBgColors = [];
+            for (const k of orderedCatKeys) {
                 catLabels.push(k.replace('Bidang ', ''));
-                catValues.push(v);
+                catValues.push(rawCat[k] || 0);
+                catBgColors.push(catColorMapJS[k] || '#8b5cf6');
             }
             if (!catLabels.length) {
                 catLabels = ['Pendidikan', 'Kesehatan', 'Pangan', 'Budaya'];
                 catValues = [0, 0, 0, 0];
+                catBgColors = ['#3b82f6', '#ec4899', '#10b981', '#f59e0b'];
             }
 
             new Chart(document.getElementById('categoryChart').getContext('2d'), {
@@ -1052,7 +1084,7 @@
                     labels: catLabels,
                     datasets: [{
                         data: catValues,
-                        backgroundColor: ['#3b82f6', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6'],
+                        backgroundColor: catBgColors,
                         borderWidth: 3,
                         borderColor: '#fff',
                         hoverOffset: 8
@@ -1072,8 +1104,8 @@
 
             // ── 3. Gender Doughnut ────────────────────────────────────
             const rawG = {!! json_encode($genderCounts) !!};
-            const gLabels = Object.keys(rawG).length ? Object.keys(rawG) : ['Laki-laki', 'Perempuan'];
-            const gVals = Object.keys(rawG).length ? Object.values(rawG) : [0, 0];
+            const gLabels = ['Laki-laki', 'Perempuan'];
+            const gVals = [rawG['Laki-laki'] || 0, rawG['Perempuan'] || 0];
             const genderColorMap = {
                 'Laki-laki': '#60a5fa',
                 'laki-laki': '#60a5fa',

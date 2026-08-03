@@ -255,69 +255,45 @@
                         @endif
                     @endif
                     @if (isset($filters) && count($filters) > 0)
-                        <div class="item">
-                            <div class="flex justify-end w-full">
-                                <div class="ui basic button icon filter-icon {{ $isFiltered ? 'active' : '' }}"
-                                    id="filter-icon-{{ $id }}">
-                                    <i class="icon filter"></i>
-                                    <i class="icon angle {{ $isFiltered ? 'up' : 'down' }}"></i>
-                                </div>
-                            </div>
+                        <div class="item" style="padding: 0.5em 1em;">
+                            <form id="inline-filter-form-{{ $id }}" method="GET" action="{{ request()->url() }}" class="flex items-center gap-2 m-0" style="margin:0;">
+                                @foreach(request()->query() as $k => $v)
+                                    @if(!in_array($k, $filterKeys) && $k !== 'page')
+                                        @if(is_array($v))
+                                            @foreach($v as $vv)
+                                                <input type="hidden" name="{{ $k }}[]" value="{{ $vv }}">
+                                            @endforeach
+                                        @else
+                                            <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                        @endif
+                                    @endif
+                                @endforeach
+
+                                @foreach ($filters as $filter)
+                                    <div style="min-width: 140px;">
+                                        {!! preg_replace_callback('/<(select|input)\b([^>]*)>/i', function($m) {
+                                            $tag = $m[1];
+                                            $attrs = $m[2];
+                                            if (stripos($attrs, 'onchange') === false) {
+                                                $attrs .= ' onchange="this.form.submit()"';
+                                            }
+                                            return '<' . $tag . $attrs . ' style="width: 100%; border: 1px solid #dbe0e6; padding: 6px 10px; border-radius: 6px; outline: none; font-size: 13px;">';
+                                        }, preg_replace('/<label\b[^>]*>.*?<\/label>/is', '', $filter->render())) !!}
+                                    </div>
+                                @endforeach
+                                
+                                @if($isFiltered)
+                                    <a href="{{ request()->url() }}?{{ http_build_query(collect(request()->query())->except(array_merge($filterKeys, ['page']))->toArray()) }}" class="ui basic button icon" style="padding: 7px 10px; border-radius: 6px;" title="Reset Filter">
+                                        <i class="times icon"></i>
+                                    </a>
+                                @endif
+                            </form>
                         </div>
                     @endif
                 </div>
             </div>
         @endunless
     @endforeach
-
-    <div id="filter-wrapper-{{ $id }}"
-        class="filter-wrapper ui attached segment !p-0 {{ $isMultiple ? 'two-column' : 'single-column' }} {{ $isFiltered ? '' : 'hidden' }}"
-        style="background-color: white; {{ $isFiltered ? '' : 'display: none;' }}">
-        <div class="pt-6">
-            <h3 class="text-center font-semibold">Filter</h3>
-        </div>
-
-        <form class="ui form px-6 py-4 filter-form" method="GET" action="{{ request()->url() }}">
-            <div class="{{ $isMultiple ? 'grid md:grid-cols-2 gap-3' : 'space-y-3' }}">
-                @foreach ($filters as $filter)
-                    <div>
-                        {!! preg_replace_callback(
-                            '/<input\b([^>]*)>/i',
-                            function ($matches) {
-                                $input = $matches[0];
-                        
-                                if (preg_match('/style\s*=\s*"/i', $input)) {
-                                    return preg_replace(
-                                        '/style="([^"]*)"/i',
-                                        function ($styleMatch) {
-                                            $styles = $styleMatch[1];
-                                            if (!preg_match('/width\s*:\s*100%/', $styles)) {
-                                                $styles .= '; width: 100%';
-                                            }
-                                            return 'style="' . $styles . '"';
-                                        },
-                                        $input,
-                                    );
-                                } else {
-                                    return str_replace('<input', '<input style="width: 100%"', $input);
-                                }
-                            },
-                            $filter->render(),
-                        ) !!}
-                    </div>
-                @endforeach
-            </div>
-        </form>
-
-        <div class="px-6 pb-6 flex gap-4 action-buttons">
-            <x-volt-button type="reset" class="basic rounded-lg reset-filter" icon="times circle">
-                Hapus Filter
-            </x-volt-button>
-            <x-volt-button type="button" class="rounded-lg apply-filter" icon="search">
-                Terapkan
-            </x-volt-button>
-        </div>
-    </div>
 
     @include('suitable::table')
 
@@ -442,72 +418,8 @@
     $(function() {
         $('[data-role="suitable"]').each(function() {
             const container = $(this);
-            const id = container.attr('id'); // id unik per table
-            const wrapper = $(`#filter-wrapper-${id}`);
-            const icon = $(`#filter-icon-${id}`);
-            const resetBtn = container.find('.reset-filter');
-            const applyBtn = container.find('.apply-filter');
-            const form = container.find('.filter-form');
+            const id = container.attr('id');
             const perPageDropdown = container.find(`#per-page-${id}`);
-
-            // Reset filter
-            resetBtn.on('click', function() {
-                showLoading();
-
-                form.form('clear');
-                form.find('.ui.dropdown').dropdown('set selected', '0');
-
-                const params = new URLSearchParams(window.location.search);
-                const tahun = params.get('tahun-ended-filter');
-
-                const baseUrl = window.location.origin + window.location.pathname;
-                const newUrl = tahun ?
-                    `${baseUrl}?tahun-ended-filter=${encodeURIComponent(tahun)}` : baseUrl;
-
-                window.location.href = newUrl;
-            });
-
-            // Apply filter
-            applyBtn.on('click', function() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const tahun = urlParams.get('tahun-ended-filter');
-
-                if (tahun) {
-                    form.find('input[name="tahun-ended-filter"]').remove();
-
-                    $('<input>').attr({
-                        type: 'hidden',
-                        name: 'tahun-ended-filter',
-                        value: tahun
-                    }).appendTo(form);
-                }
-
-                form.submit();
-            });
-
-            // Toggle filter wrapper
-            icon.off('click').on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                const angleIcon = $(this).find('.icon.angle');
-
-                if (wrapper.is(':visible')) {
-                    wrapper.slideUp(200, function() {
-                        wrapper.addClass('hidden');
-                    });
-                    icon.removeClass('active');
-                    angleIcon.removeClass('up').addClass('down');
-                } else {
-                    wrapper.removeClass('hidden').hide().slideDown(200);
-                    icon.addClass('active');
-                    angleIcon.removeClass('down').addClass('up');
-
-                    $('html, body').animate({
-                        scrollTop: wrapper.offset().top - 100
-                    }, 300);
-                }
-            });
 
             // Init and handle per-page change
             if (perPageDropdown.length) {

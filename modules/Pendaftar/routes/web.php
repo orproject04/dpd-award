@@ -16,6 +16,8 @@ Route::group(
         Route::get('pendaftar/{pendaftar}/download-all', [PendaftarController::class, 'downloadAllFiles'])->name('pendaftar.download-all');
         Route::post('pendaftar/{pendaftar}/resend-email', [PendaftarController::class, 'resendEmail'])->name('pendaftar.resend-email');
         Route::post('pendaftar/{pendaftar}/status', [PendaftarController::class, 'updateStatus'])->name('pendaftar.update-status');
+        Route::post('pendaftar/{pendaftar}/foto', [PendaftarController::class, 'updateFoto'])->name('pendaftar.update-foto');
+        Route::post('pendaftar/{pendaftar}/ktp', [PendaftarController::class, 'updateKtp'])->name('pendaftar.update-ktp');
         Route::resource('pendaftar', PendaftarController::class);
     }
 );

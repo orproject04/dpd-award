@@ -202,6 +202,44 @@ class PendaftarController extends Controller
         return back()->withSuccess('Status pendaftar berhasil diperbarui.');
     }
 
+    public function updateFoto(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'foto' => 'required|image|max:5120'
+        ], [
+            'foto.required' => 'Pilih file foto terlebih dahulu.',
+            'foto.image' => 'File harus berupa gambar.',
+            'foto.max' => 'Ukuran file foto maksimal 5MB.'
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('pendaftar/' . $pendaftar->id, 'local');
+            $pendaftar->update(['foto' => $path]);
+            return back()->withSuccess('Foto pendaftar berhasil diperbarui.');
+        }
+
+        return back()->withError('Gagal mengunggah foto.');
+    }
+
+    public function updateKtp(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120'
+        ], [
+            'ktp.required' => 'Pilih file KTP terlebih dahulu.',
+            'ktp.mimes' => 'File KTP harus berupa JPG, PNG, atau PDF.',
+            'ktp.max' => 'Ukuran file KTP maksimal 5MB.'
+        ]);
+
+        if ($request->hasFile('ktp')) {
+            $path = $request->file('ktp')->store('pendaftar/' . $pendaftar->id, 'local');
+            $pendaftar->update(['ktp' => $path]);
+            return back()->withSuccess('KTP pendaftar berhasil diperbarui.');
+        }
+
+        return back()->withError('Gagal mengunggah KTP.');
+    }
+
     protected function getFilteredQuery(\Illuminate\Http\Request $request)
     {
         $query = Pendaftar::query();

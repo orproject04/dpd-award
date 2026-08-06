@@ -16,6 +16,9 @@ class PendaftarTableView extends CustomTableView
 {
     public function source()
     {
+        // Simpan URL terakhir beserta filter untuk tombol kembali
+        session()->put('pendaftar_index_url', request()->fullUrl());
+
         $query = Pendaftar::query();
 
         // Manual filter

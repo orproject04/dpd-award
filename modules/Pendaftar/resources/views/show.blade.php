@@ -787,8 +787,7 @@
                                 <div class="custom-dropdown-trigger">
                                     <div>
                                         <span class="status-dot {{ $statusColor }}"></span>
-                                        <span
-                                            class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
+                                        <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
                                     </div>
                                     <i class="chevron down icon"></i>
                                 </div>
@@ -833,9 +832,11 @@
 
                         {{-- Resend Email --}}
                         {{-- Resend Email --}}
-                        <form id="resend-email-form" action="{{ route('modules::pendaftar.resend-email', $pendaftar->id) }}" method="POST">
+                        <form id="resend-email-form"
+                            action="{{ route('modules::pendaftar.resend-email', $pendaftar->id) }}" method="POST">
                             @csrf
-                            <x-volt-button type="button" icon="envelope" class="green fluid" onclick="confirmResendEmail()">
+                            <x-volt-button type="button" icon="envelope" class="green fluid"
+                                onclick="confirmResendEmail()">
                                 Kirim Ulang Email Bukti Pendaftaran
                             </x-volt-button>
                         </form>
@@ -876,11 +877,14 @@
                                     <i class="image outline icon"></i> Foto tidak diunggah
                                 </div>
                             @endif
-                            <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}" method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
+                            <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}"
+                                method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
                                 @csrf
-                                <label class="ui basic button small fluid" style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
+                                <label class="ui basic button small fluid"
+                                    style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
                                     <i class="upload icon"></i> Unggah / Ganti Foto
-                                    <input type="file" name="foto" style="display: none;" onchange="showLoading(); this.form.submit();" accept="image/*">
+                                    <input type="file" name="foto" style="display: none;"
+                                        onchange="showLoading(); this.form.submit();" accept="image/*">
                                 </label>
                             </form>
                         </div>
@@ -921,11 +925,14 @@
                                     <i class="id card outline icon"></i> KTP tidak diunggah
                                 </div>
                             @endif
-                            <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}" method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
+                            <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}"
+                                method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
                                 @csrf
-                                <label class="ui basic button small fluid" style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
+                                <label class="ui basic button small fluid"
+                                    style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
                                     <i class="upload icon"></i> Unggah / Ganti KTP
-                                    <input type="file" name="ktp" style="display: none;" onchange="showLoading(); this.form.submit();" accept=".jpg,.jpeg,.png,.pdf">
+                                    <input type="file" name="ktp" style="display: none;"
+                                        onchange="showLoading(); this.form.submit();" accept=".jpg,.jpeg,.png,.pdf">
                                 </label>
                             </form>
                         </div>

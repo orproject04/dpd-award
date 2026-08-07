@@ -9,6 +9,8 @@ abstract class CustomTableView extends TableView
 {
     public function render()
     {
+        $this->rememberCurrentUrl();
+
         if ($this->search !== null) {
             $this->html->search($this->search);
         }
@@ -40,6 +42,8 @@ abstract class CustomTableView extends TableView
 
     public function toResponse($request)
     {
+        $this->rememberCurrentUrl();
+
         if ($this->search !== null) {
             $this->html->search($this->search);
         }
@@ -78,6 +82,16 @@ abstract class CustomTableView extends TableView
         $table->setPerYear($this->perYear());
 
         return $this->html->response($source, $table);
+    }
+
+    protected function rememberCurrentUrl()
+    {
+        if (session()->isStarted()) {
+            $path = trim(request()->path(), '/');
+            if ($path !== '') {
+                session(['backlink_url_' . $path => request()->fullUrl()]);
+            }
+        }
     }
 
     public function filters() {}

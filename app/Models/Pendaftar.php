@@ -57,18 +57,30 @@ class Pendaftar extends Model
         ];
 
         $monthMap = [
-            'januari' => 1, 'jan' => 1,
-            'februari' => 2, 'feb' => 2,
-            'maret' => 3, 'mar' => 3,
-            'april' => 4, 'apr' => 4,
+            'januari' => 1,
+            'jan' => 1,
+            'februari' => 2,
+            'feb' => 2,
+            'maret' => 3,
+            'mar' => 3,
+            'april' => 4,
+            'apr' => 4,
             'mei' => 5,
-            'juni' => 6, 'jun' => 6,
-            'juli' => 7, 'jul' => 7,
-            'agustus' => 8, 'agu' => 8, 'ags' => 8,
-            'september' => 9, 'sep' => 9,
-            'oktober' => 10, 'okt' => 10,
-            'november' => 11, 'nov' => 11,
-            'desember' => 12, 'des' => 12,
+            'juni' => 6,
+            'jun' => 6,
+            'juli' => 7,
+            'jul' => 7,
+            'agustus' => 8,
+            'agu' => 8,
+            'ags' => 8,
+            'september' => 9,
+            'sep' => 9,
+            'oktober' => 10,
+            'okt' => 10,
+            'november' => 11,
+            'nov' => 11,
+            'desember' => 12,
+            'des' => 12,
         ];
 
         foreach ($stageConfigs as $stageName => $dateStr) {
@@ -99,14 +111,28 @@ class Pendaftar extends Model
         return 'Diajukan';
     }
 
-    public static function getDisplayStatus(?string $actualStatus): string
+    protected static function booted(): void
     {
+        static::saving(function ($pendaftar) {
+            if (empty($pendaftar->status_before)) {
+                $pendaftar->status_before = $pendaftar->status ?? 'Diajukan';
+            }
+        });
+    }
+
+    public static function getDisplayStatus($actualStatus = null, ?string $statusBefore = null): string
+    {
+        if ($actualStatus instanceof self || $actualStatus instanceof \Modules\Pendaftar\Models\Pendaftar) {
+            $statusBefore = $actualStatus->status_before;
+            $actualStatus = $actualStatus->status;
+        }
+
         if (empty($actualStatus)) {
             $actualStatus = 'Diajukan';
         }
 
-        if ($actualStatus === 'Tidak Lolos') {
-            return 'Tidak Lolos';
+        if (empty($statusBefore)) {
+            $statusBefore = $actualStatus;
         }
 
         $stages = [
@@ -119,12 +145,22 @@ class Pendaftar extends Model
             'Lolos ke Tahap Final' => 6,
         ];
 
+        $currentStage = static::getCurrentTimelineStage();
+        $currentRank = $stages[$currentStage] ?? 0;
+        $beforeRank = $stages[$statusBefore] ?? 0;
+
+        if (isset($stages[$statusBefore]) && $currentRank <= $beforeRank && $actualStatus !== $statusBefore) {
+            return $statusBefore;
+        }
+
+        if ($actualStatus === 'Tidak Lolos') {
+            return 'Tidak Lolos';
+        }
+
         if (!isset($stages[$actualStatus])) {
             return $actualStatus;
         }
 
-        $currentStage = static::getCurrentTimelineStage();
-        $currentRank = $stages[$currentStage] ?? 0;
         $actualRank = $stages[$actualStatus];
 
         if ($actualRank > $currentRank) {

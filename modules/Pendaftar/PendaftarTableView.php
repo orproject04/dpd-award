@@ -31,7 +31,7 @@ class PendaftarTableView extends CustomTableView
         return $query
             ->withCount(['kontribusi', 'penghargaan'])
             ->autoSort()
-            ->latest('updated_at')
+            ->latest('created_at')
             ->autoSearch(request('search'))
             ->paginate(request('per_page') ?? 15);
     }
@@ -40,39 +40,31 @@ class PendaftarTableView extends CustomTableView
     {
         return [
             Numbering::make('No'),
-            Raw::make(
-                function ($data) {
-                    $path = $data->getFotoAttribute();
-                    $src = '';
-                    $defaultPath = resource_path('images/avatar.png');
-                    if (file_exists($defaultPath) && is_file($defaultPath)) {
-                        $type = pathinfo($defaultPath, PATHINFO_EXTENSION);
-                        $fileData = file_get_contents($defaultPath);
-                        $src = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
-                    }
-                    if (!empty($path) && file_exists($path) && is_file($path)) {
-                        $type = pathinfo($path, PATHINFO_EXTENSION);
-                        $fileData = file_get_contents($path);
-                        $src = 'data:image/' . $type . ';base64,' . base64_encode($fileData);
-                    }
+            // Raw::make(
+            //     function ($data) {
+            //         $fotoRaw = $data->getRawOriginal('foto');
+            //         if (!empty($fotoRaw)) {
+            //             $src = route('modules::pendaftar.file', ['path' => $fotoRaw]);
+            //         } else {
+            //             $src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+            //         }
 
-                    return "<a href='#' class='avatar-preview' data-src='" . $src . "'>" .
-                        "<img class='ui image avatar' src='" . $src . "'>" .
-                        '</a>' .
-                        '<script>' .
-                        '(function(){' .
-                        'if(window.avatarPreviewInit) return; window.avatarPreviewInit=true;' .
-                        "document.addEventListener('click',function(e){" .
-                        "var t=e.target.closest?e.target.closest('.avatar-preview'):null; if(!t) return; e.preventDefault(); var s=t.getAttribute('data-src');" .
-                        "var modal=document.getElementById('avatar-modal');" .
-                        "if(!modal){ modal=document.createElement('div'); modal.id='avatar-modal'; modal.className='ui small modal'; modal.innerHTML='<div class=\"content\" style=\"text-align:center\"><img id=\"avatar-modal-img\" style=\"max-width:100%;height:auto\" src=\"\" /></div>'; document.body.appendChild(modal); }" .
-                        "var img=document.getElementById('avatar-modal-img'); img.src=s;" .
-                        "if(window.jQuery && jQuery(modal).modal){ jQuery(modal).modal('show'); } else { var overlay=document.getElementById('avatar-overlay'); if(!overlay){ overlay=document.createElement('div'); overlay.id='avatar-overlay'; overlay.style.position='fixed'; overlay.style.top=0; overlay.style.left=0; overlay.style.width='100%'; overlay.style.height='100%'; overlay.style.background='rgba(0,0,0,0.6)'; overlay.style.display='flex'; overlay.style.alignItems='center'; overlay.style.justifyContent='center'; overlay.style.zIndex=9999; overlay.addEventListener('click',function(){ overlay.style.display='none'; }); var imgEl=document.createElement('img'); imgEl.id='avatar-overlay-img'; imgEl.style.maxWidth='90%'; imgEl.style.height='auto'; overlay.appendChild(imgEl); document.body.appendChild(overlay); } var imgEl=document.getElementById('avatar-overlay-img'); imgEl.src=s; overlay.style.display='flex'; }" .
-                        '},false);})();' .
-                        '</script>';
-                },
-                ''
-            ),
+            //         return "<a href='#' class='avatar-preview' data-src='" . e($src) . "'>" .
+            //             "<img class='ui image avatar' src='" . e($src) . "' loading='lazy' style='object-fit:cover;width:32px;height:32px;'>" .
+            //             '</a>' .
+            //             '<script>' .
+            //             'if(!window.avatarPreviewInit){window.avatarPreviewInit=true;' .
+            //             "document.addEventListener('click',function(e){" .
+            //             "var t=e.target.closest?e.target.closest('.avatar-preview'):null;if(!t)return;e.preventDefault();var s=t.getAttribute('data-src');if(!s)return;" .
+            //             "var modal=document.getElementById('avatar-modal');" .
+            //             "if(!modal){modal=document.createElement('div');modal.id='avatar-modal';modal.className='ui small modal';modal.innerHTML='<div class=\"content\" style=\"text-align:center;padding:1.5rem;\"><img id=\"avatar-modal-img\" style=\"max-width:100%;max-height:75vh;border-radius:8px;\" src=\"\" /></div>';document.body.appendChild(modal);}" .
+            //             "var img=document.getElementById('avatar-modal-img');img.src=s;" .
+            //             "if(window.jQuery&&jQuery(modal).modal){jQuery(modal).modal('show');}else{var overlay=document.getElementById('avatar-overlay');if(!overlay){overlay=document.createElement('div');overlay.id='avatar-overlay';overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;cursor:pointer;';overlay.addEventListener('click',function(){overlay.style.display='none';});var imgEl=document.createElement('img');imgEl.id='avatar-overlay-img';imgEl.style.cssText='max-width:90%;max-height:90vh;border-radius:8px;';overlay.appendChild(imgEl);document.body.appendChild(overlay);}document.getElementById('avatar-overlay-img').src=s;overlay.style.display='flex';}" .
+            //             '},false);}' .
+            //             '</script>';
+            //     },
+            //     ''
+            // ),
             Text::make('nama')->sortable(),
             Raw::make(function ($data) {
                 $kategoriIcons = [
@@ -82,12 +74,12 @@ class PendaftarTableView extends CustomTableView
                     'Budaya' => ['icon' => 'theater masks', 'color' => '#f59e0b'],
                 ];
                 $katKey = collect($kategoriIcons)->keys()->first(fn($k) => str_contains($data->kategori, $k));
-                
+
                 if ($katKey) {
                     $meta = $kategoriIcons[$katKey];
                     return "<div style='text-align:center;'><span style='color:{$meta['color']};font-weight:600;font-size:13px;'><i class='{$meta['icon']} icon' style='margin-right:4px;'></i>{$katKey}</span></div>";
                 }
-                
+
                 return "<span style='display:block;text-align:center;'>" . $data->kategori . "</span>";
             }, 'Kategori')->sortable('kategori'),
             Raw::make(function ($data) {

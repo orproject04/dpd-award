@@ -36,7 +36,7 @@ class LandingController extends Controller
             ], 404);
         }
 
-        $displayStatus = Pendaftar::getDisplayStatus($pendaftar->status);
+        $displayStatus = Pendaftar::getDisplayStatus($pendaftar);
 
         return response()->json([
             'success' => true,

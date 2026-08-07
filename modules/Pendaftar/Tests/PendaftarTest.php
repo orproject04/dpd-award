@@ -156,4 +156,22 @@ class PendaftarTest extends TestCase
         $response = $this->get(route('modules::pendaftar.file', ['path' => 'pendaftar/../.env']));
         $response->assertStatus(403);
     }
+
+    #[Test]
+    public function it_preserves_query_parameters_in_backlink(): void
+    {
+        $pendaftar = Pendaftar::factory()->create();
+
+        // 1. Visit index page with query parameters
+        $this->get('/pendaftar?kategori=Diajukan&search=budi')->assertStatus(200);
+
+        // 2. Open detail show page
+        $response = $this->get(route('modules::pendaftar.show', $pendaftar));
+        $response->assertStatus(200);
+
+        // 3. Assert backlink contains the saved query parameters
+        $response->assertSee('kategori=Diajukan', false);
+        $response->assertSee('search=budi', false);
+    }
 }
+

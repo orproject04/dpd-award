@@ -42,3 +42,37 @@ if (!function_exists('hexToRgba')) {
         return "rgba($r, $g, $b, $opacity)";
     }
 }
+
+if (!function_exists('get_backlink_url')) {
+    function get_backlink_url(?string $defaultUrl = null): string
+    {
+        $defaultUrl = $defaultUrl ?? url()->previous();
+        $urlPath = trim(parse_url($defaultUrl, PHP_URL_PATH) ?? '', '/');
+
+        if ($urlPath !== '') {
+            $previousUrl = url()->previous();
+            $currentUrl = url()->current();
+            $previousPath = trim(parse_url($previousUrl, PHP_URL_PATH) ?? '', '/');
+
+            // 1. Direct referer matches target path
+            if ($previousUrl && $previousUrl !== $currentUrl && $previousPath === $urlPath) {
+                if (session()->isStarted()) {
+                    session(['backlink_url_' . $urlPath => $previousUrl]);
+                }
+                return $previousUrl;
+            }
+
+            // 2. Retrieve from session if stored path matches
+            if (session()->isStarted() && session()->has('backlink_url_' . $urlPath)) {
+                $savedUrl = session('backlink_url_' . $urlPath);
+                $savedPath = trim(parse_url($savedUrl, PHP_URL_PATH) ?? '', '/');
+                if ($savedPath === $urlPath) {
+                    return $savedUrl;
+                }
+            }
+        }
+
+        return $defaultUrl;
+    }
+}
+

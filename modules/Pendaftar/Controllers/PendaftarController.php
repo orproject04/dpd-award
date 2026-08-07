@@ -71,13 +71,13 @@ class PendaftarController extends Controller
     {
         try {
             $waktuSubmit = $pendaftar->created_at->format('d M Y, H.i');
-            
+
             // Cast to App\Models\Pendaftar to avoid TypeError in Mailable
             $appPendaftar = \App\Models\Pendaftar::find($pendaftar->id);
-            
+
             \Illuminate\Support\Facades\Mail::to($pendaftar->email)
                 ->send(new \App\Mail\BuktiDaftarEmail($appPendaftar, $waktuSubmit));
-            
+
             return back()->withSuccess('Email pendaftaran berhasil dikirim ulang ke ' . $pendaftar->email);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Gagal mengirim ulang email pendaftaran ke " . $pendaftar->email . ": " . $e->getMessage());
@@ -195,9 +195,12 @@ class PendaftarController extends Controller
             'status' => 'required|string',
         ]);
 
-        $pendaftar->update([
-            'status' => $validated['status'],
-        ]);
+        if ($validated['status'] !== $pendaftar->status) {
+            $pendaftar->status_before = $pendaftar->status;
+        }
+
+        $pendaftar->status = $validated['status'];
+        $pendaftar->save();
 
         return back()->withSuccess('Status pendaftar berhasil diperbarui.');
     }
@@ -257,7 +260,7 @@ class PendaftarController extends Controller
 
         return $query
             ->autoSort()
-            ->latest('updated_at')
+            ->latest('created_at')
             ->autoSearch($request->get('search'));
     }
 
@@ -275,9 +278,19 @@ class PendaftarController extends Controller
 
         // Headers
         $headersPendaftar = [
-            'No', 'Nomor Registrasi', 'Kategori', 'Nama Lengkap', 'Tempat Lahir', 
-            'Tanggal Lahir', 'Jenis Kelamin', 'Pendidikan', 'Alamat', 'Nomor WA', 
-            'Email', 'Status', 'Tanggal Registrasi'
+            'No',
+            'Nomor Registrasi',
+            'Kategori',
+            'Nama Lengkap',
+            'Tempat Lahir',
+            'Tanggal Lahir',
+            'Jenis Kelamin',
+            'Pendidikan',
+            'Alamat',
+            'Nomor WA',
+            'Email',
+            'Status',
+            'Tanggal Registrasi'
         ];
 
         // Style helper
@@ -353,7 +366,13 @@ class PendaftarController extends Controller
         $sheetKontribusi->setTitle('Kontribusi');
 
         $headersKontribusi = [
-            'No', 'Nomor Registrasi Pendaftar', 'Nama Pendaftar', 'Judul Kontribusi', 'Deskripsi', 'Dampak', 'Bukti Dukung'
+            'No',
+            'Nomor Registrasi Pendaftar',
+            'Nama Pendaftar',
+            'Judul Kontribusi',
+            'Deskripsi',
+            'Dampak',
+            'Bukti Dukung'
         ];
 
         // Write headers for Kontribusi
@@ -375,7 +394,7 @@ class PendaftarController extends Controller
                 $sheetKontribusi->setCellValue('D' . $rowIdx, $kontribusi->judul);
                 $sheetKontribusi->setCellValue('E' . $rowIdx, $kontribusi->deskripsi);
                 $sheetKontribusi->setCellValue('F' . $rowIdx, $kontribusi->dampak);
-                
+
                 // Bukti dukung can be array or string
                 $buktiText = '';
                 $buktis = $kontribusi->bukti_dukung;
@@ -411,7 +430,12 @@ class PendaftarController extends Controller
         $sheetPenghargaan->setTitle('Penghargaan');
 
         $headersPenghargaan = [
-            'No', 'Nomor Registrasi Pendaftar', 'Nama Pendaftar', 'Uraian Penghargaan', 'Tahun', 'Bukti Dukung'
+            'No',
+            'Nomor Registrasi Pendaftar',
+            'Nama Pendaftar',
+            'Uraian Penghargaan',
+            'Tahun',
+            'Bukti Dukung'
         ];
 
         // Write headers for Penghargaan
@@ -465,7 +489,7 @@ class PendaftarController extends Controller
 
         // Serve file as download
         $fileName = 'Data_Pendaftar_Masal_' . date('Ymd_His') . '.xlsx';
-        
+
         return response()->streamDownload(function () use ($spreadsheet) {
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');

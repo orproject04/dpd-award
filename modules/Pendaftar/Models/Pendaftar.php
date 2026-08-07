@@ -34,6 +34,12 @@ class Pendaftar extends Model
 
     protected static function booted()
     {
+        static::saving(function ($pendaftar) {
+            if (empty($pendaftar->status_before)) {
+                $pendaftar->status_before = $pendaftar->status ?? 'Diajukan';
+            }
+        });
+
         static::deleting(function ($pendaftar) {
             $ktp = $pendaftar->getRawOriginal('ktp');
             $foto = $pendaftar->getRawOriginal('foto');
@@ -76,8 +82,8 @@ class Pendaftar extends Model
         return \App\Models\Pendaftar::getCurrentTimelineStage();
     }
 
-    public static function getDisplayStatus(?string $actualStatus): string
+    public static function getDisplayStatus($actualStatus = null, ?string $statusBefore = null): string
     {
-        return \App\Models\Pendaftar::getDisplayStatus($actualStatus);
+        return \App\Models\Pendaftar::getDisplayStatus($actualStatus, $statusBefore);
     }
 }

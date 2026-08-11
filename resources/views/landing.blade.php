@@ -50,6 +50,61 @@
     </script>
 
     <style>
+        :root {
+            /* Timeline "past" red — tune hue/saturation/lightness here */
+            --tl-red-light: hsl(0, 12%, 40%);   /* accent (top of icon, card border) */
+            --tl-red-mid:   hsl(0, 24%, 40%);   /* mid tone (card top) */
+            --tl-red-dark:  hsl(0, 12%, 30%);   /* base (bottom of gradient + shadow color) */
+            --tl--highlight: hsl(51, 100%, 50%);   /* highlight (shadow color) */
+        }
+
+        .tl-passed-icon {
+            background-image: linear-gradient(to bottom right, var(--tl-red-light), var(--tl-red-mid), var(--tl-red-dark));
+            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.4), 0 10px 20px hsla(0, 62%, 30%, 0.3);
+            color: #fff;
+        }
+
+        .tl-passed-card {
+            background-image: linear-gradient(to bottom, var(--tl-red-mid), var(--tl-red-dark));
+            border: 1px solid color-mix(in srgb, var(--tl-red-light) 30%, transparent);
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1), 0 10px 20px hsla(0, 62%, 30%, 0.15);
+            transition: box-shadow 0.5s;
+        }
+
+        .group:hover .tl-passed-card {
+            box-shadow: 0 15px 25px hsla(0, 62%, 30%, 0.25);
+        }
+
+        /* Current step highlight — glowing ring around icon and card */
+        .tl-current-icon {
+            box-shadow:
+                0 0 0 3px var(--tl--highlight),
+                0 0 20px 4px color-mix(in srgb, var(--tl--highlight) 55%, transparent),
+                inset 0 2px 5px rgba(255, 255, 255, 0.4);
+            animation: tlCurrentPulse 2.2s ease-in-out infinite;
+        }
+
+        .tl-current-card {
+            outline: 2px solid var(--tl--highlight);
+            outline-offset: 3px;
+            box-shadow: 0 0 24px 2px color-mix(in srgb, var(--tl--highlight) 40%, transparent);
+        }
+
+        @keyframes tlCurrentPulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 0 3px var(--tl--highlight),
+                    0 0 18px 3px color-mix(in srgb, var(--tl--highlight) 45%, transparent),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 3px var(--tl--highlight),
+                    0 0 28px 8px color-mix(in srgb, var(--tl--highlight) 70%, transparent),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.4);
+            }
+        }
+
         @media (min-width: 1024px) {
             html {
                 zoom: 0.9;
@@ -1512,10 +1567,18 @@
                     ],
                 ];
 
-                foreach ($timeline as &$step) {
+                $currentIndex = null;
+                foreach ($timeline as $i => $s) {
+                    if (! $s['is_passed']) {
+                        $currentIndex = $i;
+                        break;
+                    }
+                }
+
+                foreach ($timeline as $i => &$step) {
                     if ($step['is_passed']) {
-                        $step['icon_class'] = 'bg-gradient-to-br from-[#dc2626] via-[#b91c1c] to-[#7f1d1d] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(127,29,29,0.3)] text-white';
-                        $step['card_class'] = 'bg-gradient-to-b from-[#b91c1c] to-[#7f1d1d] border border-[#dc2626]/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(127,29,29,0.15)] group-hover:shadow-[0_15px_25px_rgba(127,29,29,0.25)]';
+                        $step['icon_class'] = 'tl-passed-icon';
+                        $step['card_class'] = 'tl-passed-card';
                     } else {
                         $step['icon_class'] = $step['color_class'];
                         if ($step['n'] == '8') {
@@ -1523,6 +1586,11 @@
                         } else {
                             $step['card_class'] = 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]';
                         }
+                    }
+
+                    if ($i === $currentIndex) {
+                        $step['icon_class'] .= ' tl-current-icon';
+                        $step['card_class'] .= ' tl-current-card';
                     }
                 }
                 unset($step);
@@ -1572,7 +1640,7 @@
                         <div class="relative z-10 flex flex-col items-center px-4 group">
 
                             <div
-                                class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['is_passed'] ? 'bg-gradient-to-br from-[#dc2626] via-[#b91c1c] to-[#7f1d1d] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(127,29,29,0.3)] text-white' : $step['color_class'] }}">
+                                class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['icon_class'] }}">
                                 <div
                                     class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none">
                                 </div>
@@ -1581,7 +1649,7 @@
 
 
                             <div
-                                class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['is_passed'] ? 'bg-gradient-to-b from-[#b91c1c] to-[#7f1d1d] border border-[#dc2626]/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(127,29,29,0.15)] group-hover:shadow-[0_15px_25px_rgba(127,29,29,0.25)]' : ($step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]') }}">
+                                class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['card_class'] }}">
 
                                 @if ($step['n'] == '8')
                                     <div

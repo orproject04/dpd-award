@@ -1210,8 +1210,12 @@
 
                 <div class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col w-full gap-4 shrink-0">
                     <div class="w-full">
-                        <span class="text-[#1da851] font-bold text-[12px] uppercase flex items-center gap-1.5 mb-1.5">
+                        <span
+                            class="text-[#1da851] font-bold text-[12px] uppercase flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2.5">
                             Contact Person
+                            <span class="text-gray-500 font-normal normal-case text-[11px] tracking-normal">
+                                *Hanya melayani di jam kerja (Senin - Jumat, 08.00 - 16.00 WIB)
+                            </span>
                         </span>
                         <div class="flex flex-col sm:flex-row gap-2 w-full"
                             :class="activeCat?.cp?.length < 3 ? 'flex-wrap' : ''">
@@ -1369,11 +1373,84 @@
             </div>
 
             @php
+                function isTimelinePassed($dateStr)
+                {
+                    if (empty($dateStr))
+                        return false;
+
+                    $now = \Carbon\Carbon::now();
+                    $dateStrLower = strtolower($dateStr);
+
+                    // If it's a date range, check the end date
+                    $parts = preg_split('/(?:\-|s\/?d|sampai)/i', $dateStrLower);
+                    $targetDateStr = trim(end($parts));
+
+                    $monthMap = [
+                        'januari' => 1,
+                        'jan' => 1,
+                        'februari' => 2,
+                        'feb' => 2,
+                        'maret' => 3,
+                        'mar' => 3,
+                        'april' => 4,
+                        'apr' => 4,
+                        'mei' => 5,
+                        'juni' => 6,
+                        'jun' => 6,
+                        'juli' => 7,
+                        'jul' => 7,
+                        'agustus' => 8,
+                        'agu' => 8,
+                        'ags' => 8,
+                        'september' => 9,
+                        'sep' => 9,
+                        'oktober' => 10,
+                        'okt' => 10,
+                        'november' => 11,
+                        'nov' => 11,
+                        'desember' => 12,
+                        'des' => 12,
+                    ];
+
+                    foreach ($monthMap as $mName => $mNum) {
+                        if (str_contains($targetDateStr, $mName)) {
+
+                            if (preg_match('/20\d{2}/', $targetDateStr, $yMatches)) {
+                                $year = (int) $yMatches[0];
+                            } else {
+                                if (preg_match('/20\d{2}/', $dateStrLower, $yMatches)) {
+                                    $year = (int) $yMatches[0];
+                                } else {
+                                    $year = (int) date('Y');
+                                }
+                            }
+
+                            if (preg_match_all('/\b([1-3]?[0-9])\b/', $targetDateStr, $dMatches)) {
+                                $day = (int) end($dMatches[1]);
+                                try {
+                                    $stageDate = \Carbon\Carbon::create($year, $mNum, $day, 23, 59, 59);
+                                    return $now->greaterThan($stageDate);
+                                } catch (\Throwable $e) {
+                                }
+                            } else {
+                                try {
+                                    $stageDate = \Carbon\Carbon::create($year, $mNum, 1)->endOfMonth();
+                                    return $now->greaterThan($stageDate);
+                                } catch (\Throwable $e) {
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    return false;
+                }
+
                 $timeline = [
                     [
                         'n' => '1',
                         'title' => 'Pembukaan Pendaftaran',
                         'date' => config('laravolt.ui.timeline_pembukaan_pendaftaran'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_pembukaan_pendaftaran')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#1b6e4c] via-[#124d34] to-[#0a3622] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(10,54,34,0.3)] text-white',
                     ],
@@ -1381,6 +1458,7 @@
                         'n' => '2',
                         'title' => 'Periode Pendaftaran',
                         'date' => config('laravolt.ui.timeline_periode_pendaftaran'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_periode_pendaftaran')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#2a7a50] via-[#1a5a3a] to-[#0d3f26] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(15,65,40,0.3)] text-white',
                     ],
@@ -1388,6 +1466,7 @@
                         'n' => '3',
                         'title' => 'Identifikasi dan Verifikasi Data',
                         'date' => config('laravolt.ui.timeline_verifikasi_identifikasi'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_verifikasi_identifikasi')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#3e8953] via-[#246740] to-[#12492a] shadow-[inset_0_2px_5px_rgba(255,255,255,0.5),0_10px_20px_rgba(20,75,45,0.3)] text-white',
                     ],
@@ -1395,6 +1474,7 @@
                         'n' => '4',
                         'title' => 'Pengumuman 50 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_1'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_penilaian_tahap_1')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#599955] via-[#337743] to-[#17542d] shadow-[inset_0_2px_5px_rgba(255,255,255,0.5),0_10px_20px_rgba(25,85,50,0.3)] text-white',
                     ],
@@ -1402,6 +1482,7 @@
                         'n' => '5',
                         'title' => 'Pengumuman 10 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_2'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_penilaian_tahap_2')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#7eab56] via-[#4b8941] to-[#20612c] shadow-[inset_0_2px_5px_rgba(255,255,255,0.6),0_10px_20px_rgba(35,100,55,0.3)] text-white',
                     ],
@@ -1409,6 +1490,7 @@
                         'n' => '6',
                         'title' => 'Pengumuman 5 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_3'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_penilaian_tahap_3')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#a7be53] via-[#6d9d3a] to-[#2c6e26] shadow-[inset_0_2px_5px_rgba(255,255,255,0.6),0_10px_20px_rgba(50,115,50,0.3)]  text-white',
                     ],
@@ -1416,6 +1498,7 @@
                         'n' => '7',
                         'title' => 'Wawancara',
                         'date' => config('laravolt.ui.timeline_wawancara'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_wawancara')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#d4d24a] via-[#97b32d] to-[#407e1b] shadow-[inset_0_2px_5px_rgba(255,255,255,0.7),0_10px_20px_rgba(75,135,45,0.35)]  text-[#1a1405]',
                     ],
@@ -1423,12 +1506,27 @@
                         'n' => '8',
                         'title' => 'Malam Penganugerahan',
                         'date' => config('laravolt.ui.timeline_malam_penganugerahan'),
+                        'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_malam_penganugerahan')),
                         'color_class' =>
                             'bg-gradient-to-br from-[#fceabb] via-[#d4af37] to-[#8c6b14] shadow-[inset_0_2px_5px_rgba(255,255,255,0.8),0_10px_20px_rgba(212,175,55,0.4)] text-[#1a1405]',
                     ],
                 ];
-            @endphp
 
+                foreach ($timeline as &$step) {
+                    if ($step['is_passed']) {
+                        $step['icon_class'] = 'bg-gradient-to-br from-[#dc2626] via-[#b91c1c] to-[#7f1d1d] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(127,29,29,0.3)] text-white';
+                        $step['card_class'] = 'bg-gradient-to-b from-[#b91c1c] to-[#7f1d1d] border border-[#dc2626]/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(127,29,29,0.15)] group-hover:shadow-[0_15px_25px_rgba(127,29,29,0.25)]';
+                    } else {
+                        $step['icon_class'] = $step['color_class'];
+                        if ($step['n'] == '8') {
+                            $step['card_class'] = 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]';
+                        } else {
+                            $step['card_class'] = 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]';
+                        }
+                    }
+                }
+                unset($step);
+            @endphp
 
             <div class="relative hidden lg:block w-full py-10 mt-10">
                 <style>
@@ -1474,7 +1572,7 @@
                         <div class="relative z-10 flex flex-col items-center px-4 group">
 
                             <div
-                                class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['color_class'] }}">
+                                class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['is_passed'] ? 'bg-gradient-to-br from-[#dc2626] via-[#b91c1c] to-[#7f1d1d] shadow-[inset_0_2px_5px_rgba(255,255,255,0.4),0_10px_20px_rgba(127,29,29,0.3)] text-white' : $step['color_class'] }}">
                                 <div
                                     class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none">
                                 </div>
@@ -1483,7 +1581,7 @@
 
 
                             <div
-                                class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
+                                class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['is_passed'] ? 'bg-gradient-to-b from-[#b91c1c] to-[#7f1d1d] border border-[#dc2626]/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(127,29,29,0.15)] group-hover:shadow-[0_15px_25px_rgba(127,29,29,0.25)]' : ($step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]') }}">
 
                                 @if ($step['n'] == '8')
                                     <div
@@ -1540,7 +1638,7 @@
                         <div class="relative z-10 flex flex-col items-center px-4 group">
 
                             <div
-                                class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['color_class'] }}">
+                                class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl mb-6 transition-all duration-500 relative {{ $step['icon_class'] }}">
                                 <div
                                     class="absolute inset-0 z-0 bg-gradient-to-tr from-white/10 to-transparent opacity-30 mix-blend-overlay rounded-full pointer-events-none">
                                 </div>
@@ -1549,7 +1647,7 @@
 
 
                             <div
-                                class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['n'] == '8' ? 'bg-gradient-to-b from-[#1a4a34] to-[#0a2b1d] border border-[#d4af37]/30 border-t-[#d4af37]/60 border-b-black/40 shadow-[inset_0_1px_3px_rgba(212,175,55,0.3),0_10px_25px_rgba(212,175,55,0.2)] group-hover:shadow-[0_15px_30px_rgba(212,175,55,0.3)]' : 'bg-gradient-to-b from-[#124d34] to-[#0a3622] border border-[#1b6e4c]/30 border-t-[#228059]/50 border-b-black/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_10px_20px_rgba(10,54,34,0.15)] group-hover:shadow-[0_15px_25px_rgba(10,54,34,0.25)]' }}">
+                                class="rounded-2xl p-4 w-full flex-1 flex flex-col items-center justify-center min-h-[75px] transition-all duration-500 relative overflow-hidden group-hover:-translate-y-1 {{ $step['card_class'] }}">
 
                                 @if ($step['n'] == '8')
                                     <div
@@ -1604,7 +1702,7 @@
                         style="transition-delay: {{ $index * 50 }}ms;">
 
                         <div
-                            class="shrink-0 w-14 h-14 rounded-full flex items-center justify-center z-10 relative {{ $step['color_class'] }}">
+                            class="shrink-0 w-14 h-14 rounded-full flex items-center justify-center z-10 relative {{ $step['icon_class'] }}">
                             <div
                                 class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay rounded-full pointer-events-none">
                             </div>
@@ -1613,11 +1711,14 @@
 
                         <div class="pt-1">
                             <h3
-                                class="cz text-[18px] sm:text-[22px] font-bold tracking-wide transition-colors duration-300 leading-[1.3] mb-1 {{ $step['n'] == '8' ? 'text-[#d4af37]' : 'text-[#0a3622]' }}">
+                                class="cz text-[18px] sm:text-[22px] font-bold tracking-wide transition-colors duration-300 leading-[1.3] mb-1 {{ $step['is_passed'] ? 'text-red-700' : ($step['n'] == '8' ? 'text-[#d4af37]' : 'text-[#0a3622]') }}">
                                 {{ $step['title'] }}
                             </h3>
                             @if (!empty($step['date']))
-                                <p class="text-[14.5px] font-semibold text-[#1b6e4c] mb-2">{{ $step['date'] }}</p>
+                                <p
+                                    class="text-[14.5px] font-semibold mb-2 {{ $step['is_passed'] ? 'text-red-600/80' : 'text-[#1b6e4c]' }}">
+                                    {{ $step['date'] }}
+                                </p>
                             @endif
                         </div>
                     </div>
@@ -1718,13 +1819,21 @@
                                 </div>
                                 <div>
                                     <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">STATUS</div>
-                                    <div
-                                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#e0b53c]/10 border border-[#e0b53c]/20 mt-1">
-                                        <div class="w-2 h-2 rounded-full bg-[#e0b53c] animate-pulse"></div>
-                                        <span class="text-[#b8860b] font-bold text-[14px] uppercase"
+                                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border mt-1"
+                                        :class="resultData?.status.toLowerCase() === 'tidak lolos' ? 'bg-red-50 border-red-200' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'bg-green-50 border-green-200' : 'bg-[#e0b53c]/10 border-[#e0b53c]/20')">
+                                        <div class="w-2 h-2 rounded-full animate-pulse"
+                                            :class="resultData?.status.toLowerCase() === 'tidak lolos' ? 'bg-red-500' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'bg-green-500' : 'bg-[#e0b53c]')">
+                                        </div>
+                                        <span class="font-bold text-[14px] uppercase"
+                                            :class="resultData?.status.toLowerCase() === 'tidak lolos' ? 'text-red-600' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'text-green-700' : 'text-[#b8860b]')"
                                             x-text="resultData?.status"></span>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-gray-100 text-center">
+                                <span class="text-[12px] italic text-gray-500">* Keputusan panitia tidak dapat diganggu
+                                    gugat.</span>
                             </div>
                         </div>
                     </template>

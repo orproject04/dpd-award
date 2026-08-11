@@ -883,14 +883,14 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <div class="lg:col-span-1" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
-                    <div class="sec-title mb-4" style="font-size: 1rem; text-align: center;">Sub Wilayah</div>
+                    <div id="wilayahTitle" class="sec-title mb-4" style="font-size: 1rem; text-align: center;">Sub Wilayah Semua Kategori</div>
                     <div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;">
                         <canvas id="wilayahChart"></canvas>
                     </div>
                     <div id="wilayahList" class="mt-8 space-y-2"></div>
                 </div>
                 <div class="lg:col-span-3" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
-                    <div class="sec-title mb-4" style="font-size: 1rem;">Persebaran Provinsi</div>
+                    <div id="provinsiTitle" class="sec-title mb-4" style="font-size: 1rem;">Persebaran Provinsi Semua Kategori</div>
                     <div style="height:350px; overflow-y:auto; overflow-x:hidden;" class="scroll-thin pr-2">
                         <div style="position:relative;height:800px;width:100%;">
                             <canvas id="provinsiChart"></canvas>
@@ -1284,7 +1284,9 @@
         // ── 6. Geographic Distribution ────────────────────────────
         const geoWilayahData = {!! json_encode($geoWilayah) !!};
         const geoProvinsiData = {!! json_encode($geoProvinsi) !!};
+        const provinsiColorMap = {!! json_encode($provinsiColors) !!};
         const wColors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6'];
+        const initialKat = 'Semua Kategori';
 
         function buildTooltipDetail(context, dataObj, prefix) {
             let currentFilter = document.getElementById('geoFilter').value;
@@ -1306,7 +1308,6 @@
             return lines;
         }
 
-        let initialKat = 'Semua Kategori';
         let rawWilayah = geoWilayahData[initialKat];
         let wLabels = Object.keys(rawWilayah);
         let wData = Object.values(rawWilayah);
@@ -1349,6 +1350,8 @@
         let pLabels = Object.keys(rawProvinsi);
         let pData = Object.values(rawProvinsi);
 
+        let pColors = pLabels.map(l => provinsiColorMap[l] || '#6366f1');
+
         window.provinsiChart = new Chart(document.getElementById('provinsiChart').getContext('2d'), {
             type: 'bar',
             data: {
@@ -1356,7 +1359,7 @@
                 datasets: [{
                     label: 'Peserta',
                     data: pData,
-                    backgroundColor: '#6366f1',
+                    backgroundColor: pColors,
                     borderRadius: 4
                 }]
             },
@@ -1431,12 +1434,18 @@
             window.wilayahChart.data.datasets[0].data = wD;
             window.wilayahChart.update();
 
-            let pL = Object.keys(geoProvinsiData[kategori]).map(l => l.replace('Provinsi ', ''));
+            let pLRaw = Object.keys(geoProvinsiData[kategori]);
+            let pL = pLRaw.map(l => l.replace('Provinsi ', ''));
             let pD = Object.values(geoProvinsiData[kategori]);
+            let pC = pLRaw.map(l => provinsiColorMap[l] || '#6366f1');
+
             window.provinsiChart.data.labels = pL;
             window.provinsiChart.data.datasets[0].data = pD;
-            window.provinsiChart.data.datasets[0].backgroundColor = katColors[kategori] || '#6366f1';
+            window.provinsiChart.data.datasets[0].backgroundColor = pC;
             window.provinsiChart.update();
+
+            document.getElementById('wilayahTitle').innerText = 'Sub Wilayah ' + kategori;
+            document.getElementById('provinsiTitle').innerText = 'Persebaran Provinsi ' + kategori;
 
             updateWilayahList(kategori);
         };

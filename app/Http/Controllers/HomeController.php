@@ -190,6 +190,18 @@ final class HomeController
             $geoWilayah[$kat] = $wilCounts;
         }
 
+        // 13. Map Provinsi to Sub Wilayah Color for the chart
+        $provinsiColors = [];
+        $wColors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6'];
+        $wIndex = 0;
+        foreach (\App\Models\Pendaftar::getProvinsiMap() as $wilayah => $provinsis) {
+            $color = $wColors[$wIndex % count($wColors)];
+            foreach ($provinsis as $prov) {
+                $provinsiColors[$prov] = $color;
+            }
+            $wIndex++;
+        }
+
         // Pass all stats to the dashboard view
         return view('home', compact(
             'availableKategories',
@@ -212,7 +224,8 @@ final class HomeController
             'newThisWeek',
             'ageGroups',
             'geoProvinsi',
-            'geoWilayah'
+            'geoWilayah',
+            'provinsiColors'
         ));
     }
 

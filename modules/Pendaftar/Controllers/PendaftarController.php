@@ -202,6 +202,14 @@ class PendaftarController extends Controller
         $pendaftar->status = $validated['status'];
         $pendaftar->save();
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pendaftar berhasil diperbarui.',
+                'status' => $pendaftar->status
+            ]);
+        }
+
         return back()->withSuccess('Status pendaftar berhasil diperbarui.');
     }
 
@@ -243,12 +251,32 @@ class PendaftarController extends Controller
         return back()->withError('Gagal mengunggah KTP.');
     }
 
+    public function updateProvinsi(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
+    {
+        $validated = $request->validate([
+            'provinsi' => 'nullable|string|max:255',
+        ]);
+
+        $pendaftar->update(['provinsi' => $validated['provinsi']]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Provinsi pendaftar berhasil diperbarui.',
+                'provinsi_with_wilayah' => $pendaftar->provinsi_with_wilayah
+            ]);
+        }
+
+        return back()->withSuccess('Provinsi pendaftar berhasil diperbarui.');
+    }
+
     protected function getFilteredQuery(\Illuminate\Http\Request $request)
     {
         $query = Pendaftar::query();
 
         $filters = [
             new \App\Http\Filters\KategoriFilter,
+            new \App\Http\Filters\ProvinsiFilter,
             new \App\Http\Filters\StatusFilter,
         ];
 
@@ -281,6 +309,8 @@ class PendaftarController extends Controller
             'No',
             'Nomor Registrasi',
             'Kategori',
+            'Provinsi',
+            'Sub Wilayah',
             'Nama Lengkap',
             'Tempat Lahir',
             'Tanggal Lahir',
@@ -329,7 +359,7 @@ class PendaftarController extends Controller
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
             $sheetPendaftar->setCellValue($colLetter . '1', $header);
         }
-        $sheetPendaftar->getStyle('A1:M1')->applyFromArray($headerStyle);
+        $sheetPendaftar->getStyle('A1:O1')->applyFromArray($headerStyle);
         $sheetPendaftar->getRowDimension(1)->setRowHeight(25);
 
         $rowIdx = 2;
@@ -337,24 +367,26 @@ class PendaftarController extends Controller
             $sheetPendaftar->setCellValue('A' . $rowIdx, $index + 1);
             $sheetPendaftar->setCellValue('B' . $rowIdx, $pendaftar->nomor_registrasi);
             $sheetPendaftar->setCellValue('C' . $rowIdx, $pendaftar->kategori);
-            $sheetPendaftar->setCellValue('D' . $rowIdx, $pendaftar->nama);
-            $sheetPendaftar->setCellValue('E' . $rowIdx, $pendaftar->tempat_lahir);
-            $sheetPendaftar->setCellValue('F' . $rowIdx, $pendaftar->tanggal_lahir);
-            $sheetPendaftar->setCellValue('G' . $rowIdx, $pendaftar->jenis_kelamin);
-            $sheetPendaftar->setCellValue('H' . $rowIdx, $pendaftar->pendidikan);
-            $sheetPendaftar->setCellValue('I' . $rowIdx, $pendaftar->alamat);
-            $sheetPendaftar->setCellValue('J' . $rowIdx, $pendaftar->nomor_wa);
-            $sheetPendaftar->setCellValue('K' . $rowIdx, $pendaftar->email);
-            $sheetPendaftar->setCellValue('L' . $rowIdx, $pendaftar->status ?? 'Diajukan');
-            $sheetPendaftar->setCellValue('M' . $rowIdx, $pendaftar->created_at->format('Y-m-d H:i:s'));
+            $sheetPendaftar->setCellValue('D' . $rowIdx, $pendaftar->provinsi ?: '-');
+            $sheetPendaftar->setCellValue('E' . $rowIdx, $pendaftar->wilayah ?: '-');
+            $sheetPendaftar->setCellValue('F' . $rowIdx, $pendaftar->nama);
+            $sheetPendaftar->setCellValue('G' . $rowIdx, $pendaftar->tempat_lahir);
+            $sheetPendaftar->setCellValue('H' . $rowIdx, $pendaftar->tanggal_lahir);
+            $sheetPendaftar->setCellValue('I' . $rowIdx, $pendaftar->jenis_kelamin);
+            $sheetPendaftar->setCellValue('J' . $rowIdx, $pendaftar->pendidikan);
+            $sheetPendaftar->setCellValue('K' . $rowIdx, $pendaftar->alamat);
+            $sheetPendaftar->setCellValue('L' . $rowIdx, $pendaftar->nomor_wa);
+            $sheetPendaftar->setCellValue('M' . $rowIdx, $pendaftar->email);
+            $sheetPendaftar->setCellValue('N' . $rowIdx, $pendaftar->status ?? 'Diajukan');
+            $sheetPendaftar->setCellValue('O' . $rowIdx, $pendaftar->created_at->format('Y-m-d H:i:s'));
 
             // Apply light borders
-            $sheetPendaftar->getStyle('A' . $rowIdx . ':M' . $rowIdx)->applyFromArray($dataBorderStyle);
+            $sheetPendaftar->getStyle('A' . $rowIdx . ':O' . $rowIdx)->applyFromArray($dataBorderStyle);
             $rowIdx++;
         }
 
         // Auto-fit columns
-        foreach (range(1, 13) as $colIdx) {
+        foreach (range(1, 15) as $colIdx) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
             $sheetPendaftar->getColumnDimension($colLetter)->setAutoSize(true);
         }
@@ -487,8 +519,151 @@ class PendaftarController extends Controller
         // Set Sheet 1 as active at opening
         $spreadsheet->setActiveSheetIndex(0);
 
-        // Serve file as download
-        $fileName = 'Data_Pendaftar_Masal_' . date('Ymd_His') . '.xlsx';
+        // ----------------------------------------------------
+        // AGGREGATE DATA FOR REKAP
+        // ----------------------------------------------------
+        $rekapProvinsi = [];
+        $rekapWilayah = [];
+        $kategories = [
+            'Bidang Pendidikan',
+            'Bidang Kesehatan',
+            'Bidang Ketahanan Pangan',
+            'Bidang Seni dan Budaya'
+        ];
+
+        foreach ($pendaftars as $p) {
+            $prov = (empty($p->provinsi) || $p->provinsi == '-') ? 'Tidak Diketahui' : $p->provinsi;
+            $wil = (empty($p->wilayah) || $p->wilayah == '-') ? 'Tidak Diketahui' : $p->wilayah;
+            $kat = $p->kategori;
+
+            if (!isset($rekapProvinsi[$prov])) {
+                $rekapProvinsi[$prov] = array_fill_keys($kategories, 0);
+                $rekapProvinsi[$prov]['Total'] = 0;
+            }
+            if (!isset($rekapWilayah[$wil])) {
+                $rekapWilayah[$wil] = array_fill_keys($kategories, 0);
+                $rekapWilayah[$wil]['Total'] = 0;
+            }
+
+            if (in_array($kat, $kategories)) {
+                $rekapProvinsi[$prov][$kat]++;
+                $rekapWilayah[$wil][$kat]++;
+            }
+            
+            $rekapProvinsi[$prov]['Total']++;
+            $rekapWilayah[$wil]['Total']++;
+        }
+
+        ksort($rekapProvinsi);
+        ksort($rekapWilayah);
+
+        // ----------------------------------------------------
+        // SHEET 4: REKAP PROVINSI
+        // ----------------------------------------------------
+        $sheetRekapProv = $spreadsheet->createSheet();
+        $sheetRekapProv->setTitle('Rekap Provinsi');
+        
+        $headersProv = ['No', 'Provinsi', 'Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya', 'Total'];
+        foreach ($headersProv as $colIdx => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
+            $sheetRekapProv->setCellValue($colLetter . '1', $header);
+        }
+        $sheetRekapProv->getStyle('A1:G1')->applyFromArray($headerStyle);
+        $sheetRekapProv->getStyle('A1:G1')->getFill()->getStartColor()->setRGB('FFF2CC'); // Soft yellow
+        $sheetRekapProv->getRowDimension(1)->setRowHeight(25);
+        
+        $rowIdx = 2;
+        $no = 1;
+        $grandTotalsProv = array_fill_keys($kategories, 0);
+        $grandTotalsProv['Total'] = 0;
+
+        foreach ($rekapProvinsi as $prov => $data) {
+            $sheetRekapProv->setCellValue('A' . $rowIdx, $no++);
+            $sheetRekapProv->setCellValue('B' . $rowIdx, $prov);
+            $sheetRekapProv->setCellValue('C' . $rowIdx, $data['Bidang Pendidikan']);
+            $sheetRekapProv->setCellValue('D' . $rowIdx, $data['Bidang Kesehatan']);
+            $sheetRekapProv->setCellValue('E' . $rowIdx, $data['Bidang Ketahanan Pangan']);
+            $sheetRekapProv->setCellValue('F' . $rowIdx, $data['Bidang Seni dan Budaya']);
+            $sheetRekapProv->setCellValue('G' . $rowIdx, $data['Total']);
+            
+            $sheetRekapProv->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
+            
+            foreach ($kategories as $k) $grandTotalsProv[$k] += $data[$k];
+            $grandTotalsProv['Total'] += $data['Total'];
+            $rowIdx++;
+        }
+        
+        // Add Grand Total Row
+        $sheetRekapProv->setCellValue('A' . $rowIdx, '');
+        $sheetRekapProv->setCellValue('B' . $rowIdx, 'TOTAL KESELURUHAN');
+        $sheetRekapProv->setCellValue('C' . $rowIdx, $grandTotalsProv['Bidang Pendidikan']);
+        $sheetRekapProv->setCellValue('D' . $rowIdx, $grandTotalsProv['Bidang Kesehatan']);
+        $sheetRekapProv->setCellValue('E' . $rowIdx, $grandTotalsProv['Bidang Ketahanan Pangan']);
+        $sheetRekapProv->setCellValue('F' . $rowIdx, $grandTotalsProv['Bidang Seni dan Budaya']);
+        $sheetRekapProv->setCellValue('G' . $rowIdx, $grandTotalsProv['Total']);
+        $sheetRekapProv->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($headerStyle);
+        $sheetRekapProv->getStyle('A' . $rowIdx . ':G' . $rowIdx)->getFill()->getStartColor()->setRGB('D9D9D9');
+
+        foreach (range(1, 7) as $colIdx) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
+            $sheetRekapProv->getColumnDimension($colLetter)->setAutoSize(true);
+        }
+
+        // ----------------------------------------------------
+        // SHEET 5: REKAP SUB WILAYAH
+        // ----------------------------------------------------
+        $sheetRekapWil = $spreadsheet->createSheet();
+        $sheetRekapWil->setTitle('Rekap Sub Wilayah');
+        
+        $headersWil = ['No', 'Sub Wilayah', 'Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya', 'Total'];
+        foreach ($headersWil as $colIdx => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
+            $sheetRekapWil->setCellValue($colLetter . '1', $header);
+        }
+        $sheetRekapWil->getStyle('A1:G1')->applyFromArray($headerStyle);
+        $sheetRekapWil->getStyle('A1:G1')->getFill()->getStartColor()->setRGB('FCE4D6'); // Soft orange
+        $sheetRekapWil->getRowDimension(1)->setRowHeight(25);
+        
+        $rowIdx = 2;
+        $no = 1;
+        $grandTotalsWil = array_fill_keys($kategories, 0);
+        $grandTotalsWil['Total'] = 0;
+
+        foreach ($rekapWilayah as $wil => $data) {
+            $sheetRekapWil->setCellValue('A' . $rowIdx, $no++);
+            $sheetRekapWil->setCellValue('B' . $rowIdx, $wil);
+            $sheetRekapWil->setCellValue('C' . $rowIdx, $data['Bidang Pendidikan']);
+            $sheetRekapWil->setCellValue('D' . $rowIdx, $data['Bidang Kesehatan']);
+            $sheetRekapWil->setCellValue('E' . $rowIdx, $data['Bidang Ketahanan Pangan']);
+            $sheetRekapWil->setCellValue('F' . $rowIdx, $data['Bidang Seni dan Budaya']);
+            $sheetRekapWil->setCellValue('G' . $rowIdx, $data['Total']);
+            
+            $sheetRekapWil->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
+            
+            foreach ($kategories as $k) $grandTotalsWil[$k] += $data[$k];
+            $grandTotalsWil['Total'] += $data['Total'];
+            $rowIdx++;
+        }
+        
+        // Add Grand Total Row
+        $sheetRekapWil->setCellValue('A' . $rowIdx, '');
+        $sheetRekapWil->setCellValue('B' . $rowIdx, 'TOTAL KESELURUHAN');
+        $sheetRekapWil->setCellValue('C' . $rowIdx, $grandTotalsWil['Bidang Pendidikan']);
+        $sheetRekapWil->setCellValue('D' . $rowIdx, $grandTotalsWil['Bidang Kesehatan']);
+        $sheetRekapWil->setCellValue('E' . $rowIdx, $grandTotalsWil['Bidang Ketahanan Pangan']);
+        $sheetRekapWil->setCellValue('F' . $rowIdx, $grandTotalsWil['Bidang Seni dan Budaya']);
+        $sheetRekapWil->setCellValue('G' . $rowIdx, $grandTotalsWil['Total']);
+        $sheetRekapWil->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($headerStyle);
+        $sheetRekapWil->getStyle('A' . $rowIdx . ':G' . $rowIdx)->getFill()->getStartColor()->setRGB('D9D9D9');
+
+        foreach (range(1, 7) as $colIdx) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
+            $sheetRekapWil->getColumnDimension($colLetter)->setAutoSize(true);
+        }
+
+        // Generate response
+        $spreadsheet->setActiveSheetIndex(0);
+        $fileName = 'Data_Pendaftar_DPD_' . date('Y-m-d_H-i-s') . '.xlsx';
 
         return response()->streamDownload(function () use ($spreadsheet) {
             $writer = new Xlsx($spreadsheet);

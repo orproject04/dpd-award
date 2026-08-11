@@ -27,6 +27,60 @@ class Pendaftar extends Model
         return $this->hasMany(Penghargaan::class, 'pendaftar_id');
     }
 
+    public static function getProvinsiMap(): array
+    {
+        return [
+            'Sub Wilayah Barat I' => [
+                'Provinsi Aceh', 'Provinsi Sumatera Utara', 'Provinsi Sumatera Barat',
+                'Provinsi Riau', 'Provinsi Jambi', 'Provinsi Sumatera Selatan',
+                'Provinsi Bengkulu', 'Provinsi Kepulauan Bangka Belitung',
+                'Provinsi Kepulauan Riau', 'Provinsi Lampung'
+            ],
+            'Sub Wilayah Barat II' => [
+                'Provinsi Daerah Khusus Jakarta', 'Provinsi Jawa Barat', 'Provinsi Jawa Tengah',
+                'Provinsi Daerah Istimewa Yogyakarta', 'Provinsi Jawa Timur', 'Provinsi Banten',
+                'Provinsi Bali', 'Provinsi Nusa Tenggara Barat', 'Provinsi Nusa Tenggara Timur'
+            ],
+            'Sub Wilayah Timur I' => [
+                'Provinsi Kalimantan Barat', 'Provinsi Kalimantan Tengah', 'Provinsi Kalimantan Selatan',
+                'Provinsi Kalimantan Timur', 'Provinsi Kalimantan Utara', 'Provinsi Sulawesi Selatan',
+                'Provinsi Sulawesi Tengah', 'Provinsi Sulawesi Barat', 'Provinsi Gorontalo'
+            ],
+            'Sub Wilayah Timur II' => [
+                'Provinsi Sulawesi Utara', 'Provinsi Sulawesi Tenggara', 'Provinsi Maluku',
+                'Provinsi Maluku Utara', 'Provinsi Papua', 'Provinsi Papua Barat',
+                'Provinsi Papua Selatan', 'Provinsi Papua Tengah', 'Provinsi Papua Pegunungan',
+                'Provinsi Papua Barat Daya'
+            ]
+        ];
+    }
+
+    public static function getProvinsiList(): array
+    {
+        $list = ['' => 'Pilih Provinsi'];
+        foreach (self::getProvinsiMap() as $wilayah => $provinsis) {
+            foreach ($provinsis as $provinsi) {
+                $list[$provinsi] = $provinsi;
+            }
+        }
+        return $list;
+    }
+
+    public function getProvinsiWithWilayahAttribute(): string
+    {
+        if (empty($this->provinsi)) {
+            return '-';
+        }
+
+        foreach (self::getProvinsiMap() as $wilayah => $provinsis) {
+            if (in_array($this->provinsi, $provinsis)) {
+                return "{$this->provinsi} ({$wilayah})";
+            }
+        }
+
+        return $this->provinsi;
+    }
+
     public function getFotoAttribute(): string
     {
         $foto = $this->getRawOriginal('foto');

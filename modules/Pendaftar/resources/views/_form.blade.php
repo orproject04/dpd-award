@@ -1,5 +1,6 @@
 {!! form()->text('nomor_registrasi')->label('Nomor Registrasi')->required() !!}
 {!! form()->text('kategori')->label('Kategori')->required() !!}
+{!! form()->select('provinsi', \App\Models\Pendaftar::getProvinsiList())->label('Provinsi')->addClass('search') !!}
 {!! form()->text('nama')->label('Nama')->required() !!}
 {!! form()->text('tempat_lahir')->label('Tempat Lahir')->required() !!}
 {!! form()->date('tanggal_lahir')->label('Tanggal Lahir')->required() !!}

@@ -16,39 +16,58 @@ final class HomeController
     /**
      * Handle the incoming request and show the dashboard.
      */
-    public function __invoke(): View
+    public function __invoke(\Illuminate\Http\Request $request): View
     {
+        $availableKategories = Pendaftar::select('kategori')->whereNotNull('kategori')->where('kategori', '!=', '')->distinct()->pluck('kategori')->toArray();
+        
+        $desiredOrder = [
+            'Bidang Pendidikan',
+            'Bidang Kesehatan',
+            'Bidang Ketahanan Pangan',
+            'Bidang Seni dan Budaya'
+        ];
+        
+        usort($availableKategories, function($a, $b) use ($desiredOrder) {
+            $posA = array_search($a, $desiredOrder);
+            $posB = array_search($b, $desiredOrder);
+            $posA = $posA === false ? 999 : $posA;
+            $posB = $posB === false ? 999 : $posB;
+            return $posA <=> $posB;
+        });
+
+        $baseQuery = Pendaftar::query();
+
         // 1. General stats counts
-        $totalPendaftar = Pendaftar::count();
-        $totalKontribusi = Kontribusi::count();
-        $totalPenghargaan = Penghargaan::count();
+        $totalPendaftar = (clone $baseQuery)->count();
+        $totalKontribusi = Kontribusi::whereIn('pendaftar_id', (clone $baseQuery)->select('id'))->count();
+        $totalPenghargaan = Penghargaan::whereIn('pendaftar_id', (clone $baseQuery)->select('id'))->count();
 
         // 2. Count by Status
-        $statusCounts = Pendaftar::select('status', DB::raw('count(*) as total'))
+        $statusCounts = (clone $baseQuery)->select('status', DB::raw('count(*) as total'))
             ->groupBy('status')
             ->pluck('total', 'status')
             ->toArray();
 
-        // 3. Count by Kategori
-        $kategoriCounts = Pendaftar::select('kategori', DB::raw('count(*) as total'))
+        // 3. Count by Kategori (if unfiltered, shows all. if filtered, shows only the filtered one)
+        $kategoriCounts = (clone $baseQuery)->select('kategori', DB::raw('count(*) as total'))
             ->groupBy('kategori')
             ->pluck('total', 'kategori')
             ->toArray();
 
         // 4. Count by Gender (jenis_kelamin)
-        $genderCounts = Pendaftar::select('jenis_kelamin', DB::raw('count(*) as total'))
+        $genderCounts = (clone $baseQuery)->select('jenis_kelamin', DB::raw('count(*) as total'))
             ->groupBy('jenis_kelamin')
             ->pluck('total', 'jenis_kelamin')
             ->toArray();
 
         // 5. Count by Pendidikan
-        $pendidikanCounts = Pendaftar::select('pendidikan', DB::raw('count(*) as total'))
+        $pendidikanCounts = (clone $baseQuery)->select('pendidikan', DB::raw('count(*) as total'))
             ->groupBy('pendidikan')
             ->pluck('total', 'pendidikan')
             ->toArray();
 
         // 6. Registration Trend (last 30 days)
-        $trendData = Pendaftar::select(DB::raw("DATE(created_at) as date_only"), DB::raw('count(*) as total'))
+        $trendData = (clone $baseQuery)->select(DB::raw("DATE(created_at) as date_only"), DB::raw('count(*) as total'))
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->groupBy(DB::raw("DATE(created_at)"))
             ->orderBy(DB::raw("DATE(created_at)"), 'asc')
@@ -77,7 +96,7 @@ final class HomeController
         }
 
         // 7. Recent Registrants (latest 5)
-        $recentPendaftar = Pendaftar::orderBy('created_at', 'desc')
+        $recentPendaftar = (clone $baseQuery)->orderBy('created_at', 'desc')
             ->withCount(['kontribusi', 'penghargaan'])
             ->limit(10)
             ->get();
@@ -107,8 +126,8 @@ final class HomeController
             : 0;
 
         // 10. New registrants today & this week
-        $newToday = Pendaftar::whereDate('created_at', Carbon::today())->count();
-        $newThisWeek = Pendaftar::where('created_at', '>=', Carbon::now()->startOfWeek())->count();
+        $newToday = (clone $baseQuery)->whereDate('created_at', Carbon::today())->count();
+        $newThisWeek = (clone $baseQuery)->where('created_at', '>=', Carbon::now()->startOfWeek())->count();
 
         // 11. Age distribution (from tanggal_lahir)
         $ageGroups = [
@@ -118,7 +137,7 @@ final class HomeController
             '45–54' => 0,
             '55+' => 0,
         ];
-        $pendaftarWithAge = Pendaftar::select('tanggal_lahir')->whereNotNull('tanggal_lahir')->get();
+        $pendaftarWithAge = (clone $baseQuery)->select('tanggal_lahir')->whereNotNull('tanggal_lahir')->get();
         foreach ($pendaftarWithAge as $p) {
             $age = Carbon::parse($p->tanggal_lahir)->age;
             if ($age < 25) $ageGroups['< 25']++;
@@ -128,8 +147,52 @@ final class HomeController
             else $ageGroups['55+']++;
         }
 
+        // 12. Geographic distribution (Grouped by category for JS filtering)
+        $geoProvinsi = [];
+        $geoWilayah = [];
+        $categoriesToFetch = array_merge(['Semua Kategori'], $availableKategories);
+
+        foreach ($categoriesToFetch as $kat) {
+            $q = clone $baseQuery;
+            if ($kat !== 'Semua Kategori') {
+                $q->where('kategori', $kat);
+            }
+
+            $allProvinsiCounts = [];
+            foreach (\App\Models\Pendaftar::getProvinsiMap() as $wilayah => $provinsis) {
+                foreach ($provinsis as $prov) {
+                    $allProvinsiCounts[$prov] = 0;
+                }
+            }
+
+            $dbProvinsiCounts = (clone $q)->select('provinsi', DB::raw('count(*) as total'))
+                ->whereNotNull('provinsi')
+                ->where('provinsi', '!=', '')
+                ->groupBy('provinsi')
+                ->pluck('total', 'provinsi')
+                ->toArray();
+                
+            $provCounts = array_merge($allProvinsiCounts, $dbProvinsiCounts);
+
+            $wilCounts = [];
+            foreach (\App\Models\Pendaftar::getProvinsiMap() as $wilayah => $provinsis) {
+                $wilCounts[$wilayah] = 0;
+                foreach ($provinsis as $prov) {
+                    if (isset($provCounts[$prov])) {
+                        $wilCounts[$wilayah] += $provCounts[$prov];
+                    }
+                }
+            }
+            
+            arsort($provCounts);
+            
+            $geoProvinsi[$kat] = $provCounts;
+            $geoWilayah[$kat] = $wilCounts;
+        }
+
         // Pass all stats to the dashboard view
         return view('home', compact(
+            'availableKategories',
             'totalPendaftar',
             'totalKontribusi',
             'totalPenghargaan',
@@ -147,7 +210,9 @@ final class HomeController
             'conversionRate',
             'newToday',
             'newThisWeek',
-            'ageGroups'
+            'ageGroups',
+            'geoProvinsi',
+            'geoWilayah'
         ));
     }
 

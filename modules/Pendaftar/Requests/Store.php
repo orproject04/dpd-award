@@ -16,6 +16,7 @@ class Store extends FormRequest
         return [
             'nomor_registrasi' => ['required'],
             'kategori' => ['required'],
+            'provinsi' => ['nullable', 'string'],
             'nama' => ['required'],
             'tempat_lahir' => ['required'],
             'tanggal_lahir' => ['required'],

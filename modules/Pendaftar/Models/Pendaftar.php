@@ -86,4 +86,34 @@ class Pendaftar extends Model
     {
         return \App\Models\Pendaftar::getDisplayStatus($actualStatus, $statusBefore);
     }
+
+    public function getProvinsiWithWilayahAttribute(): string
+    {
+        if (empty($this->provinsi)) {
+            return '-';
+        }
+
+        foreach (\App\Models\Pendaftar::getProvinsiMap() as $wilayah => $provinsis) {
+            if (in_array($this->provinsi, $provinsis)) {
+                return "{$this->provinsi} ({$wilayah})";
+            }
+        }
+
+        return $this->provinsi;
+    }
+
+    public function getWilayahAttribute(): string
+    {
+        if (empty($this->provinsi)) {
+            return '-';
+        }
+
+        foreach (\App\Models\Pendaftar::getProvinsiMap() as $wilayah => $provinsis) {
+            if (in_array($this->provinsi, $provinsis)) {
+                return $wilayah;
+            }
+        }
+
+        return '-';
+    }
 }

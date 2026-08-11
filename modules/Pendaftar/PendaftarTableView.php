@@ -83,6 +83,9 @@ class PendaftarTableView extends CustomTableView
                 return "<span style='display:block;text-align:center;'>" . $data->kategori . "</span>";
             }, 'Kategori')->sortable('kategori'),
             Raw::make(function ($data) {
+                return "<span style='display:block;text-align:center;'>" . ($data->provinsi ?: '-') . "</span>";
+            }, 'Provinsi')->sortable('provinsi'),
+            Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;font-family:monospace;font-size:12px;color:var(--text-muted);'>" . $data->nomor_registrasi . "</span>";
             }, 'Nomor Registrasi')->sortable('nomor_registrasi'),
             Raw::make(function ($data) {
@@ -113,6 +116,7 @@ class PendaftarTableView extends CustomTableView
     {
         return [
             new KategoriFilter,
+            new \App\Http\Filters\ProvinsiFilter,
             new StatusFilter,
         ];
     }

@@ -18,6 +18,7 @@ Route::group(
         Route::post('pendaftar/{pendaftar}/status', [PendaftarController::class, 'updateStatus'])->name('pendaftar.update-status');
         Route::post('pendaftar/{pendaftar}/foto', [PendaftarController::class, 'updateFoto'])->name('pendaftar.update-foto');
         Route::post('pendaftar/{pendaftar}/ktp', [PendaftarController::class, 'updateKtp'])->name('pendaftar.update-ktp');
+        Route::post('pendaftar/{pendaftar}/provinsi', [PendaftarController::class, 'updateProvinsi'])->name('pendaftar.update-provinsi');
         Route::resource('pendaftar', PendaftarController::class);
     }
 );

@@ -1779,12 +1779,12 @@
 
                         <div class="pt-1">
                             <h3
-                                class="cz text-[18px] sm:text-[22px] font-bold tracking-wide transition-colors duration-300 leading-[1.3] mb-1 {{ $step['is_passed'] ? 'text-red-700' : ($step['n'] == '8' ? 'text-[#d4af37]' : 'text-[#0a3622]') }}">
+                                class="cz text-[18px] sm:text-[22px] font-bold tracking-wide transition-colors duration-300 leading-[1.3] mb-1 {{ $step['is_passed'] ? 'text-[#7e4d4d]' : ($step['n'] == '8' ? 'text-[#d4af37]' : 'text-[#0a3622]') }}">
                                 {{ $step['title'] }}
                             </h3>
                             @if (!empty($step['date']))
                                 <p
-                                    class="text-[14.5px] font-semibold mb-2 {{ $step['is_passed'] ? 'text-red-600/80' : 'text-[#1b6e4c]' }}">
+                                    class="text-[14.5px] font-semibold mb-2 {{ $step['is_passed'] ? 'text-[#7e4d4d]' : 'text-[#1b6e4c]' }}">
                                     {{ $step['date'] }}
                                 </p>
                             @endif

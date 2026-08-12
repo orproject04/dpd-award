@@ -1977,11 +1977,9 @@
 
     <section id="statistik" class="relative py-[110px] px-6 bg-[#0a0c11] overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/unsplash-bg.jpg') }}" alt="DPDRI AWARDS" loading="lazy" decoding="async"
-                class="w-full h-full object-cover opacity-30 blur-[2px]">
             <div class="absolute inset-0 bg-gradient-to-b from-[#0a0c11]/80 to-[#0a0c11]"></div>
         </div>
-        <div class="relative z-10 max-w-[1000px] mx-auto">
+        <div class="relative z-10 max-w-[1275px] mx-auto">
             <div x-data="{ shown: false }" x-intersect="shown = true" x-intersect:leave="shown = false"
                 class="text-center mb-[60px] transition-all duration-[800ms] ease-out"
                 :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[30px]'">
@@ -1990,45 +1988,57 @@
                     Statistik <span class="text-[#e0b53c]">Pendaftar</span></h2>
             </div>
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4">
                 @php
-                    $stats = [
+                    $statsKategori = [
                         [
                             'value' => $kategoriCounts['Bidang Pendidikan'] ?? 0,
                             'label' => 'Bidang Pendidikan',
                             'img' => asset('images/kat-pendidikan.png'),
+                            'class' => 'col-span-1 row-span-1',
                         ],
                         [
                             'value' => $kategoriCounts['Bidang Kesehatan'] ?? 0,
                             'label' => 'Bidang Kesehatan',
                             'img' => asset('images/kat-kesehatan.png'),
+                            'class' => 'col-span-1 row-span-1',
                         ],
                         [
                             'value' => $kategoriCounts['Bidang Ketahanan Pangan'] ?? 0,
                             'label' => 'Bidang Ketahanan Pangan',
                             'img' => asset('images/kat-pangan.png'),
+                            'class' => 'col-span-1 row-span-1',
                         ],
                         [
                             'value' => $kategoriCounts['Bidang Seni dan Budaya'] ?? 0,
                             'label' => 'Bidang Seni dan Budaya',
                             'img' => asset('images/kat-budaya.png'),
+                            'class' => 'col-span-1 row-span-1',
+                        ],
+                        [
+                            'value' => $kategoriCounts['Total'] ?? 0,
+                            'label' => 'Total Pendaftar',
+                            'img' => asset('images/hero-bg.jpg'),
+                            'class' => 'col-span-2 lg:col-span-1 flex flex-col justify-center',
+                            'number_class' => 'text-[clamp(32px,3vw,42px)] text-[#e0b53c] drop-shadow-md',
+                            'label_class' => 'text-white/90 text-[12px] font-black',
                         ],
                     ];
                 @endphp
-                @foreach ($stats as $index => $st)
+                @foreach ($statsKategori as $index => $st)
                     <div x-data="counter({{ $st['value'] }})" x-intersect="startCount()"
-                        class="relative overflow-hidden border border-[#e0b53c]/20 hover:border-[#88c445]/55 bg-gradient-to-br from-[#191d27] to-[#10131a] rounded-xl py-6 px-3 text-center transition-colors duration-300">
+                        class="relative overflow-hidden border border-[#e0b53c]/20 hover:border-[#88c445]/55 bg-gradient-to-br from-[#191d27] to-[#10131a] rounded-xl py-6 px-3 text-center transition-colors duration-300 {{ $st['class'] ?? '' }}">
 
 
                         <img src="{{ $st['img'] }}" alt=""
                             class="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none z-0">
 
                         <div class="relative z-10">
-                            <div class="cz text-[clamp(32px,3vw,42px)] font-bold text-[#e0b53c] leading-none"
+                            <div class="cz font-bold leading-none {{ $st['number_class'] ?? 'text-[clamp(32px,3vw,42px)] text-[#e0b53c]' }}"
                                 x-text="display">0
                             </div>
-                            <p class="text-white/60 text-[12px] font-bold tracking-[0.1em] uppercase mt-3 px-2">
-                                {{ $st['label'] }}
+                            <p class="font-bold tracking-[0.1em] uppercase mt-3 px-2 {{ $st['label_class'] ?? 'text-white/60 text-[12px]' }}">
+                                {!! $st['label'] !!}
                             </p>
                         </div>
                     </div>

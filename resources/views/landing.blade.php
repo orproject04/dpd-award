@@ -2016,7 +2016,7 @@
                             'class' => 'col-span-1 row-span-1',
                         ],
                         [
-                            'value' => $kategoriCounts['Total'] ?? 0,
+                            'value' => array_sum($kategoriCounts) ?? 0,
                             'label' => 'Total Pendaftar',
                             'img' => asset('images/hero-bg.jpg'),
                             'class' => 'col-span-2 lg:col-span-1 flex flex-col justify-center',

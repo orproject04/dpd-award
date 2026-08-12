@@ -103,7 +103,7 @@ class Pendaftar extends Model
         $stageConfigs = [
             'Lolos ke Tahap Final' => config('laravolt.ui.timeline_malam_penganugerahan'),
             'Lolos ke Tahap Wawancara' => config('laravolt.ui.timeline_wawancara'),
-            'Lolos ke Tahap 5 Besar' => config('laravolt.ui.timeline_penilaian_tahap_3'),
+            'Lolos ke Tahap 3 Besar' => config('laravolt.ui.timeline_penilaian_tahap_3'),
             'Lolos ke Tahap 10 Besar' => config('laravolt.ui.timeline_penilaian_tahap_2'),
             'Lolos ke Tahap 50 Besar' => config('laravolt.ui.timeline_penilaian_tahap_1'),
             'Lolos Verifikasi Berkas' => config('laravolt.ui.timeline_verifikasi_identifikasi'),
@@ -194,7 +194,7 @@ class Pendaftar extends Model
             'Lolos Verifikasi Berkas' => 1,
             'Lolos ke Tahap 50 Besar' => 2,
             'Lolos ke Tahap 10 Besar' => 3,
-            'Lolos ke Tahap 5 Besar' => 4,
+            'Lolos ke Tahap 3 Besar' => 4,
             'Lolos ke Tahap Wawancara' => 5,
             'Lolos ke Tahap Final' => 6,
         ];

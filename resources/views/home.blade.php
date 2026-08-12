@@ -11,7 +11,7 @@
             'Lolos Verifikasi Berkas' => 'yellow',
             'Lolos ke Tahap 50 Besar' => 'yellow',
             'Lolos ke Tahap 10 Besar' => 'yellow',
-            'Lolos ke Tahap 5 Besar' => 'yellow',
+            'Lolos ke Tahap 3 Besar' => 'yellow',
             'Lolos ke Tahap Wawancara' => 'purple',
             'Lolos ke Tahap Final' => 'teal',
         ];
@@ -1225,7 +1225,7 @@
             const stages = [
                 'Tidak Lolos', 'Diajukan', 'Lolos Verifikasi Berkas',
                 'Lolos ke Tahap 50 Besar', 'Lolos ke Tahap 10 Besar',
-                'Lolos ke Tahap 5 Besar', 'Lolos ke Tahap Wawancara',
+                'Lolos ke Tahap 3 Besar', 'Lolos ke Tahap Wawancara',
                 'Lolos ke Tahap Final'
             ];
             const stageBg = stages.map(s => {

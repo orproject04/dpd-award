@@ -103,7 +103,7 @@ class PendaftarTableView extends CustomTableView
                 'Lolos Verifikasi Berkas' => 'yellow',
                 'Lolos ke Tahap 50 Besar' => 'yellow',
                 'Lolos ke Tahap 10 Besar' => 'yellow',
-                'Lolos ke Tahap 5 Besar' => 'yellow',
+                'Lolos ke Tahap 3 Besar' => 'yellow',
                 'Lolos ke Tahap Wawancara' => 'purple',
                 'Lolos ke Tahap Final' => 'teal',
             ])->addClass('large')->sortable(),

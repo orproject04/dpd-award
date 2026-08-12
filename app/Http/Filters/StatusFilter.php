@@ -31,7 +31,7 @@ class StatusFilter extends BaseFilter
             'Lolos Verifikasi Berkas' => 'Lolos Verifikasi Berkas',
             'Lolos ke Tahap 50 Besar' => 'Lolos ke Tahap 50 Besar',
             'Lolos ke Tahap 10 Besar' => 'Lolos ke Tahap 10 Besar',
-            'Lolos ke Tahap 5 Besar' => 'Lolos ke Tahap 5 Besar',
+            'Lolos ke Tahap 3 Besar' => 'Lolos ke Tahap 3 Besar',
             'Lolos ke Tahap Wawancara' => 'Lolos ke Tahap Wawancara',
             'Lolos ke Tahap Final' => 'Lolos ke Tahap Final',
         ];

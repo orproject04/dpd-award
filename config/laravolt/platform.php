@@ -101,7 +101,7 @@ return [
                 'Lolos Verifikasi Berkas' => 'Lolos Verifikasi Berkas',
                 'Lolos ke Tahap 50 Besar' => 'Lolos ke Tahap 50 Besar',
                 'Lolos ke Tahap 10 Besar' => 'Lolos ke Tahap 10 Besar',
-                'Lolos ke Tahap 5 Besar' => 'Lolos ke Tahap 5 Besar',
+                'Lolos ke Tahap 3 Besar' => 'Lolos ke Tahap 3 Besar',
                 'Lolos ke Tahap Wawancara' => 'Lolos ke Tahap Wawancara',
                 'Lolos ke Tahap Final' => 'Lolos ke Tahap Final',
             ],
@@ -134,7 +134,7 @@ return [
         [
             'type' => 'text',
             'name' => 'timeline_penilaian_tahap_3',
-            'label' => 'Tanggal Pengumuman 5 Besar',
+            'label' => 'Tanggal Pengumuman 3 Besar',
         ],
         [
             'type' => 'text',

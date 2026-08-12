@@ -52,10 +52,14 @@
     <style>
         :root {
             /* Timeline "past" red — tune hue/saturation/lightness here */
-            --tl-red-light: hsl(0, 12%, 40%);   /* accent (top of icon, card border) */
-            --tl-red-mid:   hsl(0, 24%, 40%);   /* mid tone (card top) */
-            --tl-red-dark:  hsl(0, 12%, 30%);   /* base (bottom of gradient + shadow color) */
-            --tl--highlight: hsl(51, 100%, 50%);   /* highlight (shadow color) */
+            --tl-red-light: hsl(0, 12%, 40%);
+            /* accent (top of icon, card border) */
+            --tl-red-mid: hsl(0, 24%, 40%);
+            /* mid tone (card top) */
+            --tl-red-dark: hsl(0, 12%, 30%);
+            /* base (bottom of gradient + shadow color) */
+            --tl--highlight: hsl(51, 100%, 50%);
+            /* highlight (shadow color) */
         }
 
         .tl-passed-icon {
@@ -91,12 +95,15 @@
         }
 
         @keyframes tlCurrentPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 box-shadow:
                     0 0 0 3px var(--tl--highlight),
                     0 0 18px 3px color-mix(in srgb, var(--tl--highlight) 45%, transparent),
                     inset 0 2px 5px rgba(255, 255, 255, 0.4);
             }
+
             50% {
                 box-shadow:
                     0 0 0 3px var(--tl--highlight),
@@ -1527,7 +1534,7 @@
                     ],
                     [
                         'n' => '4',
-                        'title' => 'Pengumuman 50 Besar',
+                        'title' => 'Seleksi 50 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_1'),
                         'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_penilaian_tahap_1')),
                         'color_class' =>
@@ -1543,7 +1550,7 @@
                     ],
                     [
                         'n' => '6',
-                        'title' => 'Pengumuman 5 Besar',
+                        'title' => 'Pengumuman 3 Besar',
                         'date' => config('laravolt.ui.timeline_penilaian_tahap_3'),
                         'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_penilaian_tahap_3')),
                         'color_class' =>
@@ -1569,7 +1576,7 @@
 
                 $currentIndex = null;
                 foreach ($timeline as $i => $s) {
-                    if (! $s['is_passed']) {
+                    if (!$s['is_passed']) {
                         $currentIndex = $i;
                         break;
                     }
@@ -2037,7 +2044,8 @@
                             <div class="cz font-bold leading-none {{ $st['number_class'] ?? 'text-[clamp(32px,3vw,42px)] text-[#e0b53c]' }}"
                                 x-text="display">0
                             </div>
-                            <p class="font-bold tracking-[0.1em] uppercase mt-3 px-2 {{ $st['label_class'] ?? 'text-white/60 text-[12px]' }}">
+                            <p
+                                class="font-bold tracking-[0.1em] uppercase mt-3 px-2 {{ $st['label_class'] ?? 'text-white/60 text-[12px]' }}">
                                 {!! $st['label'] !!}
                             </p>
                         </div>

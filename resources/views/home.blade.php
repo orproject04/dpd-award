@@ -846,6 +846,18 @@
                         </div>
                     </button>
                     @if (auth()->user()->hasPermission('*'))
+                        <form action="{{ route('pendaftar.generate-history') }}" method="POST" style="margin: 0; width: 100%;">
+                            @csrf
+                            <button type="submit" class="quick-action"
+                                style="cursor:pointer;border:none;background:none;width:100%;font-family:inherit;text-align:left;">
+                                <div class="quick-action-icon" style="background:#fffbeb;color:#d97706;"><i
+                                        class="history icon"></i></div>
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:var(--text-main);">Generate Riwayat</div>
+                                    <div style="font-size:11px;color:var(--text-muted);">Generate riwayat untuk pendaftar lama</div>
+                                </div>
+                            </button>
+                        </form>
                         <form action="{{ route('clear-cache') }}" method="POST" style="margin: 0; width: 100%;">
                             @csrf
                             <button type="submit" class="quick-action"

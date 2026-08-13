@@ -45,13 +45,13 @@ class Pendaftar extends Model
             $foto = $pendaftar->getRawOriginal('foto');
             $dir = null;
 
-            if (! empty($ktp)) {
+            if (!empty($ktp)) {
                 $dir = dirname(str_replace('\\', '/', $ktp));
-            } elseif (! empty($foto)) {
+            } elseif (!empty($foto)) {
                 $dir = dirname(str_replace('\\', '/', $foto));
             }
 
-            if (! empty($dir) && $dir !== '.' && $dir !== '/' && $dir !== 'pendaftar' && str_starts_with($dir, 'pendaftar/')) {
+            if (!empty($dir) && $dir !== '.' && $dir !== '/' && $dir !== 'pendaftar' && str_starts_with($dir, 'pendaftar/')) {
                 Storage::disk('local')->deleteDirectory($dir);
             }
         });
@@ -115,5 +115,10 @@ class Pendaftar extends Model
         }
 
         return '-';
+    }
+
+    public function riwayats()
+    {
+        return $this->hasMany(\App\Models\PendaftarRiwayat::class, 'pendaftar_id')->orderBy('created_at', 'desc');
     }
 }

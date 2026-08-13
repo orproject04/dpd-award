@@ -23,6 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', HomeController::class)->name('dashboard');
     Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');
     Route::post('/clear-cache', [HomeController::class, 'clearCache'])->name('clear-cache');
+
+    Route::post('/pendaftar/generate-history', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'generateHistory'])->name('pendaftar.generate-history')->middleware('can:*');
+    Route::post('/pendaftar/riwayat/{riwayat}/keterangan', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'updateRiwayatKeterangan'])->name('pendaftar.riwayat.update-keterangan');
 });
 
 Route::get('/nominasi', [\App\Http\Controllers\NominasiController::class, 'create'])->name('nominasi');

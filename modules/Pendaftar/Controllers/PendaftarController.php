@@ -214,14 +214,34 @@ class PendaftarController extends Controller
     {
         $validated = $request->validate([
             'status' => 'required|string',
+            'keterangan' => 'required|string',
         ]);
 
-        if ($validated['status'] !== $pendaftar->status) {
-            $pendaftar->status_before = $pendaftar->status;
-        }
+        $newStatus = $validated['status'];
+        $keterangan = $validated['keterangan'];
 
-        $pendaftar->status = $validated['status'];
-        $pendaftar->save();
+        if ($newStatus === $pendaftar->status) {
+            // Hanya perbarui keterangan untuk status yang sama
+            $latestRiwayat = $pendaftar->riwayats()->where('status', $newStatus)->latest()->first();
+            if ($latestRiwayat) {
+                $latestRiwayat->update(['keterangan' => $keterangan]);
+            } else {
+                $pendaftar->riwayats()->create([
+                    'status' => $newStatus,
+                    'keterangan' => $keterangan,
+                ]);
+            }
+        } else {
+            // Status berubah, simpan status sebelumnya dan buat riwayat baru
+            $pendaftar->status_before = $pendaftar->status;
+            $pendaftar->status = $newStatus;
+            $pendaftar->save();
+
+            $pendaftar->riwayats()->create([
+                'status' => $newStatus,
+                'keterangan' => $keterangan,
+            ]);
+        }
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
@@ -575,7 +595,7 @@ class PendaftarController extends Controller
                 $rekapProvinsi[$prov][$kat]++;
                 $rekapWilayah[$wil][$kat]++;
             }
-            
+
             $rekapProvinsi[$prov]['Total']++;
             $rekapWilayah[$wil]['Total']++;
         }
@@ -588,7 +608,7 @@ class PendaftarController extends Controller
         // ----------------------------------------------------
         $sheetRekapProv = $spreadsheet->createSheet();
         $sheetRekapProv->setTitle('Rekap Provinsi');
-        
+
         $headersProv = ['No', 'Provinsi', 'Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya', 'Total'];
         foreach ($headersProv as $colIdx => $header) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
@@ -597,7 +617,7 @@ class PendaftarController extends Controller
         $sheetRekapProv->getStyle('A1:G1')->applyFromArray($headerStyle);
         $sheetRekapProv->getStyle('A1:G1')->getFill()->getStartColor()->setRGB('FFF2CC'); // Soft yellow
         $sheetRekapProv->getRowDimension(1)->setRowHeight(25);
-        
+
         $rowIdx = 2;
         $no = 1;
         $grandTotalsProv = array_fill_keys($kategories, 0);
@@ -611,14 +631,15 @@ class PendaftarController extends Controller
             $sheetRekapProv->setCellValue('E' . $rowIdx, $data['Bidang Ketahanan Pangan']);
             $sheetRekapProv->setCellValue('F' . $rowIdx, $data['Bidang Seni dan Budaya']);
             $sheetRekapProv->setCellValue('G' . $rowIdx, $data['Total']);
-            
+
             $sheetRekapProv->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
-            
-            foreach ($kategories as $k) $grandTotalsProv[$k] += $data[$k];
+
+            foreach ($kategories as $k)
+                $grandTotalsProv[$k] += $data[$k];
             $grandTotalsProv['Total'] += $data['Total'];
             $rowIdx++;
         }
-        
+
         // Add Grand Total Row
         $sheetRekapProv->setCellValue('A' . $rowIdx, '');
         $sheetRekapProv->setCellValue('B' . $rowIdx, 'TOTAL KESELURUHAN');
@@ -640,7 +661,7 @@ class PendaftarController extends Controller
         // ----------------------------------------------------
         $sheetRekapWil = $spreadsheet->createSheet();
         $sheetRekapWil->setTitle('Rekap Sub Wilayah');
-        
+
         $headersWil = ['No', 'Sub Wilayah', 'Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya', 'Total'];
         foreach ($headersWil as $colIdx => $header) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
@@ -649,7 +670,7 @@ class PendaftarController extends Controller
         $sheetRekapWil->getStyle('A1:G1')->applyFromArray($headerStyle);
         $sheetRekapWil->getStyle('A1:G1')->getFill()->getStartColor()->setRGB('FCE4D6'); // Soft orange
         $sheetRekapWil->getRowDimension(1)->setRowHeight(25);
-        
+
         $rowIdx = 2;
         $no = 1;
         $grandTotalsWil = array_fill_keys($kategories, 0);
@@ -663,14 +684,15 @@ class PendaftarController extends Controller
             $sheetRekapWil->setCellValue('E' . $rowIdx, $data['Bidang Ketahanan Pangan']);
             $sheetRekapWil->setCellValue('F' . $rowIdx, $data['Bidang Seni dan Budaya']);
             $sheetRekapWil->setCellValue('G' . $rowIdx, $data['Total']);
-            
+
             $sheetRekapWil->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
-            
-            foreach ($kategories as $k) $grandTotalsWil[$k] += $data[$k];
+
+            foreach ($kategories as $k)
+                $grandTotalsWil[$k] += $data[$k];
             $grandTotalsWil['Total'] += $data['Total'];
             $rowIdx++;
         }
-        
+
         // Add Grand Total Row
         $sheetRekapWil->setCellValue('A' . $rowIdx, '');
         $sheetRekapWil->setCellValue('B' . $rowIdx, 'TOTAL KESELURUHAN');
@@ -790,5 +812,74 @@ class PendaftarController extends Controller
         $zip->close();
 
         return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
+    }
+
+    public function generateHistory()
+    {
+        $pendaftars = \App\Models\Pendaftar::all();
+        $stages = [
+            'Diajukan' => 0,
+            'Lolos Verifikasi Berkas' => 1,
+            'Lolos ke Tahap 50 Besar' => 2,
+            'Lolos ke Tahap 10 Besar' => 3,
+            'Lolos ke Tahap 3 Besar' => 4,
+            'Lolos ke Tahap Wawancara' => 5,
+            'Lolos ke Tahap Final' => 6,
+        ];
+        $stageNames = array_keys($stages);
+
+        foreach ($pendaftars as $pendaftar) {
+            // Hapus riwayat lama jika mau aman, atau biarkan. Kita asumsikan clear dulu.
+            \App\Models\PendaftarRiwayat::where('pendaftar_id', $pendaftar->id)->delete();
+
+            if ($pendaftar->status !== 'Tidak Lolos') {
+                $currentRank = $stages[$pendaftar->status] ?? 0;
+                for ($i = 0; $i <= $currentRank; $i++) {
+                    \App\Models\PendaftarRiwayat::create([
+                        'pendaftar_id' => $pendaftar->id,
+                        'status' => $stageNames[$i],
+                        'keterangan' => null,
+                        'created_at' => $i === $currentRank ? $pendaftar->updated_at : $pendaftar->created_at->addSeconds($i),
+                    ]);
+                }
+            } else {
+                $beforeRank = $stages[$pendaftar->status_before] ?? 0;
+                for ($i = 0; $i <= $beforeRank; $i++) {
+                    \App\Models\PendaftarRiwayat::create([
+                        'pendaftar_id' => $pendaftar->id,
+                        'status' => $stageNames[$i],
+                        'keterangan' => null,
+                        'created_at' => $pendaftar->created_at->addSeconds($i),
+                    ]);
+                }
+                \App\Models\PendaftarRiwayat::create([
+                    'pendaftar_id' => $pendaftar->id,
+                    'status' => 'Tidak Lolos',
+                    'keterangan' => null,
+                    'created_at' => $pendaftar->updated_at,
+                ]);
+            }
+        }
+
+        return back()->withSuccess('Riwayat pendaftar berhasil di-generate.');
+    }
+
+    public function updateRiwayatKeterangan(\Illuminate\Http\Request $request, $riwayatId)
+    {
+        $request->validate([
+            'keterangan' => 'nullable|string'
+        ]);
+
+        $riwayat = \App\Models\PendaftarRiwayat::findOrFail($riwayatId);
+
+        if ($riwayat->status === 'Diajukan') {
+            return back()->withError('Keterangan untuk status Diajukan tidak dapat diubah.');
+        }
+
+        $riwayat->update([
+            'keterangan' => $request->keterangan
+        ]);
+
+        return back()->withSuccess('Keterangan riwayat berhasil diperbarui.');
     }
 }

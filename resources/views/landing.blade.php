@@ -1822,7 +1822,7 @@
                 </p>
 
 
-                <form @submit.prevent="cekStatus" class="relative group max-w-[500px] mx-auto">
+                <form @submit.prevent="cekStatus" class="relative group max-w-[600px] mx-auto">
                     <div
                         class="absolute inset-0 bg-gradient-to-r from-[#1b6e4c] to-[#e0b53c] rounded-2xl blur opacity-15 group-hover:opacity-25 transition duration-500">
                     </div>
@@ -1862,7 +1862,7 @@
                     x-transition:leave="transition ease-in duration-300"
                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                     x-transition:leave-end="opacity-0 translate-y-10 scale-95"
-                    class="mt-8 text-left bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xl max-w-[500px] mx-auto transform">
+                    class="mt-8 text-left bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xl max-w-[600px] mx-auto transform">
                     <template x-if="success">
                         <div>
                             <div class="flex items-center gap-3 mb-4">
@@ -1906,9 +1906,15 @@
                                 </div>
                             </div>
 
-                            <div class="mt-5 pt-4 border-t border-gray-100 text-center">
-                                <span class="text-[12px] italic text-gray-500">* Keputusan panitia tidak dapat diganggu
-                                    gugat.</span>
+                            <div class="mt-5 pt-5 border-t border-gray-100 flex justify-center">
+                                <div class="inline-flex items-start md:items-center gap-2.5 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-[13px] font-medium shadow-sm w-full sm:w-auto text-left sm:text-center transition-all hover:bg-amber-100">
+                                    <svg class="shrink-0 mt-0.5 sm:mt-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                    <span class="sm:whitespace-nowrap">Keputusan panitia bersifat mutlak dan tidak dapat diganggu gugat.</span>
+                                </div>
                             </div>
                         </div>
                     </template>

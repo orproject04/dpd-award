@@ -223,4 +223,9 @@ class Pendaftar extends Model
 
         return $actualStatus;
     }
+
+    public function riwayats()
+    {
+        return $this->hasMany(PendaftarRiwayat::class, 'pendaftar_id')->orderBy('created_at', 'desc');
+    }
 }

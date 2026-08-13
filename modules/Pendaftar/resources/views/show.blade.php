@@ -53,11 +53,14 @@
             /* ─── Page Chrome ─────────────────────────────────────── */
             .show-page {
                 --accent:
-                    {{ $themeColor }};
+                    {{ $themeColor }}
+                ;
                 --accent-hover:
-                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }};
+                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }}
+                ;
                 --accent-light:
-                    {{ $themeColorLight }};
+                    {{ $themeColorLight }}
+                ;
                 --radius: 10px;
             }
 
@@ -536,9 +539,9 @@
                                                 <div style="flex-grow: 1;">
                                                     <select name="provinsi" class="ui fluid search dropdown">
                                                         @foreach (\App\Models\Pendaftar::getProvinsiList() as $val => $label)
-                                                            <option value="{{ $val }}"
-                                                                {{ $pendaftar->provinsi == $val ? 'selected' : '' }}>
-                                                                {{ $label }}</option>
+                                                            <option value="{{ $val }}" {{ $pendaftar->provinsi == $val ? 'selected' : '' }}>
+                                                                {{ $label }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -606,11 +609,9 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->kontribusi as $index => $kontribusi)
                             <div class="accordion-item">
-                                <button type="button" class="accordion-trigger"
-                                    data-acc="kontribusi-{{ $index }}">
+                                <button type="button" class="accordion-trigger" data-acc="kontribusi-{{ $index }}">
                                     <span>
-                                        <span
-                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ $kontribusi->judul }}
                                     </span>
                                     <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -651,8 +652,7 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}"
-                                                                        class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Kontribusi {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -702,15 +702,12 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->penghargaan as $index => $penghargaan)
                             <div class="accordion-item">
-                                <button type="button" class="accordion-trigger"
-                                    data-acc="penghargaan-{{ $index }}">
+                                <button type="button" class="accordion-trigger" data-acc="penghargaan-{{ $index }}">
                                     <span>
-                                        <span
-                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ \Illuminate\Support\Str::limit($penghargaan->uraian, 60) }}
                                     </span>
-                                    <svg class="acc-chevron" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
+                                    <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 9l-7 7-7-7" />
                                     </svg>
@@ -724,8 +721,7 @@
                                         <hr class="detail-field-divider">
                                         <div class="detail-field">
                                             <div class="detail-field-label">Tahun</div>
-                                            <div class="detail-field-value"
-                                                style="font-weight:700; font-size:1.05rem;">
+                                            <div class="detail-field-value" style="font-weight:700; font-size:1.05rem;">
                                                 {{ $penghargaan->tahun }}
                                             </div>
                                         </div>
@@ -744,8 +740,7 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}"
-                                                                        class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Penghargaan {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -811,51 +806,84 @@
                         <hr class="show-divider">
 
                         {{-- Update status form --}}
-                        <form class="status-form"
-                            action="{{ route('modules::pendaftar.update-status', $pendaftar->id) }}" method="POST">
-                            @csrf
-                            <div
-                                style="font-size:1rem; font-weight:700; color:#64748b;  letter-spacing:.06em; margin-bottom:.5rem;">
-                                Ubah Status Pendaftar</div>
+                        <div x-data="{ showModal: false }">
+                            <form class="status-update-form" x-ref="statusForm"
+                                action="{{ route('modules::pendaftar.update-status', $pendaftar->id) }}" method="POST">
+                                @csrf
+                                <div
+                                    style="font-size:1rem; font-weight:700; color:#64748b;  letter-spacing:.06em; margin-bottom:.5rem;">
+                                    Ubah Status Pendaftar</div>
 
-                            <input type="hidden" name="status" id="status-input"
-                                value="{{ $pendaftar->status ?? 'Diajukan' }}">
-                            <div class="custom-dropdown" id="status-dropdown">
-                                <div class="custom-dropdown-trigger">
-                                    <div>
-                                        <span class="status-dot {{ $statusColor }}"></span>
-                                        <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
-                                    </div>
-                                    <i class="chevron down icon"></i>
-                                </div>
-                                <div class="custom-dropdown-menu">
-                                    @foreach ($statuses as $status)
-                                        @php
-                                            $optColor = match ($status) {
-                                                'Tidak Lolos' => 'red',
-                                                'Diajukan' => 'blue',
-                                                'Lolos Verifikasi Berkas' => 'yellow',
-                                                'Lolos ke Tahap 50 Besar' => 'yellow',
-                                                'Lolos ke Tahap 10 Besar' => 'yellow',
-                                                'Lolos ke Tahap 3 Besar' => 'yellow',
-                                                'Lolos ke Tahap Wawancara' => 'purple',
-                                                'Lolos ke Tahap Final' => 'teal',
-                                                default => 'grey',
-                                            };
-                                        @endphp
-                                        <div class="custom-dropdown-item {{ ($pendaftar->status ?? 'Diajukan') === $status ? 'active' : '' }}"
-                                            data-value="{{ $status }}" data-color="{{ $optColor }}">
-                                            <span class="status-dot {{ $optColor }}"></span>
-                                            <span class="item-text">{{ $status }}</span>
+                                <input type="hidden" name="status" id="status-input"
+                                    value="{{ $pendaftar->status ?? 'Diajukan' }}">
+                                <div class="custom-dropdown" id="status-dropdown">
+                                    <div class="custom-dropdown-trigger">
+                                        <div>
+                                            <span class="status-dot {{ $statusColor }}"></span>
+                                            <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
                                         </div>
-                                    @endforeach
+                                        <i class="chevron down icon"></i>
+                                    </div>
+                                    <div class="custom-dropdown-menu">
+                                        @foreach ($statuses as $status)
+                                            @php
+                                                $optColor = match ($status) {
+                                                    'Tidak Lolos' => 'red',
+                                                    'Diajukan' => 'blue',
+                                                    'Lolos Verifikasi Berkas' => 'yellow',
+                                                    'Lolos ke Tahap 50 Besar' => 'yellow',
+                                                    'Lolos ke Tahap 10 Besar' => 'yellow',
+                                                    'Lolos ke Tahap 3 Besar' => 'yellow',
+                                                    'Lolos ke Tahap Wawancara' => 'purple',
+                                                    'Lolos ke Tahap Final' => 'teal',
+                                                    default => 'grey',
+                                                };
+                                            @endphp
+                                            <div class="custom-dropdown-item {{ ($pendaftar->status ?? 'Diajukan') === $status ? 'active' : '' }}"
+                                                data-value="{{ $status }}" data-color="{{ $optColor }}">
+                                                <span class="status-dot {{ $optColor }}"></span>
+                                                <span class="item-text">{{ $status }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
-                            </div>
 
-                            <x-volt-button type="submit" icon="save" class="primary fluid">
-                                Perbarui Status
-                            </x-volt-button>
-                        </form>
+                                <x-volt-button type="button" icon="save" class="primary fluid"
+                                    @click="showModal = true">
+                                    Perbarui Status
+                                </x-volt-button>
+
+                                {{-- Modal Keterangan --}}
+                                <div x-show="showModal"
+                                    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0,0,0,0.6);"
+                                    x-transition>
+                                    <div @click.away="showModal = false"
+                                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 12px; width: 450px; max-width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                                        <h3
+                                            style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: #1e293b;">
+                                            <i class="edit icon"></i> Keterangan</h3>
+
+                                        <div class="ui form">
+                                            <div class="field required">
+                                                <label>Keterangan</label>
+                                                <textarea x-ref="keteranganInput" name="keterangan" rows="4" required
+                                                    placeholder="Contoh: Lolos berkas administrasi dan dapat lanjut ke tahap berikutnya..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+                                            <button type="button" @click="showModal = false"
+                                                class="ui button basic">Batal</button>
+                                            <button type="button"
+                                                @click="if($refs.keteranganInput.reportValidity()) $refs.statusForm.submit()"
+                                                class="ui button primary"><i class="save icon"></i> Simpan
+                                                Status</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
                         <hr class="show-divider">
 
@@ -914,8 +942,8 @@
                                     <i class="image outline icon"></i> Foto tidak diunggah
                                 </div>
                             @endif
-                            <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}"
-                                method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
+                            <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}" method="POST"
+                                enctype="multipart/form-data" style="margin-top: .6rem;">
                                 @csrf
                                 <label class="ui basic button small fluid"
                                     style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
@@ -944,19 +972,16 @@
                                             data-src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
                                             alt="KTP Pendaftar">
                                     @elseif($isPdf($ktpRaw))
-                                        <object
-                                            data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
+                                        <object data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
                                             type="application/pdf"
                                             style="width: 100%; height: 300px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
-                                            <iframe
-                                                src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
+                                            <iframe src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
                                                 style="width: 100%; height: 300px; border: none;">
                                                 <p>Browser Anda tidak mendukung pratinjau PDF.</p>
                                             </iframe>
                                         </object>
                                     @else
-                                        <div
-                                            style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
+                                        <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
                                             <i class="file alternate outline icon large"></i><br>Berkas Lainnya
                                         </div>
                                     @endif
@@ -972,18 +997,114 @@
                                         <i class="id card outline icon"></i> KTP tidak diunggah
                                     </div>
                                 @endif
-                                <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}"
-                                    method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
+                                <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}" method="POST"
+                                    enctype="multipart/form-data" style="margin-top: .6rem;">
                                     @csrf
                                     <label class="ui basic button small fluid"
                                         style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
                                         <i class="upload icon"></i> Unggah / Ganti KTP
                                         <input type="file" name="ktp" style="display: none;"
-                                            onchange="showLoading(); this.form.submit();"
-                                            accept=".jpg,.jpeg,.png,.pdf">
+                                            onchange="showLoading(); this.form.submit();" accept=".jpg,.jpeg,.png,.pdf">
                                     </label>
                                 </form>
                             </div>
+                        @endif
+                    </div>
+                </div>{{-- /show-card (Lampiran Berkas Utama) --}}
+
+                {{-- ── Riwayat Status ──────────────────────────── --}}
+                <div class="show-card mt-4">
+                    <div class="show-card-header">
+                        <div class="card-icon"><i class="history icon" style="margin:0"></i></div>
+                        <h3>Riwayat Status</h3>
+                    </div>
+                    <div class="show-card-body"
+                        style="padding: 1.2rem; display: flex; flex-direction: column; gap: 1.2rem;">
+                        @foreach ($pendaftar->riwayats ?? [] as $riwayat)
+                            @php
+                                $optColor = match ($riwayat->status) {
+                                    'Tidak Lolos' => 'red',
+                                    'Diajukan' => 'blue',
+                                    'Lolos Verifikasi Berkas' => 'yellow',
+                                    'Lolos ke Tahap 50 Besar' => 'yellow',
+                                    'Lolos ke Tahap 10 Besar' => 'yellow',
+                                    'Lolos ke Tahap 3 Besar' => 'yellow',
+                                    'Lolos ke Tahap Wawancara' => 'purple',
+                                    'Lolos ke Tahap Final' => 'teal',
+                                    default => 'grey',
+                                };
+                                $textColor = match ($optColor) {
+                                    'red' => '#ef4444',
+                                    'blue' => '#3b82f6',
+                                    'yellow' => '#d97706', // slightly darker yellow for text readability
+                                    'teal' => '#14b8a6',
+                                    'purple' => '#a855f7',
+                                    default => '#64748b'
+                                };
+                            @endphp
+                            <div
+                                style="border-left: 2px solid #e2e8f0; padding-left: 1.75rem; position: relative; padding-bottom: 0.5rem;">
+                                <div class="status-dot {{ $optColor }}"
+                                    style="position: absolute; left: -9px; top: 2px; width: 14px; height: 14px; margin: 0; box-shadow: 0 0 0 3px #fff;">
+                                </div>
+                                <div
+                                    style="font-size: 15px; font-weight: 700; color: {{ $textColor }}; margin-bottom: 0.4rem;">
+                                    {{ $riwayat->status }}</div>
+                                <div
+                                    style="font-size: 12.5px; color: #475569; margin-bottom: 0.75rem; display: inline-flex; align-items: center; background: #f1f5f9; padding: 0.3rem 0.7rem; border-radius: 6px; font-weight: 500;">
+                                    <i class="calendar alternate icon" style="margin-right: 0.4rem; color: #64748b;"></i>
+                                    {{ $riwayat->created_at->format('d M Y, H:i') }}
+                                </div>
+
+                                @if ($riwayat->status !== 'Diajukan')
+                                    <div x-data="{ showForm: false }" style="margin-top: 0.5rem;">
+                                        <button type="button" x-show="!showForm" @click="showForm = true"
+                                            class="ui button small basic"
+                                            style="padding: 0.6rem 1rem; font-size: 12.5px; margin-bottom: 0.5rem;">
+                                            <i class="edit icon"></i>
+                                            {{ $riwayat->keterangan ? 'Ubah Keterangan' : 'Tambah Keterangan' }}
+                                        </button>
+
+                                        <form action="{{ route('pendaftar.riwayat.update-keterangan', $riwayat->id) }}"
+                                            method="POST" x-show="showForm" style="display: none;">
+                                            @csrf
+                                            <div class="ui form">
+                                                <div class="field" style="margin-bottom: 0.6rem;">
+                                                    <textarea name="keterangan" rows="2"
+                                                        style="font-size: 14px; padding: 0.75rem; line-height: 1.5;"
+                                                        placeholder="Tambahkan keterangan opsional...">{{ $riwayat->keterangan }}</textarea>
+                                                </div>
+                                                <div style="display: flex; gap: 0.5rem;">
+                                                    <button type="submit" class="ui button small primary"
+                                                        style="padding: 0.6rem 1.2rem; font-size: 13px;"><i
+                                                            class="save icon"></i> Simpan</button>
+                                                    <button type="button" @click="showForm = false"
+                                                        class="ui button small basic"
+                                                        style="padding: 0.6rem 1.2rem; font-size: 13px;">Batal</button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        @if($riwayat->keterangan)
+                                            <div x-show="!showForm"
+                                                style="font-size: 14px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 0.75rem 1rem; border-radius: 8px; color: #334155; line-height: 1.5;">
+                                                {{ $riwayat->keterangan }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @else
+                                    @if($riwayat->keterangan)
+                                        <div
+                                            style="font-size: 14px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 0.75rem 1rem; border-radius: 8px; margin-top: 0.5rem; color: #334155; line-height: 1.5;">
+                                            {{ $riwayat->keterangan }}
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+                        @endforeach
+                        @if(empty($pendaftar->riwayats) || $pendaftar->riwayats->isEmpty())
+                            <div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 1rem 0;">
+                                Belum ada riwayat</div>
                         @endif
                     </div>
                 </div>
@@ -1000,19 +1121,19 @@
 
     @push('script')
         <script>
-            (function() {
+            (function () {
                 /* ── Accordion ─────────────────────────────────────── */
-                document.querySelectorAll('.accordion-trigger').forEach(function(btn) {
-                    btn.addEventListener('click', function() {
+                document.querySelectorAll('.accordion-trigger').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
                         var targetId = btn.getAttribute('data-acc');
                         var content = document.getElementById(targetId);
                         var isOpen = content.classList.contains('open');
 
                         /* Close all open accordions */
-                        document.querySelectorAll('.accordion-content.open').forEach(function(el) {
+                        document.querySelectorAll('.accordion-content.open').forEach(function (el) {
                             el.classList.remove('open');
                         });
-                        document.querySelectorAll('.accordion-trigger.open').forEach(function(el) {
+                        document.querySelectorAll('.accordion-trigger.open').forEach(function (el) {
                             el.classList.remove('open');
                         });
 
@@ -1028,7 +1149,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
 
-                document.addEventListener('click', function(e) {
+                document.addEventListener('click', function (e) {
                     var trigger = e.target.closest('.lightbox-trigger');
                     if (!trigger) return;
                     e.preventDefault();
@@ -1037,18 +1158,18 @@
                     lightbox.classList.add('active');
                 });
 
-                lightbox.addEventListener('click', function(e) {
+                lightbox.addEventListener('click', function (e) {
                     if (e.target === lightbox || e.target === lightboxImg) {
                         closeLightbox();
                     }
                 });
 
-                document.addEventListener('keydown', function(e) {
+                document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') closeLightbox();
                 });
 
                 /* ── Prevent loader on download links ─────────────── */
-                document.addEventListener('click', function(e) {
+                document.addEventListener('click', function (e) {
                     var link = e.target.closest('a[data-no-loader]');
                     if (!link) return;
                     /* stop the page-loader that base.blade.php attaches */
@@ -1063,13 +1184,13 @@
                     var triggerDot = trigger.querySelector('.status-dot');
                     var triggerText = trigger.querySelector('.status-text');
 
-                    trigger.addEventListener('click', function(e) {
+                    trigger.addEventListener('click', function (e) {
                         e.stopPropagation();
                         dropdown.classList.toggle('active');
                     });
 
-                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(item) {
-                        item.addEventListener('click', function(e) {
+                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (item) {
+                        item.addEventListener('click', function (e) {
                             e.stopPropagation();
                             var val = item.getAttribute('data-value');
                             var color = item.getAttribute('data-color');
@@ -1083,7 +1204,7 @@
                             triggerDot.className = 'status-dot ' + color;
 
                             // Set active item class
-                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(i) {
+                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (i) {
                                 i.classList.remove('active');
                             });
                             item.classList.add('active');
@@ -1094,7 +1215,7 @@
                     });
 
                     // Close when clicking outside
-                    document.addEventListener('click', function() {
+                    document.addEventListener('click', function () {
                         dropdown.classList.remove('active');
                     });
                 }
@@ -1104,7 +1225,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
                 lightbox.classList.remove('active');
-                setTimeout(function() {
+                setTimeout(function () {
                     lightboxImg.src = '';
                 }, 300);
             }
@@ -1137,18 +1258,18 @@
                 var form = document.getElementById(formId);
                 if (!form) return;
 
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', function (e) {
                     e.preventDefault();
                     if (typeof showLoading === 'function') showLoading();
 
                     fetch(this.action, {
-                            method: 'POST',
-                            body: new FormData(this),
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Accept': 'application/json'
-                            }
-                        })
+                        method: 'POST',
+                        body: new FormData(this),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
                         .then(res => res.json())
                         .then(data => {
                             if (typeof hideLoading === 'function') hideLoading();
@@ -1182,7 +1303,7 @@
             }
 
             // 1. Provinsi Form
-            handleAjaxForm('provinsi-form', function(data) {
+            handleAjaxForm('provinsi-form', function (data) {
                 document.querySelector('#provinsi-display span').textContent = data.provinsi_with_wilayah;
                 document.getElementById('provinsi-form-container').style.display = 'none';
                 document.getElementById('provinsi-display').style.display = 'flex';

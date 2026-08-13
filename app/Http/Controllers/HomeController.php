@@ -147,15 +147,27 @@ final class HomeController
             else $ageGroups['55+']++;
         }
 
-        // 12. Geographic distribution (Grouped by category for JS filtering)
+        // 12. Geographic distribution & Status (Grouped by category for JS filtering)
         $geoProvinsi = [];
         $geoWilayah = [];
+        $statusByKategori = [];
         $categoriesToFetch = array_merge(['Semua Kategori'], $availableKategories);
 
         foreach ($categoriesToFetch as $kat) {
             $q = clone $baseQuery;
             if ($kat !== 'Semua Kategori') {
                 $q->where('kategori', $kat);
+            }
+
+            // Status counts for this category
+            $statusCountsPerKat = (clone $q)->select('status', DB::raw('count(*) as total'))
+                ->groupBy('status')
+                ->pluck('total', 'status')
+                ->toArray();
+            
+            $statusByKategori[$kat] = [];
+            foreach ($allStages as $stage) {
+                $statusByKategori[$kat][$stage] = $statusCountsPerKat[$stage] ?? 0;
             }
 
             $allProvinsiCounts = [];
@@ -225,7 +237,8 @@ final class HomeController
             'ageGroups',
             'geoProvinsi',
             'geoWilayah',
-            'provinsiColors'
+            'provinsiColors',
+            'statusByKategori'
         ));
     }
 

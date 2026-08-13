@@ -815,8 +815,16 @@
             <div class="card p-3 lg:col-span-3 anim-in anim-delay-1">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <div class="sec-title">Status Seleksi Peserta</div>
+                        <div id="statusTitle" class="sec-title">Status Seleksi Peserta Semua Kategori</div>
                         <div class="sec-sub">Distribusi peserta di setiap tahap penilaian</div>
+                    </div>
+                    <div class="ui form m-0">
+                        <select id="statusFilter" class="ui dropdown" onchange="updateStatusChart(this.value)" style="border-radius: var(--radius-md); font-weight: 600; min-width: 220px;">
+                            <option value="Semua Kategori">Semua Kategori</option>
+                            @foreach($availableKategories as $kat)
+                                <option value="{{ $kat }}">{{ $kat }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div style="position:relative;height:260px;">
@@ -1234,6 +1242,7 @@
 
             // ── 5. Status Bar Chart ───────────────────────────────────
             const rawStatus = {!! json_encode($statusCounts) !!};
+            const statusByKategoriData = {!! json_encode($statusByKategori) !!};
             const stages = [
                 'Tidak Lolos', 'Diajukan', 'Lolos Verifikasi Berkas',
                 'Lolos ke Tahap 50 Besar', 'Lolos ke Tahap 10 Besar',
@@ -1247,7 +1256,7 @@
                 if (s.includes('Wawancara')) return '#8b5cf6';
                 return '#f59e0b';
             });
-            new Chart(document.getElementById('statusChart').getContext('2d'), {
+            window.statusChart = new Chart(document.getElementById('statusChart').getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: stages.map(s => s.replace('Lolos ke ', '')),
@@ -1464,6 +1473,17 @@
 
         // Initialize list
         updateWilayahList(initialKat);
+
+        window.updateStatusChart = function(kategori) {
+            if (!statusByKategoriData[kategori]) return;
+            
+            let dataKat = statusByKategoriData[kategori];
+            
+            window.statusChart.data.datasets[0].data = stages.map(s => dataKat[s] ?? 0);
+            window.statusChart.update();
+            
+            document.getElementById('statusTitle').innerText = 'Status Seleksi Peserta ' + kategori;
+        };
 
         }); // end DOMContentLoaded
 

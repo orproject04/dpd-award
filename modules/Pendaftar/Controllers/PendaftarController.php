@@ -2,7 +2,8 @@
 
 namespace Modules\Pendaftar\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Enums\Permission;
+use Illuminate\Routing\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Modules\Pendaftar\Models\Pendaftar;
@@ -114,6 +115,21 @@ class PendaftarController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
+        // ACL Check for KTP access
+        $isKtpFile = Pendaftar::where('ktp', $cleanPath)
+            ->orWhere('ktp', str_replace('/', '\\', $cleanPath))
+            ->orWhere('ktp', str_replace('\\', '/', $cleanPath))
+            ->exists()
+            || str_starts_with(strtolower(basename($cleanPath)), 'ktp.')
+            || str_starts_with(strtolower(basename($cleanPath)), 'ktp_');
+
+        if ($isKtpFile) {
+            $user = auth()->user();
+            if (!$user || !($user->hasPermission('*') || $user->hasPermission(Permission::KTP_VIEW))) {
+                abort(403, 'Anda tidak memiliki akses untuk melihat/mengunduh KTP.');
+            }
+        }
+
         if ($request->has('download')) {
             return response()->download($fullPath);
         }
@@ -123,12 +139,17 @@ class PendaftarController extends Controller
 
     public function downloadAllFiles(Pendaftar $pendaftar)
     {
+        $user = auth()->user();
+        $hasKtpPermission = $user && ($user->hasPermission('*') || $user->hasPermission(Permission::KTP_VIEW));
+
         $files = [];
 
-        // Add ktp
-        $ktp = $pendaftar->getRawOriginal('ktp');
-        if (!empty($ktp)) {
-            $files['KTP_' . basename($ktp)] = storage_path('app/private/' . str_replace('\\', '/', $ktp));
+        // Add ktp if user has permission
+        if ($hasKtpPermission) {
+            $ktp = $pendaftar->getRawOriginal('ktp');
+            if (!empty($ktp)) {
+                $files['KTP_' . basename($ktp)] = storage_path('app/private/' . str_replace('\\', '/', $ktp));
+            }
         }
 
         // Add foto
@@ -173,7 +194,7 @@ class PendaftarController extends Controller
         }
 
         $zipFileName = 'Berkas_Pendaftar_' . str_replace(' ', '_', $pendaftar->nama) . '_' . $pendaftar->nomor_registrasi . '.zip';
-        $zipPath = tempnam(sys_get_temp_dir(), 'zip');
+        $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
 
         $zip = new \ZipArchive();
         if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
@@ -234,6 +255,11 @@ class PendaftarController extends Controller
 
     public function updateKtp(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
     {
+        $user = auth()->user();
+        if (!$user || !($user->hasPermission('*') || $user->hasPermission(Permission::KTP_VIEW))) {
+            abort(403, 'Anda tidak memiliki akses untuk memperbarui KTP.');
+        }
+
         $request->validate([
             'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120'
         ], [
@@ -676,6 +702,9 @@ class PendaftarController extends Controller
 
     public function downloadAllZip(\Illuminate\Http\Request $request)
     {
+        $user = auth()->user();
+        $hasKtpPermission = $user && ($user->hasPermission('*') || $user->hasPermission(Permission::KTP_VIEW));
+
         $pendaftars = $this->getFilteredQuery($request)->with(['kontribusi', 'penghargaan'])->get();
 
         if ($pendaftars->isEmpty()) {
@@ -689,12 +718,14 @@ class PendaftarController extends Controller
             // Folder name in zip
             $folderName = str_replace(['/', '\\', '?', '*', ':', '|', '"', '<', '>'], '_', $pendaftar->nomor_registrasi . ' - ' . $pendaftar->nama);
 
-            // 1. Add KTP
-            $ktp = $pendaftar->getRawOriginal('ktp');
-            if (!empty($ktp)) {
-                $absolutePath = storage_path('app/private/' . str_replace('\\', '/', $ktp));
-                if (file_exists($absolutePath) && is_file($absolutePath)) {
-                    $filesToZip[$folderName . '/KTP_' . basename($ktp)] = $absolutePath;
+            // 1. Add KTP (only if user has KTP permission)
+            if ($hasKtpPermission) {
+                $ktp = $pendaftar->getRawOriginal('ktp');
+                if (!empty($ktp)) {
+                    $absolutePath = storage_path('app/private/' . str_replace('\\', '/', $ktp));
+                    if (file_exists($absolutePath) && is_file($absolutePath)) {
+                        $filesToZip[$folderName . '/KTP_' . basename($ktp)] = $absolutePath;
+                    }
                 }
             }
 
@@ -745,7 +776,7 @@ class PendaftarController extends Controller
         }
 
         $zipFileName = 'Berkas_Pendaftar_Masal_' . date('Ymd_His') . '.zip';
-        $zipPath = tempnam(sys_get_temp_dir(), 'zip');
+        $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
 
         $zip = new \ZipArchive();
         if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {

@@ -9,7 +9,9 @@
 {!! form()->textarea('alamat')->label('Alamat')->required() !!}
 {!! form()->text('nomor_wa')->label('Nomor Wa')->required() !!}
 {!! form()->text('email')->label('Email')->required() !!}
+@if(auth()->user() && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KTP_VIEW)))
 {!! form()->text('ktp')->label('Ktp')->required() !!}
+@endif
 {!! form()->text('foto')->label('Foto')->required() !!}
 
 {!!

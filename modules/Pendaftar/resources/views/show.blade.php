@@ -53,14 +53,11 @@
             /* ─── Page Chrome ─────────────────────────────────────── */
             .show-page {
                 --accent:
-                    {{ $themeColor }}
-                ;
+                    {{ $themeColor }};
                 --accent-hover:
-                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }}
-                ;
+                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }};
                 --accent-light:
-                    {{ $themeColorLight }}
-                ;
+                    {{ $themeColorLight }};
                 --radius: 10px;
             }
 
@@ -531,14 +528,17 @@
                                             onclick="document.getElementById('provinsi-form-container').style.display='block'; document.getElementById('provinsi-display').style.display='none';">Edit</button>
                                     </div>
                                     <div id="provinsi-form-container" style="display: none;">
-                                        <form id="provinsi-form" action="{{ route('modules::pendaftar.update-provinsi', $pendaftar->id) }}"
+                                        <form id="provinsi-form"
+                                            action="{{ route('modules::pendaftar.update-provinsi', $pendaftar->id) }}"
                                             method="POST" class="ui form mini">
                                             @csrf
                                             <div style="display: flex; gap: 8px; width: 100%; align-items: stretch;">
                                                 <div style="flex-grow: 1;">
                                                     <select name="provinsi" class="ui fluid search dropdown">
-                                                        @foreach(\App\Models\Pendaftar::getProvinsiList() as $val => $label)
-                                                            <option value="{{ $val }}" {{ $pendaftar->provinsi == $val ? 'selected' : '' }}>{{ $label }}</option>
+                                                        @foreach (\App\Models\Pendaftar::getProvinsiList() as $val => $label)
+                                                            <option value="{{ $val }}"
+                                                                {{ $pendaftar->provinsi == $val ? 'selected' : '' }}>
+                                                                {{ $label }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -606,9 +606,11 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->kontribusi as $index => $kontribusi)
                             <div class="accordion-item">
-                                <button type="button" class="accordion-trigger" data-acc="kontribusi-{{ $index }}">
+                                <button type="button" class="accordion-trigger"
+                                    data-acc="kontribusi-{{ $index }}">
                                     <span>
-                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span
+                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ $kontribusi->judul }}
                                     </span>
                                     <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -649,7 +651,8 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}"
+                                                                        class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Kontribusi {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -699,12 +702,15 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->penghargaan as $index => $penghargaan)
                             <div class="accordion-item">
-                                <button type="button" class="accordion-trigger" data-acc="penghargaan-{{ $index }}">
+                                <button type="button" class="accordion-trigger"
+                                    data-acc="penghargaan-{{ $index }}">
                                     <span>
-                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span
+                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ \Illuminate\Support\Str::limit($penghargaan->uraian, 60) }}
                                     </span>
-                                    <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="acc-chevron" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 9l-7 7-7-7" />
                                     </svg>
@@ -718,7 +724,8 @@
                                         <hr class="detail-field-divider">
                                         <div class="detail-field">
                                             <div class="detail-field-label">Tahun</div>
-                                            <div class="detail-field-value" style="font-weight:700; font-size:1.05rem;">
+                                            <div class="detail-field-value"
+                                                style="font-weight:700; font-size:1.05rem;">
                                                 {{ $penghargaan->tahun }}
                                             </div>
                                         </div>
@@ -737,7 +744,8 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}"
+                                                                        class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Penghargaan {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -906,8 +914,8 @@
                                     <i class="image outline icon"></i> Foto tidak diunggah
                                 </div>
                             @endif
-                            <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}" method="POST"
-                                enctype="multipart/form-data" style="margin-top: .6rem;">
+                            <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}"
+                                method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
                                 @csrf
                                 <label class="ui basic button small fluid"
                                     style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
@@ -919,52 +927,64 @@
                         </div>
 
                         {{-- KTP --}}
-                        <div class="file-block">
-                            <div class="file-block-label"><i class="id card outline icon"></i> KTP Pendaftar</div>
-                            @if (!empty($ktpRaw))
-                                @if ($isImage($ktpRaw))
-                                    <img src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
-                                        class="file-img-preview lightbox-trigger"
-                                        data-src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
-                                        alt="KTP Pendaftar">
-                                @elseif($isPdf($ktpRaw))
-                                    <object data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
-                                        type="application/pdf"
-                                        style="width: 100%; height: 300px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
-                                        <iframe src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
-                                            style="width: 100%; height: 300px; border: none;">
-                                            <p>Browser Anda tidak mendukung pratinjau PDF.</p>
-                                        </iframe>
-                                    </object>
+                        @php
+                            $user = auth()->user();
+                            $canViewKtp =
+                                $user &&
+                                ($user->hasPermission('*') || $user->hasPermission(\App\Enums\Permission::KTP_VIEW));
+                        @endphp
+                        @if ($canViewKtp)
+                            <div class="file-block">
+                                <div class="file-block-label"><i class="id card outline icon"></i> KTP Pendaftar</div>
+
+                                @if (!empty($ktpRaw))
+                                    @if ($isImage($ktpRaw))
+                                        <img src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
+                                            class="file-img-preview lightbox-trigger"
+                                            data-src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
+                                            alt="KTP Pendaftar">
+                                    @elseif($isPdf($ktpRaw))
+                                        <object
+                                            data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
+                                            type="application/pdf"
+                                            style="width: 100%; height: 300px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
+                                            <iframe
+                                                src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
+                                                style="width: 100%; height: 300px; border: none;">
+                                                <p>Browser Anda tidak mendukung pratinjau PDF.</p>
+                                            </iframe>
+                                        </object>
+                                    @else
+                                        <div
+                                            style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
+                                            <i class="file alternate outline icon large"></i><br>Berkas Lainnya
+                                        </div>
+                                    @endif
+                                    <x-volt-link-button
+                                        url="{{ route('modules::pendaftar.file', ['path' => $ktpRaw, 'download' => 1]) }}"
+                                        icon="download" class="basic blue"
+                                        style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
+                                        target="_blank" data-no-loader="true">
+                                        Unduh KTP
+                                    </x-volt-link-button>
                                 @else
                                     <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
-                                        <i class="file alternate outline icon large"></i><br>Berkas Lainnya
+                                        <i class="id card outline icon"></i> KTP tidak diunggah
                                     </div>
                                 @endif
-                                <x-volt-link-button
-                                    url="{{ route('modules::pendaftar.file', ['path' => $ktpRaw, 'download' => 1]) }}"
-                                    icon="download" class="basic blue"
-                                    style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
-                                    target="_blank" data-no-loader="true">
-                                    Unduh KTP
-                                </x-volt-link-button>
-                            @else
-                                <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
-                                    <i class="id card outline icon"></i> KTP tidak diunggah
-                                </div>
-                            @endif
-                            <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}" method="POST"
-                                enctype="multipart/form-data" style="margin-top: .6rem;">
-                                @csrf
-                                <label class="ui basic button small fluid"
-                                    style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
-                                    <i class="upload icon"></i> Unggah / Ganti KTP
-                                    <input type="file" name="ktp" style="display: none;"
-                                        onchange="showLoading(); this.form.submit();" accept=".jpg,.jpeg,.png,.pdf">
-                                </label>
-                            </form>
-                        </div>
-
+                                <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}"
+                                    method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
+                                    @csrf
+                                    <label class="ui basic button small fluid"
+                                        style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
+                                        <i class="upload icon"></i> Unggah / Ganti KTP
+                                        <input type="file" name="ktp" style="display: none;"
+                                            onchange="showLoading(); this.form.submit();"
+                                            accept=".jpg,.jpeg,.png,.pdf">
+                                    </label>
+                                </form>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -980,19 +1000,19 @@
 
     @push('script')
         <script>
-            (function () {
+            (function() {
                 /* ── Accordion ─────────────────────────────────────── */
-                document.querySelectorAll('.accordion-trigger').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
+                document.querySelectorAll('.accordion-trigger').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
                         var targetId = btn.getAttribute('data-acc');
                         var content = document.getElementById(targetId);
                         var isOpen = content.classList.contains('open');
 
                         /* Close all open accordions */
-                        document.querySelectorAll('.accordion-content.open').forEach(function (el) {
+                        document.querySelectorAll('.accordion-content.open').forEach(function(el) {
                             el.classList.remove('open');
                         });
-                        document.querySelectorAll('.accordion-trigger.open').forEach(function (el) {
+                        document.querySelectorAll('.accordion-trigger.open').forEach(function(el) {
                             el.classList.remove('open');
                         });
 
@@ -1008,7 +1028,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
 
-                document.addEventListener('click', function (e) {
+                document.addEventListener('click', function(e) {
                     var trigger = e.target.closest('.lightbox-trigger');
                     if (!trigger) return;
                     e.preventDefault();
@@ -1017,18 +1037,18 @@
                     lightbox.classList.add('active');
                 });
 
-                lightbox.addEventListener('click', function (e) {
+                lightbox.addEventListener('click', function(e) {
                     if (e.target === lightbox || e.target === lightboxImg) {
                         closeLightbox();
                     }
                 });
 
-                document.addEventListener('keydown', function (e) {
+                document.addEventListener('keydown', function(e) {
                     if (e.key === 'Escape') closeLightbox();
                 });
 
                 /* ── Prevent loader on download links ─────────────── */
-                document.addEventListener('click', function (e) {
+                document.addEventListener('click', function(e) {
                     var link = e.target.closest('a[data-no-loader]');
                     if (!link) return;
                     /* stop the page-loader that base.blade.php attaches */
@@ -1043,13 +1063,13 @@
                     var triggerDot = trigger.querySelector('.status-dot');
                     var triggerText = trigger.querySelector('.status-text');
 
-                    trigger.addEventListener('click', function (e) {
+                    trigger.addEventListener('click', function(e) {
                         e.stopPropagation();
                         dropdown.classList.toggle('active');
                     });
 
-                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (item) {
-                        item.addEventListener('click', function (e) {
+                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(item) {
+                        item.addEventListener('click', function(e) {
                             e.stopPropagation();
                             var val = item.getAttribute('data-value');
                             var color = item.getAttribute('data-color');
@@ -1063,7 +1083,7 @@
                             triggerDot.className = 'status-dot ' + color;
 
                             // Set active item class
-                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (i) {
+                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(i) {
                                 i.classList.remove('active');
                             });
                             item.classList.add('active');
@@ -1074,7 +1094,7 @@
                     });
 
                     // Close when clicking outside
-                    document.addEventListener('click', function () {
+                    document.addEventListener('click', function() {
                         dropdown.classList.remove('active');
                     });
                 }
@@ -1084,7 +1104,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
                 lightbox.classList.remove('active');
-                setTimeout(function () {
+                setTimeout(function() {
                     lightboxImg.src = '';
                 }, 300);
             }
@@ -1116,48 +1136,48 @@
             function handleAjaxForm(formId, onSuccess) {
                 var form = document.getElementById(formId);
                 if (!form) return;
-                
+
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     if (typeof showLoading === 'function') showLoading();
-                    
+
                     fetch(this.action, {
-                        method: 'POST',
-                        body: new FormData(this),
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (typeof hideLoading === 'function') hideLoading();
-                        if(data.success) {
-                            if (onSuccess) onSuccess(data);
-                            if (typeof Swal !== 'undefined') {
-                                Swal.fire({
-                                    title: 'Berhasil!',
-                                    text: data.message,
-                                    icon: 'success',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                });
-                            } else {
-                                alert(data.message);
+                            method: 'POST',
+                            body: new FormData(this),
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
                             }
-                        } else {
-                            if (typeof Swal !== 'undefined') {
-                                Swal.fire('Gagal', data.message || 'Terjadi kesalahan.', 'error');
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (typeof hideLoading === 'function') hideLoading();
+                            if (data.success) {
+                                if (onSuccess) onSuccess(data);
+                                if (typeof Swal !== 'undefined') {
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: data.message,
+                                        icon: 'success',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    alert(data.message);
+                                }
                             } else {
-                                alert(data.message || 'Terjadi kesalahan.');
+                                if (typeof Swal !== 'undefined') {
+                                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan.', 'error');
+                                } else {
+                                    alert(data.message || 'Terjadi kesalahan.');
+                                }
                             }
-                        }
-                    })
-                    .catch(err => {
-                        if (typeof hideLoading === 'function') hideLoading();
-                        console.error(err);
-                        alert('Gagal menyimpan data.');
-                    });
+                        })
+                        .catch(err => {
+                            if (typeof hideLoading === 'function') hideLoading();
+                            console.error(err);
+                            alert('Gagal menyimpan data.');
+                        });
                 });
             }
 

@@ -2,8 +2,11 @@
 
 namespace Modules\Pendaftar\Tests;
 
+use App\Enums\Permission as PermissionEnum;
 use App\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Laravolt\Platform\Models\Permission;
+use Laravolt\Platform\Models\Role;
 use Modules\Pendaftar\Models\Pendaftar;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -91,7 +94,7 @@ class PendaftarTest extends TestCase
         
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $this->assertStringStartsWith('attachment; filename=Data_Pendaftar_Masal_', $response->headers->get('Content-Disposition'));
+        $this->assertStringStartsWith('attachment; filename=Data_Pendaftar_DPD_', $response->headers->get('Content-Disposition'));
     }
 
     #[Test]
@@ -106,9 +109,14 @@ class PendaftarTest extends TestCase
     #[Test]
     public function it_can_download_zip_of_files(): void
     {
+        $role = Role::firstOrCreate(['name' => 'SuperAdmin']);
+        $permission = Permission::firstOrCreate(['name' => '*']);
+        $role->permissions()->syncWithoutDetaching([$permission->id]);
+        $this->user->assignRole($role);
+
         $tempDir = storage_path('app/private/pendaftar/test_reg');
         if (!is_dir($tempDir)) {
-            mkdir($tempDir, 0755, true);
+            @mkdir($tempDir, 0755, true);
         }
         $ktpPath = 'pendaftar/test_reg/ktp.jpg';
         file_put_contents(storage_path('app/private/' . $ktpPath), 'fake ktp content');
@@ -133,7 +141,7 @@ class PendaftarTest extends TestCase
     {
         $tempDir = storage_path('app/private/pendaftar/pendidikan/test_reg/penghargaan');
         if (!is_dir($tempDir)) {
-            mkdir($tempDir, 0755, true);
+            @mkdir($tempDir, 0755, true);
         }
         $filename = '1785212849_2019 -  Juara 3 lomba video Literasi Masyarakat, Kemendikbud..jpg';
         $relativeFilePath = 'pendaftar/pendidikan/test_reg/penghargaan/' . $filename;
@@ -155,6 +163,55 @@ class PendaftarTest extends TestCase
     {
         $response = $this->get(route('modules::pendaftar.file', ['path' => 'pendaftar/../.env']));
         $response->assertStatus(403);
+    }
+
+    #[Test]
+    public function it_blocks_ktp_file_access_if_user_lacks_permission(): void
+    {
+        $tempDir = storage_path('app/private/pendaftar/test_ktp');
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0755, true);
+        }
+        $ktpPath = 'pendaftar/test_ktp/ktp.jpg';
+        file_put_contents(storage_path('app/private/' . $ktpPath), 'fake ktp content');
+
+        Pendaftar::factory()->create([
+            'nomor_registrasi' => 'test_ktp',
+            'ktp' => $ktpPath,
+        ]);
+
+        $response = $this->get(route('modules::pendaftar.file', ['path' => $ktpPath]));
+        $response->assertStatus(403);
+
+        @unlink(storage_path('app/private/' . $ktpPath));
+        @rmdir($tempDir);
+    }
+
+    #[Test]
+    public function it_allows_ktp_file_access_if_user_has_permission(): void
+    {
+        $role = Role::firstOrCreate(['name' => 'KtpViewer']);
+        $permission = Permission::firstOrCreate(['name' => PermissionEnum::KTP_VIEW]);
+        $role->permissions()->syncWithoutDetaching([$permission->id]);
+        $this->user->assignRole($role);
+
+        $tempDir = storage_path('app/private/pendaftar/test_ktp_permitted');
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0755, true);
+        }
+        $ktpPath = 'pendaftar/test_ktp_permitted/ktp.jpg';
+        file_put_contents(storage_path('app/private/' . $ktpPath), 'fake ktp content');
+
+        Pendaftar::factory()->create([
+            'nomor_registrasi' => 'test_ktp_permitted',
+            'ktp' => $ktpPath,
+        ]);
+
+        $response = $this->get(route('modules::pendaftar.file', ['path' => $ktpPath]));
+        $response->assertStatus(200);
+
+        @unlink(storage_path('app/private/' . $ktpPath));
+        @rmdir($tempDir);
     }
 
     #[Test]

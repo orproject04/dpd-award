@@ -7,10 +7,10 @@
     <title>DPDRI AWARDS 2026</title>
     <meta name="description"
         content="DPDRI AWARDS 2026 - Penghargaan bagi inovator di bidang pendidikan, kesehatan, pangan, dan pelestari budaya daerah.">
-    <link rel="icon" href="{{ asset('images/logo.png') }}">
-    <link rel="preload" as="image" href="{{ asset('images/hero-bg.jpg') }}" fetchpriority="high">
+    <link rel="icon" href="{{ asset_cb('images/logo.png') }}">
+    <link rel="preload" as="image" href="{{ asset_cb('images/hero-bg.jpg') }}" fetchpriority="high">
 
-    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ asset_cb('css/fonts.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -22,7 +22,7 @@
         }
     </script>
 
-    <script src="{{ asset('js/hls.min.js') }}" defer></script>
+    <script src="{{ asset_cb('js/hls.min.js') }}" defer></script>
     <script>
         function hlsPlayer(src, poster) {
             return {
@@ -294,13 +294,14 @@
             <a href="#beranda"
                 class="cz text-[26px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center mt-0.5 sm:mt-0">
 
-                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI"
+                <img src="{{ asset_cb('images/dpdlogo.png') }}" alt="Logo DPD RI"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
 
-                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" style="margin-left: 15px;"
+                <img src="{{ asset_cb('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" style="margin-left: 15px;"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
 
-                <img src="{{ asset('images/detik.png') }}" alt="Logo Detik.com" style="margin-left: 12px;"
+                <img src="{{ asset_cb('images/detik.png') }}" alt="Logo Detik.com"
+                    style="margin-left: 12px; transform: translateY(3px);"
                     class="h-12 sm:h-15 md:h-15 lg:h-[65px] object-contain transition-all duration-300">
             </a>
 
@@ -364,7 +365,7 @@
 
     <section id="beranda" class="relative min-h-screen flex items-center pt-[140px] pb-[90px] px-6 overflow-hidden">
         <div class="absolute inset-0 z-0 bg-[#0a0c11]">
-            <img src="{{ asset('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero" width="1920" height="1080"
+            <img src="{{ asset_cb('images/hero-bg.jpg') }}" alt="DPDRI Awards Hero" width="1920" height="1080"
                 fetchpriority="high"
                 class="w-full h-full object-cover object-[40%_center] md:object-center scale-[1.2] sm:scale-100 origin-[40%_center] sm:origin-center">
         </div>
@@ -449,7 +450,7 @@
                     </div>
                     <div
                         class="relative w-[75px] h-[75px] md:w-[85px] md:h-[85px] lg:w-[100px] lg:h-[100px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
-                        <img src="{{ asset('images/logo.png') }}" alt="Piala"
+                        <img src="{{ asset_cb('images/logo.png') }}" alt="Piala"
                             class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
                     </div>
                 </div>
@@ -461,7 +462,7 @@
                     </div>
                     <div
                         class="relative w-[100px] h-[100px] md:w-[105px] md:h-[105px] lg:w-[125px] lg:h-[125px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
-                        <img src="{{ asset('images/logo.png') }}" alt="Piala"
+                        <img src="{{ asset_cb('images/logo.png') }}" alt="Piala"
                             class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
                     </div>
                 </div>
@@ -473,7 +474,7 @@
                     </div>
                     <div
                         class="relative w-[100px] h-[100px] md:w-[105px] md:h-[105px] lg:w-[125px] lg:h-[125px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2.5px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
-                        <img src="{{ asset('images/logo.png') }}" alt="Piala"
+                        <img src="{{ asset_cb('images/logo.png') }}" alt="Piala"
                             class="h-[80%] w-auto object-contain drop-shadow-[0_0_10px_rgba(224,181,60,0.5)]">
                     </div>
                 </div>
@@ -485,7 +486,7 @@
                     </div>
                     <div
                         class="relative w-[75px] h-[75px] md:w-[85px] md:h-[85px] lg:w-[100px] lg:h-[100px] bg-gradient-to-b from-[#1a1c23] to-[#0a0c11] border-[2px] border-[#e0b53c] rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500 overflow-hidden">
-                        <img src="{{ asset('images/logo.png') }}" alt="Piala"
+                        <img src="{{ asset_cb('images/logo.png') }}" alt="Piala"
                             class="h-[80%] w-auto object-contain drop-shadow-[0_0_8px_rgba(224,181,60,0.4)]">
                     </div>
                 </div>
@@ -559,7 +560,7 @@
         <div class="relative max-w-5xl mx-auto">
 
 
-            <div x-data="hlsPlayer('{{ asset('videos/highlight/index.m3u8') }}', '{{ asset('images/hero-bg.jpg') }}')"
+            <div x-data="hlsPlayer('{{ asset_cb('videos/highlight/index.m3u8') }}', '{{ asset_cb('images/hero-bg.jpg') }}')"
                 x-init="init()"
                 class="relative bg-[#0a1e15]/70 border border-[#e0b53c]/25 rounded-[28px] overflow-hidden backdrop-blur-sm shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
                 <div class="absolute top-5 left-5 z-20 pointer-events-none">
@@ -755,8 +756,8 @@
                         role: 'Peneliti Medis Muda & Penggagas Riset',
                         category: 'Pembangunan Sosial & Kesehatan',
                         description: 'Pemuda pelopor bidang teknologi dan inovasi yang membawa semangat anak muda Indonesia ke tingkat lebih tinggi.',
-                        image: '{{ asset('images/Aqsa.jpg') }}',
-                        popup: '{{ asset('images/profil/Profil Aqsa Aufa.jpg') }}'
+                        image: '{{ asset_cb('images/Aqsa.jpg') }}',
+                        popup: '{{ asset_cb('images/profil/Profil Aqsa Aufa.jpg') }}'
                     },
                     {
                         type: 'image',
@@ -765,8 +766,8 @@
                         role: 'Penggerak Wisata Desa Nglanggeran',
                         category: 'Pariwisata & Kebudayaan',
                         description: 'Pelopor pemuda pariwisata desa yang mengantar Nglanggeran menjadi salah satu desa wisata terbaik dunia versi UNWTO.',
-                        image: '{{ asset('images/Sugeng.jpg') }}',
-                        popup: '{{ asset('images/profil/Profil Sugeng Handoko.jpg') }}'
+                        image: '{{ asset_cb('images/Sugeng.jpg') }}',
+                        popup: '{{ asset_cb('images/profil/Profil Sugeng Handoko.jpg') }}'
                     },
                     {
                         type: 'image',
@@ -775,8 +776,8 @@
                         role: 'TP-PKK Provinsi Sumatera Selatan',
                         category: 'Ekonomi Kreatif',
                         description: 'Tokoh inspiratif yang memberikan kontribusi luar biasa bagi masyarakat melalui pengabdiannya di berbagai bidang.',
-                        image: '{{ asset('images/Febrita.jpg') }}',
-                        popup: '{{ asset('images/profil/Profil Febrita Lustia.jpg') }}'
+                        image: '{{ asset_cb('images/Febrita.jpg') }}',
+                        popup: '{{ asset_cb('images/profil/Profil Febrita Lustia.jpg') }}'
                     },
                     {
                         type: 'image',
@@ -785,8 +786,8 @@
                         role: 'Gubernur Jawa Timur',
                         category: 'Perlindungan Anak & Pemberdayaan Perempuan',
                         description: 'Perempuan inspiratif dengan kontribusi luar biasa mewujudkan kesetaraan gender, perlindungan dan pemberdayaan perempuan tahun 2025.',
-                        image: '{{ asset('images/Gubjatim.jpg') }}',
-                        popup: '{{ asset('images/profil/Profil Khafifah Indar.jpg') }}'
+                        image: '{{ asset_cb('images/Gubjatim.jpg') }}',
+                        popup: '{{ asset_cb('images/profil/Profil Khafifah Indar.jpg') }}'
                     },
                     {
                         type: 'image',
@@ -795,8 +796,8 @@
                         role: 'Pemerhati Anak dan Kelompok Rentan',
                         category: 'Pejuang Kelompok Rentan',
                         description: 'Kontribusi nyata dalam memperjuangkan kesetaraan, keadilan, dan inklusivitas bagi semua orang terutama pada kelompok rentan.',
-                        image: '{{ asset('images/Bayu.jpg') }}',
-                        popup: '{{ asset('images/profil/Profil Bayu Satria.jpg') }}'
+                        image: '{{ asset_cb('images/Bayu.jpg') }}',
+                        popup: '{{ asset_cb('images/profil/Profil Bayu Satria.jpg') }}'
                     }
                     ],
                     init() {
@@ -889,7 +890,7 @@
                         'title' => 'DPD Award 2025 Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
                         'excerpt' =>
                             'Jakarta - Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
-                        'image' => asset('images/artikel1.jpeg'),
+                        'image' => asset_cb('images/artikel1.jpeg'),
                         'url' =>
                             'https://news.detik.com/berita/d-8183015/dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
                     ],
@@ -899,7 +900,7 @@
                         'title' => 'Video DPD Award 2025, Angkat Kiprah Tokoh Daerah ke Panggung Nasional',
                         'excerpt' =>
                             'Dewan Perwakilan Daerah (DPD) RI menyelenggarakan DPD Award 2025. Acara tersebut diselenggarakan sebagai bentuk pengakuan nasional terhadap kontribusi tokoh daerah yang memiliki peran penting dalam pembangunan.',
-                        'image' => asset('images/artikel2.jpg'),
+                        'image' => asset_cb('images/artikel2.jpg'),
                         'url' =>
                             'https://20.detik.com/detikupdate/20251029-251029002/video-dpd-award-2025-angkat-kiprah-tokoh-daerah-ke-panggung-nasional',
                     ],
@@ -909,7 +910,7 @@
                         'title' => 'Daftar Pemenang DPD RI Awards 2025, Khofifah Terima Penghargaan',
                         'excerpt' =>
                             'Jakarta - DPD RI menggelar acara DPD RI Awards 2025. Ada sejumlah bidang yang dianugerahi penghargaan. Pemberian penghargaan DPD RI Awards ini digelar di Tribrata Hotel and Convention, Jakarta Selatan, Selasa (28/10/2025). Ada 5 kategori yang dianugerahi penghargaan.',
-                        'image' => asset('images/artikel3.jpeg'),
+                        'image' => asset_cb('images/artikel3.jpeg'),
                         'url' =>
                             'https://news.detik.com/berita/d-8183132/daftar-pemenang-dpd-ri-awards-2025-khofifah-terima-penghargaan',
                     ],
@@ -1100,7 +1101,7 @@
                             'id' => 'pendidikan',
                             'title' => 'Bidang Pendidikan',
                             'desc' => 'Kategori Inovator Pendidikan Non Formal/Pendidikan Luar Sekolah',
-                            'img' => asset('images/kat-pendidikan.png'),
+                            'img' => asset_cb('images/kat-pendidikan.png'),
                             'cp' => [
                                 ['name' => 'MOHAMAD HAFID', 'phone' => '6281285229613', 'display' => '0812-8522-9613'],
                                 ['name' => 'ADZAN RAMADHAN', 'phone' => '6285157973661', 'display' => '0851-5797-3661'],
@@ -1113,7 +1114,7 @@
                             'id' => 'kesehatan',
                             'title' => 'Bidang Kesehatan',
                             'desc' => 'Kategori Inovator Teknologi Kesehatan',
-                            'img' => asset('images/kat-kesehatan.png'),
+                            'img' => asset_cb('images/kat-kesehatan.png'),
                             'cp' => [
                                 [
                                     'name' => 'SENDRI SANRISAGI',
@@ -1134,7 +1135,7 @@
                             'id' => 'pangan',
                             'title' => 'Bidang Ketahanan Pangan',
                             'desc' => 'Kategori Penggerak Desa Mandiri Pangan',
-                            'img' => asset('images/kat-pangan.png'),
+                            'img' => asset_cb('images/kat-pangan.png'),
                             'cp' => [
                                 [
                                     'name' => 'PUGO SURYA ADHITAMA',
@@ -1160,7 +1161,7 @@
                             'id' => 'budaya',
                             'title' => 'Bidang Seni dan Budaya',
                             'desc' => 'Kategori Pelestari Budaya Daerah',
-                            'img' => asset('images/kat-budaya.png'),
+                            'img' => asset_cb('images/kat-budaya.png'),
                             'cp' => [
                                 ['name' => 'NURUL HUSNA', 'phone' => '6281285003000', 'display' => '0812-8500-3000'],
                                 [
@@ -1907,13 +1908,17 @@
                             </div>
 
                             <div class="mt-5 pt-5 border-t border-gray-100 flex justify-center">
-                                <div class="inline-flex items-start md:items-center gap-2.5 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-[13px] font-medium shadow-sm w-full sm:w-auto text-left sm:text-center transition-all hover:bg-amber-100">
-                                    <svg class="shrink-0 mt-0.5 sm:mt-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <div
+                                    class="inline-flex items-start md:items-center gap-2.5 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-[13px] font-medium shadow-sm w-full sm:w-auto text-left sm:text-center transition-all hover:bg-amber-100">
+                                    <svg class="shrink-0 mt-0.5 sm:mt-0" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <line x1="12" y1="8" x2="12" y2="12"></line>
                                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                     </svg>
-                                    <span class="sm:whitespace-nowrap">Keputusan panitia bersifat mutlak dan tidak dapat diganggu gugat.</span>
+                                    <span class="sm:whitespace-nowrap">Keputusan panitia bersifat mutlak dan tidak dapat
+                                        diganggu gugat.</span>
                                 </div>
                             </div>
                         </div>
@@ -2007,31 +2012,31 @@
                         [
                             'value' => $kategoriCounts['Bidang Pendidikan'] ?? 0,
                             'label' => 'Bidang Pendidikan',
-                            'img' => asset('images/kat-pendidikan.png'),
+                            'img' => asset_cb('images/kat-pendidikan.png'),
                             'class' => 'col-span-1 row-span-1',
                         ],
                         [
                             'value' => $kategoriCounts['Bidang Kesehatan'] ?? 0,
                             'label' => 'Bidang Kesehatan',
-                            'img' => asset('images/kat-kesehatan.png'),
+                            'img' => asset_cb('images/kat-kesehatan.png'),
                             'class' => 'col-span-1 row-span-1',
                         ],
                         [
                             'value' => $kategoriCounts['Bidang Ketahanan Pangan'] ?? 0,
                             'label' => 'Bidang Ketahanan Pangan',
-                            'img' => asset('images/kat-pangan.png'),
+                            'img' => asset_cb('images/kat-pangan.png'),
                             'class' => 'col-span-1 row-span-1',
                         ],
                         [
                             'value' => $kategoriCounts['Bidang Seni dan Budaya'] ?? 0,
                             'label' => 'Bidang Seni dan Budaya',
-                            'img' => asset('images/kat-budaya.png'),
+                            'img' => asset_cb('images/kat-budaya.png'),
                             'class' => 'col-span-1 row-span-1',
                         ],
                         [
                             'value' => array_sum($kategoriCounts) ?? 0,
                             'label' => 'Total Pendaftar',
-                            'img' => asset('images/hero-bg.jpg'),
+                            'img' => asset_cb('images/hero-bg.jpg'),
                             'class' => 'col-span-2 lg:col-span-1 flex flex-col justify-center',
                             'number_class' => 'text-[clamp(32px,3vw,42px)] text-[#e0b53c] drop-shadow-md',
                             'label_class' => 'text-white/90 text-[12px] font-black',
@@ -2186,7 +2191,7 @@
             <div class="absolute inset-0 bg-[#e0b53c]/20 blur-[80px] rounded-full translate-x-[35%] hidden md:block">
             </div>
 
-            <img src="{{ asset('images/logo.png') }}" alt="Piala Emas"
+            <img src="{{ asset_cb('images/logo.png') }}" alt="Piala Emas"
                 class="relative z-10 w-full h-full md:w-auto object-contain brightness-75 md:brightness-100 contrast-80 saturate-80 drop-shadow-none md:drop-shadow-[10px_0_20px_rgba(255,215,0,0.6)]">
         </div>
 

@@ -76,3 +76,25 @@ if (!function_exists('get_backlink_url')) {
     }
 }
 
+if (!function_exists('asset_cb')) {
+    /**
+     * Generate an asset path for the application with cache busting parameter.
+     *
+     * @param  string  $path
+     * @param  bool|null  $secure
+     * @return string
+     */
+    function asset_cb($path, $secure = null)
+    {
+        $url = asset($path, $secure);
+        $filePath = public_path($path);
+
+        if (file_exists($filePath)) {
+            $url .= '?v=' . filemtime($filePath);
+        } else {
+            $url .= '?v=' . time(); // fallback if file missing
+        }
+
+        return $url;
+    }
+}

@@ -15,7 +15,8 @@
 
     {{-- Modal Update Catatan Verifikator --}}
     <div class="ui modal small" id="modal-import-keterangan" style="position: relative;">
-        <i class="close icon" style="top: 1.2rem !important; right: 1.2rem !important; color: #64748b !important; position: absolute !important;"></i>
+        <i class="close icon"
+            style="top: 1.2rem !important; right: 1.2rem !important; color: #64748b !important; position: absolute !important;"></i>
         <div class="header" style="padding-right: 3rem;">
             <i class="file excel icon"></i> Update Catatan Verifikator
         </div>

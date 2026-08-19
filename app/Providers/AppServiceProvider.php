@@ -95,6 +95,14 @@ final class AppServiceProvider extends ServiceProvider
                 ->data('order', 1)
                 ->active('pendaftar/*');
 
+            $user = auth()->user();
+            if ($user && ($user->hasPermission('*') || $user->hasPermission(Permission::BERITA_MANAGE))) {
+                $mainMenu->add('Berita', route('berita.index'))
+                    ->data('icon', 'newspaper')
+                    ->data('order', 2)
+                    ->active('berita/*');
+            }
+
             // System menu
             $user = auth()->user();
 

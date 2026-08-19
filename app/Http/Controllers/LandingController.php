@@ -16,9 +16,18 @@ class LandingController extends Controller
                 ->pluck('total', 'kategori')
                 ->toArray();
         });
-        $response = response()->view('landing', compact('kategoriCounts'));
+
+        $beritaTerkini = \App\Models\Berita::where('status_aktif', true)->latest()->take(3)->get();
+
+        $response = response()->view('landing', compact('kategoriCounts', 'beritaTerkini'));
         $response->headers->set('Cache-Control', 'public, max-age=300, s-maxage=3600');
         return $response;
+    }
+
+    public function berita()
+    {
+        $beritaList = \App\Models\Berita::where('status_aktif', true)->latest()->paginate(9);
+        return view('berita-list', compact('beritaList'));
     }
 
     public function track(Request $request)

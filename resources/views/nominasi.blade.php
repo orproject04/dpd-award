@@ -116,9 +116,19 @@
 
         <div class="max-w-[900px] mx-auto px-6 py-4 flex items-center justify-center">
             <a href="{{ route('landing') }}"
-                class="cz text-[22px] font-extrabold tracking-wide text-white whitespace-nowrap flex items-center gap-3">
-                <img src="{{ asset('images/dpdlogo.png') }}" alt="Logo DPD RI" class="h-15 object-contain">
-                <img src="{{ asset('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI" class="h-15 object-contain">
+                class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4 w-full max-w-[450px]">
+                <div class="flex justify-end">
+                    <img src="{{ asset_cb('images/dpdlogo.png') }}" alt="Logo DPD RI"
+                        class="h-12 sm:h-15 object-contain">
+                </div>
+                <div class="flex justify-center">
+                    <img src="{{ asset_cb('images/setjenlogo.png') }}" alt="Logo Setjen DPD RI"
+                        class="h-12 sm:h-15 object-contain">
+                </div>
+                <div class="flex justify-start">
+                    <img src="{{ asset_cb('images/detik.png') }}" alt="Logo Detik.com"
+                        class="h-12 sm:h-15 object-contain" style="transform: translateY(3px);">
+                </div>
             </a>
         </div>
     </header>
@@ -201,7 +211,7 @@
                     </p>
                     <a href="{{ route('landing') }}"
                         class="inline-flex items-center gap-2 bg-[#0a0c11] text-white font-bold text-[15px] px-[32px] py-[14px] rounded-xl hover:bg-black transition-colors">
-                        Kembali ke Beranda
+                        Kembali
                     </a>
                 </div>
             @else
@@ -602,14 +612,14 @@
                                                     </span>
                                                 </div>
                                                 <textarea x-model="item.deskripsi" @input="
-                                                        let val = item.deskripsi || '';
-                                                        let words = val.split(' ').filter(w => w.trim().length > 0);
-                                                        if (words.length > 200) {
-                                                            item.deskripsi = words.slice(0, 200).join(' ');
-                                                        }
-                                                        $el.style.height = 'auto';
-                                                        $el.style.height = $el.scrollHeight + 'px';
-                                                    "
+                                                            let val = item.deskripsi || '';
+                                                            let words = val.split(' ').filter(w => w.trim().length > 0);
+                                                            if (words.length > 200) {
+                                                                item.deskripsi = words.slice(0, 200).join(' ');
+                                                            }
+                                                            $el.style.height = 'auto';
+                                                            $el.style.height = $el.scrollHeight + 'px';
+                                                        "
                                                     x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                     placeholder="Deskripsi (maksimal 200 kata per poin)..."
                                                     :class="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? '!border-[#c0392b] !ring-1 !ring-[#c0392b]/30 bg-[#fdf5f5]' : ''"
@@ -625,14 +635,14 @@
                                                     </span>
                                                 </div>
                                                 <textarea x-model="item.dampak" @input="
-                                                        let val = item.dampak || '';
-                                                        let words = val.split(' ').filter(w => w.trim().length > 0);
-                                                        if (words.length > 200) {
-                                                            item.dampak = words.slice(0, 200).join(' ');
-                                                        }
-                                                        $el.style.height = 'auto';
-                                                        $el.style.height = $el.scrollHeight + 'px';
-                                                    "
+                                                            let val = item.dampak || '';
+                                                            let words = val.split(' ').filter(w => w.trim().length > 0);
+                                                            if (words.length > 200) {
+                                                                item.dampak = words.slice(0, 200).join(' ');
+                                                            }
+                                                            $el.style.height = 'auto';
+                                                            $el.style.height = $el.scrollHeight + 'px';
+                                                        "
                                                     x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                     placeholder="Contoh: menjangkau 1.200 anak, 8 desa, sejak 2019..."
                                                     :class="((item.dampak || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? '!border-[#c0392b] !ring-1 !ring-[#c0392b]/30 bg-[#fdf5f5]' : ''"

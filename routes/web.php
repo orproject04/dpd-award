@@ -19,10 +19,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', LandingController::class)->middleware('cacheResponse')->name('landing');
+Route::get('/daftar-berita', [LandingController::class, 'berita'])->name('berita.public');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', HomeController::class)->name('dashboard');
     Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');
     Route::post('/clear-cache', [HomeController::class, 'clearCache'])->name('clear-cache');
+
+    Route::resource('berita', \App\Http\Controllers\BeritaController::class)->parameters([
+        'berita' => 'berita'
+    ]);
 
     Route::post('/pendaftar/generate-history', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'generateHistory'])->name('pendaftar.generate-history')->middleware('can:*');
     Route::post('/pendaftar/riwayat/{riwayat}/keterangan', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'updateRiwayatKeterangan'])->name('pendaftar.riwayat.update-keterangan');

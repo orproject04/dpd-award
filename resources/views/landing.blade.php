@@ -877,7 +877,7 @@
                 <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
                     class="transition-all duration-[700ms] ease-out">
                     <h2 class="cz text-[clamp(30px,5vw,48px)] font-extrabold uppercase text-white leading-none">
-                        SOROTAN <span class="text-[#e0b53c]">MEDIA</span>
+                        SOROTAN <span class="text-[#e0b53c]">DPDRI <i>AWARDS</i> 2025</span>
                     </h2>
                 </div>
             </div>
@@ -1803,6 +1803,92 @@
         </div>
     </section>
 
+
+    <section id="berita-terbaru"
+        class="relative pt-[45px] pb-[90px] px-6 bg-gradient-to-b from-[#0a2519] via-[#0c3b28] to-[#0a2519] overflow-hidden border-t border-[#e0b53c]/15">
+        <span class="twinkle-star"
+            style="top: 20%; right: 22%; width: 10px; height: 10px; animation-delay: 1.2s;"></span>
+        <span class="twinkle-star"
+            style="bottom: 12%; left: 8%; width: 12px; height: 12px; animation-delay: 2s;"></span>
+
+        <div class="radial-gradient-bg3"></div>
+
+        <div class="relative max-w-6xl mx-auto">
+            <div
+                class="flex items-center justify-center gap-4 mb-10 text-[#e0b53c]/60 text-[12px] font-bold tracking-[0.3em]">
+                <span class="h-px w-16 sm:w-24 bg-[#e0b53c]/25"></span>
+                <span class="flex items-center gap-2 whitespace-nowrap">
+                    <span>&#10022;</span>
+                    BERITA SEPUTAR DPDRI <i>AWARDS</i> 2026
+                    <span>&#10022;</span>
+                </span>
+                <span class="h-px w-16 sm:w-24 bg-[#e0b53c]/25"></span>
+            </div>
+
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10" x-data="{ shown: false }"
+                x-intersect="shown = true" x-intersect:leave="shown = false">
+                <div :class="shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[20px]'"
+                    class="transition-all duration-[700ms] ease-out">
+                    <h2 class="cz text-[clamp(30px,5vw,48px)] font-extrabold uppercase text-white leading-none">
+                        BERITA <span class="text-[#e0b53c]">TERKINI</span>
+                    </h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @foreach ($beritaTerkini as $article)
+                    <a href="{{ $article->tautan ?: '#' }}" target="{{ $article->tautan ? '_blank' : '_self' }}"
+                        rel="noopener noreferrer"
+                        class="group bg-[#fbf7ee] rounded-2xl overflow-hidden border border-[#e0b53c]/10 hover:border-[#e0b53c]/40 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.25)] flex flex-col">
+                        <div class="relative aspect-[16/10] bg-[#efe6ce] overflow-hidden">
+                            <img src="{{ $article->gambar ? asset('storage/' . $article->gambar) : asset_cb('images/hero-bg.jpg') }}"
+                                alt="{{ $article->judul }}"
+                                class="w-full h-full object-cover object-top scale-145 group-hover:scale-[1.55] transition-transform duration-[600ms]"
+                                onerror="this.style.opacity='0.15'">
+                            <div class="absolute top-4 left-4">
+                                <span
+                                    class="inline-block bg-[#e0b53c] text-[#0a0c11] text-[11px] font-extrabold tracking-wider px-3 py-1 rounded-full shadow">{{ $article->sumber ?: 'Update' }}</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="text-[#8a6d1c] text-[11px] font-bold tracking-wider mb-2">
+                                {{ $article->tanggal ?: $article->created_at->format('d M Y') }}
+                            </div>
+                            <h3
+                                class="text-[#10131a] text-[17px] font-extrabold leading-snug mb-3 group-hover:text-[#8a6d1c] transition-colors">
+                                {{ $article->judul }}
+                            </h3>
+                            <p class="text-[#4b5262] text-[13.5px] leading-[1.65] mb-5">{{ $article->kutipan }}</p>
+                            <div
+                                class="mt-auto inline-flex items-center gap-1.5 text-[#8a6d1c] text-[12.5px] font-bold tracking-wider group-hover:gap-2.5 transition-all">
+                                Baca Selengkapnya
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                    <polyline points="12 5 19 12 19" />
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+
+            @if(count($beritaTerkini) >= 3)
+                <div class="mt-12 text-center">
+                    <a href="{{ route('berita.public') }}"
+                        class="group relative overflow-hidden inline-flex items-center gap-2.5 bg-transparent border-2 border-[#e0b53c] text-[#e0b53c] font-bold text-[14px] px-[25px] py-[12px] rounded-full hover:bg-[#e0b53c] hover:text-[#0a0c11] transition-all duration-300">
+                        <span>Lihat Semua Berita</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round"
+                            class="relative z-10 group-hover:translate-x-1 transition-transform">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </a>
+                </div>
+            @endif
+        </div>
+    </section>
 
     <section id="lacak" class="py-[90px] px-6 bg-white border-t border-gray-200 relative overflow-hidden">
         <div class="absolute inset-0 z-0 pointer-events-none">

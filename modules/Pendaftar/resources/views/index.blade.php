@@ -1,32 +1,78 @@
 <x-volt-app :title="'Pendaftar'">
     <x-slot name="actions">
+        @if (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::UPDATE_DATA_PENDAFTAR))
+            <button type="button" class="ui button orange" onclick="$('#modal-import-keterangan').modal('show')">
+                <i class="upload icon"></i> Update Catatan
+            </button>
+        @endif
         <x-volt-link-button :url="route('modules::pendaftar.export', request()->query())" icon="file excel" class="teal" label="Export Excel" target="_blank"
             data-no-loader="true" />
-        <x-volt-link-button :url="route('modules::pendaftar.download-all-zip', request()->query())" icon="archive" class="blue" label="Unduh Semua Berkas (ZIP)" target="_blank"
-            data-no-loader="true" />
+        <x-volt-link-button :url="route('modules::pendaftar.download-all-zip', request()->query())" icon="archive" class="blue" label="Unduh Semua Berkas (ZIP)"
+            target="_blank" data-no-loader="true" />
     </x-slot>
 
     {!! $table !!}
 
+    {{-- Modal Update Catatan Verifikator --}}
+    <div class="ui modal small" id="modal-import-keterangan" style="position: relative;">
+        <i class="close icon" style="top: 1.2rem !important; right: 1.2rem !important; color: #64748b !important; position: absolute !important;"></i>
+        <div class="header" style="padding-right: 3rem;">
+            <i class="file excel icon"></i> Update Catatan Verifikator
+        </div>
+        <div class="content">
+            <form id="form-import-keterangan" action="{{ route('modules::pendaftar.import-keterangan') }}"
+                method="POST" enctype="multipart/form-data" class="ui form">
+                @csrf
+                <div class="field">
+                    <label>Template Excel</label>
+                    <p style="font-size: 0.9em; color: #666; margin-bottom: 0.5rem;">
+                        Gunakan template Excel berikut untuk mengisi Nomor Registrasi dan Catatan Verifikator yang ingin
+                        diperbarui.
+                    </p>
+                    <a href="{{ route('modules::pendaftar.template-keterangan') }}" class="ui button basic teal compact"
+                        target="_blank" data-no-loader="true">
+                        <i class="download icon"></i> Unduh Template Excel (.xlsx)
+                    </a>
+                </div>
+                <div class="ui divider"></div>
+                <div class="field required">
+                    <label>File Excel (.xlsx / .xls)</label>
+                    <input type="file" name="file" accept=".xlsx, .xls" required>
+                </div>
+            </form>
+        </div>
+        <div class="actions">
+            <button type="button" class="ui button deny">Batal</button>
+            <button type="submit" form="form-import-keterangan" class="ui button primary">
+                <i class="upload icon"></i> Simpan / Upload
+            </button>
+        </div>
+    </div>
+
     <style>
         @media (max-width: 767px) {
+
             /* 1. Force all menu parts to stack and align perfectly */
             .ui.borderless.stackable.menu .menu.right {
                 width: 100% !important;
                 display: block !important;
             }
+
             /* Search box item */
-            .ui.borderless.stackable.menu > .item {
+            .ui.borderless.stackable.menu>.item {
                 display: block !important;
                 width: 100% !important;
-                padding: 1rem 1rem 0.25rem 1rem !important; /* 0.25rem bottom to form a 0.5rem gap */
+                padding: 1rem 1rem 0.25rem 1rem !important;
+                /* 0.25rem bottom to form a 0.5rem gap */
                 margin: 0 !important;
             }
+
             /* Filters item */
             .ui.borderless.stackable.menu .menu.right .item {
                 display: block !important;
                 width: 100% !important;
-                padding: 0.25rem 1rem 1rem 1rem !important; /* 0.25rem top to complete the 0.5rem gap */
+                padding: 0.25rem 1rem 1rem 1rem !important;
+                /* 0.25rem top to complete the 0.5rem gap */
                 margin: 0 !important;
             }
 
@@ -40,7 +86,7 @@
             }
 
             /* 3. Make the wrappers, fields, and dropdowns take full width */
-            form[id^="inline-filter-form-"] > div,
+            form[id^="inline-filter-form-"]>div,
             form[id^="inline-filter-form-"] .field,
             form[id^="inline-filter-form-"] .ui.dropdown {
                 width: 100% !important;
@@ -50,10 +96,11 @@
             }
 
             /* 4. The search input container */
-            .ui.borderless.stackable.menu > .item > form {
+            .ui.borderless.stackable.menu>.item>form {
                 display: block !important;
                 width: 100% !important;
             }
+
             .ui.action.input {
                 width: 100% !important;
             }

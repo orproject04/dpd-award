@@ -230,5 +230,62 @@ class PendaftarTest extends TestCase
         $response->assertSee('kategori=Diajukan', false);
         $response->assertSee('search=budi', false);
     }
+
+    #[Test]
+    public function it_can_download_template_keterangan(): void
+    {
+        $response = $this->get(route('modules::pendaftar.template-keterangan'));
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->assertStringStartsWith('attachment; filename=Template_Update_Catatan_Verifikator.xlsx', $response->headers->get('Content-Disposition'));
+    }
+
+    #[Test]
+    public function it_can_import_keterangan_excel(): void
+    {
+        $pendaftar = Pendaftar::factory()->create([
+            'nomor_registrasi' => 'REG/TEST/001',
+            'status' => 'Diajukan',
+        ]);
+        $riwayat = $pendaftar->riwayats()->create([
+            'status' => 'Diajukan',
+            'keterangan' => 'Keterangan lama',
+        ]);
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Nomor Registrasi');
+        $sheet->setCellValue('B1', 'Catatan Verifikator');
+        $sheet->setCellValue('A2', 'REG/TEST/001');
+        $sheet->setCellValue('B2', 'Catatan verifikasi baru dari Excel');
+
+        $tempPath = storage_path('app/private/test_import_keterangan.xlsx');
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save($tempPath);
+
+        $file = new \Illuminate\Http\UploadedFile(
+            $tempPath,
+            'test_import_keterangan.xlsx',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            null,
+            true
+        );
+
+        $response = $this->post(route('modules::pendaftar.import-keterangan'), [
+            'file' => $file,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHas('success');
+
+        $riwayat->refresh();
+        $this->assertEquals('Catatan verifikasi baru dari Excel', $riwayat->keterangan);
+
+        if (file_exists($tempPath)) {
+            @unlink($tempPath);
+        }
+    }
 }
+
 

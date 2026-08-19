@@ -10,6 +10,7 @@ use Modules\Pendaftar\Models\Pendaftar;
 use Modules\Pendaftar\PendaftarTableView;
 use Modules\Pendaftar\Requests\Store;
 use Modules\Pendaftar\Requests\Update;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -881,5 +882,162 @@ class PendaftarController extends Controller
         ]);
 
         return back()->withSuccess('Keterangan riwayat berhasil diperbarui.');
+    }
+
+    public function downloadTemplateKeterangan()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Template Catatan');
+
+        $headers = ['Nomor Registrasi', 'Catatan Verifikator'];
+        foreach ($headers as $colIdx => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
+            $sheet->setCellValue($colLetter . '1', $header);
+        }
+
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => '000000'],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => 'D9E1F2'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['rgb' => '000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle('A1:B1')->applyFromArray($headerStyle);
+        $sheet->getRowDimension(1)->setRowHeight(25);
+
+        // Add sample rows from existing pendaftar or dummy data
+        $sampleData = [];
+        $samplePendaftars = Pendaftar::latest()->take(2)->get();
+        if ($samplePendaftars->isNotEmpty()) {
+            foreach ($samplePendaftars as $sp) {
+                $latestRiwayat = $sp->riwayats()->first();
+                $sampleData[] = [
+                    $sp->nomor_registrasi,
+                    $latestRiwayat ? $latestRiwayat->keterangan : 'Berkas lengkap dan terverifikasi'
+                ];
+            }
+        } else {
+            $sampleData = [
+                ['REG/2026/001', 'Berkas lengkap dan terverifikasi'],
+                ['REG/2026/002', 'Surat rekomendasi belum ditandatangani'],
+            ];
+        }
+
+        $dataBorderStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['rgb' => 'D9D9D9'],
+                ],
+            ],
+        ];
+
+        foreach ($sampleData as $idx => $row) {
+            $rowNum = $idx + 2;
+            $sheet->setCellValue('A' . $rowNum, $row[0]);
+            $sheet->setCellValue('B' . $rowNum, $row[1]);
+            $sheet->getStyle('A' . $rowNum . ':B' . $rowNum)->applyFromArray($dataBorderStyle);
+        }
+
+        $sheet->getColumnDimension('A')->setWidth(25);
+        $sheet->getColumnDimension('B')->setWidth(50);
+
+        $fileName = 'Template_Update_Catatan_Verifikator.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'max-age=0',
+        ]);
+    }
+
+    public function importKeterangan(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls|max:10240',
+        ], [
+            'file.required' => 'Pilih file Excel terlebih dahulu.',
+            'file.mimes' => 'File harus berformat Excel (.xlsx atau .xls).',
+            'file.max' => 'Ukuran file maksimal 10MB.',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+
+            if (empty($rows) || count($rows) < 2) {
+                return back()->withError('File Excel kosong atau tidak memiliki data.');
+            }
+
+            // Remove header row
+            array_shift($rows);
+
+            $updatedCount = 0;
+            $notFoundNumbers = [];
+
+            foreach ($rows as $row) {
+                $nomorRegistrasi = isset($row[0]) ? trim((string)$row[0]) : '';
+                $catatan = isset($row[1]) ? trim((string)$row[1]) : '';
+
+                if (empty($nomorRegistrasi)) {
+                    continue;
+                }
+
+                $pendaftar = Pendaftar::where('nomor_registrasi', $nomorRegistrasi)->first();
+
+                if (!$pendaftar) {
+                    $notFoundNumbers[] = $nomorRegistrasi;
+                    continue;
+                }
+
+                $latestRiwayat = $pendaftar->riwayats()->first();
+
+                if ($latestRiwayat) {
+                    $latestRiwayat->update([
+                        'keterangan' => $catatan !== '' ? $catatan : null,
+                    ]);
+                } else {
+                    $pendaftar->riwayats()->create([
+                        'status' => $pendaftar->status ?? 'Diajukan',
+                        'keterangan' => $catatan !== '' ? $catatan : null,
+                    ]);
+                }
+
+                $updatedCount++;
+            }
+
+            $message = "Berhasil mengupdate catatan verifikator untuk {$updatedCount} pendaftar.";
+            if (!empty($notFoundNumbers)) {
+                $message .= " (Tidak ditemukan: " . implode(', ', array_slice($notFoundNumbers, 0, 5));
+                if (count($notFoundNumbers) > 5) {
+                    $message .= " dan " . (count($notFoundNumbers) - 5) . " lainnya";
+                }
+                $message .= ")";
+            }
+
+            return back()->withSuccess($message);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal mengimpor catatan verifikator: " . $e->getMessage());
+            return back()->withError('Gagal mengolah file Excel: ' . $e->getMessage());
+        }
     }
 }

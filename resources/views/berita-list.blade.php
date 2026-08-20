@@ -119,7 +119,7 @@
     </main>
 
     <footer class="py-10 bg-[#0a0c11] text-center text-white/40 text-[13px] border-t border-white/5">
-        &copy; {{ date('Y') }} DPDRI <i>AWARDS</i> 2026. Dari Daerah untuk Indonesia.
+        &copy; 2026 DPD RI. All rights reserved.
     </footer>
 </body>
 

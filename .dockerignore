@@ -5,3 +5,13 @@ vendor
 storage/*.key
 storage/logs/*
 public/storage
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/testing/*
+storage/app/*
+tests
+Mungkin Media DPD Award
+docker
+.github
+.phpunit.cache

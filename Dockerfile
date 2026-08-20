@@ -65,10 +65,10 @@ RUN rm -rf bootstrap/cache/*.php \
  && chown -R www-data:www-data bootstrap/cache storage \
  && chmod -R 775 bootstrap/cache storage \
  && php artisan config:clear \
- && composer dump-autoload --optimize \
+ && composer dump-autoload \
  && php artisan storage:link \
  && php artisan laravolt:link \
- && chown -R www-data:www-data public/storage public/laravolt
+ && chown -h www-data:www-data public/storage public/laravolt
 
 # Configure PHP timezone
 RUN echo "date.timezone = Asia/Jakarta" > /usr/local/etc/php/conf.d/timezone.ini

@@ -84,8 +84,8 @@ print_info "Current active environment: $ACTIVE_COLOR"
 print_info "Deploying new version to: $IDLE_COLOR"
 
 # 1. Build and start idle container
-print_info "Building new image without cache..."
-docker-compose $COMPOSE_ARGS build --no-cache app-$IDLE_COLOR
+print_info "Building new image (using cache for speed)..."
+docker-compose $COMPOSE_ARGS build app-$IDLE_COLOR
 docker-compose $COMPOSE_ARGS up -d app-$IDLE_COLOR
 print_status "Started app-$IDLE_COLOR"
 

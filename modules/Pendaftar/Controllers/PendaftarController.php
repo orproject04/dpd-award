@@ -341,7 +341,7 @@ class PendaftarController extends Controller
 
     public function exportExcel(\Illuminate\Http\Request $request)
     {
-        $pendaftars = $this->getFilteredQuery($request)->with(['kontribusi', 'penghargaan'])->get();
+        $pendaftars = $this->getFilteredQuery($request)->with(['kontribusi', 'penghargaan', 'riwayats'])->get();
 
         $spreadsheet = new Spreadsheet();
 
@@ -367,6 +367,7 @@ class PendaftarController extends Controller
             'Nomor WA',
             'Email',
             'Status',
+            'Keterangan',
             'Tanggal Registrasi'
         ];
 
@@ -406,7 +407,7 @@ class PendaftarController extends Controller
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
             $sheetPendaftar->setCellValue($colLetter . '1', $header);
         }
-        $sheetPendaftar->getStyle('A1:O1')->applyFromArray($headerStyle);
+        $sheetPendaftar->getStyle('A1:P1')->applyFromArray($headerStyle);
         $sheetPendaftar->getRowDimension(1)->setRowHeight(25);
 
         $rowIdx = 2;
@@ -425,15 +426,18 @@ class PendaftarController extends Controller
             $sheetPendaftar->setCellValue('L' . $rowIdx, $pendaftar->nomor_wa);
             $sheetPendaftar->setCellValue('M' . $rowIdx, $pendaftar->email);
             $sheetPendaftar->setCellValue('N' . $rowIdx, $pendaftar->status ?? 'Diajukan');
-            $sheetPendaftar->setCellValue('O' . $rowIdx, $pendaftar->created_at->format('Y-m-d H:i:s'));
+            
+            $keterangan = $pendaftar->riwayats->first()?->keterangan ?? '';
+            $sheetPendaftar->setCellValue('O' . $rowIdx, $keterangan);
+            $sheetPendaftar->setCellValue('P' . $rowIdx, $pendaftar->created_at->format('Y-m-d H:i:s'));
 
             // Apply light borders
-            $sheetPendaftar->getStyle('A' . $rowIdx . ':O' . $rowIdx)->applyFromArray($dataBorderStyle);
+            $sheetPendaftar->getStyle('A' . $rowIdx . ':P' . $rowIdx)->applyFromArray($dataBorderStyle);
             $rowIdx++;
         }
 
         // Auto-fit columns
-        foreach (range(1, 15) as $colIdx) {
+        foreach (range(1, 16) as $colIdx) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
             $sheetPendaftar->getColumnDimension($colLetter)->setAutoSize(true);
         }

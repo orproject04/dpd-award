@@ -1,14 +1,16 @@
 <x-volt-app :title="'Pendaftar'">
     <x-slot name="actions">
-        @if (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::UPDATE_DATA_PENDAFTAR))
-            <button type="button" class="ui button orange" onclick="$('#modal-import-keterangan').modal('show')">
-                <i class="upload icon"></i> Update Catatan
-            </button>
-        @endif
-        <x-volt-link-button :url="route('modules::pendaftar.export', request()->query())" icon="file excel" class="teal" label="Export Excel" target="_blank"
-            data-no-loader="true" />
-        <x-volt-link-button :url="route('modules::pendaftar.download-all-zip', request()->query())" icon="archive" class="blue" label="Unduh Semua Berkas (ZIP)"
-            target="_blank" data-no-loader="true" />
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+            @if (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::UPDATE_DATA_PENDAFTAR))
+                <button type="button" class="ui button orange" onclick="$('#modal-import-keterangan').modal('show')" style="margin: 0;">
+                    <i class="upload icon"></i> Update Catatan
+                </button>
+            @endif
+            <x-volt-link-button :url="route('modules::pendaftar.export', request()->query())" icon="file excel" class="teal" label="Export Excel" target="_blank"
+                data-no-loader="true" style="margin: 0;" />
+            <x-volt-link-button :url="route('modules::pendaftar.download-all-zip', request()->query())" icon="archive" class="blue" label="Unduh Semua Berkas (ZIP)"
+                target="_blank" data-no-loader="true" style="margin: 0;" />
+        </div>
     </x-slot>
 
     {!! $table !!}

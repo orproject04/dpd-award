@@ -12,6 +12,5 @@ storage/framework/testing/*
 storage/app/*
 tests
 Mungkin Media DPD Award
-docker
 .github
 .phpunit.cache

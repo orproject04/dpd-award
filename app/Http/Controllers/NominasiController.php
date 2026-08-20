@@ -227,4 +227,18 @@ class NominasiController extends Controller
             ], 500);
         }
     }
+
+    public function cetakBukti($regId)
+    {
+        $pendaftar = Pendaftar::with(['kontribusi', 'penghargaan'])->where('nomor_registrasi', $regId)->firstOrFail();
+
+        $waktuSubmit = $pendaftar->created_at->format('d M Y, H:i:s');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.bukti_daftar', [
+            'pendaftar' => $pendaftar,
+            'waktuSubmit' => $waktuSubmit,
+        ]);
+
+        return $pdf->stream('Bukti_Pendaftaran_' . $pendaftar->nomor_registrasi . '.pdf');
+    }
 }

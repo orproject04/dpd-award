@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('/nominasi', [\App\Http\Controllers\NominasiController::class, 'create'])->name('nominasi');
 Route::post('/nominasi', [\App\Http\Controllers\NominasiController::class, 'store'])->middleware('throttle:150,1')->name('nominasi.store');
+Route::get('/nominasi/{regId}/cetak-bukti', [\App\Http\Controllers\NominasiController::class, 'cetakBukti'])->name('nominasi.cetak-bukti');
 Route::post('/track', [LandingController::class, 'track'])->middleware('throttle:200,1')->name('track');
 
 Route::get('/admin', [LoginController::class, 'show'])->name('admin.login');

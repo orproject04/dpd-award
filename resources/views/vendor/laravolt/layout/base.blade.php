@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ config('app.locale') }}" data-font-size="{{ config('laravolt.ui.font_size') }}"
     data-theme="{{ config('laravolt.ui.theme') }}" data-sidebar-density="{{ config('laravolt.ui.sidebar_density') }}"
-    data-spa="{{ config('laravolt.platform.features.spa') }}">
+    data-spa="{{ config('laravolt.platform.features.spa') }}" translate="no">
 
 <head>
     <title>DPDRI AWARDS 2026</title>
@@ -11,6 +11,7 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge, chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <meta content="no-cache">
+    <meta name="google" content="notranslate">
 
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')

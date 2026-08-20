@@ -213,7 +213,7 @@
 
         <!-- Informasi Personal -->
         <div class="section-panel">
-            <div class="section-header">Informasi Personal</div>
+            <div class="section-header">Data Diri</div>
             <div class="section-body">
                 <table class="grid-table">
                     <tr>
@@ -268,7 +268,7 @@
 
         <!-- Capaian & Inovasi -->
         <div class="section-panel">
-            <div class="section-header">Capaian & Inovasi</div>
+            <div class="section-header">Kontribusi / Inovasi</div>
             <div class="section-body">
                 @if(isset($pendaftar->kontribusi) && count($pendaftar->kontribusi) > 0)
                     @foreach($pendaftar->kontribusi as $index => $kontribusi)

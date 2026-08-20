@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth" translate="no">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google" content="notranslate">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>DPDRI AWARDS 2026</title>
     <link rel="icon" href="{{ asset('images/logo.png') }}">
@@ -157,9 +158,9 @@
                         @click="navigator.clipboard.writeText(regId); Swal.fire({title: 'Berhasil!', text: 'Nomor Registrasi disalin!', icon: 'success', confirmButtonColor: '#1b6e4c'})"
                         class="cursor-pointer text-[13px] font-bold bg-[#f3ecdd] text-[#1b6e4c] px-3.5 py-2 rounded-lg hover:bg-[#e8ddc4] transition-colors border border-[#1b6e4c]/20">Salin
                         Nomor</button>
-                    <button @click="window.print()"
-                        class="cursor-pointer text-[13px] font-bold bg-[#1b6e4c] text-white px-3.5 py-2 rounded-lg hover:bg-[#11563bff] transition-colors shadow-sm">Cetak
-                        Bukti</button>
+                    <a :href="'/nominasi/' + regId + '/cetak-bukti'" target="_blank"
+                        class="inline-block cursor-pointer text-[13px] font-bold bg-[#1b6e4c] text-white px-3.5 py-2 rounded-lg hover:bg-[#11563bff] transition-colors shadow-sm">Cetak
+                        Bukti</a>
                 </div>
             </div>
 
@@ -612,14 +613,14 @@
                                                     </span>
                                                 </div>
                                                 <textarea x-model="item.deskripsi" @input="
-                                                            let val = item.deskripsi || '';
-                                                            let words = val.split(' ').filter(w => w.trim().length > 0);
-                                                            if (words.length > 200) {
-                                                                item.deskripsi = words.slice(0, 200).join(' ');
-                                                            }
-                                                            $el.style.height = 'auto';
-                                                            $el.style.height = $el.scrollHeight + 'px';
-                                                        "
+                                                                let val = item.deskripsi || '';
+                                                                let words = val.split(' ').filter(w => w.trim().length > 0);
+                                                                if (words.length > 200) {
+                                                                    item.deskripsi = words.slice(0, 200).join(' ');
+                                                                }
+                                                                $el.style.height = 'auto';
+                                                                $el.style.height = $el.scrollHeight + 'px';
+                                                            "
                                                     x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                     placeholder="Deskripsi (maksimal 200 kata per poin)..."
                                                     :class="((item.deskripsi || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? '!border-[#c0392b] !ring-1 !ring-[#c0392b]/30 bg-[#fdf5f5]' : ''"
@@ -635,14 +636,14 @@
                                                     </span>
                                                 </div>
                                                 <textarea x-model="item.dampak" @input="
-                                                            let val = item.dampak || '';
-                                                            let words = val.split(' ').filter(w => w.trim().length > 0);
-                                                            if (words.length > 200) {
-                                                                item.dampak = words.slice(0, 200).join(' ');
-                                                            }
-                                                            $el.style.height = 'auto';
-                                                            $el.style.height = $el.scrollHeight + 'px';
-                                                        "
+                                                                let val = item.dampak || '';
+                                                                let words = val.split(' ').filter(w => w.trim().length > 0);
+                                                                if (words.length > 200) {
+                                                                    item.dampak = words.slice(0, 200).join(' ');
+                                                                }
+                                                                $el.style.height = 'auto';
+                                                                $el.style.height = $el.scrollHeight + 'px';
+                                                            "
                                                     x-init="$nextTick(() => { $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px' })"
                                                     placeholder="Contoh: menjangkau 1.200 anak, 8 desa, sejak 2019..."
                                                     :class="((item.dampak || '').split(' ').filter(w => w.trim().length > 0)).length >= 200 ? '!border-[#c0392b] !ring-1 !ring-[#c0392b]/30 bg-[#fdf5f5]' : ''"

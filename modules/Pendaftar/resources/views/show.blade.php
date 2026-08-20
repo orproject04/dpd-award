@@ -64,6 +64,14 @@
                 --radius: 10px;
             }
 
+            input[type=number]::-webkit-inner-spin-button, 
+            input[type=number]::-webkit-outer-spin-button { 
+                -webkit-appearance: none; 
+                margin: 0; 
+            }
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
             /* ─── Section Cards ─────────────────────────────────────── */
             .show-card {
                 background: #fff;
@@ -82,6 +90,120 @@
                 border-bottom: 1px solid #e8edf2;
                 border-top-left-radius: calc(var(--radius) - 1px);
                 border-top-right-radius: calc(var(--radius) - 1px);
+            }
+
+            .custom-file-upload {
+                border: 2px dashed #cbd5e1;
+                border-radius: 8px;
+                padding: 2rem 1.5rem;
+                text-align: center;
+                background: #fdfdfd;
+                cursor: pointer !important;
+                transition: all 0.3s;
+                position: relative;
+                display: block;
+                margin-top: 0.5rem;
+            }
+            .custom-file-upload:hover {
+                border-color: #dcb340;
+                background: #fffdf5;
+            }
+            .custom-file-upload input[type="file"] {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                cursor: pointer !important;
+                z-index: 10;
+            }
+            .custom-file-upload .upload-icon-circle {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background: #fff;
+                border: 1px solid #dcb340;
+                color: #dcb340;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem auto;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            .custom-file-upload .upload-text {
+                font-weight: 700;
+                color: #1e293b;
+                font-size: 0.95rem;
+            }
+            .custom-file-upload .upload-hint {
+                font-size: 0.8rem;
+                color: #94a3b8;
+                margin-top: 0.25rem;
+            }
+            .ui.form .required.field > .custom-file-upload:after {
+                display: none !important;
+            }
+            .file-preview-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            .file-preview-card {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                width: calc(50% - 0.5rem);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                position: relative;
+            }
+            .file-preview-card .file-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #10b981;
+                color: #fff;
+                margin-right: 1rem;
+                overflow: hidden;
+            }
+            .file-preview-card .file-icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .file-preview-card .file-info {
+                flex: 1;
+                overflow: hidden;
+            }
+            .file-preview-card .file-name {
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: #1e293b;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .file-preview-card .file-meta {
+                font-size: 0.7rem;
+                color: #64748b;
+                margin-top: 0.2rem;
+                text-transform: uppercase;
+            }
+            .file-preview-card .file-remove {
+                cursor: pointer;
+                color: #94a3b8;
+                padding: 0.5rem;
+                transition: color 0.2s;
+            }
+            .file-preview-card .file-remove:hover {
+                color: #ef4444;
             }
 
             .show-card-header .card-icon {
@@ -602,9 +724,16 @@
 
                 {{-- ── Kontribusi / Inovasi ─────────────────────────────── --}}
                 <div class="show-card">
-                    <div class="show-card-header">
-                        <div class="card-icon"><i class="lightbulb outline icon" style="margin:0"></i></div>
-                        <h3>Kontribusi / Inovasi</h3>
+                    <div class="show-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <div class="card-icon"><i class="lightbulb outline icon" style="margin:0"></i></div>
+                            <h3 style="margin:0">Kontribusi / Inovasi</h3>
+                        </div>
+                        @if(auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
+                            <button type="button" class="ui mini blue button" onclick="$('#modal-add-kontribusi').modal('show')">
+                                <i class="plus icon"></i> Tambah
+                            </button>
+                        @endif
                     </div>
                     <div class="show-card-body">
                         @forelse($pendaftar->kontribusi as $index => $kontribusi)
@@ -681,6 +810,64 @@
                                                 </div>
                                             </div>
                                         @endif
+                                        
+                                        @if($kontribusi->is_from_admin && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
+                                            <hr class="detail-field-divider">
+                                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                                <button type="button" class="ui mini orange button" onclick="$('#modal-edit-kontribusi-{{ $kontribusi->id }}').modal('show')">
+                                                    <i class="edit icon"></i> Edit
+                                                </button>
+                                                <form id="form-delete-kontribusi-{{ $kontribusi->id }}" action="{{ route('modules::pendaftar.destroy-kontribusi', ['pendaftar' => $pendaftar->id, 'kontribusi' => $kontribusi->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="ui mini red button" onclick="confirmDelete('form-delete-kontribusi-{{ $kontribusi->id }}', 'Apakah Anda yakin ingin menghapus kontribusi ini?')">
+                                                        <i class="trash icon"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            
+                                            {{-- MODAL EDIT KONTRIBUSI --}}
+                                            <div class="ui modal small" id="modal-edit-kontribusi-{{ $kontribusi->id }}" style="text-align: left;">
+                                                <i class="close icon"></i>
+                                                <div class="header">Edit Kontribusi / Inovasi</div>
+                                                <div class="content">
+                                                    <form id="form-edit-kontribusi-{{ $kontribusi->id }}" action="{{ route('modules::pendaftar.update-kontribusi', ['pendaftar' => $pendaftar->id, 'kontribusi' => $kontribusi->id]) }}" method="POST" enctype="multipart/form-data" class="ui form">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="field required">
+                                                            <label>Judul</label>
+                                                            <input type="text" name="judul" value="{{ $kontribusi->judul }}" maxlength="500" required>
+                                                        </div>
+                                                        <div class="field required">
+                                                            <label>Deskripsi</label>
+                                                            <textarea name="deskripsi" required>{{ $kontribusi->deskripsi }}</textarea>
+                                                        </div>
+                                                        <div class="field required">
+                                                            <label>Dampak</label>
+                                                            <textarea name="dampak" required>{{ $kontribusi->dampak }}</textarea>
+                                                        </div>
+                                                        <div class="field">
+                                                            <label>Bukti Dukung (Ganti File - Opsional)</label>
+                                                            <div class="custom-file-upload" >
+                                                                <input type="file" name="bukti_dukung[]" multiple accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip" onchange="handleFileChange(this)">
+                                                                <div class="upload-icon-circle">
+                                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="28" height="28">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <div class="upload-text">Klik atau seret file ke sini</div>
+                                                                <div class="upload-hint">Format JPG, PNG, PDF, DOC, XLS, PPT, ZIP</div>
+                                                            </div>
+                                                            <small style="display:block; margin-top:.5rem;">Biarkan kosong jika tidak ingin mengubah file bukti dukung.</small>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="actions">
+                                                    <div class="ui cancel button">Batal</div>
+                                                    <button type="submit" form="form-edit-kontribusi-{{ $kontribusi->id }}" class="ui primary button">Simpan Perubahan</button>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -692,12 +879,61 @@
                         @endforelse
                     </div>
                 </div>
+                
+                {{-- MODAL ADD KONTRIBUSI --}}
+                @if(auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
+                    <div class="ui modal small" id="modal-add-kontribusi">
+                        <i class="close icon"></i>
+                        <div class="header">Tambah Kontribusi / Inovasi</div>
+                        <div class="content">
+                            <form id="form-add-kontribusi" action="{{ route('modules::pendaftar.store-kontribusi', ['pendaftar' => $pendaftar->id]) }}" method="POST" enctype="multipart/form-data" class="ui form">
+                                @csrf
+                                <div class="field required">
+                                    <label>Judul</label>
+                                    <input type="text" name="judul" maxlength="500" required>
+                                </div>
+                                <div class="field required">
+                                    <label>Deskripsi</label>
+                                    <textarea name="deskripsi" required></textarea>
+                                </div>
+                                <div class="field required">
+                                    <label>Dampak</label>
+                                    <textarea name="dampak" required></textarea>
+                                </div>
+                                <div class="field required">
+                                    <label>Bukti Dukung (Wajib)</label>
+                                    <div class="custom-file-upload" >
+                                        <input type="file" name="bukti_dukung[]" multiple required accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip" onchange="handleFileChange(this)">
+                                        <div class="upload-icon-circle">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="28" height="28">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="upload-text">Klik atau seret file ke sini</div>
+                                        <div class="upload-hint">Format JPG, PNG, PDF, DOC, XLS, PPT, ZIP</div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="actions">
+                            <div class="ui cancel button">Batal</div>
+                            <button type="submit" form="form-add-kontribusi" class="ui primary button">Tambah Kontribusi</button>
+                        </div>
+                    </div>
+                @endif
 
                 {{-- ── Penghargaan ───────────────────────────────────────── --}}
                 <div class="show-card">
-                    <div class="show-card-header">
-                        <div class="card-icon"><i class="trophy icon" style="margin:0"></i></div>
-                        <h3>Penghargaan</h3>
+                    <div class="show-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <div class="card-icon"><i class="trophy icon" style="margin:0"></i></div>
+                            <h3 style="margin:0">Penghargaan</h3>
+                        </div>
+                        @if(auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
+                            <button type="button" class="ui mini blue button" onclick="$('#modal-add-penghargaan').modal('show')">
+                                <i class="plus icon"></i> Tambah
+                            </button>
+                        @endif
                     </div>
                     <div class="show-card-body">
                         @forelse($pendaftar->penghargaan as $index => $penghargaan)
@@ -769,6 +1005,60 @@
                                                 </div>
                                             </div>
                                         @endif
+                                        
+                                        @if($penghargaan->is_from_admin && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
+                                            <hr class="detail-field-divider">
+                                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                                <button type="button" class="ui mini orange button" onclick="$('#modal-edit-penghargaan-{{ $penghargaan->id }}').modal('show')">
+                                                    <i class="edit icon"></i> Edit
+                                                </button>
+                                                <form id="form-delete-penghargaan-{{ $penghargaan->id }}" action="{{ route('modules::pendaftar.destroy-penghargaan', ['pendaftar' => $pendaftar->id, 'penghargaan' => $penghargaan->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="ui mini red button" onclick="confirmDelete('form-delete-penghargaan-{{ $penghargaan->id }}', 'Apakah Anda yakin ingin menghapus penghargaan ini?')">
+                                                        <i class="trash icon"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            
+                                            {{-- MODAL EDIT PENGHARGAAN --}}
+                                            <div class="ui modal small" id="modal-edit-penghargaan-{{ $penghargaan->id }}" style="text-align: left;">
+                                                <i class="close icon"></i>
+                                                <div class="header">Edit Penghargaan</div>
+                                                <div class="content">
+                                                    <form id="form-edit-penghargaan-{{ $penghargaan->id }}" action="{{ route('modules::pendaftar.update-penghargaan', ['pendaftar' => $pendaftar->id, 'penghargaan' => $penghargaan->id]) }}" method="POST" enctype="multipart/form-data" class="ui form">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="field required">
+                                                            <label>Uraian Penghargaan</label>
+                                                            <input type="text" name="uraian" value="{{ $penghargaan->uraian }}" maxlength="500" required>
+                                                        </div>
+                                                        <div class="field required">
+                                                            <label>Tahun</label>
+                                                            <input type="number" name="tahun" value="{{ $penghargaan->tahun }}" min="1900" max="{{ date('Y') }}" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
+                                                        </div>
+                                                        <div class="field">
+                                                            <label>Bukti Dukung (Ganti File - Opsional)</label>
+                                                            <div class="custom-file-upload" >
+                                                                <input type="file" name="bukti_dukung[]" multiple accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip" onchange="handleFileChange(this)">
+                                                                <div class="upload-icon-circle">
+                                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="28" height="28">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <div class="upload-text">Klik atau seret file ke sini</div>
+                                                                <div class="upload-hint">Format JPG, PNG, PDF, DOC, XLS, PPT, ZIP</div>
+                                                            </div>
+                                                            <small style="display:block; margin-top:.5rem;">Biarkan kosong jika tidak ingin mengubah file bukti dukung.</small>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="actions">
+                                                    <div class="ui cancel button">Batal</div>
+                                                    <button type="submit" form="form-edit-penghargaan-{{ $penghargaan->id }}" class="ui primary button">Simpan Perubahan</button>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -780,6 +1070,44 @@
                         @endforelse
                     </div>
                 </div>
+                
+                {{-- MODAL ADD PENGHARGAAN --}}
+                @if(auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
+                    <div class="ui modal small" id="modal-add-penghargaan">
+                        <i class="close icon"></i>
+                        <div class="header">Tambah Penghargaan</div>
+                        <div class="content">
+                            <form id="form-add-penghargaan" action="{{ route('modules::pendaftar.store-penghargaan', ['pendaftar' => $pendaftar->id]) }}" method="POST" enctype="multipart/form-data" class="ui form">
+                                @csrf
+                                <div class="field required">
+                                    <label>Uraian Penghargaan</label>
+                                    <input type="text" name="uraian" maxlength="500" required>
+                                </div>
+                                <div class="field required">
+                                    <label>Tahun</label>
+                                    <input type="number" name="tahun" min="1900" max="{{ date('Y') }}" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
+                                </div>
+                                <div class="field required">
+                                    <label>Bukti Dukung (Wajib)</label>
+                                    <div class="custom-file-upload" >
+                                        <input type="file" name="bukti_dukung[]" multiple required accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip" onchange="handleFileChange(this)">
+                                        <div class="upload-icon-circle">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="28" height="28">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="upload-text">Klik atau seret file ke sini</div>
+                                        <div class="upload-hint">Format JPG, PNG, PDF, DOC, XLS, PPT, ZIP</div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="actions">
+                            <div class="ui cancel button">Batal</div>
+                            <button type="submit" form="form-add-penghargaan" class="ui primary button">Tambah Penghargaan</button>
+                        </div>
+                    </div>
+                @endif
 
             </div>{{-- /left column --}}
 
@@ -1315,6 +1643,127 @@
                 statusForm.id = 'status-form'; // assign id dynamically if it doesn't have one
                 handleAjaxForm('status-form'); // UI is already updated by the custom dropdown click
             }
+
+            window.confirmDelete = function(formId, message) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById(formId).submit();
+                        }
+                    });
+                } else {
+                    if (confirm(message)) {
+                        document.getElementById(formId).submit();
+                    }
+                }
+            };
+
+            window.handleFileChange = function(input) {
+                if (!input.accumulatedFiles) {
+                    input.accumulatedFiles = new DataTransfer();
+                }
+                
+                if (input.files && input.files.length > 0) {
+                    for (let i = 0; i < input.files.length; i++) {
+                        let isDuplicate = false;
+                        for (let j = 0; j < input.accumulatedFiles.files.length; j++) {
+                            if (input.accumulatedFiles.files[j].name === input.files[i].name && 
+                                input.accumulatedFiles.files[j].size === input.files[i].size) {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
+                        if (!isDuplicate) {
+                            input.accumulatedFiles.items.add(input.files[i]);
+                        }
+                    }
+                }
+                
+                input.files = input.accumulatedFiles.files;
+                window.renderFilePreview(input);
+            };
+
+            window.removeFile = function(btn, index) {
+                const container = btn.closest('.file-preview-container');
+                const form = container.closest('form');
+                const input = form.querySelector('input[type="file"]');
+                if (!input || !input.accumulatedFiles) return;
+                
+                const dt = new DataTransfer();
+                const files = input.accumulatedFiles.files;
+                for (let i = 0; i < files.length; i++) {
+                    if (i !== index) {
+                        dt.items.add(files[i]);
+                    }
+                }
+                input.accumulatedFiles = dt;
+                input.files = dt.files;
+                window.renderFilePreview(input);
+            };
+
+            window.renderFilePreview = function(input) {
+                let container = input.closest('.field').querySelector('.file-preview-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'file-preview-container';
+                    input.closest('.field').appendChild(container);
+                }
+                
+                container.innerHTML = '';
+                const files = input.files;
+                if (files && files.length > 0) {
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const sizeMB = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+                        const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
+                        const sizeStr = file.size > 1024 * 1024 ? sizeMB : sizeKB;
+                        
+                        let iconHtml = '<i class="file alternate outline icon large" style="margin:0;"></i>';
+                        let bgColor = '#10b981'; 
+                        
+                        if (file.type.startsWith('image/')) {
+                            const objUrl = URL.createObjectURL(file);
+                            iconHtml = `<img src="${objUrl}" alt="Preview" onload="URL.revokeObjectURL(this.src)">`;
+                            bgColor = 'transparent';
+                        } else if (file.type === 'application/pdf') {
+                            iconHtml = '<i class="file pdf outline icon large" style="margin:0;"></i>';
+                            bgColor = '#ef4444'; 
+                        } else if (file.name.match(/\.(doc|docx)$/i)) {
+                            iconHtml = '<i class="file word outline icon large" style="margin:0;"></i>';
+                            bgColor = '#3b82f6'; 
+                        }
+                        
+                        const card = document.createElement('div');
+                        card.className = 'file-preview-card';
+                        card.innerHTML = `
+                            <div class="file-icon" style="background: ${bgColor}">${iconHtml}</div>
+                            <div class="file-info">
+                                <div class="file-name" title="${file.name}">${file.name}</div>
+                                <div class="file-meta">${file.name.split('.').pop()} , ${sizeStr}</div>
+                            </div>
+                            <div class="file-remove" onclick="removeFile(this, ${i})">
+                                <i class="times icon"></i>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    }
+                }
+            };
+
+            document.addEventListener("wheel", function(event){
+                if(document.activeElement.type === "number"){
+                    event.preventDefault();
+                }
+            }, { passive: false });
         </script>
     @endpush
 

@@ -21,6 +21,16 @@ Route::group(
         Route::post('pendaftar/{pendaftar}/foto', [PendaftarController::class, 'updateFoto'])->name('pendaftar.update-foto');
         Route::post('pendaftar/{pendaftar}/ktp', [PendaftarController::class, 'updateKtp'])->name('pendaftar.update-ktp');
         Route::post('pendaftar/{pendaftar}/provinsi', [PendaftarController::class, 'updateProvinsi'])->name('pendaftar.update-provinsi');
+        
+        // Kontribusi & Penghargaan (Admin Management)
+        Route::post('pendaftar/{pendaftar}/kontribusi', [PendaftarController::class, 'storeKontribusi'])->name('pendaftar.store-kontribusi');
+        Route::put('pendaftar/{pendaftar}/kontribusi/{kontribusi}', [PendaftarController::class, 'updateKontribusi'])->name('pendaftar.update-kontribusi');
+        Route::delete('pendaftar/{pendaftar}/kontribusi/{kontribusi}', [PendaftarController::class, 'destroyKontribusi'])->name('pendaftar.destroy-kontribusi');
+        
+        Route::post('pendaftar/{pendaftar}/penghargaan', [PendaftarController::class, 'storePenghargaan'])->name('pendaftar.store-penghargaan');
+        Route::put('pendaftar/{pendaftar}/penghargaan/{penghargaan}', [PendaftarController::class, 'updatePenghargaan'])->name('pendaftar.update-penghargaan');
+        Route::delete('pendaftar/{pendaftar}/penghargaan/{penghargaan}', [PendaftarController::class, 'destroyPenghargaan'])->name('pendaftar.destroy-penghargaan');
+
         Route::resource('pendaftar', PendaftarController::class);
     }
 );

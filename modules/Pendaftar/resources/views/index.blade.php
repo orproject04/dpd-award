@@ -1,11 +1,9 @@
 <x-volt-app :title="'Pendaftar'">
     <x-slot name="actions">
         <div class="mobile-action-buttons" style="display: flex; gap: 0.3rem; justify-content: flex-end; align-items: center;">
-            @if (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::UPDATE_DATA_PENDAFTAR))
-                <button type="button" class="ui mini button orange" onclick="$('#modal-import-keterangan').modal('show')" style="margin: 0;">
-                    <i class="upload icon"></i> <span class="desktop-text">Update Catatan</span><span class="mobile-text">Catatan</span>
-                </button>
-            @endif
+            <button type="button" class="ui mini button orange" onclick="$('#modal-import-keterangan').modal('show')" style="margin: 0;">
+                <i class="upload icon"></i> <span class="desktop-text">Update Catatan</span><span class="mobile-text">Catatan</span>
+            </button>
             <a href="{{ route('modules::pendaftar.export', request()->query()) }}" target="_blank" class="ui mini teal button" style="margin: 0;" data-no-loader="true">
                 <i class="file excel icon"></i> <span class="desktop-text">Export Excel</span><span class="mobile-text">Excel</span>
             </a>

@@ -975,7 +975,7 @@ class PendaftarController extends Controller
     public function importKeterangan(\Illuminate\Http\Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls|max:10240',
+            'file' => 'required|file|mimes:xlsx,xls|max:51200',
         ], [
             'file.required' => 'Pilih file Excel terlebih dahulu.',
             'file.mimes' => 'File harus berformat Excel (.xlsx atau .xls).',
@@ -1043,5 +1043,140 @@ class PendaftarController extends Controller
             \Illuminate\Support\Facades\Log::error("Gagal mengimpor catatan verifikator: " . $e->getMessage());
             return back()->withError('Gagal mengolah file Excel: ' . $e->getMessage());
         }
+    }
+    // --- KONTRIBUSI & PENGHARGAAN ADMIN MANAGEMENT ---
+
+    private function checkManagePermission()
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermission('*') && !$user->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE), 403, 'Unauthorized.');
+    }
+
+    public function storeKontribusi(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
+    {
+        $this->checkManagePermission();
+        $request->validate([
+            'judul' => 'required|string|max:500',
+            'deskripsi' => 'required|string',
+            'dampak' => 'required|string',
+            'bukti_dukung.*' => 'required|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,7z|max:51200',
+        ]);
+
+        $buktiPaths = [];
+        if ($request->hasFile('bukti_dukung')) {
+            foreach ($request->file('bukti_dukung') as $file) {
+                $buktiPaths[] = $file->store('pendaftar/' . $pendaftar->id);
+            }
+        }
+
+        $pendaftar->kontribusi()->create([
+            'judul' => $request->judul,
+            'deskripsi' => $request->deskripsi,
+            'dampak' => $request->dampak,
+            'bukti_dukung' => $buktiPaths,
+            'is_from_admin' => true,
+        ]);
+
+        return back()->withSuccess('Kontribusi berhasil ditambahkan.');
+    }
+
+    public function updateKontribusi(\Illuminate\Http\Request $request, Pendaftar $pendaftar, \App\Models\Kontribusi $kontribusi)
+    {
+        $this->checkManagePermission();
+        abort_if(!$kontribusi->is_from_admin, 403, 'Anda tidak dapat mengedit data asli dari pendaftar.');
+
+        $request->validate([
+            'judul' => 'required|string|max:500',
+            'deskripsi' => 'required|string',
+            'dampak' => 'required|string',
+            'bukti_dukung.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,7z|max:51200',
+        ]);
+
+        $buktiPaths = $kontribusi->bukti_dukung ?? [];
+        if ($request->hasFile('bukti_dukung')) {
+            foreach ($request->file('bukti_dukung') as $file) {
+                $buktiPaths[] = $file->store('pendaftar/' . $pendaftar->id);
+            }
+        }
+
+        $kontribusi->update([
+            'judul' => $request->judul,
+            'deskripsi' => $request->deskripsi,
+            'dampak' => $request->dampak,
+            'bukti_dukung' => $buktiPaths,
+        ]);
+
+        return back()->withSuccess('Kontribusi berhasil diperbarui.');
+    }
+
+    public function destroyKontribusi(Pendaftar $pendaftar, \App\Models\Kontribusi $kontribusi)
+    {
+        $this->checkManagePermission();
+        abort_if(!$kontribusi->is_from_admin, 403, 'Anda tidak dapat menghapus data asli dari pendaftar.');
+        
+        $kontribusi->delete();
+        return back()->withSuccess('Kontribusi berhasil dihapus.');
+    }
+
+    public function storePenghargaan(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
+    {
+        $this->checkManagePermission();
+        $request->validate([
+            'uraian' => 'required|string|max:500',
+            'tahun' => 'required|string|max:4',
+            'bukti_dukung.*' => 'required|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,7z|max:51200',
+        ]);
+
+        $buktiPaths = [];
+        if ($request->hasFile('bukti_dukung')) {
+            foreach ($request->file('bukti_dukung') as $file) {
+                $buktiPaths[] = $file->store('pendaftar/' . $pendaftar->id);
+            }
+        }
+
+        $pendaftar->penghargaan()->create([
+            'uraian' => $request->uraian,
+            'tahun' => $request->tahun,
+            'bukti_dukung' => $buktiPaths,
+            'is_from_admin' => true,
+        ]);
+
+        return back()->withSuccess('Penghargaan berhasil ditambahkan.');
+    }
+
+    public function updatePenghargaan(\Illuminate\Http\Request $request, Pendaftar $pendaftar, \App\Models\Penghargaan $penghargaan)
+    {
+        $this->checkManagePermission();
+        abort_if(!$penghargaan->is_from_admin, 403, 'Anda tidak dapat mengedit data asli dari pendaftar.');
+
+        $request->validate([
+            'uraian' => 'required|string|max:500',
+            'tahun' => 'required|string|max:4',
+            'bukti_dukung.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar,7z|max:51200',
+        ]);
+
+        $buktiPaths = $penghargaan->bukti_dukung ?? [];
+        if ($request->hasFile('bukti_dukung')) {
+            foreach ($request->file('bukti_dukung') as $file) {
+                $buktiPaths[] = $file->store('pendaftar/' . $pendaftar->id);
+            }
+        }
+
+        $penghargaan->update([
+            'uraian' => $request->uraian,
+            'tahun' => $request->tahun,
+            'bukti_dukung' => $buktiPaths,
+        ]);
+
+        return back()->withSuccess('Penghargaan berhasil diperbarui.');
+    }
+
+    public function destroyPenghargaan(Pendaftar $pendaftar, \App\Models\Penghargaan $penghargaan)
+    {
+        $this->checkManagePermission();
+        abort_if(!$penghargaan->is_from_admin, 403, 'Anda tidak dapat menghapus data asli dari pendaftar.');
+        
+        $penghargaan->delete();
+        return back()->withSuccess('Penghargaan berhasil dihapus.');
     }
 }

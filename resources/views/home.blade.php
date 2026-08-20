@@ -1306,7 +1306,7 @@
         const geoWilayahData = {!! json_encode($geoWilayah) !!};
         const geoProvinsiData = {!! json_encode($geoProvinsi) !!};
         const provinsiColorMap = {!! json_encode($provinsiColors) !!};
-        const wColors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6'];
+        const wColors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#9ca3af'];
         const initialKat = 'Semua Kategori';
 
         function buildTooltipDetail(context, dataObj, prefix) {

@@ -1,15 +1,17 @@
 <x-volt-app :title="'Pendaftar'">
     <x-slot name="actions">
-        <div style="display: flex; flex-wrap: nowrap; gap: 0.3rem; justify-content: flex-end; align-items: center; white-space: nowrap;">
+        <div class="mobile-action-buttons" style="display: flex; gap: 0.3rem; justify-content: flex-end; align-items: center;">
             @if (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::UPDATE_DATA_PENDAFTAR))
                 <button type="button" class="ui mini button orange" onclick="$('#modal-import-keterangan').modal('show')" style="margin: 0;">
-                    <i class="upload icon"></i> Update Catatan
+                    <i class="upload icon"></i> <span class="desktop-text">Update Catatan</span><span class="mobile-text">Catatan</span>
                 </button>
             @endif
-            <x-volt-link-button :url="route('modules::pendaftar.export', request()->query())" icon="file excel" class="mini teal" label="Export Excel" target="_blank"
-                data-no-loader="true" style="margin: 0;" />
-            <x-volt-link-button :url="route('modules::pendaftar.download-all-zip', request()->query())" icon="archive" class="mini blue" label="Unduh Semua Berkas (ZIP)"
-                target="_blank" data-no-loader="true" style="margin: 0;" />
+            <a href="{{ route('modules::pendaftar.export', request()->query()) }}" target="_blank" class="ui mini teal button" style="margin: 0;" data-no-loader="true">
+                <i class="file excel icon"></i> <span class="desktop-text">Export Excel</span><span class="mobile-text">Excel</span>
+            </a>
+            <a href="{{ route('modules::pendaftar.download-all-zip', request()->query()) }}" target="_blank" class="ui mini blue button" style="margin: 0;" data-no-loader="true">
+                <i class="archive icon"></i> <span class="desktop-text">Unduh Semua Berkas (ZIP)</span><span class="mobile-text">ZIP</span>
+            </a>
         </div>
     </x-slot>
 
@@ -53,7 +55,33 @@
     </div>
 
     <style>
+        .mobile-action-buttons {
+            flex-wrap: nowrap;
+            white-space: nowrap;
+        }
+
+        .mobile-text {
+            display: none;
+        }
+
         @media (max-width: 767px) {
+            .mobile-action-buttons {
+                flex-wrap: nowrap !important;
+                white-space: nowrap !important;
+            }
+            
+            .desktop-text {
+                display: none !important;
+            }
+
+            .mobile-text {
+                display: inline !important;
+            }
+
+            .mobile-action-buttons .ui.button {
+                padding: 0.6em 0.8em !important;
+                font-size: 0.8rem !important;
+            }
 
             /* 1. Force all menu parts to stack and align perfectly */
             .ui.borderless.stackable.menu .menu.right {

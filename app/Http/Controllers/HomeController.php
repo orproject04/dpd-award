@@ -186,6 +186,15 @@ final class HomeController
                 
             $provCounts = array_merge($allProvinsiCounts, $dbProvinsiCounts);
 
+            // Calculate unfilled provinces
+            $emptyProvinsiCount = (clone $q)->where(function($query) {
+                $query->whereNull('provinsi')->orWhere('provinsi', '');
+            })->count();
+
+            if ($emptyProvinsiCount > 0) {
+                $provCounts['Belum Diisi'] = $emptyProvinsiCount;
+            }
+
             $wilCounts = [];
             foreach (\App\Models\Pendaftar::getProvinsiMap() as $wilayah => $provinsis) {
                 $wilCounts[$wilayah] = 0;
@@ -194,6 +203,10 @@ final class HomeController
                         $wilCounts[$wilayah] += $provCounts[$prov];
                     }
                 }
+            }
+
+            if ($emptyProvinsiCount > 0) {
+                $wilCounts['Belum Diisi'] = $emptyProvinsiCount;
             }
             
             arsort($provCounts);
@@ -213,6 +226,7 @@ final class HomeController
             }
             $wIndex++;
         }
+        $provinsiColors['Belum Diisi'] = '#9ca3af'; // Gray color for unfilled
 
         // Pass all stats to the dashboard view
         return view('home', compact(

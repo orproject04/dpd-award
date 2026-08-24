@@ -121,4 +121,9 @@ class Pendaftar extends Model
     {
         return $this->hasMany(\App\Models\PendaftarRiwayat::class, 'pendaftar_id')->orderBy('created_at', 'desc');
     }
+
+    public function kertasKerja()
+    {
+        return $this->hasMany(\App\Models\PendaftarKertasKerja::class, 'pendaftar_id');
+    }
 }

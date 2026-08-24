@@ -31,6 +31,11 @@ Route::group(
         Route::put('pendaftar/{pendaftar}/penghargaan/{penghargaan}', [PendaftarController::class, 'updatePenghargaan'])->name('pendaftar.update-penghargaan');
         Route::delete('pendaftar/{pendaftar}/penghargaan/{penghargaan}', [PendaftarController::class, 'destroyPenghargaan'])->name('pendaftar.destroy-penghargaan');
 
+        // Penilaian Kertas Kerja
+        Route::get('pendaftar/{pendaftar}/kertas-kerja', [PendaftarController::class, 'kertasKerja'])->name('pendaftar.kertas-kerja');
+        Route::post('pendaftar/{pendaftar}/kertas-kerja', [PendaftarController::class, 'storeKertasKerja'])->name('pendaftar.store-kertas-kerja');
+        Route::get('pendaftar/{pendaftar}/kertas-kerja/export-excel', [PendaftarController::class, 'exportKertasKerjaExcel'])->name('pendaftar.export-kertas-kerja-excel');
+
         Route::resource('pendaftar', PendaftarController::class);
     }
 );

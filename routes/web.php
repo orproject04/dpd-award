@@ -29,6 +29,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'berita' => 'berita'
     ]);
 
+    Route::post('/kategori-aspek/seed', [\App\Http\Controllers\KategoriAspekController::class, 'seedDefault'])->name('kategori-aspek.seed');
+
+    Route::resource('kategori-aspek', \App\Http\Controllers\KategoriAspekController::class)->parameters([
+        'kategori-aspek' => 'kategori_aspek'
+    ]);
+
     Route::post('/pendaftar/generate-history', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'generateHistory'])->name('pendaftar.generate-history')->middleware('can:*');
     Route::post('/pendaftar/riwayat/{riwayat}/keterangan', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'updateRiwayatKeterangan'])->name('pendaftar.riwayat.update-keterangan');
 });

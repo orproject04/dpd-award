@@ -16,4 +16,6 @@ final class Permission extends Enum
     const BERITA_MANAGE = 'berita.manage';
 
     const KONTRIBUSI_PENGHARGAAN_MANAGE = 'kontribusi_penghargaan.manage';
+
+    const SETTING_ASPEK_MANAGE = 'setting_aspek.manage';
 }

@@ -16,6 +16,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
 
 class PendaftarController extends Controller
 {
@@ -1178,5 +1182,490 @@ class PendaftarController extends Controller
         
         $penghargaan->delete();
         return back()->withSuccess('Penghargaan berhasil dihapus.');
+    }
+
+    // --- PENILAIAN KERTAS KERJA ---
+
+    public function kertasKerja(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
+    {
+        $availableTahaps = [
+            'Lolos Verifikasi Berkas',
+            'Lolos ke Tahap 50 Besar',
+            'Lolos ke Tahap 10 Besar',
+            'Lolos ke Tahap 3 Besar',
+            'Lolos ke Tahap Wawancara',
+            'Lolos ke Tahap Final',
+        ];
+
+        $selectedTahap = $request->query('tahap', $pendaftar->status);
+        if (!$selectedTahap || !str_starts_with($selectedTahap, 'Lolos')) {
+            $selectedTahap = str_starts_with($pendaftar->status ?? '', 'Lolos') ? $pendaftar->status : 'Lolos Verifikasi Berkas';
+        }
+
+        if (!str_starts_with($selectedTahap ?? '', 'Lolos') && !str_starts_with($pendaftar->status ?? '', 'Lolos')) {
+            return redirect()->route('modules::pendaftar.show', $pendaftar->id)
+                ->with('error', 'Kertas Kerja Penilaian hanya berlaku untuk pendaftar dengan status Lolos.');
+        }
+
+        $pendaftar->load(['kontribusi', 'penghargaan', 'kertasKerja']);
+
+        $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $savedPenilaian = $pendaftar->kertasKerja
+            ->filter(function ($kk) use ($selectedTahap, $pendaftar) {
+                return $kk->tahap === $selectedTahap || (empty($kk->tahap) && $selectedTahap === $pendaftar->status);
+            })
+            ->keyBy('kategori_aspek_id');
+
+        $items = $aspeks->map(function ($aspekItem) use ($savedPenilaian) {
+            $saved = $savedPenilaian->get($aspekItem->id);
+
+            return [
+                'kategori_aspek_id' => $aspekItem->id,
+                'aspek' => $aspekItem->aspek,
+                'dimensi' => $aspekItem->dimensi,
+                'bobot' => $aspekItem->bobot,
+                'nilai' => $saved ? $saved->nilai : null,
+                'total' => $saved ? $saved->total : null,
+                'catatan_juri' => $saved ? $saved->catatan_juri : null,
+                'tracking_media' => $saved ? $saved->tracking_media : null,
+                'data_dukung' => $saved ? ($saved->data_dukung ?? []) : [],
+            ];
+        });
+
+        $totalBobot = $items->sum('bobot');
+        $totalNilaiAkhir = $items->sum(fn($i) => $i['total'] ?? 0);
+
+        $savedTahapList = $pendaftar->kertasKerja->pluck('tahap')->filter()->unique()->values()->all();
+
+        return view('pendaftar::kertas_kerja', compact(
+            'pendaftar',
+            'items',
+            'totalBobot',
+            'totalNilaiAkhir',
+            'selectedTahap',
+            'availableTahaps',
+            'savedTahapList'
+        ));
+    }
+
+    public function storeKertasKerja(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
+    {
+        $selectedTahap = $request->input('tahap', $pendaftar->status);
+
+        if (!str_starts_with($selectedTahap ?? '', 'Lolos') && !str_starts_with($pendaftar->status ?? '', 'Lolos')) {
+            return redirect()->route('modules::pendaftar.show', $pendaftar->id)
+                ->with('error', 'Kertas Kerja Penilaian hanya berlaku untuk pendaftar dengan status Lolos.');
+        }
+
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.kategori_aspek_id' => 'required|exists:kategori_aspeks,id',
+            'items.*.nilai' => 'nullable|numeric|min:0|max:100',
+            'items.*.catatan_juri' => 'nullable|string',
+            'items.*.tracking_media' => 'nullable|string',
+            'items.*.data_dukung' => 'nullable|array',
+        ]);
+
+        $user = auth()->user();
+
+        foreach ($request->items as $itemData) {
+            $kategoriAspek = \App\Models\KategoriAspek::find($itemData['kategori_aspek_id']);
+            if (!$kategoriAspek) {
+                continue;
+            }
+
+            $nilai = isset($itemData['nilai']) && $itemData['nilai'] !== '' ? (int)$itemData['nilai'] : null;
+            $bobot = (int)$kategoriAspek->bobot;
+            $total = !is_null($nilai) ? round(($nilai * $bobot) / 100, 2) : null;
+
+            $dataDukung = [];
+            if (!empty($itemData['data_dukung']) && is_array($itemData['data_dukung'])) {
+                foreach ($itemData['data_dukung'] as $dd) {
+                    if (!empty($dd['selected'])) {
+                        $dataDukung[] = [
+                            'kontribusi_id' => $dd['kontribusi_id'] ?? null,
+                            'item_key' => $dd['item_key'] ?? null,
+                            'title' => $dd['title'] ?? '',
+                            'bukti' => $dd['bukti'] ?? '',
+                            'catatan' => $dd['catatan'] ?? '',
+                        ];
+                    }
+                }
+            }
+
+            \App\Models\PendaftarKertasKerja::updateOrCreate(
+                [
+                    'pendaftar_id' => $pendaftar->id,
+                    'tahap' => $selectedTahap,
+                    'kategori_aspek_id' => $kategoriAspek->id,
+                ],
+                [
+                    'aspek' => $kategoriAspek->aspek,
+                    'dimensi' => $kategoriAspek->dimensi,
+                    'bobot' => $bobot,
+                    'nilai' => $nilai,
+                    'total' => $total,
+                    'catatan_juri' => $itemData['catatan_juri'] ?? null,
+                    'tracking_media' => $itemData['tracking_media'] ?? null,
+                    'data_dukung' => $dataDukung,
+                    'updated_by' => $user?->id,
+                    'created_by' => $user?->id,
+                ]
+            );
+        }
+
+        if ($request->expectsJson() || $request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'status' => 'success',
+                'message' => "Kertas Kerja Penilaian ({$selectedTahap}) berhasil disimpan secara otomatis.",
+                'tahap' => $selectedTahap,
+                'timestamp' => date('H:i:s')
+            ]);
+        }
+
+        return redirect()->route('modules::pendaftar.kertas-kerja', ['pendaftar' => $pendaftar->id, 'tahap' => $selectedTahap])
+            ->with('success', "Kertas Kerja Penilaian ({$selectedTahap}) berhasil disimpan.");
+    }
+
+    public function exportKertasKerjaExcel(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
+    {
+        $selectedTahap = $request->query('tahap', $pendaftar->status);
+
+        if (!str_starts_with($selectedTahap ?? '', 'Lolos') && !str_starts_with($pendaftar->status ?? '', 'Lolos')) {
+            return redirect()->route('modules::pendaftar.show', $pendaftar->id)
+                ->with('error', 'Kertas Kerja Penilaian hanya berlaku untuk pendaftar dengan status Lolos.');
+        }
+
+        $pendaftar->load(['kontribusi', 'penghargaan', 'kertasKerja']);
+
+        $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $savedPenilaian = $pendaftar->kertasKerja
+            ->filter(function ($kk) use ($selectedTahap, $pendaftar) {
+                return $kk->tahap === $selectedTahap || (empty($kk->tahap) && $selectedTahap === $pendaftar->status);
+            })
+            ->keyBy('kategori_aspek_id');
+
+        $items = $aspeks->map(function ($aspekItem) use ($savedPenilaian) {
+            $saved = $savedPenilaian->get($aspekItem->id);
+
+            return [
+                'kategori_aspek_id' => $aspekItem->id,
+                'aspek' => $aspekItem->aspek,
+                'dimensi' => $aspekItem->dimensi,
+                'bobot' => $aspekItem->bobot,
+                'nilai' => $saved ? $saved->nilai : null,
+                'total' => $saved ? $saved->total : null,
+                'catatan_juri' => $saved ? $saved->catatan_juri : null,
+                'tracking_media' => $saved ? $saved->tracking_media : null,
+                'data_dukung' => $saved ? ($saved->data_dukung ?? []) : [],
+            ];
+        });
+
+        $totalNilaiAkhir = $items->sum(fn($i) => $i['total'] ?? 0);
+
+        // Helper to resolve absolute file path from relative storage path
+        $resolvePhysicalPath = function ($path) {
+            if (empty($path)) return null;
+            if (file_exists($path)) return $path;
+
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                return \Illuminate\Support\Facades\Storage::disk('public')->path($path);
+            }
+            if (\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+                return \Illuminate\Support\Facades\Storage::disk('local')->path($path);
+            }
+
+            $storageAppPath = storage_path('app/' . $path);
+            if (file_exists($storageAppPath)) return $storageAppPath;
+
+            $storagePublicPath = storage_path('app/public/' . $path);
+            if (file_exists($storagePublicPath)) return $storagePublicPath;
+
+            $publicPath = public_path($path);
+            if (file_exists($publicPath)) return $publicPath;
+
+            return null;
+        };
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('FORM PENILAIAN');
+
+        // 1. Title Rows
+        $sheet->setCellValue('A1', 'FORM PENILAIAN');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
+
+        // Subtitle (Kategori & Tahap Penilaian)
+        $subTitle = 'Kategori ' . $pendaftar->kategori . ' | Tahap Penilaian: ' . $selectedTahap;
+        $sheet->setCellValue('A3', $subTitle);
+        $sheet->getStyle('A3')->getFont()->setItalic(true)->setSize(10);
+
+        // 2. Participant & Nilai Akhir
+        $sheet->setCellValue('A5', 'NAMA PESERTA');
+        $sheet->getStyle('A5')->getFont()->setBold(true)->setSize(11);
+
+        $sheet->setCellValue('A6', strtoupper($pendaftar->nama));
+        $sheet->getStyle('A6')->getFont()->setBold(true)->setSize(12);
+
+        // Embed Foto Pendaftar if available
+        $rawFoto = $pendaftar->getRawOriginal('foto') ?? $pendaftar->foto;
+        $realFotoPath = $resolvePhysicalPath($rawFoto);
+        if ($realFotoPath && in_array(strtolower(pathinfo($realFotoPath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+            try {
+                $drawingFoto = new Drawing();
+                $drawingFoto->setName('Foto Pendaftar');
+                $drawingFoto->setDescription('Foto ' . $pendaftar->nama);
+                $drawingFoto->setPath($realFotoPath);
+                $drawingFoto->setHeight(75);
+                $drawingFoto->setCoordinates('G5');
+                $drawingFoto->setOffsetX(5);
+                $drawingFoto->setOffsetY(5);
+                $drawingFoto->setWorksheet($sheet);
+            } catch (\Throwable $e) {
+                // Ignore corrupt image error
+            }
+        }
+
+        $sheet->setCellValue('I5', 'NILAI AKHIR');
+        $sheet->getStyle('I5')->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle('I5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $sheet->setCellValue('I6', number_format($totalNilaiAkhir, 2));
+        $sheet->getStyle('I6')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('I6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('I6')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7'); // Light green
+        $sheet->getStyle('I6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+        // 3. Table Headers at Row 8
+        $headers = [
+            'NO',
+            'ASPEK',
+            'DIMENSI',
+            "NILAI\n(10-100)",
+            'BOBOT',
+            'TOTAL',
+            'CATATAN JURI',
+            'TRACKING MEDIA',
+            'DATA DUKUNG'
+        ];
+
+        $colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+
+        foreach ($headers as $colIdx => $headerText) {
+            $colLetter = $colLetters[$colIdx];
+            $cellCoordinate = $colLetter . '8';
+            $sheet->setCellValue($cellCoordinate, $headerText);
+
+            $style = [
+                'font' => [
+                    'bold' => true,
+                    'size' => 10,
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                    'wrapText' => true,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => '000000'],
+                    ],
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'rgb' => ($colLetter === 'D') ? 'DCFCE7' : 'FEF3C7',
+                    ],
+                ],
+            ];
+
+            $sheet->getStyle($cellCoordinate)->applyFromArray($style);
+        }
+        $sheet->getRowDimension(8)->setRowHeight(28);
+
+        // 4. Data Rows
+        $row = 9;
+        foreach ($items as $index => $item) {
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $item['aspek']);
+            $sheet->setCellValue('C' . $row, $item['dimensi']);
+            $sheet->setCellValue('D' . $row, $item['nilai'] !== null ? $item['nilai'] : '');
+            $sheet->setCellValue('E' . $row, $item['bobot']);
+            $sheet->setCellValue('F' . $row, $item['total'] !== null ? number_format($item['total'], 2) : '0');
+            $sheet->setCellValue('G' . $row, $item['catatan_juri'] ?? '');
+
+            // Tracking Media styling (Blue + Underline if URL)
+            $trackingMedia = trim($item['tracking_media'] ?? '');
+            $sheet->setCellValue('H' . $row, $trackingMedia);
+            if (!empty($trackingMedia) && (str_starts_with($trackingMedia, 'http://') || str_starts_with($trackingMedia, 'https://'))) {
+                $sheet->getStyle('H' . $row)->getFont()->setColor(new Color('0000FF'))->setUnderline(Font::UNDERLINE_SINGLE);
+            }
+
+            // Format & Embed Data Dukung cleanly using RichText
+            $richText = new RichText();
+            $drawingsInRow = [];
+            $currentLineIdx = 0;
+            $hasDataDukung = false;
+
+            if (!empty($item['data_dukung']) && is_array($item['data_dukung'])) {
+                foreach ($item['data_dukung'] as $ddIdx => $dd) {
+                    $t = $dd['title'] ?? '';
+                    $c = $dd['catatan'] ?? '';
+                    $b = $dd['bukti'] ?? '';
+
+                    if (!$t && !$b) continue;
+                    $hasDataDukung = true;
+
+                    // Header line for this data dukung item
+                    $headerText = "• " . ($t ?: 'Bukti Dukung #' . ($ddIdx + 1));
+                    $runHeader = $richText->createTextRun($headerText . "\n");
+                    $runHeader->getFont()->setBold(true);
+                    $headerLinesCount = max(1, (int)ceil(strlen($headerText) / 38));
+                    $currentLineIdx += $headerLinesCount;
+
+                    // Note line if exists
+                    if ($c) {
+                        $noteText = "   Catatan: \"" . $c . "\"";
+                        $runNote = $richText->createTextRun($noteText . "\n");
+                        $runNote->getFont()->setItalic(true)->setColor(new Color('555555'));
+                        $noteLinesCount = max(1, (int)ceil(strlen($noteText) / 34));
+                        $currentLineIdx += $noteLinesCount;
+                    }
+
+                    // Check file type
+                    $realBuktiPath = $resolvePhysicalPath($b);
+                    $ext = strtolower(pathinfo($realBuktiPath ?? $b, PATHINFO_EXTENSION));
+
+                    if ($realBuktiPath && in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                        // Add 1 spacing line before image thumbnail for clean gap below Catatan
+                        $richText->createTextRun("\n");
+                        $currentLineIdx += 1;
+
+                        // 18px per line height at 10pt font, 4px top margin
+                        $offsetY = ($currentLineIdx * 18) + 4;
+
+                        try {
+                            $drawing = new Drawing();
+                            $drawing->setName('Bukti - ' . ($t ?: 'Gambar'));
+                            $drawing->setDescription($t ?: 'Gambar');
+                            $drawing->setPath($realBuktiPath);
+                            $drawing->setHeight(90); // 90px height
+                            $drawing->setCoordinates('I' . $row);
+                            $drawing->setOffsetX(15);
+                            $drawing->setOffsetY($offsetY);
+                            $drawing->setWorksheet($sheet);
+
+                            $drawingsInRow[] = $drawing;
+                        } catch (\Throwable $e) {
+                            // Ignore drawing failure for corrupted file
+                        }
+
+                        // Add 5 blank lines (5 * 18px = 90px space) for drawing
+                        $richText->createTextRun("\n\n\n\n\n");
+                        $currentLineIdx += 5;
+                    } elseif ($b) {
+                        $fileUrl = route('modules::pendaftar.file', ['path' => $b]);
+                        $linkText = "   " . $fileUrl;
+                        
+                        $runLink = $richText->createTextRun($linkText . "\n");
+                        $runLink->getFont()->setColor(new Color('0000FF'))->setUnderline(Font::UNDERLINE_SINGLE);
+                        
+                        $linkLinesCount = max(1, (int)ceil(strlen($linkText) / 34));
+                        $currentLineIdx += $linkLinesCount;
+                    }
+
+                    // Spacing between data dukung items
+                    $richText->createTextRun("\n");
+                    $currentLineIdx += 1;
+                }
+            }
+
+            if ($hasDataDukung) {
+                $sheet->setCellValue('I' . $row, $richText);
+            } else {
+                $sheet->setCellValue('I' . $row, '');
+            }
+
+            // Alignments & Styles
+            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
+            $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
+            $sheet->getStyle('B' . $row)->getFont()->setBold(true);
+            $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
+
+            // Column D (NILAI): light green fill, bold, center
+            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
+            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+            $sheet->getStyle('D' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+
+            $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
+            $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
+            $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
+            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
+            $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
+
+            // Border for entire row
+            $sheet->getStyle('A' . $row . ':I' . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+            // Calculate max lines across columns and set row height in points (1px = 0.75pt)
+            $aspekLines = ceil(strlen($item['aspek'] ?? '') / 22);
+            $dimensiLines = ceil(strlen($item['dimensi'] ?? '') / 42);
+            $catatanJuriLines = ceil(strlen($item['catatan_juri'] ?? '') / 26);
+            $trackingLines = ceil(strlen($item['tracking_media'] ?? '') / 26);
+
+            $maxLinesInRow = max(1, $aspekLines, $dimensiLines, $catatanJuriLines, $trackingLines, $currentLineIdx);
+            $rowHeightPx = ($maxLinesInRow * 18) + 12;
+            $rowHeightPt = $rowHeightPx * 0.75; // Convert px to pt for PhpSpreadsheet row height
+
+            $sheet->getRowDimension($row)->setRowHeight(max(35, $rowHeightPt));
+
+            $row++;
+        }
+
+        // 5. Total Row
+        $sheet->setCellValue('A' . $row, 'TOTAL');
+        $sheet->mergeCells('A' . $row . ':D' . $row);
+        $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+
+        $sheet->setCellValue('E' . $row, $items->sum('bobot'));
+        $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('E' . $row)->getFont()->setBold(true);
+
+        $sheet->setCellValue('F' . $row, number_format($totalNilaiAkhir, 2));
+        $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('F' . $row)->getFont()->setBold(true);
+        $sheet->getStyle('F' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+
+        $sheet->getStyle('A' . $row . ':I' . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+        // 6. Column Widths
+        $sheet->getColumnDimension('A')->setWidth(6);
+        $sheet->getColumnDimension('B')->setWidth(25);
+        $sheet->getColumnDimension('C')->setWidth(48);
+        $sheet->getColumnDimension('D')->setWidth(14);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(12);
+        $sheet->getColumnDimension('G')->setWidth(30);
+        $sheet->getColumnDimension('H')->setWidth(30);
+        $sheet->getColumnDimension('I')->setWidth(45); // Enlarged to fit drawings
+
+        // Download File
+        $filename = 'Form_Penilaian_' . \Illuminate\Support\Str::slug($pendaftar->nama, '_') . '.xlsx';
+
+        $writer = new Xlsx($spreadsheet);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 }

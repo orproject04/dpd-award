@@ -103,6 +103,13 @@ final class AppServiceProvider extends ServiceProvider
                     ->active('berita/*');
             }
 
+            if ($user && ($user->hasPermission('*') || $user->hasPermission(\App\Enums\Permission::SETTING_ASPEK_MANAGE))) {
+                $mainMenu->add('Setting Aspek', route('kategori-aspek.index'))
+                    ->data('icon', 'sliders-h')
+                    ->data('order', 3)
+                    ->active('kategori-aspek/*');
+            }
+
             // System menu
             $user = auth()->user();
 

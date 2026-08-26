@@ -2013,6 +2013,7 @@ foreach ($items as $index => $item) {
             $run = $richText->createTextRun("   " . $rowData['url']);
             $run->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('0000FF'))->setUnderline(\PhpOffice\PhpSpreadsheet\Style\Font::UNDERLINE_SINGLE);
             $sheet->setCellValue('I' . $currentRow, $richText);
+            $sheet->getCell('I' . $currentRow)->getHyperlink()->setUrl($rowData['url']);
             
             $actualRowHeights[$currentRow] = -1;
             $lines = max(1, ceil(strlen($rowData['url']) / 45));

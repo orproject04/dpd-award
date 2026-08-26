@@ -29,7 +29,10 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 if (window.jQuery && jQuery('#export-kertas-kerja-dropdown').dropdown) {
-                    jQuery('#export-kertas-kerja-dropdown').dropdown();
+                    // Hancurkan inisialisasi default dari Laravolt jika ada
+                    jQuery('#export-kertas-kerja-dropdown').dropdown('destroy');
+                    // Inisialisasi ulang dengan mode hide (tidak mengubah teks)
+                    jQuery('#export-kertas-kerja-dropdown').dropdown({ action: 'hide' });
                 }
             });
         </script>
@@ -176,6 +179,11 @@
 
     <script>
         function startBatchExport(format) {
+            // Paksa kembalikan teks tombol jika Semantic UI mengubahnya
+            setTimeout(function() {
+                $('#export-kertas-kerja-dropdown .text').html('<i class="download icon"></i> <span class="desktop-text">Semua Kertas Kerja</span><span class="mobile-text">Kertas Kerja</span>');
+            }, 10);
+            
             $('#batch-export-format-label').text(format === 'excel' ? 'Excel' : 'PDF');
             $('#batch-export-message').text('Menginisialisasi penarikan data...');
             $('#batch-export-progress').progress('reset');

@@ -158,6 +158,16 @@
                 box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
             }
 
+            /* Hilangkan panah spinner pada input number */
+            input[type=number]::-webkit-inner-spin-button, 
+            input[type=number]::-webkit-outer-spin-button { 
+                -webkit-appearance: none; 
+                margin: 0; 
+            }
+            input[type=number] {
+                -moz-appearance: textfield; /* Firefox */
+            }
+
             .total-badge {
                 display: inline-block;
                 padding: 0.35rem 0.65rem;
@@ -286,6 +296,45 @@
                 border-color: #0284c7;
                 box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
             }
+
+            @media print {
+                /* Sembunyikan elemen UI yang tidak perlu saat di-print/PDF */
+                .ui.button, nav, header, footer, .sidebar, .autosave-status-container { 
+                    display: none !important; 
+                }
+                body {
+                    background: #fff !important;
+                }
+                .kk-header-card, .kk-table-card { 
+                    box-shadow: none !important; 
+                    border: 1px solid #cbd5e1 !important; 
+                    margin: 0 !important;
+                }
+                .kk-table tr {
+                    page-break-inside: avoid;
+                }
+                .kk-table tfoot {
+                    display: table-row-group;
+                }
+                .kk-table th {
+                    background-color: #f1f5f9 !important;
+                    -webkit-print-color-adjust: exact;
+                }
+                .kk-textarea, .nilai-input {
+                    border: none !important;
+                    background: transparent !important;
+                    resize: none !important;
+                    box-shadow: none !important;
+                    padding: 0 !important;
+                }
+                .total-badge {
+                    border: 1px solid #0284c7;
+                }
+                @page { 
+                    size: landscape; 
+                    margin: 10mm; 
+                }
+            }
         </style>
     @endpush
 
@@ -358,6 +407,9 @@
                         <span class="status-icon"></span>
                         <span class="status-text"></span>
                     </div>
+                    <button type="button" class="ui button orange" onclick="window.print()">
+                        <i class="icon file pdf outline"></i> Cetak PDF
+                    </button>
                     <a href="{{ route('modules::pendaftar.export-kertas-kerja-excel', ['pendaftar' => $pendaftar->id, 'tahap' => $selectedTahap]) }}"
                         class="ui button green" data-no-loader="true" target="_blank">
                         <i class="icon file excel"></i> Cetak Excel
@@ -398,7 +450,8 @@
                                     <input type="number" name="items[{{ $index }}][nilai]"
                                         value="{{ $item['nilai'] }}" min="10" max="100"
                                         class="ui input nilai-input" data-index="{{ $index }}"
-                                        data-bobot="{{ $item['bobot'] }}" placeholder="10-100">
+                                        data-bobot="{{ $item['bobot'] }}" placeholder="10-100"
+                                        onwheel="this.blur()">
                                 </td>
                                 <td style="text-align: center;">
                                     <span class="ui badge basic label">{{ $item['bobot'] }}%</span>
@@ -531,12 +584,15 @@
                         <span class="status-icon"></span>
                         <span class="status-text"></span>
                     </div>
+                    <button type="button" class="ui button large orange" onclick="window.print()">
+                        <i class="icon file pdf outline"></i> Cetak PDF
+                    </button>
                     <a href="{{ route('modules::pendaftar.export-kertas-kerja-excel', ['pendaftar' => $pendaftar->id, 'tahap' => $selectedTahap]) }}"
                         class="ui button large green" data-no-loader="true" target="_blank">
                         <i class="icon file excel"></i> Cetak Excel
                     </a>
                     <button type="submit" class="ui button large primary">
-                        <i class="icon save"></i> Simpan Penilaian Kertas Kerja
+                        <i class="icon save"></i> Simpan Penilaian
                     </button>
                 </div>
             </div>

@@ -1907,144 +1907,205 @@ class PendaftarController extends Controller
         $sheet->getRowDimension(8)->setRowHeight(28);
 
         // 4. Data Rows
-        $row = 9;
-        foreach ($items as $index => $item) {
-            $sheet->setCellValue('A' . $row, $index + 1);
-            $sheet->setCellValue('B' . $row, $item['aspek']);
-            $sheet->setCellValue('C' . $row, $item['dimensi']);
-            $sheet->setCellValue('D' . $row, $item['nilai'] !== null ? $item['nilai'] : '');
-            $sheet->setCellValue('E' . $row, $item['bobot']);
-            $sheet->setCellValue('F' . $row, $item['total'] !== null ? number_format($item['total'], 2) : '0');
-            $sheet->setCellValue('G' . $row, $item['catatan_juri'] ?? '');
-
-            // Tracking Media styling (Blue + Underline if URL)
-            $trackingMedia = trim($item['tracking_media'] ?? '');
-            $sheet->setCellValue('H' . $row, $trackingMedia);
-            if (!empty($trackingMedia) && (str_starts_with($trackingMedia, 'http://') || str_starts_with($trackingMedia, 'https://'))) {
-                $sheet->getStyle('H' . $row)->getFont()->setColor(new Color('0000FF'))->setUnderline(Font::UNDERLINE_SINGLE);
+$row = 9;
+foreach ($items as $index => $item) {
+    $dataDukungs = [];
+    if (!empty($item['data_dukung']) && is_array($item['data_dukung'])) {
+        foreach ($item['data_dukung'] as $dd) {
+            if (!empty($dd['title']) || !empty($dd['bukti'])) {
+                $dataDukungs[] = $dd;
             }
+        }
+    }
 
-            // Format & Embed Data Dukung cleanly using RichText
-            $richText = new RichText();
-            $drawingsInRow = [];
-            $currentLineIdx = 0;
-            $hasDataDukung = false;
-
-            if (!empty($item['data_dukung']) && is_array($item['data_dukung'])) {
-                foreach ($item['data_dukung'] as $ddIdx => $dd) {
-                    $t = $dd['title'] ?? '';
-                    $c = $dd['catatan'] ?? '';
-                    $b = $dd['bukti'] ?? '';
-
-                    if (!$t && !$b) continue;
-                    $hasDataDukung = true;
-
-                    // Header line for this data dukung item
-                    $headerText = "• " . ($t ?: 'Bukti Dukung #' . ($ddIdx + 1));
-                    $runHeader = $richText->createTextRun($headerText . "\n");
-                    $runHeader->getFont()->setBold(true);
-                    $headerLinesCount = max(1, (int)ceil(strlen($headerText) / 38));
-                    $currentLineIdx += $headerLinesCount;
-
-                    // Note line if exists
-                    if ($c) {
-                        $noteText = "   Catatan: \"" . $c . "\"";
-                        $runNote = $richText->createTextRun($noteText . "\n");
-                        $runNote->getFont()->setItalic(true)->setColor(new Color('555555'));
-                        $noteLinesCount = max(1, (int)ceil(strlen($noteText) / 34));
-                        $currentLineIdx += $noteLinesCount;
-                    }
-
-                    // Check file type
-                    $realBuktiPath = $resolvePhysicalPath($b);
-                    $ext = strtolower(pathinfo($realBuktiPath ?? $b, PATHINFO_EXTENSION));
-
-                    if ($realBuktiPath && in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                        // Add 1 spacing line before image thumbnail for clean gap below Catatan
-                        $richText->createTextRun("\n");
-                        $currentLineIdx += 1;
-
-                        // 18px per line height at 10pt font, 4px top margin
-                        $offsetY = ($currentLineIdx * 18) + 4;
-
-                        try {
-                            $drawing = new Drawing();
-                            $drawing->setName('Bukti - ' . ($t ?: 'Gambar'));
-                            $drawing->setDescription($t ?: 'Gambar');
-                            $drawing->setPath($realBuktiPath);
-                            $drawing->setHeight(90); // 90px height
-                            $drawing->setCoordinates('I' . $row);
-                            $drawing->setOffsetX(15);
-                            $drawing->setOffsetY($offsetY);
-                            $drawing->setWorksheet($sheet);
-
-                            $drawingsInRow[] = $drawing;
-                        } catch (\Throwable $e) {
-                            // Ignore drawing failure for corrupted file
-                        }
-
-                        // Add 5 blank lines (5 * 18px = 90px space) for drawing
-                        $richText->createTextRun("\n\n\n\n\n");
-                        $currentLineIdx += 5;
-                    } elseif ($b) {
-                        $fileUrl = route('modules::pendaftar.file', ['path' => $b]);
-                        $linkText = "   " . $fileUrl;
-                        
-                        $runLink = $richText->createTextRun($linkText . "\n");
-                        $runLink->getFont()->setColor(new Color('0000FF'))->setUnderline(Font::UNDERLINE_SINGLE);
-                        
-                        $linkLinesCount = max(1, (int)ceil(strlen($linkText) / 34));
-                        $currentLineIdx += $linkLinesCount;
-                    }
-
-                    // Spacing between data dukung items
-                    $richText->createTextRun("\n");
-                    $currentLineIdx += 1;
+    // Prepare sub-rows for Data Dukung
+    $ddRowsData = [];
+    if (empty($dataDukungs)) {
+        $ddRowsData[] = ['type' => 'empty'];
+    } else {
+        foreach ($dataDukungs as $ddIdx => $dd) {
+            $t = $dd['title'] ?? '';
+            $c = $dd['catatan'] ?? '';
+            $b = $dd['bukti'] ?? '';
+            
+            // 1. Judul
+            $headerText = "• " . ($t ?: 'Bukti Dukung #' . ($ddIdx + 1));
+            $ddRowsData[] = ['type' => 'judul', 'text' => $headerText];
+            
+            // 2. File / Image
+            if ($b) {
+                $realBuktiPath = $resolvePhysicalPath($b);
+                $ext = strtolower(pathinfo($realBuktiPath ?? $b, PATHINFO_EXTENSION));
+                $isImage = $realBuktiPath && in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                
+                if ($isImage) {
+                    $ddRowsData[] = ['type' => 'image', 'path' => $realBuktiPath, 'title' => $t];
+                } else {
+                    $fileUrl = route('modules::pendaftar.file', ['path' => $b]);
+                    $ddRowsData[] = ['type' => 'link', 'url' => $fileUrl];
                 }
             }
-
-            if ($hasDataDukung) {
-                $sheet->setCellValue('I' . $row, $richText);
-            } else {
-                $sheet->setCellValue('I' . $row, '');
+            
+            // 3. Catatan
+            if ($c) {
+                $ddRowsData[] = ['type' => 'catatan', 'text' => "   Catatan: \"" . $c . "\""];
             }
-
-            // Alignments & Styles
-            $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
-            $sheet->getStyle('B' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
-            $sheet->getStyle('B' . $row)->getFont()->setBold(true);
-            $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
-
-            // Column D (NILAI): light green fill, bold, center
-            $sheet->getStyle('D' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
-            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
-            $sheet->getStyle('D' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
-
-            $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
-            $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_TOP);
-            $sheet->getStyle('G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
-            $sheet->getStyle('H' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
-            $sheet->getStyle('I' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
-
-            // Border for entire row
-            $sheet->getStyle('A' . $row . ':I' . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-
-            // Calculate max lines across columns and set row height in points (1px = 0.75pt)
-            $aspekLines = ceil(strlen($item['aspek'] ?? '') / 22);
-            $dimensiLines = ceil(strlen($item['dimensi'] ?? '') / 42);
-            $catatanJuriLines = ceil(strlen($item['catatan_juri'] ?? '') / 26);
-            $trackingLines = ceil(strlen($item['tracking_media'] ?? '') / 26);
-
-            $maxLinesInRow = max(1, $aspekLines, $dimensiLines, $catatanJuriLines, $trackingLines, $currentLineIdx);
-            $rowHeightPx = ($maxLinesInRow * 18) + 12;
-            $rowHeightPt = $rowHeightPx * 0.75; // Convert px to pt for PhpSpreadsheet row height
-
-            $sheet->getRowDimension($row)->setRowHeight(max(35, $rowHeightPt));
-
-            $row++;
         }
+    }
 
-        // 5. Total Row
+    $rowCount = count($ddRowsData);
+    $startRow = $row;
+    $endRow = $row + $rowCount - 1;
+
+    // Calculate base lines for columns A-H to ensure minimum merged height
+    $aspekLines = ceil(strlen($item['aspek'] ?? '') / 22);
+    $dimensiLines = ceil(strlen($item['dimensi'] ?? '') / 42);
+    $catatanJuriLines = ceil(strlen($item['catatan_juri'] ?? '') / 26);
+    $trackingLines = ceil(strlen($item['tracking_media'] ?? '') / 26);
+    
+    $requiredLinesAH = max(1, $aspekLines, $dimensiLines, $catatanJuriLines, $trackingLines);
+    $requiredHeightAH = ($requiredLinesAH * 15) + 15;
+
+    // Set Column A-H values in startRow
+    $sheet->setCellValue('A' . $startRow, $index + 1);
+    $sheet->setCellValue('B' . $startRow, $item['aspek']);
+    $sheet->setCellValue('C' . $startRow, $item['dimensi']);
+    $sheet->setCellValue('D' . $startRow, $item['nilai'] !== null ? $item['nilai'] : '');
+    $sheet->setCellValue('E' . $startRow, $item['bobot']);
+    $sheet->setCellValue('F' . $startRow, $item['total'] !== null ? number_format($item['total'], 2) : '0');
+    $sheet->setCellValue('G' . $startRow, $item['catatan_juri'] ?? '');
+
+    $trackingMedia = trim($item['tracking_media'] ?? '');
+    $sheet->setCellValue('H' . $startRow, $trackingMedia);
+    if (!empty($trackingMedia) && (str_starts_with($trackingMedia, 'http://') || str_starts_with($trackingMedia, 'https://'))) {
+        $sheet->getStyle('H' . $startRow)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('0000FF'))->setUnderline(\PhpOffice\PhpSpreadsheet\Style\Font::UNDERLINE_SINGLE);
+    }
+
+    $actualRowHeights = [];
+    $estimatedRowHeights = [];
+
+    // Render each sub-row in Column I
+    foreach ($ddRowsData as $rIdx => $rowData) {
+        $currentRow = $startRow + $rIdx;
+        $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+        
+        if ($rowData['type'] === 'empty') {
+            $sheet->setCellValue('I' . $currentRow, '');
+            $actualRowHeights[$currentRow] = 15;
+            $estimatedRowHeights[$currentRow] = 15;
+        } elseif ($rowData['type'] === 'judul') {
+            $run = $richText->createTextRun($rowData['text']);
+            $run->getFont()->setBold(true);
+            $sheet->setCellValue('I' . $currentRow, $richText);
+            
+            $actualRowHeights[$currentRow] = -1; // -1 means AutoFit in Excel
+            $lines = max(1, ceil(strlen($rowData['text']) / 45));
+            $estimatedRowHeights[$currentRow] = $lines * 15;
+        } elseif ($rowData['type'] === 'catatan') {
+            $run = $richText->createTextRun($rowData['text']);
+            $run->getFont()->setItalic(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('555555'));
+            $sheet->setCellValue('I' . $currentRow, $richText);
+            
+            $actualRowHeights[$currentRow] = -1;
+            $lines = max(1, ceil(strlen($rowData['text']) / 45));
+            $estimatedRowHeights[$currentRow] = $lines * 15;
+        } elseif ($rowData['type'] === 'link') {
+            $run = $richText->createTextRun("   " . $rowData['url']);
+            $run->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('0000FF'))->setUnderline(\PhpOffice\PhpSpreadsheet\Style\Font::UNDERLINE_SINGLE);
+            $sheet->setCellValue('I' . $currentRow, $richText);
+            
+            $actualRowHeights[$currentRow] = -1;
+            $lines = max(1, ceil(strlen($rowData['url']) / 45));
+            $estimatedRowHeights[$currentRow] = $lines * 15;
+        } elseif ($rowData['type'] === 'image') {
+            $sheet->setCellValue('I' . $currentRow, ''); // Empty text, image is drawn over it
+            try {
+                $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+                $drawing->setName('Bukti - ' . ($rowData['title'] ?: 'Gambar'));
+                $drawing->setDescription($rowData['title'] ?: 'Gambar');
+                $drawing->setPath($rowData['path']);
+                $drawing->setHeight(90); // 90px height
+                $drawing->setCoordinates('I' . $currentRow);
+                $drawing->setOffsetX(15);
+                $drawing->setOffsetY(4); // 4px from top of this specific row
+                $drawing->setWorksheet($sheet);
+            } catch (\Throwable $e) {
+                // Ignore
+            }
+            $actualRowHeights[$currentRow] = 75; // Approx 100px in pt for the 90px image + margin
+            $estimatedRowHeights[$currentRow] = 75;
+        }
+    }
+    
+    // Adjust row heights to fit A-H columns
+    $sumHeights = array_sum($estimatedRowHeights);
+    if ($sumHeights < $requiredHeightAH) {
+        // We have a deficit. We must force the LAST row to be a fixed height to make up the difference.
+        $deficit = $requiredHeightAH - $sumHeights;
+        if ($actualRowHeights[$endRow] === -1) {
+            // Convert it from AutoFit to a fixed height based on our estimate + deficit
+            $actualRowHeights[$endRow] = $estimatedRowHeights[$endRow] + $deficit;
+        } else {
+            $actualRowHeights[$endRow] += $deficit;
+        }
+    }
+
+    // Apply Row Heights & Styles
+    for ($r = $startRow; $r <= $endRow; $r++) {
+        // Set the row height. If it's -1, Excel will auto-fit it perfectly to the content!
+        $sheet->getRowDimension($r)->setRowHeight($actualRowHeights[$r]);
+        
+        // Set default thin borders for A-H
+        $sheet->getStyle('A' . $r . ':H' . $r)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        
+        // Custom borders and white background for Column I to make it look like 1 cell
+        $sheet->getStyle('I' . $r)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFFFFF');
+        
+        // Left and Right borders always THIN
+        $sheet->getStyle('I' . $r)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle('I' . $r)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        
+        // Top border only for startRow
+        if ($r === $startRow) {
+            $sheet->getStyle('I' . $r)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        } else {
+            $sheet->getStyle('I' . $r)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE);
+        }
+        
+        // Bottom border only for endRow or if the NEXT row is 'judul'
+        $nextRowType = $ddRowsData[($r + 1) - $startRow]['type'] ?? '';
+        if ($r === $endRow || $nextRowType === 'judul') {
+            $sheet->getStyle('I' . $r)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        } else {
+            $sheet->getStyle('I' . $r)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE);
+        }
+        
+        // Alignment for Col I
+        $sheet->getStyle('I' . $r)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
+    }
+    // Merge Cells A-H
+    if ($rowCount > 1) {
+        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] as $col) {
+            $sheet->mergeCells($col . $startRow . ':' . $col . $endRow);
+        }
+    }
+
+    // Alignments & Styles for A-H (Applies to the merged range)
+    $sheet->getStyle('A' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+    $sheet->getStyle('B' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
+    $sheet->getStyle('B' . $startRow)->getFont()->setBold(true);
+    $sheet->getStyle('C' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
+    $sheet->getStyle('D' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+    $sheet->getStyle('D' . $startRow)->getFont()->setBold(true);
+    $sheet->getStyle('D' . $startRow)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+    $sheet->getStyle('E' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+    $sheet->getStyle('F' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+    $sheet->getStyle('G' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
+    $sheet->getStyle('H' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
+
+    $row = $endRow + 1;
+}
+// 5. Total Row
         $sheet->setCellValue('A' . $row, 'TOTAL');
         $sheet->mergeCells('A' . $row . ':D' . $row);
         $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_CENTER);

@@ -660,9 +660,31 @@ class PendaftarController extends Controller
             $rekapUsia[$ageGrp]['Total']++;
         }
 
-        ksort($rekapProvinsi);
+        $eduOrder = ['SD/Sederajat','SMP/Sederajat','SMA/Sederajat','Diploma I','Diploma II','Diploma III','Diploma IV','Sarjana (S1)','Magister (S2)','Doktor (S3)'];
+        uksort($rekapPendidikan, function($a, $b) use ($eduOrder) {
+            $posA = array_search($a, $eduOrder);
+            $posB = array_search($b, $eduOrder);
+            if ($posA === false) $posA = 999;
+            if ($posB === false) $posB = 999;
+            if ($posA == $posB) return $a <=> $b;
+            return $posA <=> $posB;
+        });
+
+        $provOrder = [];
+        foreach (\App\Models\Pendaftar::getProvinsiMap() as $wil => $provs) {
+            $provOrder = array_merge($provOrder, $provs);
+        }
+        uksort($rekapProvinsi, function($a, $b) use ($provOrder) {
+            $posA = array_search($a, $provOrder);
+            $posB = array_search($b, $provOrder);
+            if ($posA === false) $posA = 999;
+            if ($posB === false) $posB = 999;
+            if ($posA == $posB) return $a <=> $b;
+            return $posA <=> $posB;
+        });
+
         ksort($rekapWilayah);
-        // ksort or custom sort for others can be done later if needed
+        ksort($rekapGender);
 
         // ----------------------------------------------------
         // SHEET 4: REKAP PROVINSI

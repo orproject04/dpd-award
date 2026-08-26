@@ -30,6 +30,11 @@ class PendaftarTableView extends CustomTableView
 
         return $query
             ->withCount(['kontribusi', 'penghargaan'])
+            ->addSelect([
+                'nilai' => \App\Models\PendaftarKertasKerja::selectRaw('COALESCE(SUM(total), 0)')
+                    ->whereColumn('pendaftar_kertas_kerja.pendaftar_id', 'pendaftar.id')
+                    ->whereColumn('pendaftar_kertas_kerja.tahap', 'pendaftar.status')
+            ])
             ->autoSort()
             ->latest('created_at')
             ->autoSearch(request('search'))
@@ -107,6 +112,9 @@ class PendaftarTableView extends CustomTableView
                 'Lolos ke Tahap Wawancara' => 'purple',
                 'Lolos ke Tahap Final' => 'teal',
             ])->addClass('large')->sortable(),
+            Raw::make(function ($data) {
+                return "<span style='display:block;text-align:center;font-weight:bold;color:#0284c7;'>" . number_format($data->nilai ?? 0, 2) . "</span>";
+            }, 'Nilai')->sortable('nilai'),
 
             MyRestfulButton::make('modules::pendaftar')->withoutEdit(),
         ];

@@ -66,9 +66,12 @@ final class HomeController
             ->pluck('total', 'pendidikan')
             ->toArray();
 
-        // 6. Registration Trend (last 30 days)
+        // 6. Registration Trend (25 Juli - 25 Agustus 2026)
+        $startDate = Carbon::create(2026, 7, 25)->startOfDay();
+        $endDate = Carbon::create(2026, 8, 25)->endOfDay();
+
         $trendData = (clone $baseQuery)->select(DB::raw("DATE(created_at) as date_only"), DB::raw('count(*) as total'))
-            ->where('created_at', '>=', Carbon::now()->subDays(30))
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy(DB::raw("DATE(created_at)"))
             ->orderBy(DB::raw("DATE(created_at)"), 'asc')
             ->get();
@@ -76,9 +79,7 @@ final class HomeController
         $trendLabels = [];
         $trendValues = [];
 
-        // Build continuous 30-day timeline to avoid missing days
-        $startDate = Carbon::now()->subDays(30);
-        $endDate = Carbon::now();
+        // Build continuous timeline to avoid missing days
         $dateMap = $trendData->pluck('total', 'date_only')->toArray();
 
         for ($date = clone $startDate; $date->lte($endDate); $date->addDay()) {

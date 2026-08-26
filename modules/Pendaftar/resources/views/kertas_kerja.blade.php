@@ -711,6 +711,14 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            {{-- Catatan Per Bukti Dukung --}}
+                                            <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                                                <label for="note-bukti-{{ $itemKey }}" style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
+                                                    <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung Ini:
+                                                </label>
+                                                <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
+                                                    placeholder="Tuliskan catatan khusus juri untuk bukti dukung ini..."></textarea>
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
@@ -734,19 +742,16 @@
                                             Pilih Kontribusi Ini Sebagai Data Dukung
                                         </label>
                                     </div>
+                                    {{-- Catatan Per Kontribusi (Tanpa File) --}}
+                                    <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                                        <label for="note-bukti-{{ $itemKey }}" style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
+                                            <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung Ini:
+                                        </label>
+                                        <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
+                                            placeholder="Tuliskan catatan khusus juri..."></textarea>
+                                    </div>
                                 </div>
                             @endif
-
-                            {{-- Single Textarea Note per Kontribusi --}}
-                            <div
-                                style="margin-top: 0.5rem; background: #f8fafc; padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                <label for="note-kontribusi-{{ $kontribusi->id }}"
-                                    style="font-size: 0.8rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.3rem;">
-                                    <i class="icon pencil text teal"></i> Catatan Juri untuk Kontribusi Ini:
-                                </label>
-                                <textarea class="dd-note-textarea" id="note-kontribusi-{{ $kontribusi->id }}" rows="2"
-                                    placeholder="Tuliskan catatan khusus juri untuk kontribusi ini..."></textarea>
-                            </div>
                         </div>
                     @empty
                         <div style="text-align: center; padding: 2rem; color: #94a3b8;">
@@ -754,6 +759,20 @@
                             Pendaftar belum mengisi data kontribusi.
                         </div>
                     @endforelse
+                </div>
+
+                <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 1.5rem 0;">
+
+                {{-- Opsi Catatan Tambahan Bebas --}}
+                <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 1.1rem; margin-bottom: 0.5rem;">
+                    <label for="note-bebas" style="font-size: 0.95rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.5rem;">
+                        <i class="icon comment alternate outline teal"></i> Catatan Lainnya untuk Aspek Ini:
+                    </label>
+                    <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 0.75rem;">
+                        Gunakan kolom ini jika ada catatan wawancara atau fakta lain yang tidak bersumber dari lampiran file di atas.
+                    </p>
+                    <textarea class="dd-note-textarea" id="note-bebas" rows="3"
+                        placeholder="Tuliskan catatan lainnya di sini..."></textarea>
                 </div>
             </div>
             <div class="dd-modal-footer">
@@ -832,22 +851,33 @@
                     card.style.backgroundColor = '#ffffff';
                 });
 
+                // Reset custom note
+                document.getElementById('note-bebas').value = '';
+
                 // Read current hidden inputs for this aspect row
                 const container = document.getElementById('dd-inputs-container-' + index);
                 const hiddenInputs = container.querySelectorAll('input[name*="[item_key]"]');
 
                 hiddenInputs.forEach((input, hIdx) => {
                     const itemKey = input.value;
+                    const savedNoteInput = container.querySelector(
+                        `input[name="items[${index}][data_dukung][${hIdx}][catatan]"]`
+                    );
+
+                    if (itemKey === 'custom') {
+                        if (savedNoteInput && savedNoteInput.value) {
+                            document.getElementById('note-bebas').value = savedNoteInput.value;
+                        }
+                        return;
+                    }
+
                     const chk = document.getElementById('chk-' + itemKey);
                     if (chk) {
                         chk.checked = true;
                         const kontribusiId = chk.getAttribute('data-kontribusi-id');
                         updateKontribusiCardState(kontribusiId);
 
-                        const noteTextarea = document.getElementById('note-kontribusi-' + kontribusiId);
-                        const savedNoteInput = container.querySelector(
-                            `input[name="items[${index}][data_dukung][${hIdx}][catatan]"]`
-                        );
+                        const noteTextarea = document.getElementById('note-bukti-' + itemKey);
                         if (noteTextarea && savedNoteInput && savedNoteInput.value) {
                             noteTextarea.value = savedNoteInput.value;
                         }
@@ -881,8 +911,8 @@
                     const buktiUrl = chk.getAttribute('data-bukti-url');
                     const fileType = chk.getAttribute('data-file-type');
 
-                    // Single note per Kontribusi!
-                    const note = document.getElementById('note-kontribusi-' + kontribusiId)?.value || '';
+                    // Note per Bukti Dukung!
+                    const note = document.getElementById('note-bukti-' + itemKey)?.value || '';
 
                     // Create hidden inputs
                     inputsContainer.innerHTML += `
@@ -905,7 +935,7 @@
                                 `<a href="${buktiUrl}" target="_blank" class="ui label mini red basic" style="margin: 0.3rem 0; display: inline-block;"><i class="icon file pdf"></i> Lihat PDF</a>`;
                         } else {
                             previewMediaHtml =
-                                `<a href="${buktiUrl}" target="_blank" class="ui label mini basic" style="margin: 0.3rem 0; display: inline-block;"><i class="icon file"></i> Unduh File</a>`;
+                                `<a href="${buktiUrl}" target="_blank" class="ui label mini basic" style="margin: 0.3rem 0; display: inline-block;"><i class="icon download"></i> Unduh File</a>`;
                         }
                     }
 
@@ -919,6 +949,26 @@
 
                     ddIndex++;
                 });
+
+                // Tambahkan Catatan Bebas
+                const noteBebas = document.getElementById('note-bebas').value;
+                if (noteBebas.trim() !== '') {
+                    inputsContainer.innerHTML += `
+                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][selected]" value="1">
+                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][item_key]" value="custom">
+                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][kontribusi_id]" value="">
+                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][title]" value="Catatan Lainnya">
+                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][bukti]" value="">
+                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][catatan]" value="${escapeHtml(noteBebas)}">
+                    `;
+
+                    previewContainer.innerHTML += `
+                        <div class="data-dukung-tag">
+                            <div class="title"><i class="icon comment alternate outline teal"></i> Catatan Lainnya</div>
+                            <div class="catatan" style="white-space: pre-line;">"${escapeHtml(noteBebas)}"</div>
+                        </div>
+                    `;
+                }
 
                 closeDataDukungModal();
                 triggerAutoSave();

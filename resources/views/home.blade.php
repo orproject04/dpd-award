@@ -585,11 +585,8 @@
                 <div class="flex items-center justify-between mb-5">
                     <div>
                         <div class="sec-title">Tren Pendaftaran Harian</div>
-                        <div class="sec-sub">Jumlah pendaftar baru 30 hari terakhir</div>
+                        <div class="sec-sub">Periode 25 Juli - 25 Agustus 2026</div>
                     </div>
-                    <span
-                        style="background:#f0f2f7;color:#718096;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;">30
-                        Hari</span>
                 </div>
                 <div style="position:relative;height:240px;">
                     <canvas id="trendChart"></canvas>

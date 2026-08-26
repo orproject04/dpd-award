@@ -338,6 +338,11 @@ class PendaftarController extends Controller
         }
 
         return $query
+            ->addSelect([
+                'nilai' => \App\Models\PendaftarKertasKerja::selectRaw('COALESCE(SUM(total), 0)')
+                    ->whereColumn('pendaftar_kertas_kerja.pendaftar_id', 'pendaftar.id')
+                    ->whereColumn('pendaftar_kertas_kerja.tahap', 'pendaftar.status')
+            ])
             ->autoSort()
             ->latest('created_at')
             ->autoSearch($request->get('search'));
@@ -345,7 +350,7 @@ class PendaftarController extends Controller
 
     public function exportExcel(\Illuminate\Http\Request $request)
     {
-        $pendaftars = $this->getFilteredQuery($request)->with(['kontribusi', 'penghargaan', 'riwayats'])->get();
+        $pendaftars = $this->getFilteredQuery($request)->with(['kontribusi', 'penghargaan', 'riwayats', 'kertasKerja'])->get();
 
         $spreadsheet = new Spreadsheet();
 
@@ -371,6 +376,7 @@ class PendaftarController extends Controller
             'Nomor WA',
             'Email',
             'Status',
+            'Nilai',
             'Keterangan',
             'Tanggal Registrasi'
         ];
@@ -411,7 +417,7 @@ class PendaftarController extends Controller
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
             $sheetPendaftar->setCellValue($colLetter . '1', $header);
         }
-        $sheetPendaftar->getStyle('A1:P1')->applyFromArray($headerStyle);
+        $sheetPendaftar->getStyle('A1:Q1')->applyFromArray($headerStyle);
         $sheetPendaftar->getRowDimension(1)->setRowHeight(25);
 
         $rowIdx = 2;
@@ -429,19 +435,26 @@ class PendaftarController extends Controller
             $sheetPendaftar->setCellValue('K' . $rowIdx, $pendaftar->alamat);
             $sheetPendaftar->setCellValue('L' . $rowIdx, $pendaftar->nomor_wa);
             $sheetPendaftar->setCellValue('M' . $rowIdx, $pendaftar->email);
-            $sheetPendaftar->setCellValue('N' . $rowIdx, $pendaftar->status ?? 'Diajukan');
+            
+            $status = $pendaftar->status ?? 'Diajukan';
+            $sheetPendaftar->setCellValue('N' . $rowIdx, $status);
+            
+            $nilai = $pendaftar->kertasKerja
+                ->where('tahap', $status)
+                ->sum('total');
+            $sheetPendaftar->setCellValue('O' . $rowIdx, $nilai);
             
             $keterangan = $pendaftar->riwayats->first()?->keterangan ?? '';
-            $sheetPendaftar->setCellValue('O' . $rowIdx, $keterangan);
-            $sheetPendaftar->setCellValue('P' . $rowIdx, $pendaftar->created_at->format('Y-m-d H:i:s'));
+            $sheetPendaftar->setCellValue('P' . $rowIdx, $keterangan);
+            $sheetPendaftar->setCellValue('Q' . $rowIdx, $pendaftar->created_at->format('Y-m-d H:i:s'));
 
             // Apply light borders
-            $sheetPendaftar->getStyle('A' . $rowIdx . ':P' . $rowIdx)->applyFromArray($dataBorderStyle);
+            $sheetPendaftar->getStyle('A' . $rowIdx . ':Q' . $rowIdx)->applyFromArray($dataBorderStyle);
             $rowIdx++;
         }
 
         // Auto-fit columns
-        foreach (range(1, 16) as $colIdx) {
+        foreach (range(1, 17) as $colIdx) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
             $sheetPendaftar->getColumnDimension($colLetter)->setAutoSize(true);
         }

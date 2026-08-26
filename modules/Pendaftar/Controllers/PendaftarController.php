@@ -1824,6 +1824,7 @@ class PendaftarController extends Controller
 
         $sheet->setCellValue('A6', strtoupper($pendaftar->nama));
         $sheet->getStyle('A6')->getFont()->setBold(true)->setSize(12);
+        $sheet->getStyle('A6')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         // Embed Foto Pendaftar if available
         $rawFoto = $pendaftar->getRawOriginal('foto') ?? $pendaftar->foto;
@@ -1835,10 +1836,13 @@ class PendaftarController extends Controller
                 $drawingFoto->setDescription('Foto ' . $pendaftar->nama);
                 $drawingFoto->setPath($realFotoPath);
                 $drawingFoto->setHeight(75);
-                $drawingFoto->setCoordinates('G5');
-                $drawingFoto->setOffsetX(5);
-                $drawingFoto->setOffsetY(5);
+                $drawingFoto->setCoordinates('C6');
+                $drawingFoto->setOffsetX(0);
+                $drawingFoto->setOffsetY(0);
                 $drawingFoto->setWorksheet($sheet);
+                
+                // Adjust row height to fit the 75px image (approx 56.25 points, we use 60)
+                $sheet->getRowDimension(6)->setRowHeight(60);
             } catch (\Throwable $e) {
                 // Ignore corrupt image error
             }

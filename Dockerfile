@@ -29,10 +29,10 @@ RUN apk add --no-cache \
     nginx supervisor git unzip postgresql-client \
     libpq-dev oniguruma-dev libxml2-dev libzip-dev \
     libjpeg-turbo-dev libpng-dev freetype-dev icu-dev \
-    sqlite-dev \
+    sqlite-dev libwebp-dev \
  && apk add --no-cache --virtual .build-deps \
     autoconf gcc g++ make \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
  && docker-php-ext-install -j$(nproc) \
     pdo pdo_mysql pdo_pgsql pgsql pdo_sqlite \
     mbstring pcntl zip bcmath gd exif intl \

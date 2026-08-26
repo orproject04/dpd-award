@@ -178,6 +178,11 @@
                 $realFotoPath = storage_path('app/private/' . $rawFoto);
             }
         }
+        
+        // Prevent WebP images from breaking dompdf if server lacks GD WebP support
+        if ($realFotoPath && strtolower(pathinfo($realFotoPath, PATHINFO_EXTENSION)) === 'webp') {
+            $realFotoPath = null;
+        }
     @endphp
 
     <div class="header-card">

@@ -27,6 +27,11 @@ class Pendaftar extends Model
         return $this->hasMany(Penghargaan::class, 'pendaftar_id');
     }
 
+    public function kertasKerja(): HasMany
+    {
+        return $this->hasMany(PendaftarKertasKerja::class, 'pendaftar_id');
+    }
+
     public static function getProvinsiMap(): array
     {
         return [

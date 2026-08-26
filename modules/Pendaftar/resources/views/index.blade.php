@@ -11,10 +11,10 @@
             <div class="ui pointing dropdown button mini primary" style="margin: 0;" id="export-kertas-kerja-dropdown">
                 <span class="text"><i class="download icon"></i> <span class="desktop-text">Semua Kertas Kerja</span><span class="mobile-text">Kertas Kerja</span></span>
                 <div class="menu">
-                    <a href="{{ route('modules::pendaftar.export-all-kertas-kerja-excel', request()->query()) }}" target="_blank" class="item" data-no-loader="true">
+                    <a href="javascript:void(0)" onclick="startBatchExport('excel')" class="item" data-no-loader="true">
                         <i class="file excel icon green"></i> Dalam format Excel
                     </a>
-                    <a href="{{ route('modules::pendaftar.export-all-kertas-kerja-pdf', request()->query()) }}" target="_blank" class="item" data-no-loader="true">
+                    <a href="javascript:void(0)" onclick="startBatchExport('pdf')" class="item" data-no-loader="true">
                         <i class="file pdf icon red"></i> Dalam format PDF
                     </a>
                 </div>
@@ -157,4 +157,103 @@
             }
         }
     </style>
+
+    <!-- Modal Batch Export -->
+    <div class="ui tiny modal" id="modal-batch-export" data-backdrop="static" data-keyboard="false">
+        <div class="header">
+            <i class="download icon"></i> Mengekspor <span id="batch-export-format-label"></span>
+        </div>
+        <div class="content">
+            <p id="batch-export-message">Menghitung total data yang akan diekspor...</p>
+            <div class="ui indicating progress" id="batch-export-progress" data-value="0" data-total="100">
+                <div class="bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="label" id="batch-export-progress-label">Menyiapkan...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startBatchExport(format) {
+            $('#batch-export-format-label').text(format === 'excel' ? 'Excel' : 'PDF');
+            $('#batch-export-message').text('Menginisialisasi penarikan data...');
+            $('#batch-export-progress').progress('reset');
+            $('#batch-export-progress-label').text('0 / 0 Diproses');
+            
+            $('#modal-batch-export').modal({
+                closable: false
+            }).modal('show');
+            
+            // Collect current query params for filtering
+            var queryString = window.location.search;
+            var initUrl = "{{ route('modules::pendaftar.export-batch-init') }}" + queryString + (queryString ? '&' : '?') + 'format=' + format;
+            
+            $.ajax({
+                url: initUrl,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success === false) {
+                        $('#modal-batch-export').modal('hide');
+                        alert(response.message || 'Terjadi kesalahan.');
+                        return;
+                    }
+                    
+                    var batchId = response.batch_id;
+                    var totalChunks = response.total_chunks;
+                    var totalParticipants = response.total_participants;
+                    
+                    $('#batch-export-progress').progress({
+                        total: totalChunks
+                    });
+                    
+                    processBatchChunk(batchId, format, 0, totalChunks, totalParticipants);
+                },
+                error: function() {
+                    $('#modal-batch-export').modal('hide');
+                    alert('Gagal menginisialisasi export batch. Silakan coba lagi.');
+                }
+            });
+        }
+        
+        function processBatchChunk(batchId, format, chunkIndex, totalChunks, totalParticipants) {
+            $('#batch-export-message').text('Memproses ' + totalParticipants + ' peserta (Bagian ' + (chunkIndex + 1) + ' dari ' + totalChunks + ')...');
+            
+            var processUrl = "{{ route('modules::pendaftar.export-batch-process') }}";
+            
+            $.ajax({
+                url: processUrl,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    batch_id: batchId,
+                    format: format,
+                    chunk_index: chunkIndex
+                },
+                success: function(response) {
+                    $('#batch-export-progress').progress('increment');
+                    $('#batch-export-progress-label').text((chunkIndex + 1) + ' / ' + totalChunks + ' Diproses');
+                    
+                    if (chunkIndex + 1 < totalChunks) {
+                        // Process next chunk
+                        processBatchChunk(batchId, format, chunkIndex + 1, totalChunks, totalParticipants);
+                    } else {
+                        // All chunks processed!
+                        $('#batch-export-message').text('Selesai! Sedang mengompres ke dalam format ZIP...');
+                        
+                        setTimeout(function() {
+                            $('#modal-batch-export').modal('hide');
+                            // Trigger download
+                            var downloadUrl = "{{ route('modules::pendaftar.export-batch-download') }}?batch_id=" + batchId + "&format=" + format;
+                            window.location.href = downloadUrl;
+                        }, 1000);
+                    }
+                },
+                error: function() {
+                    $('#modal-batch-export').modal('hide');
+                    alert('Terjadi kesalahan saat memproses chunk ke-' + (chunkIndex + 1) + '. Proses dihentikan.');
+                }
+            });
+        }
+    </script>
 </x-volt-app>

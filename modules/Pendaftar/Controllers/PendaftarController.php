@@ -1600,38 +1600,78 @@ class PendaftarController extends Controller
         exit;
     }
 
-    public function exportAllKertasKerjaExcel(\Illuminate\Http\Request $request)
+        public function exportBatchInit(\Illuminate\Http\Request $request)
     {
+        $format = $request->query('format', 'excel'); // 'excel' or 'pdf'
+        
         $pendaftars = $this->getFilteredQuery($request)
             ->where('status', 'like', 'Lolos%')
-            ->with(['kontribusi', 'penghargaan', 'kertasKerja'])->get();
-        
+            ->pluck('id');
+            
         if ($pendaftars->isEmpty()) {
-            return back()->with('error', 'Tidak ada data pendaftar yang dapat diekspor.');
+            return response()->json(['success' => false, 'message' => 'Tidak ada data pendaftar (yang lolos verifikasi) untuk diekspor.']);
         }
-
-        $chunks = $pendaftars->chunk(25);
-        $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
-        $zipFileName = 'Kertas_Kerja_Excel_Semua_Pendaftar.zip';
         
-        $zip = new \ZipArchive();
-        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
-            abort(500, 'Gagal membuat berkas ZIP.');
+        $chunkSize = 25;
+        $totalParticipants = $pendaftars->count();
+        $totalChunks = ceil($totalParticipants / $chunkSize);
+        $batchId = \Illuminate\Support\Str::random(16);
+        
+        // Save the list of IDs for this batch in cache or session, or file
+        \Illuminate\Support\Facades\Cache::put("export_batch_{$batchId}_ids", $pendaftars->toArray(), now()->addHours(2));
+        
+        // Create directory for the batch
+        $batchDir = storage_path("app/private/batch_{$batchId}");
+        if (!file_exists($batchDir)) {
+            mkdir($batchDir, 0755, true);
         }
-
-        $fileIndex = 1;
-        foreach ($chunks as $chunk) {
-            $spreadsheet = new Spreadsheet();
+        
+        return response()->json([
+            'success' => true,
+            'batch_id' => $batchId,
+            'total_chunks' => $totalChunks,
+            'total_participants' => $totalParticipants
+        ]);
+    }
+    
+    public function exportBatchProcess(\Illuminate\Http\Request $request)
+    {
+        $batchId = $request->input('batch_id');
+        $chunkIndex = (int) $request->input('chunk_index'); // 0-based
+        $format = $request->input('format', 'excel');
+        $chunkSize = 25;
+        
+        $allIds = \Illuminate\Support\Facades\Cache::get("export_batch_{$batchId}_ids");
+        if (!$allIds) {
+            return response()->json(['success' => false, 'message' => 'Batch kadaluarsa atau tidak ditemukan.'], 400);
+        }
+        
+        $chunkIds = array_slice($allIds, $chunkIndex * $chunkSize, $chunkSize);
+        if (empty($chunkIds)) {
+            return response()->json(['success' => true]); // Already done or out of bounds
+        }
+        
+        // Fetch full models
+        $pendaftars = \App\Models\Pendaftar::whereIn('id', $chunkIds)
+            ->with(['kontribusi', 'penghargaan', 'kertasKerja'])
+            // Preserve the original order of chunkIds
+            ->orderByRaw('array_position(ARRAY[\'' . implode("','", $chunkIds) . '\']::uuid[], id)')
+            ->get();
+            
+        $batchDir = storage_path("app/private/batch_{$batchId}");
+        $fileIndexStr = str_pad((string)($chunkIndex + 1), 2, '0', STR_PAD_LEFT);
+            
+        if ($format === 'excel') {
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $sheetIndex = 0;
             
-            foreach ($chunk as $pendaftar) {
+            foreach ($pendaftars as $pendaftar) {
                 if ($sheetIndex > 0) {
                     $spreadsheet->createSheet();
                 }
                 $spreadsheet->setActiveSheetIndex($sheetIndex);
                 $sheet = $spreadsheet->getActiveSheet();
                 
-                // Sheet title must be max 31 chars and no invalid chars
                 $title = substr(str_replace(['\\', '/', '?', '*', '[', ']'], '', $pendaftar->nama), 0, 31);
                 $sheet->setTitle($title);
                 
@@ -1642,65 +1682,76 @@ class PendaftarController extends Controller
             }
             
             $spreadsheet->setActiveSheetIndex(0);
-            $tempExcelPath = storage_path('app/private/temp_excel_' . \Illuminate\Support\Str::random(10) . '.xlsx');
-            $writer = new Xlsx($spreadsheet);
-            $writer->save($tempExcelPath);
+            $filePath = $batchDir . '/Kertas_Kerja_Part_' . $fileIndexStr . '.xlsx';
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer->save($filePath);
             
-            $zip->addFile($tempExcelPath, 'Kertas_Kerja_Part_' . str_pad((string)$fileIndex, 2, '0', STR_PAD_LEFT) . '.xlsx');
-            $fileIndex++;
+        } elseif ($format === 'pdf') {
+            foreach ($pendaftars as $pdfIndex => $pendaftar) {
+                $selectedTahap = $pendaftar->status;
+                
+                $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
+                    ->orderBy('id', 'asc')
+                    ->get();
+        
+                $savedPenilaian = $pendaftar->kertasKerja()
+                    ->where('tahap', $selectedTahap)
+                    ->get()
+                    ->keyBy('kategori_aspek_id');
+                    
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pendaftar::kertas_kerja_pdf', compact('pendaftar', 'selectedTahap', 'aspeks', 'savedPenilaian'))
+                    ->setPaper('a4', 'landscape');
+                    
+                $cleanName = \Illuminate\Support\Str::slug($pendaftar->nama, '_');
+                $regNumber = \Illuminate\Support\Str::slug($pendaftar->nomor_registrasi, '_');
+                $pdfFileName = $regNumber . '_' . $cleanName . '.pdf';
+                
+                $filePath = $batchDir . '/' . $pdfFileName;
+                $pdf->save($filePath);
+            }
         }
         
-        $zip->close();
-        
-        // Clean up temp excel files after sending? Download does not delete added files, 
-        // but we can register a terminating callback to delete them. For simplicity, just return the zip.
-        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
+        return response()->json(['success' => true]);
     }
     
-    public function exportAllKertasKerjaPdf(\Illuminate\Http\Request $request)
+    public function exportBatchDownload(\Illuminate\Http\Request $request)
     {
-        $pendaftars = $this->getFilteredQuery($request)
-            ->where('status', 'like', 'Lolos%')
-            ->with(['kontribusi', 'penghargaan', 'kertasKerja'])->get();
+        $batchId = $request->query('batch_id');
+        $format = $request->query('format', 'excel');
+        $batchDir = storage_path("app/private/batch_{$batchId}");
         
-        if ($pendaftars->isEmpty()) {
-            return back()->with('error', 'Tidak ada data pendaftar yang dapat diekspor.');
+        if (!is_dir($batchDir)) {
+            return back()->with('error', 'Batch tidak ditemukan atau sudah dihapus.');
         }
-
+        
         $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
-        $zipFileName = 'Kertas_Kerja_PDF_Semua_Pendaftar.zip';
+        $zipFileName = $format === 'excel' ? 'Kertas_Kerja_Excel_Semua_Pendaftar.zip' : 'Kertas_Kerja_PDF_Semua_Pendaftar.zip';
         
         $zip = new \ZipArchive();
         if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
             abort(500, 'Gagal membuat berkas ZIP.');
         }
-
-        foreach ($pendaftars as $pendaftar) {
-            $selectedTahap = $pendaftar->status;
-            
-            $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
-                ->orderBy('id', 'asc')
-                ->get();
-    
-            $savedPenilaian = $pendaftar->kertasKerja
-                ->filter(function ($kk) use ($selectedTahap, $pendaftar) {
-                    return $kk->tahap === $selectedTahap || (empty($kk->tahap) && $selectedTahap === $pendaftar->status);
-                })
-                ->keyBy('kategori_aspek_id');
-                
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pendaftar::kertas_kerja_pdf', compact('pendaftar', 'selectedTahap', 'aspeks', 'savedPenilaian'))
-                ->setPaper('a4', 'landscape');
-                
-            $pdfContent = $pdf->output();
-            
-            $fileName = 'Kertas_Kerja_' . \Illuminate\Support\Str::slug($pendaftar->nama, '_') . '_' . $pendaftar->nomor_registrasi . '.pdf';
-            $zip->addFromString($fileName, $pdfContent);
-        }
         
+        $files = scandir($batchDir);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $zip->addFile($batchDir . '/' . $file, $file);
+            }
+        }
         $zip->close();
+        
+        // Cleanup the batch directory (delete all files and dir)
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                unlink($batchDir . '/' . $file);
+            }
+        }
+        rmdir($batchDir);
+        \Illuminate\Support\Facades\Cache::forget("export_batch_{$batchId}_ids");
         
         return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
     }
+
 
     protected function buildKertasKerjaSheet($sheet, $pendaftar, $selectedTahap)
     {

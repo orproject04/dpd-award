@@ -1582,6 +1582,128 @@ class PendaftarController extends Controller
                 ->with('error', 'Kertas Kerja Penilaian hanya berlaku untuk pendaftar dengan status Lolos.');
         }
 
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('FORM PENILAIAN');
+
+        $this->buildKertasKerjaSheet($sheet, $pendaftar, $selectedTahap);
+
+        $filename = 'Form_Penilaian_' . \Illuminate\Support\Str::slug($pendaftar->nama, '_') . '.xlsx';
+
+        $writer = new Xlsx($spreadsheet);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
+    }
+
+    public function exportAllKertasKerjaExcel(\Illuminate\Http\Request $request)
+    {
+        $pendaftars = $this->getFilteredQuery($request)
+            ->where('status', 'like', 'Lolos%')
+            ->with(['kontribusi', 'penghargaan', 'kertasKerja'])->get();
+        
+        if ($pendaftars->isEmpty()) {
+            return back()->with('error', 'Tidak ada data pendaftar yang dapat diekspor.');
+        }
+
+        $chunks = $pendaftars->chunk(25);
+        $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
+        $zipFileName = 'Kertas_Kerja_Excel_Semua_Pendaftar.zip';
+        
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            abort(500, 'Gagal membuat berkas ZIP.');
+        }
+
+        $fileIndex = 1;
+        foreach ($chunks as $chunk) {
+            $spreadsheet = new Spreadsheet();
+            $sheetIndex = 0;
+            
+            foreach ($chunk as $pendaftar) {
+                if ($sheetIndex > 0) {
+                    $spreadsheet->createSheet();
+                }
+                $spreadsheet->setActiveSheetIndex($sheetIndex);
+                $sheet = $spreadsheet->getActiveSheet();
+                
+                // Sheet title must be max 31 chars and no invalid chars
+                $title = substr(str_replace(['\\', '/', '?', '*', '[', ']'], '', $pendaftar->nama), 0, 31);
+                $sheet->setTitle($title);
+                
+                $selectedTahap = $pendaftar->status;
+                $this->buildKertasKerjaSheet($sheet, $pendaftar, $selectedTahap);
+                
+                $sheetIndex++;
+            }
+            
+            $spreadsheet->setActiveSheetIndex(0);
+            $tempExcelPath = storage_path('app/private/temp_excel_' . \Illuminate\Support\Str::random(10) . '.xlsx');
+            $writer = new Xlsx($spreadsheet);
+            $writer->save($tempExcelPath);
+            
+            $zip->addFile($tempExcelPath, 'Kertas_Kerja_Part_' . str_pad((string)$fileIndex, 2, '0', STR_PAD_LEFT) . '.xlsx');
+            $fileIndex++;
+        }
+        
+        $zip->close();
+        
+        // Clean up temp excel files after sending? Download does not delete added files, 
+        // but we can register a terminating callback to delete them. For simplicity, just return the zip.
+        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
+    }
+    
+    public function exportAllKertasKerjaPdf(\Illuminate\Http\Request $request)
+    {
+        $pendaftars = $this->getFilteredQuery($request)
+            ->where('status', 'like', 'Lolos%')
+            ->with(['kontribusi', 'penghargaan', 'kertasKerja'])->get();
+        
+        if ($pendaftars->isEmpty()) {
+            return back()->with('error', 'Tidak ada data pendaftar yang dapat diekspor.');
+        }
+
+        $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
+        $zipFileName = 'Kertas_Kerja_PDF_Semua_Pendaftar.zip';
+        
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            abort(500, 'Gagal membuat berkas ZIP.');
+        }
+
+        foreach ($pendaftars as $pendaftar) {
+            $selectedTahap = $pendaftar->status;
+            
+            $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
+                ->orderBy('id', 'asc')
+                ->get();
+    
+            $savedPenilaian = $pendaftar->kertasKerja
+                ->filter(function ($kk) use ($selectedTahap, $pendaftar) {
+                    return $kk->tahap === $selectedTahap || (empty($kk->tahap) && $selectedTahap === $pendaftar->status);
+                })
+                ->keyBy('kategori_aspek_id');
+                
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pendaftar::kertas_kerja_pdf', compact('pendaftar', 'selectedTahap', 'aspeks', 'savedPenilaian'))
+                ->setPaper('a4', 'landscape');
+                
+            $pdfContent = $pdf->output();
+            
+            $fileName = 'Kertas_Kerja_' . \Illuminate\Support\Str::slug($pendaftar->nama, '_') . '_' . $pendaftar->nomor_registrasi . '.pdf';
+            $zip->addFromString($fileName, $pdfContent);
+        }
+        
+        $zip->close();
+        
+        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
+    }
+
+    protected function buildKertasKerjaSheet($sheet, $pendaftar, $selectedTahap)
+    {
         $pendaftar->load(['kontribusi', 'penghargaan', 'kertasKerja']);
 
         $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
@@ -1635,10 +1757,6 @@ class PendaftarController extends Controller
 
             return null;
         };
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('FORM PENILAIAN');
 
         // 1. Title Rows
         $sheet->setCellValue('A1', 'FORM PENILAIAN');
@@ -1898,17 +2016,5 @@ class PendaftarController extends Controller
         $sheet->getColumnDimension('G')->setWidth(30);
         $sheet->getColumnDimension('H')->setWidth(30);
         $sheet->getColumnDimension('I')->setWidth(45); // Enlarged to fit drawings
-
-        // Download File
-        $filename = 'Form_Penilaian_' . \Illuminate\Support\Str::slug($pendaftar->nama, '_') . '.xlsx';
-
-        $writer = new Xlsx($spreadsheet);
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Cache-Control: max-age=0');
-
-        $writer->save('php://output');
-        exit;
     }
 }

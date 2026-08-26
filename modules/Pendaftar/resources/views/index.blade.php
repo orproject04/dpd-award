@@ -7,10 +7,32 @@
             <a href="{{ route('modules::pendaftar.export', request()->query()) }}" target="_blank" class="ui mini teal button" style="margin: 0;" data-no-loader="true">
                 <i class="file excel icon"></i> <span class="desktop-text">Export Excel</span><span class="mobile-text">Excel</span>
             </a>
+            
+            <div class="ui pointing dropdown button mini primary" style="margin: 0;" id="export-kertas-kerja-dropdown">
+                <span class="text"><i class="download icon"></i> <span class="desktop-text">Semua Kertas Kerja</span><span class="mobile-text">Kertas Kerja</span></span>
+                <div class="menu">
+                    <a href="{{ route('modules::pendaftar.export-all-kertas-kerja-excel', request()->query()) }}" target="_blank" class="item" data-no-loader="true">
+                        <i class="file excel icon green"></i> Dalam format Excel
+                    </a>
+                    <a href="{{ route('modules::pendaftar.export-all-kertas-kerja-pdf', request()->query()) }}" target="_blank" class="item" data-no-loader="true">
+                        <i class="file pdf icon red"></i> Dalam format PDF
+                    </a>
+                </div>
+            </div>
+
+            {{-- 
             <a href="{{ route('modules::pendaftar.download-all-zip', request()->query()) }}" target="_blank" class="ui mini blue button" style="margin: 0;" data-no-loader="true">
-                <i class="archive icon"></i> <span class="desktop-text">Unduh Semua Berkas (ZIP)</span><span class="mobile-text">ZIP</span>
+                <i class="archive icon"></i> <span class="desktop-text">Semua Berkas (ZIP)</span><span class="mobile-text">ZIP</span>
             </a>
+            --}}
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.jQuery && jQuery('#export-kertas-kerja-dropdown').dropdown) {
+                    jQuery('#export-kertas-kerja-dropdown').dropdown();
+                }
+            });
+        </script>
     </x-slot>
 
     {!! $table !!}

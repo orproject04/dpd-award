@@ -35,6 +35,9 @@ Route::group(
         Route::get('pendaftar/{pendaftar}/kertas-kerja', [PendaftarController::class, 'kertasKerja'])->name('pendaftar.kertas-kerja');
         Route::post('pendaftar/{pendaftar}/kertas-kerja', [PendaftarController::class, 'storeKertasKerja'])->name('pendaftar.store-kertas-kerja');
         Route::get('pendaftar/{pendaftar}/kertas-kerja/export-excel', [PendaftarController::class, 'exportKertasKerjaExcel'])->name('pendaftar.export-kertas-kerja-excel');
+        
+        Route::get('pendaftars/kertas-kerja/export-all-excel', [PendaftarController::class, 'exportAllKertasKerjaExcel'])->name('pendaftar.export-all-kertas-kerja-excel');
+        Route::get('pendaftars/kertas-kerja/export-all-pdf', [PendaftarController::class, 'exportAllKertasKerjaPdf'])->name('pendaftar.export-all-kertas-kerja-pdf');
 
         Route::resource('pendaftar', PendaftarController::class);
     }

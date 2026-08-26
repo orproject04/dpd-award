@@ -326,10 +326,10 @@
                     class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">BERANDA</a>
                 <a href="#kategori"
                     class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">KATEGORI</a>
-                <a href="#syarat"
-                    class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">KETENTUAN</a>
                 <a href="#alur"
                     class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">TIMELINE</a>
+                <a href="#berita-terbaru"
+                    class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">BERITA TERKINI</a>
                 <a href="#lacak"
                     class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">LACAK</a>
                 <a href="#statistik"
@@ -348,10 +348,10 @@
                 class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">BERANDA</a>
             <a href="#kategori" @click="mobileMenuOpen = false"
                 class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">KATEGORI</a>
-            <a href="#syarat" @click="mobileMenuOpen = false"
-                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">KETENTUAN</a>
             <a href="#alur" @click="mobileMenuOpen = false"
                 class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">TIMELINE</a>
+            <a href="#berita-terbaru" @click="mobileMenuOpen = false"
+                class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">BERITA TERKINI</a>
             <a href="#lacak" @click="mobileMenuOpen = false"
                 class="text-white/80 hover:text-white text-[17px] font-semibold tracking-wider">LACAK</a>
             <a href="#statistik" @click="mobileMenuOpen = false"

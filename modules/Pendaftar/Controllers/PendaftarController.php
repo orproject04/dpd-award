@@ -579,6 +579,16 @@ class PendaftarController extends Controller
         // ----------------------------------------------------
         $rekapProvinsi = [];
         $rekapWilayah = [];
+        $rekapPendidikan = [];
+        $rekapGender = [];
+        $rekapUsia = [
+            '< 25' => [],
+            '25–34' => [],
+            '35–44' => [],
+            '45–54' => [],
+            '55+' => []
+        ];
+
         $kategories = [
             'Bidang Pendidikan',
             'Bidang Kesehatan',
@@ -586,9 +596,16 @@ class PendaftarController extends Controller
             'Bidang Seni dan Budaya'
         ];
 
+        foreach ($rekapUsia as $k => $v) {
+            $rekapUsia[$k] = array_fill_keys($kategories, 0);
+            $rekapUsia[$k]['Total'] = 0;
+        }
+
         foreach ($pendaftars as $p) {
             $prov = (empty($p->provinsi) || $p->provinsi == '-') ? 'Tidak Diketahui' : $p->provinsi;
             $wil = (empty($p->wilayah) || $p->wilayah == '-') ? 'Tidak Diketahui' : $p->wilayah;
+            $edu = (empty($p->pendidikan) || $p->pendidikan == '-') ? 'Tidak Diketahui' : $p->pendidikan;
+            $gen = (empty($p->jenis_kelamin) || $p->jenis_kelamin == '-') ? 'Tidak Diketahui' : $p->jenis_kelamin;
             $kat = $p->kategori;
 
             if (!isset($rekapProvinsi[$prov])) {
@@ -599,18 +616,53 @@ class PendaftarController extends Controller
                 $rekapWilayah[$wil] = array_fill_keys($kategories, 0);
                 $rekapWilayah[$wil]['Total'] = 0;
             }
+            if (!isset($rekapPendidikan[$edu])) {
+                $rekapPendidikan[$edu] = array_fill_keys($kategories, 0);
+                $rekapPendidikan[$edu]['Total'] = 0;
+            }
+            if (!isset($rekapGender[$gen])) {
+                $rekapGender[$gen] = array_fill_keys($kategories, 0);
+                $rekapGender[$gen]['Total'] = 0;
+            }
+
+            // Usia grouping
+            $ageGrp = 'Tidak Diketahui';
+            if (!empty($p->tanggal_lahir)) {
+                try {
+                    $age = \Carbon\Carbon::parse($p->tanggal_lahir)->age;
+                    if ($age < 25) $ageGrp = '< 25';
+                    elseif ($age < 35) $ageGrp = '25–34';
+                    elseif ($age < 45) $ageGrp = '35–44';
+                    elseif ($age < 55) $ageGrp = '45–54';
+                    else $ageGrp = '55+';
+                } catch (\Exception $e) {
+                    $ageGrp = 'Tidak Diketahui';
+                }
+            }
+
+            if ($ageGrp === 'Tidak Diketahui' && !isset($rekapUsia['Tidak Diketahui'])) {
+                $rekapUsia['Tidak Diketahui'] = array_fill_keys($kategories, 0);
+                $rekapUsia['Tidak Diketahui']['Total'] = 0;
+            }
 
             if (in_array($kat, $kategories)) {
                 $rekapProvinsi[$prov][$kat]++;
                 $rekapWilayah[$wil][$kat]++;
+                $rekapPendidikan[$edu][$kat]++;
+                $rekapGender[$gen][$kat]++;
+                $rekapUsia[$ageGrp][$kat]++;
             }
 
             $rekapProvinsi[$prov]['Total']++;
             $rekapWilayah[$wil]['Total']++;
+            $rekapPendidikan[$edu]['Total']++;
+            $rekapGender[$gen]['Total']++;
+            $rekapUsia[$ageGrp]['Total']++;
         }
 
         ksort($rekapProvinsi);
         ksort($rekapWilayah);
+        // ksort or custom sort for others can be done later if needed
 
         // ----------------------------------------------------
         // SHEET 4: REKAP PROVINSI
@@ -716,6 +768,162 @@ class PendaftarController extends Controller
         foreach (range(1, 7) as $colIdx) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
             $sheetRekapWil->getColumnDimension($colLetter)->setAutoSize(true);
+        }
+
+        // ----------------------------------------------------
+        // SHEET 6: REKAP PENDIDIKAN
+        // ----------------------------------------------------
+        $sheetRekapPendidikan = $spreadsheet->createSheet();
+        $sheetRekapPendidikan->setTitle('Rekap Pendidikan');
+
+        $headersEdu = ['No', 'Tingkat Pendidikan', 'Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya', 'Total'];
+        foreach ($headersEdu as $colIdx => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
+            $sheetRekapPendidikan->setCellValue($colLetter . '1', $header);
+        }
+        $sheetRekapPendidikan->getStyle('A1:G1')->applyFromArray($headerStyle);
+        $sheetRekapPendidikan->getStyle('A1:G1')->getFill()->getStartColor()->setRGB('DDEBF7'); // Soft blue
+        $sheetRekapPendidikan->getRowDimension(1)->setRowHeight(25);
+
+        $rowIdx = 2;
+        $no = 1;
+        $grandTotalsEdu = array_fill_keys($kategories, 0);
+        $grandTotalsEdu['Total'] = 0;
+
+        foreach ($rekapPendidikan as $edu => $data) {
+            $sheetRekapPendidikan->setCellValue('A' . $rowIdx, $no++);
+            $sheetRekapPendidikan->setCellValue('B' . $rowIdx, $edu);
+            $sheetRekapPendidikan->setCellValue('C' . $rowIdx, $data['Bidang Pendidikan']);
+            $sheetRekapPendidikan->setCellValue('D' . $rowIdx, $data['Bidang Kesehatan']);
+            $sheetRekapPendidikan->setCellValue('E' . $rowIdx, $data['Bidang Ketahanan Pangan']);
+            $sheetRekapPendidikan->setCellValue('F' . $rowIdx, $data['Bidang Seni dan Budaya']);
+            $sheetRekapPendidikan->setCellValue('G' . $rowIdx, $data['Total']);
+
+            $sheetRekapPendidikan->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
+
+            foreach ($kategories as $k) $grandTotalsEdu[$k] += $data[$k];
+            $grandTotalsEdu['Total'] += $data['Total'];
+            $rowIdx++;
+        }
+
+        // Add Grand Total Row
+        $sheetRekapPendidikan->setCellValue('A' . $rowIdx, '');
+        $sheetRekapPendidikan->setCellValue('B' . $rowIdx, 'TOTAL KESELURUHAN');
+        $sheetRekapPendidikan->setCellValue('C' . $rowIdx, $grandTotalsEdu['Bidang Pendidikan']);
+        $sheetRekapPendidikan->setCellValue('D' . $rowIdx, $grandTotalsEdu['Bidang Kesehatan']);
+        $sheetRekapPendidikan->setCellValue('E' . $rowIdx, $grandTotalsEdu['Bidang Ketahanan Pangan']);
+        $sheetRekapPendidikan->setCellValue('F' . $rowIdx, $grandTotalsEdu['Bidang Seni dan Budaya']);
+        $sheetRekapPendidikan->setCellValue('G' . $rowIdx, $grandTotalsEdu['Total']);
+        $sheetRekapPendidikan->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($headerStyle);
+        $sheetRekapPendidikan->getStyle('A' . $rowIdx . ':G' . $rowIdx)->getFill()->getStartColor()->setRGB('D9D9D9');
+
+        foreach (range(1, 7) as $colIdx) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
+            $sheetRekapPendidikan->getColumnDimension($colLetter)->setAutoSize(true);
+        }
+
+        // ----------------------------------------------------
+        // SHEET 7: REKAP JENIS KELAMIN
+        // ----------------------------------------------------
+        $sheetRekapGender = $spreadsheet->createSheet();
+        $sheetRekapGender->setTitle('Rekap Jenis Kelamin');
+
+        $headersGender = ['No', 'Jenis Kelamin', 'Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya', 'Total'];
+        foreach ($headersGender as $colIdx => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
+            $sheetRekapGender->setCellValue($colLetter . '1', $header);
+        }
+        $sheetRekapGender->getStyle('A1:G1')->applyFromArray($headerStyle);
+        $sheetRekapGender->getStyle('A1:G1')->getFill()->getStartColor()->setRGB('E2EFDA'); // Soft green
+        $sheetRekapGender->getRowDimension(1)->setRowHeight(25);
+
+        $rowIdx = 2;
+        $no = 1;
+        $grandTotalsGender = array_fill_keys($kategories, 0);
+        $grandTotalsGender['Total'] = 0;
+
+        foreach ($rekapGender as $gen => $data) {
+            $sheetRekapGender->setCellValue('A' . $rowIdx, $no++);
+            $sheetRekapGender->setCellValue('B' . $rowIdx, $gen);
+            $sheetRekapGender->setCellValue('C' . $rowIdx, $data['Bidang Pendidikan']);
+            $sheetRekapGender->setCellValue('D' . $rowIdx, $data['Bidang Kesehatan']);
+            $sheetRekapGender->setCellValue('E' . $rowIdx, $data['Bidang Ketahanan Pangan']);
+            $sheetRekapGender->setCellValue('F' . $rowIdx, $data['Bidang Seni dan Budaya']);
+            $sheetRekapGender->setCellValue('G' . $rowIdx, $data['Total']);
+
+            $sheetRekapGender->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
+
+            foreach ($kategories as $k) $grandTotalsGender[$k] += $data[$k];
+            $grandTotalsGender['Total'] += $data['Total'];
+            $rowIdx++;
+        }
+
+        // Add Grand Total Row
+        $sheetRekapGender->setCellValue('A' . $rowIdx, '');
+        $sheetRekapGender->setCellValue('B' . $rowIdx, 'TOTAL KESELURUHAN');
+        $sheetRekapGender->setCellValue('C' . $rowIdx, $grandTotalsGender['Bidang Pendidikan']);
+        $sheetRekapGender->setCellValue('D' . $rowIdx, $grandTotalsGender['Bidang Kesehatan']);
+        $sheetRekapGender->setCellValue('E' . $rowIdx, $grandTotalsGender['Bidang Ketahanan Pangan']);
+        $sheetRekapGender->setCellValue('F' . $rowIdx, $grandTotalsGender['Bidang Seni dan Budaya']);
+        $sheetRekapGender->setCellValue('G' . $rowIdx, $grandTotalsGender['Total']);
+        $sheetRekapGender->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($headerStyle);
+        $sheetRekapGender->getStyle('A' . $rowIdx . ':G' . $rowIdx)->getFill()->getStartColor()->setRGB('D9D9D9');
+
+        foreach (range(1, 7) as $colIdx) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
+            $sheetRekapGender->getColumnDimension($colLetter)->setAutoSize(true);
+        }
+
+        // ----------------------------------------------------
+        // SHEET 8: REKAP USIA
+        // ----------------------------------------------------
+        $sheetRekapUsia = $spreadsheet->createSheet();
+        $sheetRekapUsia->setTitle('Rekap Usia');
+
+        $headersUsia = ['No', 'Kelompok Usia', 'Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya', 'Total'];
+        foreach ($headersUsia as $colIdx => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx + 1);
+            $sheetRekapUsia->setCellValue($colLetter . '1', $header);
+        }
+        $sheetRekapUsia->getStyle('A1:G1')->applyFromArray($headerStyle);
+        $sheetRekapUsia->getStyle('A1:G1')->getFill()->getStartColor()->setRGB('FFF2CC'); // Soft yellow
+        $sheetRekapUsia->getRowDimension(1)->setRowHeight(25);
+
+        $rowIdx = 2;
+        $no = 1;
+        $grandTotalsUsia = array_fill_keys($kategories, 0);
+        $grandTotalsUsia['Total'] = 0;
+
+        foreach ($rekapUsia as $age => $data) {
+            $sheetRekapUsia->setCellValue('A' . $rowIdx, $no++);
+            $sheetRekapUsia->setCellValue('B' . $rowIdx, $age);
+            $sheetRekapUsia->setCellValue('C' . $rowIdx, $data['Bidang Pendidikan']);
+            $sheetRekapUsia->setCellValue('D' . $rowIdx, $data['Bidang Kesehatan']);
+            $sheetRekapUsia->setCellValue('E' . $rowIdx, $data['Bidang Ketahanan Pangan']);
+            $sheetRekapUsia->setCellValue('F' . $rowIdx, $data['Bidang Seni dan Budaya']);
+            $sheetRekapUsia->setCellValue('G' . $rowIdx, $data['Total']);
+
+            $sheetRekapUsia->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
+
+            foreach ($kategories as $k) $grandTotalsUsia[$k] += $data[$k];
+            $grandTotalsUsia['Total'] += $data['Total'];
+            $rowIdx++;
+        }
+
+        // Add Grand Total Row
+        $sheetRekapUsia->setCellValue('A' . $rowIdx, '');
+        $sheetRekapUsia->setCellValue('B' . $rowIdx, 'TOTAL KESELURUHAN');
+        $sheetRekapUsia->setCellValue('C' . $rowIdx, $grandTotalsUsia['Bidang Pendidikan']);
+        $sheetRekapUsia->setCellValue('D' . $rowIdx, $grandTotalsUsia['Bidang Kesehatan']);
+        $sheetRekapUsia->setCellValue('E' . $rowIdx, $grandTotalsUsia['Bidang Ketahanan Pangan']);
+        $sheetRekapUsia->setCellValue('F' . $rowIdx, $grandTotalsUsia['Bidang Seni dan Budaya']);
+        $sheetRekapUsia->setCellValue('G' . $rowIdx, $grandTotalsUsia['Total']);
+        $sheetRekapUsia->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($headerStyle);
+        $sheetRekapUsia->getStyle('A' . $rowIdx . ':G' . $rowIdx)->getFill()->getStartColor()->setRGB('D9D9D9');
+
+        foreach (range(1, 7) as $colIdx) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIdx);
+            $sheetRekapUsia->getColumnDimension($colLetter)->setAutoSize(true);
         }
 
         // Generate response

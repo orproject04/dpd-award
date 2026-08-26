@@ -751,7 +751,7 @@
                         <div class="sec-sub">Profil umum peserta</div>
                     </div>
                     <div class="tab-group">
-                        <button class="tab-btn active" onclick="switchDemoTab('gender', this)">Gender</button>
+                        <button class="tab-btn active" onclick="switchDemoTab('gender', this)">Jenis Kelamin</button>
                         <button class="tab-btn" onclick="switchDemoTab('age', this)">Usia</button>
                     </div>
                 </div>

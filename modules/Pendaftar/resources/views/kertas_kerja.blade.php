@@ -84,12 +84,13 @@
                 border-radius: 12px;
                 border: 1px solid #e2e8f0;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-                overflow: hidden;
+                overflow-x: auto;
                 margin-bottom: 2rem;
             }
 
             .kk-table {
                 width: 100%;
+                min-width: 1600px;
                 border-collapse: collapse;
             }
 
@@ -434,6 +435,7 @@
                             <th style="width: 180px;">Catatan Juri</th>
                             <th style="width: 160px;">Tracking Media</th>
                             <th style="width: 220px;">Data Dukung</th>
+                            <th style="width: 150px; text-align: center;" class="no-print">Detail Informasi Pendaftar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -547,12 +549,25 @@
                                                 value="{{ $dd['catatan'] ?? '' }}">
                                         @endforeach
                                     </div>
+
+                                </td>
+                                <td rowspan="{{ count($items) }}" style="vertical-align: top; text-align: center; padding: 1.5rem 1rem;" class="no-print">
+                                    <div style="font-size: 0.85rem; margin-bottom: 10px; color: #64748b;">
+                                        Link Profil Pendaftar:
+                                    </div>
+                                    <a href="{{ route('modules::pendaftar.show', $pendaftar->id) }}" target="_blank" style="color: #0369a1; text-decoration: underline; word-break: break-all; font-weight: 500; font-size: 0.85rem;">
+                                        {{ route('modules::pendaftar.show', $pendaftar->id) }}
+                                    </a>
+                                    <br><br>
+                                    <a href="{{ route('modules::pendaftar.show', $pendaftar->id) }}" target="_blank" class="ui button mini blue basic" style="width: 100%;">
+                                        <i class="icon external alternate"></i> Buka Detail
+                                    </a>
                                 </td>
                                 @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="center aligned" style="padding: 2rem; color: #64748b;">
+                                <td colspan="10" class="center aligned" style="padding: 2rem; color: #64748b;">
                                     Belum ada aspek penilaian untuk kategori {{ $pendaftar->kategori }}.
                                 </td>
                             </tr>
@@ -568,7 +583,7 @@
                                     {{ number_format($totalNilaiAkhir, 2) }}
                                 </span>
                             </td>
-                            <td colspan="3"></td>
+                            <td colspan="4"></td>
                         </tr>
                     </tfoot>
                 </table>

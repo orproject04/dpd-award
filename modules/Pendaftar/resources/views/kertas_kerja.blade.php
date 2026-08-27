@@ -445,8 +445,7 @@
                                         value="{{ $item['kategori_aspek_id'] }}">
                                     <strong style="color: #0f172a;">{{ $item['aspek'] }}</strong>
                                 </td>
-                                <td style="color: #475569; white-space: pre-line; font-size: 0.85rem;">
-                                    {{ $item['dimensi'] ?: '-' }}</td>
+                                <td style="color: #475569; white-space: pre-line; font-size: 0.85rem;">{{ $item['dimensi'] ?: '-' }}</td>
                                 <td style="text-align: center;">
                                     <input type="number" name="items[{{ $index }}][nilai]"
                                         value="{{ $item['nilai'] }}" min="10" max="100"

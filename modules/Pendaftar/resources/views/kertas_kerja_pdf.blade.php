@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>Kertas Kerja - {{ $pendaftar->nama }}</title>
     <style>
+        @page {
+            size: A3 landscape;
+            margin: 10mm;
+        }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             font-size: 11px;
@@ -14,9 +18,9 @@
         .header-card {
             background-color: #f8fafc;
             border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
         }
         .user-info {
             width: 100%;
@@ -25,34 +29,34 @@
             vertical-align: middle;
         }
         .header-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             color: #0f172a;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .header-sub {
-            font-size: 11px;
+            font-size: 10px;
             color: #475569;
-            margin-top: 4px;
+            margin-top: 2px;
         }
         .score-box {
             text-align: right;
             background: #f0f9ff;
             border: 1px solid #bae6fd;
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 6px;
+            padding: 4px 8px;
             display: inline-block;
             float: right;
         }
         .score-lbl {
-            font-size: 9px;
+            font-size: 8px;
             text-transform: uppercase;
             color: #0369a1;
             font-weight: bold;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
         .score-val {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
             color: #0284c7;
         }
@@ -60,11 +64,11 @@
         table.data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         table.data-table th, table.data-table td {
             border: 1px solid #cbd5e1;
-            padding: 8px;
+            padding: 6px;
             vertical-align: top;
         }
         table.data-table th {
@@ -76,7 +80,7 @@
         }
         
         table.data-table tr {
-            page-break-inside: avoid;
+            page-break-inside: auto;
         }
         
         .text-center { text-align: center; }
@@ -237,8 +241,9 @@
                 <td class="text-center font-bold text-blue">
                     <span class="badge-total">{{ number_format($item['total'], 2) }}</span>
                 </td>
-                <td>{{ $item['catatan_juri'] }}</td>
-                <td>
+                                @if($index === 0)
+                <td rowspan="{{ count($items) }}" style="vertical-align: top;">{{ $item['catatan_juri'] }}</td>
+                <td rowspan="{{ count($items) }}" style="vertical-align: top;">
                     @if($item['tracking_media'])
                         @if(str_starts_with($item['tracking_media'], 'http'))
                             <a href="{{ $item['tracking_media'] }}" style="color: blue; text-decoration: underline; word-break: break-all;">{{ $item['tracking_media'] }}</a>
@@ -247,7 +252,7 @@
                         @endif
                     @endif
                 </td>
-                <td>
+                <td rowspan="{{ count($items) }}" style="vertical-align: top;">
                     @if(!empty($item['data_dukung']) && is_array($item['data_dukung']))
                         @foreach($item['data_dukung'] as $dd)
                             @if(!empty($dd['title']) || !empty($dd['bukti']))
@@ -273,13 +278,9 @@
                                         }
                                     @endphp
                                     
-                                    @if($isImage && $physicalPath && file_exists($physicalPath))
-                                        <div><img src="file://{{ str_replace('\\', '/', $physicalPath) }}" class="bukti-img" alt="Bukti"></div>
-                                    @else
-                                        <div><a href="{{ $fileUrl }}" target="_blank" class="link-file">
-                                            {{ $isPdf ? 'Lihat PDF' : 'Unduh File' }}
-                                        </a></div>
-                                    @endif
+                                    <div><a href="{{ $fileUrl }}" target="_blank" class="link-file">
+                                        {{ $fileUrl }}
+                                    </a></div>
                                 @endif
                                 
                                 @if(!empty($dd['catatan']))
@@ -290,12 +291,13 @@
                         @endforeach
                     @endif
                 </td>
+                @endif
             </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr style="background: #f8fafc;">
-                <td colspan="4" class="text-right font-bold" style="vertical-align: middle;">TOTAL BOBOT &amp; NILAI AKHIR:</td>
+                <td colspan="4" class="text-center font-bold" style="vertical-align: middle;">TOTAL BOBOT &amp; NILAI AKHIR:</td>
                 <td class="text-center font-bold text-blue" style="vertical-align: middle;">{{ $totalBobot }}%</td>
                 <td class="text-center font-bold" style="vertical-align: middle;">
                     <span class="badge-total bg-blue">{{ number_format($totalNilaiAkhir, 2) }}</span>

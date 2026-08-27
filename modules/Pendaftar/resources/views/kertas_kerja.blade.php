@@ -407,9 +407,10 @@
                         <span class="status-icon"></span>
                         <span class="status-text"></span>
                     </div>
-                    <button type="button" class="ui button orange" onclick="window.print()">
+                    <a href="{{ route('modules::pendaftar.export-kertas-kerja-pdf', ['pendaftar' => $pendaftar->id, 'tahap' => $selectedTahap]) }}"
+                        class="ui button orange" data-no-loader="true" target="_blank">
                         <i class="icon file pdf outline"></i> Cetak PDF
-                    </button>
+                    </a>
                     <a href="{{ route('modules::pendaftar.export-kertas-kerja-excel', ['pendaftar' => $pendaftar->id, 'tahap' => $selectedTahap]) }}"
                         class="ui button green" data-no-loader="true" target="_blank">
                         <i class="icon file excel"></i> Cetak Excel
@@ -461,14 +462,15 @@
                                         {{ number_format($item['total'] ?? 0, 2) }}
                                     </span>
                                 </td>
-                                <td class="cell-textarea">
-                                    <textarea name="items[{{ $index }}][catatan_juri]" class="kk-textarea" placeholder="Catatan juri...">{{ $item['catatan_juri'] }}</textarea>
+                                @if($index === 0)
+                                <td rowspan="{{ count($items) }}" class="cell-textarea" style="vertical-align: top;">
+                                    <textarea name="global_catatan_juri" class="kk-textarea" placeholder="Catatan juri..." style="height: 100%; min-height: 200px;">{{ $item['catatan_juri'] }}</textarea>
                                 </td>
-                                <td class="cell-textarea">
-                                    <textarea name="items[{{ $index }}][tracking_media]" class="kk-textarea" placeholder="Link / Catatan media...">{{ $item['tracking_media'] }}</textarea>
+                                <td rowspan="{{ count($items) }}" class="cell-textarea" style="vertical-align: top;">
+                                    <textarea name="global_tracking_media" class="kk-textarea" placeholder="Link / Catatan media..." style="height: 100%; min-height: 200px;">{{ $item['tracking_media'] }}</textarea>
                                 </td>
-                                <td>
-                                    <div id="dd-preview-container-{{ $index }}">
+                                <td rowspan="{{ count($items) }}" style="vertical-align: top;">
+                                    <div id="dd-preview-container-global">
                                         @foreach ($item['data_dukung'] as $ddIndex => $dd)
                                             @php
                                                 $ddItemKey = $dd['item_key'] ?? ($dd['kontribusi_id'] ?? '');
@@ -519,34 +521,35 @@
                                     </div>
                                     <button type="button" class="ui button mini basic teal"
                                         style="margin-top: 0.3rem; width: 100%;"
-                                        onclick="openDataDukungModal({{ $index }})">
+                                        onclick="openDataDukungModal('global')">
                                         <i class="icon plus"></i> Pilih / Edit Data Dukung
                                     </button>
 
                                     <!-- Hidden Inputs Container for Data Dukung -->
-                                    <div id="dd-inputs-container-{{ $index }}">
+                                    <div id="dd-inputs-container-global">
                                         @foreach ($item['data_dukung'] as $ddIndex => $dd)
                                             <input type="hidden"
-                                                name="items[{{ $index }}][data_dukung][{{ $ddIndex }}][selected]"
+                                                name="global_data_dukung[{{ $ddIndex }}][selected]"
                                                 value="1">
                                             <input type="hidden"
-                                                name="items[{{ $index }}][data_dukung][{{ $ddIndex }}][item_key]"
+                                                name="global_data_dukung[{{ $ddIndex }}][item_key]"
                                                 value="{{ $dd['item_key'] ?? ($dd['kontribusi_id'] ?? '') }}">
                                             <input type="hidden"
-                                                name="items[{{ $index }}][data_dukung][{{ $ddIndex }}][kontribusi_id]"
+                                                name="global_data_dukung[{{ $ddIndex }}][kontribusi_id]"
                                                 value="{{ $dd['kontribusi_id'] ?? '' }}">
                                             <input type="hidden"
-                                                name="items[{{ $index }}][data_dukung][{{ $ddIndex }}][title]"
+                                                name="global_data_dukung[{{ $ddIndex }}][title]"
                                                 value="{{ $dd['title'] ?? '' }}">
                                             <input type="hidden"
-                                                name="items[{{ $index }}][data_dukung][{{ $ddIndex }}][bukti]"
+                                                name="global_data_dukung[{{ $ddIndex }}][bukti]"
                                                 value="{{ $dd['bukti'] ?? '' }}">
                                             <input type="hidden"
-                                                name="items[{{ $index }}][data_dukung][{{ $ddIndex }}][catatan]"
+                                                name="global_data_dukung[{{ $ddIndex }}][catatan]"
                                                 value="{{ $dd['catatan'] ?? '' }}">
                                         @endforeach
                                     </div>
                                 </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
@@ -557,10 +560,8 @@
                         @endforelse
                     </tbody>
                     <tfoot>
-                        <tr style="background: #f8fafc; font-weight: 700;">
-                            <td colspan="4" style="text-align: right; font-size: 1rem; color: #0f172a;">TOTAL BOBOT
-                                &
-                                NILAI AKHIR:</td>
+                        <tr style="background: #f8fafc; border-top: 2px solid #e2e8f0;">
+                            <td colspan="4" style="text-align: center; font-weight: 700; color: #0f172a; font-size: 1.1rem; letter-spacing: 0.05em; padding: 1.25rem 1rem;">TOTAL BOBOT & NILAI AKHIR:</td>
                             <td style="text-align: center; font-size: 1rem; color: #0284c7;">{{ $totalBobot }}%</td>
                             <td style="text-align: center;">
                                 <span class="total-badge" id="grand-total-display"
@@ -779,15 +780,10 @@
 
                             {{-- Header Kontribusi --}}
                             <div style="font-weight: 700; color: #0f172a; font-size: 1rem; margin-bottom: 0.35rem;">
-                                <i class="icon trophy yellow"></i> {{ $loop->iteration }}. {{ $penghargaan->judul }}
+                                <i class="icon trophy yellow"></i> {{ $loop->iteration }}. {{ $penghargaan->uraian }} {{ $penghargaan->tahun ? "(".$penghargaan->tahun.")" : "" }}
                             </div>
 
-                            @if (!empty($penghargaan->deskripsi))
-                                <p
-                                    style="color: #475569; font-size: 0.85rem; margin: 0 0 0.85rem 0; white-space: pre-line; background: #f8fafc; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
-                                    {{ $penghargaan->deskripsi }}
-                                </p>
-                            @endif
+
 
                             {{-- File Selection List --}}
                             @if (!empty($penghargaan->bukti_dukung) && is_array($penghargaan->bukti_dukung) && count($penghargaan->bukti_dukung) > 0)
@@ -806,7 +802,7 @@
                                             $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
                                             $isPdf = $ext === 'pdf';
                                             $itemTitle =
-                                                $penghargaan->judul .
+                                                $penghargaan->uraian .
                                                 ' - Bukti #' .
                                                 ($bIndex + 1) .
                                                 ' (' .
@@ -884,7 +880,7 @@
                                 {{-- Kontribusi without attached files --}}
                                 @php
                                     $itemKey = 'p_' . $penghargaan->id . '_main';
-                                    $itemTitle = $penghargaan->judul;
+                                    $itemTitle = $penghargaan->uraian;
                                 @endphp
                                 <div class="dd-file-item"
                                     style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
@@ -979,9 +975,8 @@
 
             function openDataDukungModal(index) {
                 currentAspectIndex = index;
-                const aspekTitleInput = document.querySelector(`input[name="items[${index}][kategori_aspek_id]"]`);
-                const rowAspekText = aspekTitleInput.closest('tr').querySelector('strong').innerText;
-
+                let rowAspekText = "Keseluruhan Penilaian";
+                
                 document.getElementById('modal-aspek-title').innerText = rowAspekText;
 
                 // Reset all checkboxes, note textareas, and card styles in modal
@@ -998,8 +993,9 @@
 
                 hiddenInputs.forEach((input, hIdx) => {
                     const itemKey = input.value;
+                    let noteInputName = index === 'global' ? `global_data_dukung[${hIdx}][catatan]` : `items[${index}][data_dukung][${hIdx}][catatan]`;
                     const savedNoteInput = container.querySelector(
-                        `input[name="items[${index}][data_dukung][${hIdx}][catatan]"]`
+                        `input[name="${noteInputName}"]`
                     );
 
                     const chk = document.getElementById('chk-' + itemKey);
@@ -1046,13 +1042,14 @@
                     const note = document.getElementById('note-bukti-' + itemKey)?.value || '';
 
                     // Create hidden inputs
+                    let inputPrefix = index === 'global' ? `global_data_dukung[${ddIndex}]` : `items[${index}][data_dukung][${ddIndex}]`;
                     inputsContainer.innerHTML += `
-                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][selected]" value="1">
-                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][item_key]" value="${escapeHtml(itemKey)}">
-                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][kontribusi_id]" value="${escapeHtml(kontribusiId)}">
-                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][title]" value="${escapeHtml(title)}">
-                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][bukti]" value="${escapeHtml(bukti)}">
-                        <input type="hidden" name="items[${index}][data_dukung][${ddIndex}][catatan]" value="${escapeHtml(note)}">
+                        <input type="hidden" name="${inputPrefix}[selected]" value="1">
+                        <input type="hidden" name="${inputPrefix}[item_key]" value="${escapeHtml(itemKey)}">
+                        <input type="hidden" name="${inputPrefix}[kontribusi_id]" value="${escapeHtml(kontribusiId)}">
+                        <input type="hidden" name="${inputPrefix}[title]" value="${escapeHtml(title)}">
+                        <input type="hidden" name="${inputPrefix}[bukti]" value="${escapeHtml(bukti)}">
+                        <input type="hidden" name="${inputPrefix}[catatan]" value="${escapeHtml(note)}">
                     `;
 
                     // Create preview tag in table cell

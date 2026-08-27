@@ -435,15 +435,15 @@ class PendaftarController extends Controller
             $sheetPendaftar->setCellValue('K' . $rowIdx, $pendaftar->alamat);
             $sheetPendaftar->setCellValue('L' . $rowIdx, $pendaftar->nomor_wa);
             $sheetPendaftar->setCellValue('M' . $rowIdx, $pendaftar->email);
-            
+
             $status = $pendaftar->status ?? 'Diajukan';
             $sheetPendaftar->setCellValue('N' . $rowIdx, $status);
-            
+
             $nilai = $pendaftar->kertasKerja
                 ->where('tahap', $status)
                 ->sum('total');
             $sheetPendaftar->setCellValue('O' . $rowIdx, $nilai);
-            
+
             $keterangan = $pendaftar->riwayats->first()?->keterangan ?? '';
             $sheetPendaftar->setCellValue('P' . $rowIdx, $keterangan);
             $sheetPendaftar->setCellValue('Q' . $rowIdx, $pendaftar->created_at->format('Y-m-d H:i:s'));
@@ -643,11 +643,16 @@ class PendaftarController extends Controller
             if (!empty($p->tanggal_lahir)) {
                 try {
                     $age = \Carbon\Carbon::parse($p->tanggal_lahir)->age;
-                    if ($age < 25) $ageGrp = '< 25';
-                    elseif ($age < 35) $ageGrp = '25–34';
-                    elseif ($age < 45) $ageGrp = '35–44';
-                    elseif ($age < 55) $ageGrp = '45–54';
-                    else $ageGrp = '55+';
+                    if ($age < 25)
+                        $ageGrp = '< 25';
+                    elseif ($age < 35)
+                        $ageGrp = '25–34';
+                    elseif ($age < 45)
+                        $ageGrp = '35–44';
+                    elseif ($age < 55)
+                        $ageGrp = '45–54';
+                    else
+                        $ageGrp = '55+';
                 } catch (\Exception $e) {
                     $ageGrp = 'Tidak Diketahui';
                 }
@@ -673,13 +678,16 @@ class PendaftarController extends Controller
             $rekapUsia[$ageGrp]['Total']++;
         }
 
-        $eduOrder = ['SD/Sederajat','SMP/Sederajat','SMA/Sederajat','Diploma I','Diploma II','Diploma III','Diploma IV','Sarjana (S1)','Magister (S2)','Doktor (S3)'];
-        uksort($rekapPendidikan, function($a, $b) use ($eduOrder) {
+        $eduOrder = ['SD/Sederajat', 'SMP/Sederajat', 'SMA/Sederajat', 'Diploma I', 'Diploma II', 'Diploma III', 'Diploma IV', 'Sarjana (S1)', 'Magister (S2)', 'Doktor (S3)'];
+        uksort($rekapPendidikan, function ($a, $b) use ($eduOrder) {
             $posA = array_search($a, $eduOrder);
             $posB = array_search($b, $eduOrder);
-            if ($posA === false) $posA = 999;
-            if ($posB === false) $posB = 999;
-            if ($posA == $posB) return $a <=> $b;
+            if ($posA === false)
+                $posA = 999;
+            if ($posB === false)
+                $posB = 999;
+            if ($posA == $posB)
+                return $a <=> $b;
             return $posA <=> $posB;
         });
 
@@ -687,12 +695,15 @@ class PendaftarController extends Controller
         foreach (\App\Models\Pendaftar::getProvinsiMap() as $wil => $provs) {
             $provOrder = array_merge($provOrder, $provs);
         }
-        uksort($rekapProvinsi, function($a, $b) use ($provOrder) {
+        uksort($rekapProvinsi, function ($a, $b) use ($provOrder) {
             $posA = array_search($a, $provOrder);
             $posB = array_search($b, $provOrder);
-            if ($posA === false) $posA = 999;
-            if ($posB === false) $posB = 999;
-            if ($posA == $posB) return $a <=> $b;
+            if ($posA === false)
+                $posA = 999;
+            if ($posB === false)
+                $posB = 999;
+            if ($posA == $posB)
+                return $a <=> $b;
             return $posA <=> $posB;
         });
 
@@ -836,7 +847,8 @@ class PendaftarController extends Controller
 
             $sheetRekapPendidikan->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
 
-            foreach ($kategories as $k) $grandTotalsEdu[$k] += $data[$k];
+            foreach ($kategories as $k)
+                $grandTotalsEdu[$k] += $data[$k];
             $grandTotalsEdu['Total'] += $data['Total'];
             $rowIdx++;
         }
@@ -888,7 +900,8 @@ class PendaftarController extends Controller
 
             $sheetRekapGender->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
 
-            foreach ($kategories as $k) $grandTotalsGender[$k] += $data[$k];
+            foreach ($kategories as $k)
+                $grandTotalsGender[$k] += $data[$k];
             $grandTotalsGender['Total'] += $data['Total'];
             $rowIdx++;
         }
@@ -940,7 +953,8 @@ class PendaftarController extends Controller
 
             $sheetRekapUsia->getStyle('A' . $rowIdx . ':G' . $rowIdx)->applyFromArray($dataBorderStyle);
 
-            foreach ($kategories as $k) $grandTotalsUsia[$k] += $data[$k];
+            foreach ($kategories as $k)
+                $grandTotalsUsia[$k] += $data[$k];
             $grandTotalsUsia['Total'] += $data['Total'];
             $rowIdx++;
         }
@@ -1246,8 +1260,8 @@ class PendaftarController extends Controller
             $notFoundNumbers = [];
 
             foreach ($rows as $row) {
-                $nomorRegistrasi = isset($row[0]) ? trim((string)$row[0]) : '';
-                $catatan = isset($row[1]) ? trim((string)$row[1]) : '';
+                $nomorRegistrasi = isset($row[0]) ? trim((string) $row[0]) : '';
+                $catatan = isset($row[1]) ? trim((string) $row[1]) : '';
 
                 if (empty($nomorRegistrasi)) {
                     continue;
@@ -1360,7 +1374,7 @@ class PendaftarController extends Controller
     {
         $this->checkManagePermission();
         abort_if(!$kontribusi->is_from_admin, 403, 'Anda tidak dapat menghapus data asli dari pendaftar.');
-        
+
         $kontribusi->delete();
         return back()->withSuccess('Kontribusi berhasil dihapus.');
     }
@@ -1422,7 +1436,7 @@ class PendaftarController extends Controller
     {
         $this->checkManagePermission();
         abort_if(!$penghargaan->is_from_admin, 403, 'Anda tidak dapat menghapus data asli dari pendaftar.');
-        
+
         $penghargaan->delete();
         return back()->withSuccess('Penghargaan berhasil dihapus.');
     }
@@ -1507,12 +1521,32 @@ class PendaftarController extends Controller
             'items' => 'required|array',
             'items.*.kategori_aspek_id' => 'required|exists:kategori_aspeks,id',
             'items.*.nilai' => 'nullable|numeric|min:0|max:100',
-            'items.*.catatan_juri' => 'nullable|string',
-            'items.*.tracking_media' => 'nullable|string',
-            'items.*.data_dukung' => 'nullable|array',
+            'global_catatan_juri' => 'nullable|string',
+            'global_tracking_media' => 'nullable|string',
+            'global_data_dukung' => 'nullable|array',
         ]);
 
         $user = auth()->user();
+
+        $globalCatatanJuri = $request->input('global_catatan_juri', null);
+        $globalTrackingMedia = $request->input('global_tracking_media', null);
+
+        $globalDataDukung = [];
+        if (!empty($request->global_data_dukung) && is_array($request->global_data_dukung)) {
+            foreach ($request->global_data_dukung as $dd) {
+                if (!empty($dd['selected'])) {
+                    $globalDataDukung[] = [
+                        'kontribusi_id' => $dd['kontribusi_id'] ?? null,
+                        'item_key' => $dd['item_key'] ?? null,
+                        'title' => $dd['title'] ?? '',
+                        'bukti' => $dd['bukti'] ?? '',
+                        'catatan' => $dd['catatan'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        $isFirst = true;
 
         foreach ($request->items as $itemData) {
             $kategoriAspek = \App\Models\KategoriAspek::find($itemData['kategori_aspek_id']);
@@ -1520,24 +1554,9 @@ class PendaftarController extends Controller
                 continue;
             }
 
-            $nilai = isset($itemData['nilai']) && $itemData['nilai'] !== '' ? (int)$itemData['nilai'] : null;
-            $bobot = (int)$kategoriAspek->bobot;
+            $nilai = isset($itemData['nilai']) && $itemData['nilai'] !== '' ? (int) $itemData['nilai'] : null;
+            $bobot = (int) $kategoriAspek->bobot;
             $total = !is_null($nilai) ? round(($nilai * $bobot) / 100, 2) : null;
-
-            $dataDukung = [];
-            if (!empty($itemData['data_dukung']) && is_array($itemData['data_dukung'])) {
-                foreach ($itemData['data_dukung'] as $dd) {
-                    if (!empty($dd['selected'])) {
-                        $dataDukung[] = [
-                            'kontribusi_id' => $dd['kontribusi_id'] ?? null,
-                            'item_key' => $dd['item_key'] ?? null,
-                            'title' => $dd['title'] ?? '',
-                            'bukti' => $dd['bukti'] ?? '',
-                            'catatan' => $dd['catatan'] ?? '',
-                        ];
-                    }
-                }
-            }
 
             \App\Models\PendaftarKertasKerja::updateOrCreate(
                 [
@@ -1551,13 +1570,15 @@ class PendaftarController extends Controller
                     'bobot' => $bobot,
                     'nilai' => $nilai,
                     'total' => $total,
-                    'catatan_juri' => $itemData['catatan_juri'] ?? null,
-                    'tracking_media' => $itemData['tracking_media'] ?? null,
-                    'data_dukung' => $dataDukung,
+                    'catatan_juri' => $isFirst ? $globalCatatanJuri : null,
+                    'tracking_media' => $isFirst ? $globalTrackingMedia : null,
+                    'data_dukung' => $isFirst ? $globalDataDukung : [],
                     'updated_by' => $user?->id,
                     'created_by' => $user?->id,
                 ]
             );
+
+            $isFirst = false;
         }
 
         if ($request->expectsJson() || $request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
@@ -1600,32 +1621,55 @@ class PendaftarController extends Controller
         exit;
     }
 
-        public function exportBatchInit(\Illuminate\Http\Request $request)
+    public function exportKertasKerjaPdf(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
+    {
+        $selectedTahap = $request->query('tahap', $pendaftar->status);
+
+        $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $savedPenilaian = $pendaftar->kertasKerja()
+            ->where('tahap', $selectedTahap)
+            ->get()
+            ->keyBy('kategori_aspek_id');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pendaftar::kertas_kerja_pdf', compact('pendaftar', 'selectedTahap', 'aspeks', 'savedPenilaian'))
+            ->setPaper('a3', 'landscape');
+
+        $cleanName = \Illuminate\Support\Str::slug($pendaftar->nama, '_');
+        $regNumber = \Illuminate\Support\Str::slug($pendaftar->nomor_registrasi, '_');
+        $pdfFileName = $regNumber . '_' . $cleanName . '.pdf';
+
+        return $pdf->download($pdfFileName);
+    }
+
+    public function exportBatchInit(\Illuminate\Http\Request $request)
     {
         $format = $request->query('format', 'excel'); // 'excel' or 'pdf'
-        
+
         $pendaftars = $this->getFilteredQuery($request)
             ->where('status', 'like', 'Lolos%')
             ->pluck('id');
-            
+
         if ($pendaftars->isEmpty()) {
             return response()->json(['success' => false, 'message' => 'Tidak ada data pendaftar (yang lolos verifikasi) untuk diekspor.']);
         }
-        
+
         $chunkSize = 25;
         $totalParticipants = $pendaftars->count();
         $totalChunks = ceil($totalParticipants / $chunkSize);
         $batchId = \Illuminate\Support\Str::random(16);
-        
+
         // Save the list of IDs for this batch in cache or session, or file
         \Illuminate\Support\Facades\Cache::put("export_batch_{$batchId}_ids", $pendaftars->toArray(), now()->addHours(2));
-        
+
         // Create directory for the batch
         $batchDir = storage_path("app/private/batch_{$batchId}");
         if (!file_exists($batchDir)) {
             mkdir($batchDir, 0755, true);
         }
-        
+
         return response()->json([
             'success' => true,
             'batch_id' => $batchId,
@@ -1633,105 +1677,105 @@ class PendaftarController extends Controller
             'total_participants' => $totalParticipants
         ]);
     }
-    
+
     public function exportBatchProcess(\Illuminate\Http\Request $request)
     {
         $batchId = $request->input('batch_id');
         $chunkIndex = (int) $request->input('chunk_index'); // 0-based
         $format = $request->input('format', 'excel');
         $chunkSize = 25;
-        
+
         $allIds = \Illuminate\Support\Facades\Cache::get("export_batch_{$batchId}_ids");
         if (!$allIds) {
             return response()->json(['success' => false, 'message' => 'Batch kadaluarsa atau tidak ditemukan.'], 400);
         }
-        
+
         $chunkIds = array_slice($allIds, $chunkIndex * $chunkSize, $chunkSize);
         if (empty($chunkIds)) {
             return response()->json(['success' => true]); // Already done or out of bounds
         }
-        
+
         // Fetch full models
         $pendaftars = \App\Models\Pendaftar::whereIn('id', $chunkIds)
             ->with(['kontribusi', 'penghargaan', 'kertasKerja'])
             // Preserve the original order of chunkIds
             ->orderByRaw('array_position(ARRAY[\'' . implode("','", $chunkIds) . '\']::uuid[], id)')
             ->get();
-            
+
         $batchDir = storage_path("app/private/batch_{$batchId}");
-        $fileIndexStr = str_pad((string)($chunkIndex + 1), 2, '0', STR_PAD_LEFT);
-            
+        $fileIndexStr = str_pad((string) ($chunkIndex + 1), 2, '0', STR_PAD_LEFT);
+
         if ($format === 'excel') {
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $sheetIndex = 0;
-            
+
             foreach ($pendaftars as $pendaftar) {
                 if ($sheetIndex > 0) {
                     $spreadsheet->createSheet();
                 }
                 $spreadsheet->setActiveSheetIndex($sheetIndex);
                 $sheet = $spreadsheet->getActiveSheet();
-                
+
                 $title = substr(str_replace(['\\', '/', '?', '*', '[', ']'], '', $pendaftar->nama), 0, 31);
                 $sheet->setTitle($title);
-                
+
                 $selectedTahap = $pendaftar->status;
                 $this->buildKertasKerjaSheet($sheet, $pendaftar, $selectedTahap);
-                
+
                 $sheetIndex++;
             }
-            
+
             $spreadsheet->setActiveSheetIndex(0);
             $filePath = $batchDir . '/Kertas_Kerja_Part_' . $fileIndexStr . '.xlsx';
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save($filePath);
-            
+
         } elseif ($format === 'pdf') {
             foreach ($pendaftars as $pdfIndex => $pendaftar) {
                 $selectedTahap = $pendaftar->status;
-                
+
                 $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
                     ->orderBy('id', 'asc')
                     ->get();
-        
+
                 $savedPenilaian = $pendaftar->kertasKerja()
                     ->where('tahap', $selectedTahap)
                     ->get()
                     ->keyBy('kategori_aspek_id');
-                    
+
                 $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pendaftar::kertas_kerja_pdf', compact('pendaftar', 'selectedTahap', 'aspeks', 'savedPenilaian'))
-                    ->setPaper('a4', 'landscape');
-                    
+                    ->setPaper('a3', 'landscape');
+
                 $cleanName = \Illuminate\Support\Str::slug($pendaftar->nama, '_');
                 $regNumber = \Illuminate\Support\Str::slug($pendaftar->nomor_registrasi, '_');
                 $pdfFileName = $regNumber . '_' . $cleanName . '.pdf';
-                
+
                 $filePath = $batchDir . '/' . $pdfFileName;
                 $pdf->save($filePath);
             }
         }
-        
+
         return response()->json(['success' => true]);
     }
-    
+
     public function exportBatchDownload(\Illuminate\Http\Request $request)
     {
         $batchId = $request->query('batch_id');
         $format = $request->query('format', 'excel');
         $batchDir = storage_path("app/private/batch_{$batchId}");
-        
+
         if (!is_dir($batchDir)) {
             return back()->with('error', 'Batch tidak ditemukan atau sudah dihapus.');
         }
-        
+
         $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
         $zipFileName = $format === 'excel' ? 'Kertas_Kerja_Excel_Semua_Pendaftar.zip' : 'Kertas_Kerja_PDF_Semua_Pendaftar.zip';
-        
+
         $zip = new \ZipArchive();
         if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
             abort(500, 'Gagal membuat berkas ZIP.');
         }
-        
+
         $files = scandir($batchDir);
         foreach ($files as $file) {
             if ($file !== '.' && $file !== '..') {
@@ -1739,7 +1783,7 @@ class PendaftarController extends Controller
             }
         }
         $zip->close();
-        
+
         // Cleanup the batch directory (delete all files and dir)
         foreach ($files as $file) {
             if ($file !== '.' && $file !== '..') {
@@ -1748,7 +1792,7 @@ class PendaftarController extends Controller
         }
         rmdir($batchDir);
         \Illuminate\Support\Facades\Cache::forget("export_batch_{$batchId}_ids");
-        
+
         return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
     }
 
@@ -1756,20 +1800,13 @@ class PendaftarController extends Controller
     protected function buildKertasKerjaSheet($sheet, $pendaftar, $selectedTahap)
     {
         $pendaftar->load(['kontribusi', 'penghargaan', 'kertasKerja']);
-
-        $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)
-            ->orderBy('id', 'asc')
-            ->get();
-
-        $savedPenilaian = $pendaftar->kertasKerja
-            ->filter(function ($kk) use ($selectedTahap, $pendaftar) {
-                return $kk->tahap === $selectedTahap || (empty($kk->tahap) && $selectedTahap === $pendaftar->status);
-            })
-            ->keyBy('kategori_aspek_id');
+        $aspeks = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)->orderBy('id', 'asc')->get();
+        $savedPenilaian = $pendaftar->kertasKerja->filter(function ($kk) use ($selectedTahap, $pendaftar) {
+            return $kk->tahap === $selectedTahap || (empty($kk->tahap) && $selectedTahap === $pendaftar->status);
+        })->keyBy('kategori_aspek_id');
 
         $items = $aspeks->map(function ($aspekItem) use ($savedPenilaian) {
             $saved = $savedPenilaian->get($aspekItem->id);
-
             return [
                 'kategori_aspek_id' => $aspekItem->id,
                 'aspek' => $aspekItem->aspek,
@@ -1784,354 +1821,256 @@ class PendaftarController extends Controller
         });
 
         $totalNilaiAkhir = $items->sum(fn($i) => $i['total'] ?? 0);
+        $totalBobot = $items->sum('bobot');
 
-        // Helper to resolve absolute file path from relative storage path
         $resolvePhysicalPath = function ($path) {
-            if (empty($path)) return null;
-            if (file_exists($path)) return $path;
-
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            if (empty($path))
+                return null;
+            if (file_exists($path))
+                return $path;
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path))
                 return \Illuminate\Support\Facades\Storage::disk('public')->path($path);
-            }
-            if (\Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+            if (\Illuminate\Support\Facades\Storage::disk('local')->exists($path))
                 return \Illuminate\Support\Facades\Storage::disk('local')->path($path);
-            }
-
             $storageAppPath = storage_path('app/' . $path);
-            if (file_exists($storageAppPath)) return $storageAppPath;
-
+            if (file_exists($storageAppPath))
+                return $storageAppPath;
             $storagePublicPath = storage_path('app/public/' . $path);
-            if (file_exists($storagePublicPath)) return $storagePublicPath;
-
+            if (file_exists($storagePublicPath))
+                return $storagePublicPath;
             $publicPath = public_path($path);
-            if (file_exists($publicPath)) return $publicPath;
-
+            if (file_exists($publicPath))
+                return $publicPath;
             return null;
         };
 
         // 1. Title Rows
         $sheet->setCellValue('A1', 'FORM PENILAIAN');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
-
-        // Subtitle (Kategori & Tahap Penilaian)
-        $subTitle = 'Kategori ' . $pendaftar->kategori . ' | Tahap Penilaian: ' . $selectedTahap;
-        $sheet->setCellValue('A3', $subTitle);
+        $sheet->setCellValue('A3', 'Kategori ' . $pendaftar->kategori . ' | Tahap Penilaian: ' . $selectedTahap);
         $sheet->getStyle('A3')->getFont()->setItalic(true)->setSize(10);
 
         // 2. Participant & Nilai Akhir
         $sheet->setCellValue('A5', 'NAMA PESERTA');
         $sheet->getStyle('A5')->getFont()->setBold(true)->setSize(11);
+        $sheet->setCellValue('C5', strtoupper($pendaftar->nama));
+        $sheet->getStyle('C5')->getFont()->setBold(true)->setSize(12);
+        $sheet->getStyle('C5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)->setWrapText(true);
+        $sheet->getRowDimension(6)->setRowHeight(60);
 
-        $sheet->setCellValue('A6', strtoupper($pendaftar->nama));
-        $sheet->getStyle('A6')->getFont()->setBold(true)->setSize(12);
-        $sheet->getStyle('A6')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-
-        // Embed Foto Pendaftar if available
         $rawFoto = $pendaftar->getRawOriginal('foto') ?? $pendaftar->foto;
         $realFotoPath = $resolvePhysicalPath($rawFoto);
         if ($realFotoPath && in_array(strtolower(pathinfo($realFotoPath, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
             try {
-                $drawingFoto = new Drawing();
-                $drawingFoto->setName('Foto Pendaftar');
-                $drawingFoto->setDescription('Foto ' . $pendaftar->nama);
+                $drawingFoto = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
                 $drawingFoto->setPath($realFotoPath);
                 $drawingFoto->setHeight(75);
                 $drawingFoto->setCoordinates('C6');
-                $drawingFoto->setOffsetX(0);
-                $drawingFoto->setOffsetY(0);
                 $drawingFoto->setWorksheet($sheet);
-                
-                // Adjust row height to fit the 75px image (approx 56.25 points, we use 60)
-                $sheet->getRowDimension(6)->setRowHeight(60);
             } catch (\Throwable $e) {
-                // Ignore corrupt image error
             }
         }
 
         $sheet->setCellValue('I5', 'NILAI AKHIR');
         $sheet->getStyle('I5')->getFont()->setBold(true)->setSize(11);
-        $sheet->getStyle('I5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
+        $sheet->getStyle('I5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
         $sheet->setCellValue('I6', number_format($totalNilaiAkhir, 2));
         $sheet->getStyle('I6')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('I6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('I6')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7'); // Light green
-        $sheet->getStyle('I6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('I6')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('I6')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+        $sheet->getStyle('I6')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-        // 3. Table Headers at Row 8
-        $headers = [
-            'NO',
-            'ASPEK',
-            'DIMENSI',
-            "NILAI\n(10-100)",
-            'BOBOT',
-            'TOTAL',
-            'CATATAN JURI',
-            'TRACKING MEDIA',
-            'DATA DUKUNG'
-        ];
-
+        // 3. Table Headers
+        $headers = ['NO', 'ASPEK', 'DIMENSI', "NILAI\n(10-100)", 'BOBOT', 'TOTAL', 'CATATAN JURI', 'TRACKING MEDIA', 'DATA DUKUNG'];
         $colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-
         foreach ($headers as $colIdx => $headerText) {
             $colLetter = $colLetters[$colIdx];
-            $cellCoordinate = $colLetter . '8';
-            $sheet->setCellValue($cellCoordinate, $headerText);
-
-            $style = [
-                'font' => [
-                    'bold' => true,
-                    'size' => 10,
-                ],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                    'wrapText' => true,
-                ],
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => '000000'],
-                    ],
-                ],
-                'fill' => [
-                    'fillType' => Fill::FILL_SOLID,
-                    'startColor' => [
-                        'rgb' => ($colLetter === 'D') ? 'DCFCE7' : 'FEF3C7',
-                    ],
-                ],
-            ];
-
-            $sheet->getStyle($cellCoordinate)->applyFromArray($style);
+            $sheet->setCellValue($colLetter . '8', $headerText);
+            $sheet->getStyle($colLetter . '8')->getFont()->setBold(true)->setSize(10);
+            $sheet->getStyle($colLetter . '8')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)->setWrapText(true);
+            $sheet->getStyle($colLetter . '8')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($colLetter . '8')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB($colLetter === 'D' ? 'DCFCE7' : 'FEF3C7');
         }
         $sheet->getRowDimension(8)->setRowHeight(28);
 
-        // 4. Data Rows
-$row = 9;
-foreach ($items as $index => $item) {
-    $dataDukungs = [];
-    if (!empty($item['data_dukung']) && is_array($item['data_dukung'])) {
-        foreach ($item['data_dukung'] as $dd) {
-            if (!empty($dd['title']) || !empty($dd['bukti'])) {
-                $dataDukungs[] = $dd;
+        // 4. Extract Global Data
+        $globalItem = $items->first() ?? [];
+        $globalCatatan = $globalItem['catatan_juri'] ?? '';
+        $globalTracking = $globalItem['tracking_media'] ?? '';
+        $dataDukungs = [];
+        if (!empty($globalItem['data_dukung']) && is_array($globalItem['data_dukung'])) {
+            foreach ($globalItem['data_dukung'] as $dd) {
+                if (!empty($dd['title']) || !empty($dd['bukti']))
+                    $dataDukungs[] = $dd;
             }
         }
-    }
 
-    // Prepare sub-rows for Data Dukung
-    $ddRowsData = [];
-    if (empty($dataDukungs)) {
-        $ddRowsData[] = ['type' => 'empty'];
-    } else {
-        foreach ($dataDukungs as $ddIdx => $dd) {
-            $t = $dd['title'] ?? '';
-            $c = $dd['catatan'] ?? '';
-            $b = $dd['bukti'] ?? '';
-            
-            // 1. Judul
-            $headerText = "• " . ($t ?: 'Bukti Dukung #' . ($ddIdx + 1));
-            $ddRowsData[] = ['type' => 'judul', 'text' => $headerText];
-            
-            // 2. File / Image
-            if ($b) {
-                $realBuktiPath = $resolvePhysicalPath($b);
-                $ext = strtolower(pathinfo($realBuktiPath ?? $b, PATHINFO_EXTENSION));
-                $isImage = $realBuktiPath && in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
-                
-                if ($isImage) {
-                    $ddRowsData[] = ['type' => 'image', 'path' => $realBuktiPath, 'title' => $t];
+        $totalAspekRows = count($items);
+        $totalDDRows = count($dataDukungs) * 2; // We use 2 rows per Bukti Dukung!
+        $maxRows = max($totalAspekRows, $totalDDRows);
+        if ($maxRows == 0)
+            $maxRows = 1;
+
+        $startRow = 9;
+        $endRow = $startRow + $maxRows - 1;
+
+        for ($i = 0; $i < $maxRows; $i++) {
+            $r = $startRow + $i;
+            $rowHeight = 15;
+
+            // Aspek (A-F)
+            if ($i < $totalAspekRows) {
+                $item = $items[$i];
+                $sheet->setCellValue('A' . $r, $i + 1);
+                $sheet->setCellValue('B' . $r, $item['aspek']);
+                $sheet->setCellValue('C' . $r, $item['dimensi']);
+                $sheet->setCellValue('D' . $r, $item['nilai'] !== null ? $item['nilai'] : '');
+                $sheet->setCellValue('E' . $r, $item['bobot']);
+                $sheet->setCellValue('F' . $r, $item['total'] !== null ? number_format($item['total'], 2) : '0');
+
+                $sheet->getStyle("A{$r}:F{$r}")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)->setWrapText(true);
+                $sheet->getStyle("A{$r}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("D{$r}:F{$r}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+                // Color Column D Green
+                $sheet->getStyle("D{$r}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+
+                // If this is the LAST aspect, and we have more DD rows, stretch this aspect down!
+                if ($i == $totalAspekRows - 1 && $maxRows > $totalAspekRows) {
+                    $sheet->mergeCells("A{$r}:A{$endRow}");
+                    $sheet->mergeCells("B{$r}:B{$endRow}");
+                    $sheet->mergeCells("C{$r}:C{$endRow}");
+                    $sheet->mergeCells("D{$r}:D{$endRow}");
+                    $sheet->mergeCells("E{$r}:E{$endRow}");
+                    $sheet->mergeCells("F{$r}:F{$endRow}");
+                    $sheet->getStyle("A{$r}:F{$endRow}")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                    $sheet->getStyle("D{$r}:D{$endRow}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+                }
+
+                $dimensiLines = 0;
+                $dimensiLinesArr = explode("\n", str_replace("\r", "", $item['dimensi'] ?? ''));
+                foreach ($dimensiLinesArr as $line) {
+                    $dimensiLines += max(1, ceil(mb_strlen(trim($line)) / 45));
+                }
+
+                $aspekLines = 0;
+                $aspekLinesArr = explode("\n", str_replace("\r", "", $item['aspek'] ?? ''));
+                foreach ($aspekLinesArr as $line) {
+                    $aspekLines += max(1, ceil(mb_strlen(trim($line)) / 25));
+                }
+
+                $maxTextLines = max($dimensiLines, $aspekLines);
+                $aspekHeight = ($maxTextLines * 15) + 15;
+                if ($aspekHeight > $rowHeight)
+                    $rowHeight = $aspekHeight;
+            }
+
+            // Data Dukung (I) - Split into 2 rows per item for native Hyperlink support with separate styling
+            if ($i < $totalDDRows) {
+                $ddIndex = floor($i / 2);
+                $dd = $dataDukungs[$ddIndex];
+                $t = $dd['title'] ?? ('Bukti Dukung #' . ($ddIndex + 1));
+                $c = $dd['catatan'] ?? '';
+                $b = $dd['bukti'] ?? '';
+
+                if ($i % 2 == 0) {
+                    // Row 1: Title and Catatan (RichText)
+                    $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+
+                    // Add some spacing before the next item
+                    $prefix = ($ddIndex > 0) ? "\n" : "";
+
+                    $runTitle = $richText->createTextRun($prefix . "• " . $t);
+                    $runTitle->getFont()->setBold(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('000000'));
+
+                    $rawText = "• " . $t;
+
+                    if ($c) {
+                        $richText->createText("\n   ");
+                        $runNote = $richText->createTextRun("Catatan: \"" . $c . "\"");
+                        $runNote->getFont()->setItalic(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('555555'));
+                        $rawText .= "\n   Catatan: \"" . $c . "\"";
+                    }
+
+                    $sheet->setCellValue('I' . $r, $richText);
+
+                    $ddLines = 0;
+                    foreach (explode("\n", str_replace("\r", "", $rawText)) as $line) {
+                        $ddLines += max(1, ceil(mb_strlen(trim($line)) / 45));
+                    }
+                    $ddHeightCalc = ($ddLines * 15) + ($ddIndex > 0 ? 15 : 5);
+                    if ($ddHeightCalc > $rowHeight)
+                        $rowHeight = $ddHeightCalc;
                 } else {
-                    $fileUrl = route('modules::pendaftar.file', ['path' => $b]);
-                    $ddRowsData[] = ['type' => 'link', 'url' => $fileUrl];
+                    // Row 2: Link (Plain Text -> Native Hyperlink)
+                    if ($b) {
+                        $url = route('modules::pendaftar.file', ['path' => $b]);
+                        $sheet->setCellValue('I' . $r, "   " . $url);
+                        $sheet->getCell('I' . $r)->getHyperlink()->setUrl($url);
+                        $sheet->getStyle('I' . $r)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('0000FF'))->setUnderline(true);
+
+                        $urlLines = max(1, ceil(mb_strlen(trim($url)) / 45));
+                        $ddHeightCalc = ($urlLines * 15) + 10;
+                        if ($ddHeightCalc > $rowHeight)
+                            $rowHeight = $ddHeightCalc;
+                    } else {
+                        $sheet->setCellValue('I' . $r, "");
+                    }
                 }
             }
-            
-            // 3. Catatan
-            if ($c) {
-                $ddRowsData[] = ['type' => 'catatan', 'text' => "   Catatan: \"" . $c . "\""];
-            }
+
+            $sheet->getRowDimension($r)->setRowHeight($rowHeight);
+            $sheet->getStyle('I' . $r)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)->setWrapText(true);
         }
-    }
 
-    $rowCount = count($ddRowsData);
-    $startRow = $row;
-    $endRow = $row + $rowCount - 1;
-
-    // Calculate base lines for columns A-H to ensure minimum merged height
-    $aspekLines = ceil(strlen($item['aspek'] ?? '') / 22);
-    $dimensiLines = ceil(strlen($item['dimensi'] ?? '') / 42);
-    $catatanJuriLines = ceil(strlen($item['catatan_juri'] ?? '') / 26);
-    $trackingLines = ceil(strlen($item['tracking_media'] ?? '') / 26);
-    
-    $requiredLinesAH = max(1, $aspekLines, $dimensiLines, $catatanJuriLines, $trackingLines);
-    $requiredHeightAH = ($requiredLinesAH * 15) + 15;
-
-    // Set Column A-H values in startRow
-    $sheet->setCellValue('A' . $startRow, $index + 1);
-    $sheet->setCellValue('B' . $startRow, $item['aspek']);
-    $sheet->setCellValue('C' . $startRow, $item['dimensi']);
-    $sheet->setCellValue('D' . $startRow, $item['nilai'] !== null ? $item['nilai'] : '');
-    $sheet->setCellValue('E' . $startRow, $item['bobot']);
-    $sheet->setCellValue('F' . $startRow, $item['total'] !== null ? number_format($item['total'], 2) : '0');
-    $sheet->setCellValue('G' . $startRow, $item['catatan_juri'] ?? '');
-
-    $trackingMedia = trim($item['tracking_media'] ?? '');
-    $sheet->setCellValue('H' . $startRow, $trackingMedia);
-    if (!empty($trackingMedia) && (str_starts_with($trackingMedia, 'http://') || str_starts_with($trackingMedia, 'https://'))) {
-        $sheet->getStyle('H' . $startRow)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('0000FF'))->setUnderline(\PhpOffice\PhpSpreadsheet\Style\Font::UNDERLINE_SINGLE);
-    }
-
-    $actualRowHeights = [];
-    $estimatedRowHeights = [];
-
-    // Render each sub-row in Column I
-    foreach ($ddRowsData as $rIdx => $rowData) {
-        $currentRow = $startRow + $rIdx;
-        $richText = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-        
-        if ($rowData['type'] === 'empty') {
-            $sheet->setCellValue('I' . $currentRow, '');
-            $actualRowHeights[$currentRow] = 15;
-            $estimatedRowHeights[$currentRow] = 15;
-        } elseif ($rowData['type'] === 'judul') {
-            $run = $richText->createTextRun($rowData['text']);
-            $run->getFont()->setBold(true);
-            $sheet->setCellValue('I' . $currentRow, $richText);
-            
-            $actualRowHeights[$currentRow] = -1; // -1 means AutoFit in Excel
-            $lines = max(1, ceil(strlen($rowData['text']) / 45));
-            $estimatedRowHeights[$currentRow] = $lines * 15;
-        } elseif ($rowData['type'] === 'catatan') {
-            $run = $richText->createTextRun($rowData['text']);
-            $run->getFont()->setItalic(true)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('555555'));
-            $sheet->setCellValue('I' . $currentRow, $richText);
-            
-            $actualRowHeights[$currentRow] = -1;
-            $lines = max(1, ceil(strlen($rowData['text']) / 45));
-            $estimatedRowHeights[$currentRow] = $lines * 15;
-        } elseif ($rowData['type'] === 'link') {
-            $run = $richText->createTextRun("   " . $rowData['url']);
-            $run->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('0000FF'))->setUnderline(\PhpOffice\PhpSpreadsheet\Style\Font::UNDERLINE_SINGLE);
-            $sheet->setCellValue('I' . $currentRow, $richText);
-            $sheet->getCell('I' . $currentRow)->getHyperlink()->setUrl($rowData['url']);
-            
-            $actualRowHeights[$currentRow] = -1;
-            $lines = max(1, ceil(strlen($rowData['url']) / 45));
-            $estimatedRowHeights[$currentRow] = $lines * 15;
-        } elseif ($rowData['type'] === 'image') {
-            $sheet->setCellValue('I' . $currentRow, ''); // Empty text, image is drawn over it
-            try {
-                $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-                $drawing->setName('Bukti - ' . ($rowData['title'] ?: 'Gambar'));
-                $drawing->setDescription($rowData['title'] ?: 'Gambar');
-                $drawing->setPath($rowData['path']);
-                $drawing->setHeight(90); // 90px height
-                $drawing->setCoordinates('I' . $currentRow);
-                $drawing->setOffsetX(15);
-                $drawing->setOffsetY(4); // 4px from top of this specific row
-                $drawing->setWorksheet($sheet);
-            } catch (\Throwable $e) {
-                // Ignore
-            }
-            $actualRowHeights[$currentRow] = 75; // Approx 100px in pt for the 90px image + margin
-            $estimatedRowHeights[$currentRow] = 75;
+        // Ensure G and H are fully merged
+        $sheet->setCellValue('G' . $startRow, $globalCatatan);
+        $sheet->setCellValue('H' . $startRow, $globalTracking);
+        if ($maxRows > 1) {
+            $sheet->mergeCells("G{$startRow}:G{$endRow}");
+            $sheet->mergeCells("H{$startRow}:H{$endRow}");
         }
-    }
-    
-    // Adjust row heights to fit A-H columns
-    $sumHeights = array_sum($estimatedRowHeights);
-    if ($sumHeights < $requiredHeightAH) {
-        // We have a deficit. We must force the LAST row to be a fixed height to make up the difference.
-        $deficit = $requiredHeightAH - $sumHeights;
-        if ($actualRowHeights[$endRow] === -1) {
-            // Convert it from AutoFit to a fixed height based on our estimate + deficit
-            $actualRowHeights[$endRow] = $estimatedRowHeights[$endRow] + $deficit;
-        } else {
-            $actualRowHeights[$endRow] += $deficit;
+        $sheet->getStyle("G{$startRow}:H{$endRow}")->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
+
+        if (str_starts_with(trim($globalTracking), 'http')) {
+            $sheet->getCell('H' . $startRow)->getHyperlink()->setUrl(trim($globalTracking));
+            $sheet->getStyle('H' . $startRow)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('0000FF'))->setUnderline(true);
         }
-    }
 
-    // Apply Row Heights & Styles
-    for ($r = $startRow; $r <= $endRow; $r++) {
-        // Set the row height. If it's -1, Excel will auto-fit it perfectly to the content!
-        $sheet->getRowDimension($r)->setRowHeight($actualRowHeights[$r]);
-        
-        // Set default thin borders for A-H
-        $sheet->getStyle('A' . $r . ':H' . $r)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        
-        // Custom borders and white background for Column I to make it look like 1 cell
-        $sheet->getStyle('I' . $r)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFFFFF');
-        
-        // Left and Right borders always THIN
-        $sheet->getStyle('I' . $r)->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        $sheet->getStyle('I' . $r)->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        
-        // Top border only for startRow
-        if ($r === $startRow) {
-            $sheet->getStyle('I' . $r)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        } else {
-            $sheet->getStyle('I' . $r)->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE);
-        }
-        
-        // Bottom border only for endRow or if the NEXT row is 'judul'
-        $nextRowType = $ddRowsData[($r + 1) - $startRow]['type'] ?? '';
-        if ($r === $endRow || $nextRowType === 'judul') {
-            $sheet->getStyle('I' . $r)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        } else {
-            $sheet->getStyle('I' . $r)->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE);
-        }
-        
-        // Alignment for Col I
-        $sheet->getStyle('I' . $r)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
-    }
-    // Merge Cells A-H
-    if ($rowCount > 1) {
-        foreach (['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] as $col) {
-            $sheet->mergeCells($col . $startRow . ':' . $col . $endRow);
-        }
-    }
+        // Draw borders! 
+        // 1. Draw all borders for A-H
+        $sheet->getStyle("A{$startRow}:H{$endRow}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-    // Alignments & Styles for A-H (Applies to the merged range)
-    $sheet->getStyle('A' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-    $sheet->getStyle('B' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
-    $sheet->getStyle('B' . $startRow)->getFont()->setBold(true);
-    $sheet->getStyle('C' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
-    $sheet->getStyle('D' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-    $sheet->getStyle('D' . $startRow)->getFont()->setBold(true);
-    $sheet->getStyle('D' . $startRow)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
-    $sheet->getStyle('E' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-    $sheet->getStyle('F' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
-    $sheet->getStyle('G' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
-    $sheet->getStyle('H' . $startRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP)->setWrapText(true);
+        // 2. Draw ONLY Outline for I (So there are NO internal horizontal borders!)
+        $sheet->getStyle("I{$startRow}:I{$endRow}")->getBorders()->getOutline()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-    $row = $endRow + 1;
-}
-// 5. Total Row
-        $sheet->setCellValue('A' . $row, 'TOTAL');
-        $sheet->mergeCells('A' . $row . ':D' . $row);
-        $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT)->setVertical(Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+        // 5. Total Row
+        $footerRow = $endRow + 1;
+        $sheet->setCellValue('A' . $footerRow, 'TOTAL BOBOT & NILAI AKHIR');
+        $sheet->mergeCells("A{$footerRow}:D{$footerRow}");
+        $sheet->getStyle("A{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle("A{$footerRow}")->getFont()->setBold(true);
 
-        $sheet->setCellValue('E' . $row, $items->sum('bobot'));
-        $sheet->getStyle('E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('E' . $row)->getFont()->setBold(true);
+        $sheet->setCellValue('E' . $footerRow, $totalBobot . '%');
+        $sheet->getStyle("E{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("E{$footerRow}")->getFont()->setBold(true)->getColor()->setRGB('0284C7');
 
-        $sheet->setCellValue('F' . $row, number_format($totalNilaiAkhir, 2));
-        $sheet->getStyle('F' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('F' . $row)->getFont()->setBold(true);
-        $sheet->getStyle('F' . $row)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('DCFCE7');
+        $sheet->setCellValue('F' . $footerRow, number_format($totalNilaiAkhir, 2));
+        $sheet->getStyle("F{$footerRow}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("F{$footerRow}")->getFont()->setBold(true)->getColor()->setRGB('FFFFFF');
+        $sheet->getStyle("F{$footerRow}")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('0284C7');
 
-        $sheet->getStyle('A' . $row . ':I' . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle("A{$footerRow}:I{$footerRow}")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
         // 6. Column Widths
         $sheet->getColumnDimension('A')->setWidth(6);
         $sheet->getColumnDimension('B')->setWidth(25);
-        $sheet->getColumnDimension('C')->setWidth(48);
+        $sheet->getColumnDimension('C')->setWidth(40);
         $sheet->getColumnDimension('D')->setWidth(14);
         $sheet->getColumnDimension('E')->setWidth(10);
         $sheet->getColumnDimension('F')->setWidth(12);
         $sheet->getColumnDimension('G')->setWidth(30);
         $sheet->getColumnDimension('H')->setWidth(30);
-        $sheet->getColumnDimension('I')->setWidth(45); // Enlarged to fit drawings
+        $sheet->getColumnDimension('I')->setWidth(45);
     }
 }

@@ -160,13 +160,15 @@
             }
 
             /* Hilangkan panah spinner pada input number */
-            input[type=number]::-webkit-inner-spin-button, 
-            input[type=number]::-webkit-outer-spin-button { 
-                -webkit-appearance: none; 
-                margin: 0; 
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
             }
+
             input[type=number] {
-                -moz-appearance: textfield; /* Firefox */
+                -moz-appearance: textfield;
+                /* Firefox */
             }
 
             .total-badge {
@@ -299,41 +301,57 @@
             }
 
             @media print {
+
                 /* Sembunyikan elemen UI yang tidak perlu saat di-print/PDF */
-                .ui.button, nav, header, footer, .sidebar, .autosave-status-container { 
-                    display: none !important; 
+                .ui.button,
+                nav,
+                header,
+                footer,
+                .sidebar,
+                .autosave-status-container {
+                    display: none !important;
                 }
+
                 body {
                     background: #fff !important;
                 }
-                .kk-header-card, .kk-table-card { 
-                    box-shadow: none !important; 
-                    border: 1px solid #cbd5e1 !important; 
+
+                .kk-header-card,
+                .kk-table-card {
+                    box-shadow: none !important;
+                    border: 1px solid #cbd5e1 !important;
                     margin: 0 !important;
                 }
+
                 .kk-table tr {
                     page-break-inside: avoid;
                 }
+
                 .kk-table tfoot {
                     display: table-row-group;
                 }
+
                 .kk-table th {
                     background-color: #f1f5f9 !important;
                     -webkit-print-color-adjust: exact;
                 }
-                .kk-textarea, .nilai-input {
+
+                .kk-textarea,
+                .nilai-input {
                     border: none !important;
                     background: transparent !important;
                     resize: none !important;
                     box-shadow: none !important;
                     padding: 0 !important;
                 }
+
                 .total-badge {
                     border: 1px solid #0284c7;
                 }
-                @page { 
-                    size: landscape; 
-                    margin: 10mm; 
+
+                @page {
+                    size: landscape;
+                    margin: 10mm;
                 }
             }
         </style>
@@ -416,10 +434,10 @@
                         class="ui button green" data-no-loader="true" target="_blank">
                         <i class="icon file excel"></i> Cetak Excel
                     </a>
-                    @if($canManage)
-                    <button type="submit" class="ui button primary">
-                        <i class="icon save"></i> Simpan Penilaian
-                    </button>
+                    @if ($canManage)
+                        <button type="submit" class="ui button primary">
+                            <i class="icon save"></i> Simpan Penilaian
+                        </button>
                     @endif
                 </div>
             </div>
@@ -437,7 +455,8 @@
                             <th style="width: 180px;">Catatan Juri</th>
                             <th style="width: 160px;">Tracking Media</th>
                             <th style="width: 220px;">Data Dukung</th>
-                            <th style="width: 150px; text-align: center;" class="no-print">Detail Informasi Pendaftar</th>
+                            <th style="width: 150px; text-align: center;" class="no-print">Detail Informasi Pendaftar
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -449,13 +468,15 @@
                                         value="{{ $item['kategori_aspek_id'] }}">
                                     <strong style="color: #0f172a;">{{ $item['aspek'] }}</strong>
                                 </td>
-                                <td style="color: #475569; white-space: pre-line; font-size: 0.85rem;">{{ $item['dimensi'] ?: '-' }}</td>
+                                <td style="color: #475569; white-space: pre-line; font-size: 0.85rem;">
+                                    {{ $item['dimensi'] ?: '-' }}</td>
                                 <td style="text-align: center;">
                                     <input type="number" name="items[{{ $index }}][nilai]"
                                         value="{{ $item['nilai'] }}" min="10" max="100"
                                         class="ui input nilai-input" data-index="{{ $index }}"
-                                        data-bobot="{{ $item['bobot'] }}" placeholder="10-100"
-                                        onwheel="this.blur()" style="{{ !$canManage ? 'background-color: #f1f5f9;' : '' }}" @if(!$canManage) disabled @endif>
+                                        data-bobot="{{ $item['bobot'] }}" placeholder="10-100" onwheel="this.blur()"
+                                        style="{{ !$canManage ? 'background-color: #f1f5f9;' : '' }}"
+                                        @if (!$canManage) disabled @endif>
                                 </td>
                                 <td style="text-align: center;">
                                     <span class="ui badge basic label">{{ $item['bobot'] }}%</span>
@@ -465,108 +486,119 @@
                                         {{ number_format($item['total'] ?? 0, 2) }}
                                     </span>
                                 </td>
-                                @if($index === 0)
-                                <td rowspan="{{ count($items) }}" class="cell-textarea" style="vertical-align: top;">
-                                    <textarea name="global_catatan_juri" class="kk-textarea" placeholder="Catatan juri..." style="height: 100%; min-height: 200px;{{ !$canManage ? ' background-color: #f1f5f9;' : '' }}" @if(!$canManage) disabled @endif>{{ $item['catatan_juri'] }}</textarea>
-                                </td>
-                                <td rowspan="{{ count($items) }}" class="cell-textarea" style="vertical-align: top;">
-                                    <textarea name="global_tracking_media" class="kk-textarea" placeholder="Link / Catatan media..." style="height: 100%; min-height: 200px;{{ !$canManage ? ' background-color: #f1f5f9;' : '' }}" @if(!$canManage) disabled @endif>{{ $item['tracking_media'] }}</textarea>
-                                </td>
-                                <td rowspan="{{ count($items) }}" style="vertical-align: top;">
-                                    <div id="dd-preview-container-global">
-                                        @foreach ($item['data_dukung'] as $ddIndex => $dd)
-                                            @php
-                                                $ddItemKey = $dd['item_key'] ?? ($dd['kontribusi_id'] ?? '');
-                                                $ddBukti = $dd['bukti'] ?? '';
-                                                $ddExt = strtolower(pathinfo($ddBukti, PATHINFO_EXTENSION));
-                                                $ddIsImage = in_array($ddExt, [
-                                                    'jpg',
-                                                    'jpeg',
-                                                    'png',
-                                                    'gif',
-                                                    'webp',
-                                                    'svg',
-                                                ]);
-                                                $ddIsPdf = $ddExt === 'pdf';
-                                                $ddUrl = $ddBukti
-                                                    ? route('modules::pendaftar.file', ['path' => $ddBukti])
-                                                    : '';
-                                            @endphp
-                                            <div class="data-dukung-tag">
-                                                <div class="title"><i class="icon file text grey"></i>
-                                                    {{ $dd['title'] }}</div>
-                                                @if ($ddUrl)
-                                                    @if ($ddIsImage)
-                                                        <a href="{{ $ddUrl }}" target="_blank">
-                                                            <img src="{{ $ddUrl }}"
-                                                                style="max-height: 80px; max-width: 100%; border-radius: 4px; margin: 0.3rem 0; display: block; border: 1px solid #cbd5e1; object-fit: contain;">
-                                                        </a>
-                                                    @elseif($ddIsPdf)
-                                                        <a href="{{ $ddUrl }}" target="_blank"
-                                                            class="ui label mini red basic"
-                                                            style="margin: 0.3rem 0; display: inline-block;">
-                                                            <i class="icon file pdf"></i> Lihat PDF
-                                                        </a>
-                                                    @else
-                                                        <a href="{{ $ddUrl }}" target="_blank"
-                                                            class="ui label mini basic"
-                                                            style="margin: 0.3rem 0; display: inline-block;">
-                                                            <i class="icon file"></i> Unduh File
-                                                        </a>
+                                @if ($index === 0)
+                                    <td rowspan="{{ count($items) }}" class="cell-textarea"
+                                        style="vertical-align: top;">
+                                        <textarea name="global_catatan_juri" class="kk-textarea" placeholder="Catatan juri..."
+                                            style="height: 100%; min-height: 200px;{{ !$canManage ? ' background-color: #f1f5f9;' : '' }}"
+                                            @if (!$canManage) disabled @endif>{{ $item['catatan_juri'] }}</textarea>
+                                    </td>
+                                    <td rowspan="{{ count($items) }}" class="cell-textarea"
+                                        style="vertical-align: top;">
+                                        <textarea name="global_tracking_media" class="kk-textarea" placeholder="Link / Catatan media..."
+                                            style="height: 100%; min-height: 200px;{{ !$canManage ? ' background-color: #f1f5f9;' : '' }}"
+                                            @if (!$canManage) disabled @endif>{{ $item['tracking_media'] }}</textarea>
+                                    </td>
+                                    <td rowspan="{{ count($items) }}" style="vertical-align: top;">
+                                        <div id="dd-preview-container-global">
+                                            @foreach ($item['data_dukung'] as $ddIndex => $dd)
+                                                @php
+                                                    $ddItemKey = $dd['item_key'] ?? ($dd['kontribusi_id'] ?? '');
+                                                    $ddBukti = $dd['bukti'] ?? '';
+                                                    $ddExt = strtolower(pathinfo($ddBukti, PATHINFO_EXTENSION));
+                                                    $ddIsImage = in_array($ddExt, [
+                                                        'jpg',
+                                                        'jpeg',
+                                                        'png',
+                                                        'gif',
+                                                        'webp',
+                                                        'svg',
+                                                    ]);
+                                                    $ddIsPdf = $ddExt === 'pdf';
+                                                    $ddUrl = $ddBukti
+                                                        ? route('modules::pendaftar.file', ['path' => $ddBukti])
+                                                        : '';
+                                                @endphp
+                                                <div class="data-dukung-tag">
+                                                    <div class="title"><i class="icon file text grey"></i>
+                                                        {{ $dd['title'] }}</div>
+                                                    @if ($ddUrl)
+                                                        @if ($ddIsImage)
+                                                            <a href="{{ $ddUrl }}" target="_blank">
+                                                                <img src="{{ $ddUrl }}"
+                                                                    style="max-height: 80px; max-width: 100%; border-radius: 4px; margin: 0.3rem 0; display: block; border: 1px solid #cbd5e1; object-fit: contain;">
+                                                            </a>
+                                                        @elseif($ddIsPdf)
+                                                            <a href="{{ $ddUrl }}" target="_blank"
+                                                                class="ui label mini red basic"
+                                                                style="margin: 0.3rem 0; display: inline-block;">
+                                                                <i class="icon file pdf"></i> Lihat PDF
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ $ddUrl }}" target="_blank"
+                                                                class="ui label mini basic"
+                                                                style="margin: 0.3rem 0; display: inline-block;">
+                                                                <i class="icon file"></i> Unduh File
+                                                            </a>
+                                                        @endif
                                                     @endif
-                                                @endif
-                                                @if (!empty($dd['catatan']))
-                                                    <div class="catatan" style="white-space: pre-line;">
-                                                        "{{ $dd['catatan'] }}"</div>
-                                                @endif
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    @if($canManage)
-                                    <button type="button" class="ui button mini basic teal"
-                                        style="margin-top: 0.3rem; width: 100%;"
-                                        onclick="openDataDukungModal('global')">
-                                        <i class="icon plus"></i> Pilih / Edit Data Dukung
-                                    </button>
-                                    @endif
+                                                    @if (!empty($dd['catatan']))
+                                                        <div class="catatan" style="white-space: pre-line;">
+                                                            "{{ $dd['catatan'] }}"</div>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        @if ($canManage)
+                                            <button type="button" class="ui button mini basic teal"
+                                                style="margin-top: 0.3rem; width: 100%;"
+                                                onclick="openDataDukungModal('global')">
+                                                <i class="icon plus"></i> Pilih / Edit Data Dukung
+                                            </button>
+                                        @endif
 
-                                    <!-- Hidden Inputs Container for Data Dukung -->
-                                    <div id="dd-inputs-container-global">
-                                        @foreach ($item['data_dukung'] as $ddIndex => $dd)
-                                            <input type="hidden"
-                                                name="global_data_dukung[{{ $ddIndex }}][selected]"
-                                                value="1">
-                                            <input type="hidden"
-                                                name="global_data_dukung[{{ $ddIndex }}][item_key]"
-                                                value="{{ $dd['item_key'] ?? ($dd['kontribusi_id'] ?? '') }}">
-                                            <input type="hidden"
-                                                name="global_data_dukung[{{ $ddIndex }}][kontribusi_id]"
-                                                value="{{ $dd['kontribusi_id'] ?? '' }}">
-                                            <input type="hidden"
-                                                name="global_data_dukung[{{ $ddIndex }}][title]"
-                                                value="{{ $dd['title'] ?? '' }}">
-                                            <input type="hidden"
-                                                name="global_data_dukung[{{ $ddIndex }}][bukti]"
-                                                value="{{ $dd['bukti'] ?? '' }}">
-                                            <input type="hidden"
-                                                name="global_data_dukung[{{ $ddIndex }}][catatan]"
-                                                value="{{ $dd['catatan'] ?? '' }}">
-                                        @endforeach
-                                    </div>
+                                        <!-- Hidden Inputs Container for Data Dukung -->
+                                        <div id="dd-inputs-container-global">
+                                            @foreach ($item['data_dukung'] as $ddIndex => $dd)
+                                                <input type="hidden"
+                                                    name="global_data_dukung[{{ $ddIndex }}][selected]"
+                                                    value="1">
+                                                <input type="hidden"
+                                                    name="global_data_dukung[{{ $ddIndex }}][item_key]"
+                                                    value="{{ $dd['item_key'] ?? ($dd['kontribusi_id'] ?? '') }}">
+                                                <input type="hidden"
+                                                    name="global_data_dukung[{{ $ddIndex }}][kontribusi_id]"
+                                                    value="{{ $dd['kontribusi_id'] ?? '' }}">
+                                                <input type="hidden"
+                                                    name="global_data_dukung[{{ $ddIndex }}][title]"
+                                                    value="{{ $dd['title'] ?? '' }}">
+                                                <input type="hidden"
+                                                    name="global_data_dukung[{{ $ddIndex }}][bukti]"
+                                                    value="{{ $dd['bukti'] ?? '' }}">
+                                                <input type="hidden"
+                                                    name="global_data_dukung[{{ $ddIndex }}][catatan]"
+                                                    value="{{ $dd['catatan'] ?? '' }}">
+                                            @endforeach
+                                        </div>
 
-                                </td>
-                                <td rowspan="{{ count($items) }}" style="vertical-align: top; text-align: center; padding: 1.5rem 1rem;" class="no-print">
-                                    <div style="font-size: 0.85rem; margin-bottom: 10px; color: #64748b;">
-                                        Link Profil Pendaftar:
-                                    </div>
-                                    <a href="{{ route('modules::pendaftar.show', $pendaftar->id) }}" target="_blank" style="color: #0369a1; text-decoration: underline; word-break: break-all; font-weight: 500; font-size: 0.85rem;">
-                                        {{ route('modules::pendaftar.show', $pendaftar->id) }}
-                                    </a>
-                                    <br><br>
-                                    <a href="{{ route('modules::pendaftar.show', $pendaftar->id) }}" target="_blank" class="ui button mini blue basic" style="width: 100%;">
-                                        <i class="icon external alternate"></i> Buka Detail
-                                    </a>
-                                </td>
+                                    </td>
+                                    <td rowspan="{{ count($items) }}"
+                                        style="vertical-align: top; text-align: center; padding: 1.5rem 1rem;"
+                                        class="no-print">
+                                        <div style="font-size: 0.85rem; margin-bottom: 10px; color: #64748b;">
+                                            Link Profil Pendaftar:
+                                        </div>
+                                        <a href="{{ route('modules::pendaftar.show', $pendaftar->id) }}"
+                                            target="_blank"
+                                            style="color: #0369a1; text-decoration: underline; word-break: break-all; font-weight: 500; font-size: 0.85rem;">
+                                            {{ route('modules::pendaftar.show', $pendaftar->id) }}
+                                        </a>
+                                        <br><br>
+                                        <a href="{{ route('modules::pendaftar.show', $pendaftar->id) }}"
+                                            target="_blank" class="ui button mini blue basic" style="width: 100%;">
+                                            <i class="icon external alternate"></i> Buka Detail
+                                        </a>
+                                    </td>
                                 @endif
                             </tr>
                         @empty
@@ -579,7 +611,9 @@
                     </tbody>
                     <tfoot>
                         <tr style="background: #f8fafc; border-top: 2px solid #e2e8f0;">
-                            <td colspan="4" style="text-align: center; font-weight: 700; color: #0f172a; font-size: 1.1rem; letter-spacing: 0.05em; padding: 1.25rem 1rem;">TOTAL BOBOT & NILAI AKHIR:</td>
+                            <td colspan="4"
+                                style="text-align: center; font-weight: 700; color: #0f172a; font-size: 1.1rem; letter-spacing: 0.05em; padding: 1.25rem 1rem;">
+                                TOTAL BOBOT & NILAI AKHIR:</td>
                             <td style="text-align: center; font-size: 1rem; color: #0284c7;">{{ $totalBobot }}%</td>
                             <td style="text-align: center;">
                                 <span class="total-badge" id="grand-total-display"
@@ -591,31 +625,6 @@
                         </tr>
                     </tfoot>
                 </table>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
-                <a href="{{ route('modules::pendaftar.show', $pendaftar->id) }}" class="ui button large basic">
-                    <i class="icon arrow left"></i> Kembali ke Detail Pendaftar
-                </a>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div class="autosave-status-container"
-                        style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: #64748b; margin-right: 0.25rem;">
-                        <span class="status-icon"></span>
-                        <span class="status-text"></span>
-                    </div>
-                    <button type="button" class="ui button large orange" onclick="window.print()">
-                        <i class="icon file pdf outline"></i> Cetak PDF
-                    </button>
-                    <a href="{{ route('modules::pendaftar.export-kertas-kerja-excel', ['pendaftar' => $pendaftar->id, 'tahap' => $selectedTahap]) }}"
-                        class="ui button large green" data-no-loader="true" target="_blank">
-                        <i class="icon file excel"></i> Cetak Excel
-                    </a>
-                    @if($canManage)
-                    <button type="submit" class="ui button large primary">
-                        <i class="icon save"></i> Simpan Penilaian
-                    </button>
-                    @endif
-                </div>
             </div>
         </form>
     </div>
@@ -631,303 +640,327 @@
             </div>
             <div class="dd-modal-body">
                 <p style="color: #64748b; font-size: 0.88rem; margin-bottom: 1.25rem;">
-                    Silakan centang <b>Kontribusi / Inovasi</b> atau <b>Penghargaan</b> di bawah ini yang relevan untuk membuktikan aspek penilaian ini. Anda juga dapat menambahkan catatan khusus dari dewan juri pada setiap bukti dukung yang dipilih.
+                    Silakan centang <b>Kontribusi / Inovasi</b> atau <b>Penghargaan</b> di bawah ini yang relevan untuk
+                    membuktikan aspek penilaian ini. Anda juga dapat menambahkan catatan khusus dari dewan juri pada
+                    setiap bukti dukung yang dipilih.
                 </p>
 
                 <div id="modal-kontribusi-list">
-                                        @if($pendaftar->kontribusi->isEmpty() && $pendaftar->penghargaan->isEmpty())
+                    @if ($pendaftar->kontribusi->isEmpty() && $pendaftar->penghargaan->isEmpty())
                         <div style="text-align: center; padding: 2rem; color: #94a3b8;">
                             <i class="icon info circle large"></i><br>
                             Pendaftar belum mengisi data kontribusi maupun penghargaan.
                         </div>
                     @else
                         {{-- KONTRIBUSI --}}
-                        @if($pendaftar->kontribusi->isNotEmpty())
-                            <div style="margin: 0.5rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0;">
-                                <h4 style="margin: 0; color: #0f172a; font-size: 1.05rem;"><i class="icon folder open teal"></i> Daftar Kontribusi / Inovasi</h4>
+                        @if ($pendaftar->kontribusi->isNotEmpty())
+                            <div
+                                style="margin: 0.5rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0;">
+                                <h4 style="margin: 0; color: #0f172a; font-size: 1.05rem;"><i
+                                        class="icon folder open teal"></i> Daftar Kontribusi / Inovasi</h4>
                             </div>
                         @endif
-                        @foreach($pendaftar->kontribusi as $kIndex => $kontribusi)
-                        <div class="dd-kontribusi-card" id="modal-card-{{ $kontribusi->id }}"
-                            style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 1.1rem; margin-bottom: 1.25rem; transition: all 0.2s ease;">
+                        @foreach ($pendaftar->kontribusi as $kIndex => $kontribusi)
+                            <div class="dd-kontribusi-card" id="modal-card-{{ $kontribusi->id }}"
+                                style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 1.1rem; margin-bottom: 1.25rem; transition: all 0.2s ease;">
 
-                            {{-- Header Kontribusi --}}
-                            <div style="font-weight: 700; color: #0f172a; font-size: 1rem; margin-bottom: 0.35rem;">
-                                <i class="icon folder open teal"></i> {{ $loop->iteration }}. {{ $kontribusi->judul }}
-                            </div>
-
-                            @if (!empty($kontribusi->deskripsi))
-                                <p
-                                    style="color: #475569; font-size: 0.85rem; margin: 0 0 0.85rem 0; white-space: pre-line; background: #f8fafc; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
-                                    {{ $kontribusi->deskripsi }}
-                                </p>
-                            @endif
-
-                            {{-- File Selection List --}}
-                            @if (!empty($kontribusi->bukti_dukung) && is_array($kontribusi->bukti_dukung) && count($kontribusi->bukti_dukung) > 0)
+                                {{-- Header Kontribusi --}}
                                 <div
-                                    style="font-size: 0.78rem; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-                                    Pilih Bukti Dukung Spesifik:
+                                    style="font-weight: 700; color: #0f172a; font-size: 1rem; margin-bottom: 0.35rem;">
+                                    <i class="icon folder open teal"></i> {{ $loop->iteration }}.
+                                    {{ $kontribusi->judul }}
                                 </div>
-                                <div
-                                    style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 0.85rem;">
-                                    @foreach ($kontribusi->bukti_dukung as $bIndex => $bPath)
-                                        @php
-                                            $itemKey = $kontribusi->id . '_' . $bIndex;
-                                            $fileUrl = route('modules::pendaftar.file', ['path' => $bPath]);
-                                            $fileName = basename($bPath);
-                                            $ext = strtolower(pathinfo($bPath, PATHINFO_EXTENSION));
-                                            $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
-                                            $isPdf = $ext === 'pdf';
-                                            $itemTitle =
-                                                $kontribusi->judul .
-                                                ' - Bukti #' .
-                                                ($bIndex + 1) .
-                                                ' (' .
-                                                $fileName .
-                                                ')';
-                                        @endphp
-                                        <div class="dd-file-item"
-                                            style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem;">
-                                            <div style="display: flex; align-items: flex-start; gap: 0.65rem;">
-                                                <input type="checkbox" class="dd-checkbox"
-                                                    id="chk-{{ $itemKey }}" data-id="{{ $itemKey }}"
-                                                    data-kontribusi-id="{{ $kontribusi->id }}"
-                                                    data-title="{{ $itemTitle }}"
-                                                    data-bukti="{{ $bPath }}"
-                                                    data-bukti-url="{{ $fileUrl }}"
-                                                    data-file-type="{{ $isImage ? 'image' : ($isPdf ? 'pdf' : 'file') }}"
-                                                    onchange="updateKontribusiCardState('{{ $kontribusi->id }}')"
-                                                    style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
-                                                <div style="flex: 1;">
-                                                    <label for="chk-{{ $itemKey }}"
-                                                        style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem; display: block;">
-                                                        <i
-                                                            class="icon file {{ $isImage ? 'image outline green' : ($isPdf ? 'pdf red' : 'text blue') }}"></i>
-                                                        Bukti #{{ $bIndex + 1 }}: {{ $fileName }}
-                                                    </label>
 
-                                                    {{-- Image / PDF Preview --}}
-                                                    @if ($isImage)
-                                                        <div style="margin-top: 0.4rem;">
-                                                            <a href="{{ $fileUrl }}" target="_blank"
-                                                                title="Klik untuk lihat gambar penuh">
-                                                                <img src="{{ $fileUrl }}"
-                                                                    alt="{{ $fileName }}"
-                                                                    style="max-height: 130px; max-width: 100%; border-radius: 6px; border: 1px solid #cbd5e1; object-fit: contain; background: #ffffff; cursor: zoom-in; display: block;">
-                                                            </a>
-                                                        </div>
-                                                    @elseif ($isPdf)
-                                                        <div
-                                                            style="margin-top: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #ffffff;">
-                                                            <div
-                                                                style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
-                                                                <span><i class="icon file pdf"></i> PDF:
-                                                                    {{ $fileName }}</span>
+                                @if (!empty($kontribusi->deskripsi))
+                                    <p
+                                        style="color: #475569; font-size: 0.85rem; margin: 0 0 0.85rem 0; white-space: pre-line; background: #f8fafc; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                                        {{ $kontribusi->deskripsi }}
+                                    </p>
+                                @endif
+
+                                {{-- File Selection List --}}
+                                @if (!empty($kontribusi->bukti_dukung) && is_array($kontribusi->bukti_dukung) && count($kontribusi->bukti_dukung) > 0)
+                                    <div
+                                        style="font-size: 0.78rem; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                        Pilih Bukti Dukung Spesifik:
+                                    </div>
+                                    <div
+                                        style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 0.85rem;">
+                                        @foreach ($kontribusi->bukti_dukung as $bIndex => $bPath)
+                                            @php
+                                                $itemKey = $kontribusi->id . '_' . $bIndex;
+                                                $fileUrl = route('modules::pendaftar.file', ['path' => $bPath]);
+                                                $fileName = basename($bPath);
+                                                $ext = strtolower(pathinfo($bPath, PATHINFO_EXTENSION));
+                                                $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
+                                                $isPdf = $ext === 'pdf';
+                                                $itemTitle =
+                                                    $kontribusi->judul .
+                                                    ' - Bukti #' .
+                                                    ($bIndex + 1) .
+                                                    ' (' .
+                                                    $fileName .
+                                                    ')';
+                                            @endphp
+                                            <div class="dd-file-item"
+                                                style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem;">
+                                                <div style="display: flex; align-items: flex-start; gap: 0.65rem;">
+                                                    <input type="checkbox" class="dd-checkbox"
+                                                        id="chk-{{ $itemKey }}" data-id="{{ $itemKey }}"
+                                                        data-kontribusi-id="{{ $kontribusi->id }}"
+                                                        data-title="{{ $itemTitle }}"
+                                                        data-bukti="{{ $bPath }}"
+                                                        data-bukti-url="{{ $fileUrl }}"
+                                                        data-file-type="{{ $isImage ? 'image' : ($isPdf ? 'pdf' : 'file') }}"
+                                                        onchange="updateKontribusiCardState('{{ $kontribusi->id }}')"
+                                                        style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
+                                                    <div style="flex: 1;">
+                                                        <label for="chk-{{ $itemKey }}"
+                                                            style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem; display: block;">
+                                                            <i
+                                                                class="icon file {{ $isImage ? 'image outline green' : ($isPdf ? 'pdf red' : 'text blue') }}"></i>
+                                                            Bukti #{{ $bIndex + 1 }}: {{ $fileName }}
+                                                        </label>
+
+                                                        {{-- Image / PDF Preview --}}
+                                                        @if ($isImage)
+                                                            <div style="margin-top: 0.4rem;">
                                                                 <a href="{{ $fileUrl }}" target="_blank"
-                                                                    style="color: #991b1b; text-decoration: underline;"><i
-                                                                        class="icon external link"></i> Buka Tab
-                                                                    Baru</a>
+                                                                    title="Klik untuk lihat gambar penuh">
+                                                                    <img src="{{ $fileUrl }}"
+                                                                        alt="{{ $fileName }}"
+                                                                        style="max-height: 130px; max-width: 100%; border-radius: 6px; border: 1px solid #cbd5e1; object-fit: contain; background: #ffffff; cursor: zoom-in; display: block;">
+                                                                </a>
                                                             </div>
-                                                            <iframe src="{{ $fileUrl }}"
-                                                                style="width: 100%; height: 150px; border: none;"></iframe>
-                                                        </div>
-                                                    @else
-                                                        <div style="margin-top: 0.3rem;">
-                                                            <a href="{{ $fileUrl }}" target="_blank"
-                                                                class="ui label basic mini">
-                                                                <i class="icon download"></i> Unduh File
-                                                                {{ $fileName }}
-                                                            </a>
-                                                        </div>
-                                                    @endif
+                                                        @elseif ($isPdf)
+                                                            <div
+                                                                style="margin-top: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #ffffff;">
+                                                                <div
+                                                                    style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                                                                    <span><i class="icon file pdf"></i> PDF:
+                                                                        {{ $fileName }}</span>
+                                                                    <a href="{{ $fileUrl }}" target="_blank"
+                                                                        style="color: #991b1b; text-decoration: underline;"><i
+                                                                            class="icon external link"></i> Buka Tab
+                                                                        Baru</a>
+                                                                </div>
+                                                                <iframe src="{{ $fileUrl }}"
+                                                                    style="width: 100%; height: 150px; border: none;"></iframe>
+                                                            </div>
+                                                        @else
+                                                            <div style="margin-top: 0.3rem;">
+                                                                <a href="{{ $fileUrl }}" target="_blank"
+                                                                    class="ui label basic mini">
+                                                                    <i class="icon download"></i> Unduh File
+                                                                    {{ $fileName }}
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                {{-- Catatan Per Bukti Dukung --}}
+                                                <div
+                                                    style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                                                    <label for="note-bukti-{{ $itemKey }}"
+                                                        style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
+                                                        <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti
+                                                        Dukung Ini:
+                                                    </label>
+                                                    <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
+                                                        placeholder="Tuliskan catatan khusus juri untuk bukti dukung ini..."></textarea>
                                                 </div>
                                             </div>
-                                            {{-- Catatan Per Bukti Dukung --}}
-                                            <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
-                                                <label for="note-bukti-{{ $itemKey }}" style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
-                                                    <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung Ini:
-                                                </label>
-                                                <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
-                                                    placeholder="Tuliskan catatan khusus juri untuk bukti dukung ini..."></textarea>
-                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    {{-- Kontribusi without attached files --}}
+                                    @php
+                                        $itemKey = $kontribusi->id . '_main';
+                                        $itemTitle = $kontribusi->judul;
+                                    @endphp
+                                    <div class="dd-file-item"
+                                        style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                            <input type="checkbox" class="dd-checkbox" id="chk-{{ $itemKey }}"
+                                                data-id="{{ $itemKey }}"
+                                                data-kontribusi-id="{{ $kontribusi->id }}"
+                                                data-title="{{ $itemTitle }}" data-bukti="" data-bukti-url=""
+                                                data-file-type="text"
+                                                onchange="updateKontribusiCardState('{{ $kontribusi->id }}')"
+                                                style="width: 18px; height: 18px; cursor: pointer;">
+                                            <label for="chk-{{ $itemKey }}"
+                                                style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem;">
+                                                Pilih Kontribusi Ini Sebagai Data Dukung
+                                            </label>
                                         </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                {{-- Kontribusi without attached files --}}
-                                @php
-                                    $itemKey = $kontribusi->id . '_main';
-                                    $itemTitle = $kontribusi->judul;
-                                @endphp
-                                <div class="dd-file-item"
-                                    style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
-                                    <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                        <input type="checkbox" class="dd-checkbox" id="chk-{{ $itemKey }}"
-                                            data-id="{{ $itemKey }}" data-kontribusi-id="{{ $kontribusi->id }}"
-                                            data-title="{{ $itemTitle }}" data-bukti="" data-bukti-url=""
-                                            data-file-type="text"
-                                            onchange="updateKontribusiCardState('{{ $kontribusi->id }}')"
-                                            style="width: 18px; height: 18px; cursor: pointer;">
-                                        <label for="chk-{{ $itemKey }}"
-                                            style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem;">
-                                            Pilih Kontribusi Ini Sebagai Data Dukung
-                                        </label>
+                                        {{-- Catatan Per Kontribusi (Tanpa File) --}}
+                                        <div
+                                            style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                                            <label for="note-bukti-{{ $itemKey }}"
+                                                style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
+                                                <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung
+                                                Ini:
+                                            </label>
+                                            <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
+                                                placeholder="Tuliskan catatan khusus juri..."></textarea>
+                                        </div>
                                     </div>
-                                    {{-- Catatan Per Kontribusi (Tanpa File) --}}
-                                    <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
-                                        <label for="note-bukti-{{ $itemKey }}" style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
-                                            <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung Ini:
-                                        </label>
-                                        <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
-                                            placeholder="Tuliskan catatan khusus juri..."></textarea>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                                            @endforeach
+                                @endif
+                            </div>
+                        @endforeach
 
                         {{-- PENGHARGAAN --}}
-                        @if($pendaftar->penghargaan->isNotEmpty())
-                            <div style="margin: 2rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0;">
-                                <h4 style="margin: 0; color: #0f172a; font-size: 1.05rem;"><i class="icon trophy yellow"></i> Daftar Penghargaan</h4>
+                        @if ($pendaftar->penghargaan->isNotEmpty())
+                            <div
+                                style="margin: 2rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0;">
+                                <h4 style="margin: 0; color: #0f172a; font-size: 1.05rem;"><i
+                                        class="icon trophy yellow"></i> Daftar Penghargaan</h4>
                             </div>
                         @endif
-                        @foreach($pendaftar->penghargaan as $pIndex => $penghargaan)
+                        @foreach ($pendaftar->penghargaan as $pIndex => $penghargaan)
+                            <div class="dd-kontribusi-card" id="modal-card-p_{{ $penghargaan->id }}"
+                                style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 1.1rem; margin-bottom: 1.25rem; transition: all 0.2s ease;">
 
-                        <div class="dd-kontribusi-card" id="modal-card-p_{{ $penghargaan->id }}"
-                            style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 1.1rem; margin-bottom: 1.25rem; transition: all 0.2s ease;">
-
-                            {{-- Header Kontribusi --}}
-                            <div style="font-weight: 700; color: #0f172a; font-size: 1rem; margin-bottom: 0.35rem;">
-                                <i class="icon trophy yellow"></i> {{ $loop->iteration }}. {{ $penghargaan->uraian }} {{ $penghargaan->tahun ? "(".$penghargaan->tahun.")" : "" }}
-                            </div>
-
-
-
-                            {{-- File Selection List --}}
-                            @if (!empty($penghargaan->bukti_dukung) && is_array($penghargaan->bukti_dukung) && count($penghargaan->bukti_dukung) > 0)
+                                {{-- Header Kontribusi --}}
                                 <div
-                                    style="font-size: 0.78rem; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-                                    Pilih Bukti Dukung Spesifik:
+                                    style="font-weight: 700; color: #0f172a; font-size: 1rem; margin-bottom: 0.35rem;">
+                                    <i class="icon trophy yellow"></i> {{ $loop->iteration }}.
+                                    {{ $penghargaan->uraian }}
+                                    {{ $penghargaan->tahun ? '(' . $penghargaan->tahun . ')' : '' }}
                                 </div>
-                                <div
-                                    style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 0.85rem;">
-                                    @foreach ($penghargaan->bukti_dukung as $bIndex => $bPath)
-                                        @php
-                                            $itemKey = 'p_' . $penghargaan->id . '_' . $bIndex;
-                                            $fileUrl = route('modules::pendaftar.file', ['path' => $bPath]);
-                                            $fileName = basename($bPath);
-                                            $ext = strtolower(pathinfo($bPath, PATHINFO_EXTENSION));
-                                            $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
-                                            $isPdf = $ext === 'pdf';
-                                            $itemTitle =
-                                                $penghargaan->uraian .
-                                                ' - Bukti #' .
-                                                ($bIndex + 1) .
-                                                ' (' .
-                                                $fileName .
-                                                ')';
-                                        @endphp
-                                        <div class="dd-file-item"
-                                            style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem;">
-                                            <div style="display: flex; align-items: flex-start; gap: 0.65rem;">
-                                                <input type="checkbox" class="dd-checkbox"
-                                                    id="chk-{{ $itemKey }}" data-id="{{ $itemKey }}"
-                                                    data-kontribusi-id="p_{{ $penghargaan->id }}"
-                                                    data-title="{{ $itemTitle }}"
-                                                    data-bukti="{{ $bPath }}"
-                                                    data-bukti-url="{{ $fileUrl }}"
-                                                    data-file-type="{{ $isImage ? 'image' : ($isPdf ? 'pdf' : 'file') }}"
-                                                    onchange="updateKontribusiCardState('p_{{ $penghargaan->id }}')"
-                                                    style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
-                                                <div style="flex: 1;">
-                                                    <label for="chk-{{ $itemKey }}"
-                                                        style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem; display: block;">
-                                                        <i
-                                                            class="icon file {{ $isImage ? 'image outline green' : ($isPdf ? 'pdf red' : 'text blue') }}"></i>
-                                                        Bukti #{{ $bIndex + 1 }}: {{ $fileName }}
-                                                    </label>
 
-                                                    {{-- Image / PDF Preview --}}
-                                                    @if ($isImage)
-                                                        <div style="margin-top: 0.4rem;">
-                                                            <a href="{{ $fileUrl }}" target="_blank"
-                                                                title="Klik untuk lihat gambar penuh">
-                                                                <img src="{{ $fileUrl }}"
-                                                                    alt="{{ $fileName }}"
-                                                                    style="max-height: 130px; max-width: 100%; border-radius: 6px; border: 1px solid #cbd5e1; object-fit: contain; background: #ffffff; cursor: zoom-in; display: block;">
-                                                            </a>
-                                                        </div>
-                                                    @elseif ($isPdf)
-                                                        <div
-                                                            style="margin-top: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #ffffff;">
-                                                            <div
-                                                                style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
-                                                                <span><i class="icon file pdf"></i> PDF:
-                                                                    {{ $fileName }}</span>
+
+
+                                {{-- File Selection List --}}
+                                @if (!empty($penghargaan->bukti_dukung) && is_array($penghargaan->bukti_dukung) && count($penghargaan->bukti_dukung) > 0)
+                                    <div
+                                        style="font-size: 0.78rem; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                                        Pilih Bukti Dukung Spesifik:
+                                    </div>
+                                    <div
+                                        style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 0.85rem;">
+                                        @foreach ($penghargaan->bukti_dukung as $bIndex => $bPath)
+                                            @php
+                                                $itemKey = 'p_' . $penghargaan->id . '_' . $bIndex;
+                                                $fileUrl = route('modules::pendaftar.file', ['path' => $bPath]);
+                                                $fileName = basename($bPath);
+                                                $ext = strtolower(pathinfo($bPath, PATHINFO_EXTENSION));
+                                                $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
+                                                $isPdf = $ext === 'pdf';
+                                                $itemTitle =
+                                                    $penghargaan->uraian .
+                                                    ' - Bukti #' .
+                                                    ($bIndex + 1) .
+                                                    ' (' .
+                                                    $fileName .
+                                                    ')';
+                                            @endphp
+                                            <div class="dd-file-item"
+                                                style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem;">
+                                                <div style="display: flex; align-items: flex-start; gap: 0.65rem;">
+                                                    <input type="checkbox" class="dd-checkbox"
+                                                        id="chk-{{ $itemKey }}" data-id="{{ $itemKey }}"
+                                                        data-kontribusi-id="p_{{ $penghargaan->id }}"
+                                                        data-title="{{ $itemTitle }}"
+                                                        data-bukti="{{ $bPath }}"
+                                                        data-bukti-url="{{ $fileUrl }}"
+                                                        data-file-type="{{ $isImage ? 'image' : ($isPdf ? 'pdf' : 'file') }}"
+                                                        onchange="updateKontribusiCardState('p_{{ $penghargaan->id }}')"
+                                                        style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
+                                                    <div style="flex: 1;">
+                                                        <label for="chk-{{ $itemKey }}"
+                                                            style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem; display: block;">
+                                                            <i
+                                                                class="icon file {{ $isImage ? 'image outline green' : ($isPdf ? 'pdf red' : 'text blue') }}"></i>
+                                                            Bukti #{{ $bIndex + 1 }}: {{ $fileName }}
+                                                        </label>
+
+                                                        {{-- Image / PDF Preview --}}
+                                                        @if ($isImage)
+                                                            <div style="margin-top: 0.4rem;">
                                                                 <a href="{{ $fileUrl }}" target="_blank"
-                                                                    style="color: #991b1b; text-decoration: underline;"><i
-                                                                        class="icon external link"></i> Buka Tab
-                                                                    Baru</a>
+                                                                    title="Klik untuk lihat gambar penuh">
+                                                                    <img src="{{ $fileUrl }}"
+                                                                        alt="{{ $fileName }}"
+                                                                        style="max-height: 130px; max-width: 100%; border-radius: 6px; border: 1px solid #cbd5e1; object-fit: contain; background: #ffffff; cursor: zoom-in; display: block;">
+                                                                </a>
                                                             </div>
-                                                            <iframe src="{{ $fileUrl }}"
-                                                                style="width: 100%; height: 150px; border: none;"></iframe>
-                                                        </div>
-                                                    @else
-                                                        <div style="margin-top: 0.3rem;">
-                                                            <a href="{{ $fileUrl }}" target="_blank"
-                                                                class="ui label basic mini">
-                                                                <i class="icon download"></i> Unduh File
-                                                                {{ $fileName }}
-                                                            </a>
-                                                        </div>
-                                                    @endif
+                                                        @elseif ($isPdf)
+                                                            <div
+                                                                style="margin-top: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #ffffff;">
+                                                                <div
+                                                                    style="background: #fee2e2; color: #991b1b; padding: 0.3rem 0.6rem; font-size: 0.75rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                                                                    <span><i class="icon file pdf"></i> PDF:
+                                                                        {{ $fileName }}</span>
+                                                                    <a href="{{ $fileUrl }}" target="_blank"
+                                                                        style="color: #991b1b; text-decoration: underline;"><i
+                                                                            class="icon external link"></i> Buka Tab
+                                                                        Baru</a>
+                                                                </div>
+                                                                <iframe src="{{ $fileUrl }}"
+                                                                    style="width: 100%; height: 150px; border: none;"></iframe>
+                                                            </div>
+                                                        @else
+                                                            <div style="margin-top: 0.3rem;">
+                                                                <a href="{{ $fileUrl }}" target="_blank"
+                                                                    class="ui label basic mini">
+                                                                    <i class="icon download"></i> Unduh File
+                                                                    {{ $fileName }}
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                {{-- Catatan Per Bukti Dukung --}}
+                                                <div
+                                                    style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                                                    <label for="note-bukti-{{ $itemKey }}"
+                                                        style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
+                                                        <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti
+                                                        Dukung Ini:
+                                                    </label>
+                                                    <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
+                                                        placeholder="Tuliskan catatan khusus juri untuk bukti dukung ini..."></textarea>
                                                 </div>
                                             </div>
-                                            {{-- Catatan Per Bukti Dukung --}}
-                                            <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
-                                                <label for="note-bukti-{{ $itemKey }}" style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
-                                                    <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung Ini:
-                                                </label>
-                                                <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
-                                                    placeholder="Tuliskan catatan khusus juri untuk bukti dukung ini..."></textarea>
-                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    {{-- Kontribusi without attached files --}}
+                                    @php
+                                        $itemKey = 'p_' . $penghargaan->id . '_main';
+                                        $itemTitle = $penghargaan->uraian;
+                                    @endphp
+                                    <div class="dd-file-item"
+                                        style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                            <input type="checkbox" class="dd-checkbox" id="chk-{{ $itemKey }}"
+                                                data-id="{{ $itemKey }}"
+                                                data-kontribusi-id="p_{{ $penghargaan->id }}"
+                                                data-title="{{ $itemTitle }}" data-bukti="" data-bukti-url=""
+                                                data-file-type="text"
+                                                onchange="updateKontribusiCardState('p_{{ $penghargaan->id }}')"
+                                                style="width: 18px; height: 18px; cursor: pointer;">
+                                            <label for="chk-{{ $itemKey }}"
+                                                style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem;">
+                                                Pilih Penghargaan Ini Sebagai Data Dukung
+                                            </label>
                                         </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                {{-- Kontribusi without attached files --}}
-                                @php
-                                    $itemKey = 'p_' . $penghargaan->id . '_main';
-                                    $itemTitle = $penghargaan->uraian;
-                                @endphp
-                                <div class="dd-file-item"
-                                    style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.85rem;">
-                                    <div style="display: flex; align-items: center; gap: 0.65rem;">
-                                        <input type="checkbox" class="dd-checkbox" id="chk-{{ $itemKey }}"
-                                            data-id="{{ $itemKey }}" data-kontribusi-id="p_{{ $penghargaan->id }}"
-                                            data-title="{{ $itemTitle }}" data-bukti="" data-bukti-url=""
-                                            data-file-type="text"
-                                            onchange="updateKontribusiCardState('p_{{ $penghargaan->id }}')"
-                                            style="width: 18px; height: 18px; cursor: pointer;">
-                                        <label for="chk-{{ $itemKey }}"
-                                            style="font-weight: 600; color: #0f172a; cursor: pointer; font-size: 0.9rem;">
-                                            Pilih Penghargaan Ini Sebagai Data Dukung
-                                        </label>
+                                        {{-- Catatan Per Kontribusi (Tanpa File) --}}
+                                        <div
+                                            style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                                            <label for="note-bukti-{{ $itemKey }}"
+                                                style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
+                                                <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung
+                                                Ini:
+                                            </label>
+                                            <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
+                                                placeholder="Tuliskan catatan khusus juri..."></textarea>
+                                        </div>
                                     </div>
-                                    {{-- Catatan Per Kontribusi (Tanpa File) --}}
-                                    <div style="margin-top: 0.75rem; background: #ffffff; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
-                                        <label for="note-bukti-{{ $itemKey }}" style="font-size: 0.75rem; font-weight: 700; color: #334155; display: block; margin-bottom: 0.25rem;">
-                                            <i class="icon pencil text teal"></i> Catatan Juri untuk Bukti Dukung Ini:
-                                        </label>
-                                        <textarea class="dd-note-textarea" id="note-bukti-{{ $itemKey }}" rows="2"
-                                            placeholder="Tuliskan catatan khusus juri..."></textarea>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                                            @endforeach
+                                @endif
+                            </div>
+                        @endforeach
                     @endif
 
                 </div>
@@ -949,7 +982,7 @@
                 if (!@json($canManage)) {
                     return; // Skip autosave initialization if no permission
                 }
-                
+
                 // Auto calculate total on score input
                 const scoreInputs = document.querySelectorAll('.nilai-input');
                 scoreInputs.forEach(input => {
@@ -1010,7 +1043,7 @@
             function openDataDukungModal(index) {
                 currentAspectIndex = index;
                 let rowAspekText = "Keseluruhan Penilaian";
-                
+
                 document.getElementById('modal-aspek-title').innerText = rowAspekText;
 
                 // Reset all checkboxes, note textareas, and card styles in modal
@@ -1027,7 +1060,8 @@
 
                 hiddenInputs.forEach((input, hIdx) => {
                     const itemKey = input.value;
-                    let noteInputName = index === 'global' ? `global_data_dukung[${hIdx}][catatan]` : `items[${index}][data_dukung][${hIdx}][catatan]`;
+                    let noteInputName = index === 'global' ? `global_data_dukung[${hIdx}][catatan]` :
+                        `items[${index}][data_dukung][${hIdx}][catatan]`;
                     const savedNoteInput = container.querySelector(
                         `input[name="${noteInputName}"]`
                     );
@@ -1076,7 +1110,8 @@
                     const note = document.getElementById('note-bukti-' + itemKey)?.value || '';
 
                     // Create hidden inputs
-                    let inputPrefix = index === 'global' ? `global_data_dukung[${ddIndex}]` : `items[${index}][data_dukung][${ddIndex}]`;
+                    let inputPrefix = index === 'global' ? `global_data_dukung[${ddIndex}]` :
+                        `items[${index}][data_dukung][${ddIndex}]`;
                     inputsContainer.innerHTML += `
                         <input type="hidden" name="${inputPrefix}[selected]" value="1">
                         <input type="hidden" name="${inputPrefix}[item_key]" value="${escapeHtml(itemKey)}">
@@ -1110,7 +1145,8 @@
                     `;
 
                     ddIndex++;
-                });closeDataDukungModal();
+                });
+                closeDataDukungModal();
                 triggerAutoSave();
             }
 

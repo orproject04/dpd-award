@@ -116,7 +116,20 @@ class PendaftarTableView extends CustomTableView
                 return "<span style='display:block;text-align:center;font-weight:bold;color:#0284c7;'>" . number_format($data->nilai ?? 0, 2) . "</span>";
             }, 'Nilai')->sortable('nilai'),
 
-            MyRestfulButton::make('modules::pendaftar')->withoutEdit(),
+            Raw::make(function ($data) {
+                $reqPerm = \App\Enums\Permission::getCategoryManagePermission($data->kategori);
+                $canManage = auth()->user()->hasPermission('*') || ($reqPerm && auth()->user()->hasPermission($reqPerm));
+                
+                $actions = collect(['show' => route('modules::pendaftar.show', $data->id)]);
+                
+                if ($canManage) {
+                    $actions->put('destroy', route('modules::pendaftar.destroy', $data->id));
+                }
+                
+                $key = \Illuminate\Support\Str::kebab(get_class($data)) . '-' . $data->getKey();
+                
+                return \Illuminate\Support\Facades\View::make('columns.restful_button', compact('data', 'actions', 'key'))->render();
+            }, 'Aksi'),
         ];
     }
 

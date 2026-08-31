@@ -12,11 +12,27 @@ class KategoriAspekController extends Controller
     /**
      * Check ACL Permission for Setting Aspek
      */
-    protected function checkPermission(): void
+    protected function checkPermission(?string $kategori = null): void
     {
         $user = auth()->user();
-        if (!$user || !($user->hasPermission('*') || $user->hasPermission(Permission::SETTING_ASPEK_MANAGE))) {
+        if (!$user) {
+            abort(403, 'Anda belum login.');
+        }
+
+        if (!$user->hasPermission('*') && !$user->hasPermission(Permission::SETTING_ASPEK_MANAGE)) {
             abort(403, 'Anda tidak memiliki akses ke halaman Setting Aspek.');
+        }
+
+        if ($user->hasPermission('*')) {
+            return;
+        }
+
+        if ($kategori) {
+            $requiredPermission = Permission::getCategoryManagePermission($kategori);
+            if ($requiredPermission && $user->hasPermission($requiredPermission)) {
+                return;
+            }
+            abort(403, "Anda tidak memiliki akses untuk memodifikasi kategori {$kategori}.");
         }
     }
 
@@ -56,9 +72,21 @@ class KategoriAspekController extends Controller
 
     public function create(Request $request)
     {
-        $this->checkPermission();
+        $selectedKategori = $request->get('kategori', '');
+        if ($selectedKategori) {
+            $this->checkPermission($selectedKategori);
+        } else {
+            $this->checkPermission();
+        }
 
         $defaultKategories = KategoriAspek::defaultKategories();
+        $user = auth()->user();
+        if (!$user->hasPermission('*')) {
+            $defaultKategories = array_filter($defaultKategories, function ($kat) use ($user) {
+                $reqPerm = \App\Enums\Permission::getCategoryManagePermission($kat);
+                return $reqPerm && $user->hasPermission($reqPerm);
+            });
+        }
         $selectedKategori = $request->get('kategori', '');
 
         return view('kategori_aspek.create', compact('defaultKategories', 'selectedKategori'));
@@ -66,7 +94,7 @@ class KategoriAspekController extends Controller
 
     public function store(Request $request)
     {
-        $this->checkPermission();
+        $this->checkPermission($request->input('kategori'));
 
         $validated = $request->validate([
             'kategori' => 'required|string|max:255',
@@ -89,16 +117,29 @@ class KategoriAspekController extends Controller
 
     public function edit(KategoriAspek $kategoriAspek)
     {
-        $this->checkPermission();
+        $this->checkPermission($kategoriAspek->kategori);
 
         $defaultKategories = KategoriAspek::defaultKategories();
+        $user = auth()->user();
+        if (!$user->hasPermission('*')) {
+            $defaultKategories = array_filter($defaultKategories, function ($kat) use ($user) {
+                $reqPerm = \App\Enums\Permission::getCategoryManagePermission($kat);
+                return $reqPerm && $user->hasPermission($reqPerm);
+            });
+        }
 
         return view('kategori_aspek.edit', compact('kategoriAspek', 'defaultKategories'));
     }
 
     public function update(Request $request, KategoriAspek $kategoriAspek)
     {
-        $this->checkPermission();
+        // Check old category permission
+        $this->checkPermission($kategoriAspek->kategori);
+        
+        // If category is being changed, check new category permission too
+        if ($request->has('kategori') && $request->input('kategori') !== $kategoriAspek->kategori) {
+            $this->checkPermission($request->input('kategori'));
+        }
 
         $validated = $request->validate([
             'kategori' => 'required|string|max:255',
@@ -121,7 +162,7 @@ class KategoriAspekController extends Controller
 
     public function destroy(KategoriAspek $kategoriAspek)
     {
-        $this->checkPermission();
+        $this->checkPermission($kategoriAspek->kategori);
 
         $kategori = $kategoriAspek->kategori;
         $kategoriAspek->delete();

@@ -23,6 +23,25 @@ use PhpOffice\PhpSpreadsheet\RichText\RichText;
 
 class PendaftarController extends Controller
 {
+    protected function checkCategoryPermission(string $kategori): void
+    {
+        $user = auth()->user();
+        if (!$user) {
+            abort(403, 'Anda belum login.');
+        }
+
+        if ($user->hasPermission('*')) {
+            return;
+        }
+
+        $requiredPermission = Permission::getCategoryManagePermission($kategori);
+        if ($requiredPermission && $user->hasPermission($requiredPermission)) {
+            return;
+        }
+
+        abort(403, "Anda tidak memiliki akses untuk memodifikasi pendaftar pada kategori {$kategori}.");
+    }
+
     public function index()
     {
         return PendaftarTableView::make()->view('pendaftar::index')->showPerPage();
@@ -53,6 +72,7 @@ class PendaftarController extends Controller
 
     public function edit(Pendaftar $pendaftar): View
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         /** @var view-string $view */
         $view = 'pendaftar::edit';
 
@@ -61,6 +81,7 @@ class PendaftarController extends Controller
 
     public function update(Update $request, Pendaftar $pendaftar): RedirectResponse
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $pendaftar->update($request->validated());
 
         return to_route('modules::pendaftar.index')->withSuccess('Pendaftar updated');
@@ -68,6 +89,8 @@ class PendaftarController extends Controller
 
     public function destroy(Pendaftar $pendaftar): RedirectResponse
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
+        
         $pendaftar->delete();
 
         return to_route('modules::pendaftar.index')->withSuccess('Pendaftar deleted');
@@ -261,6 +284,7 @@ class PendaftarController extends Controller
 
     public function updateFoto(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $request->validate([
             'foto' => 'required|image|max:5120'
         ], [
@@ -280,6 +304,7 @@ class PendaftarController extends Controller
 
     public function updateKtp(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $user = auth()->user();
         if (!$user || !($user->hasPermission('*') || $user->hasPermission(Permission::KTP_VIEW))) {
             abort(403, 'Anda tidak memiliki akses untuk memperbarui KTP.');
@@ -304,6 +329,7 @@ class PendaftarController extends Controller
 
     public function updateProvinsi(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $validated = $request->validate([
             'provinsi' => 'nullable|string|max:255',
         ]);
@@ -1315,6 +1341,7 @@ class PendaftarController extends Controller
 
     public function storeKontribusi(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $this->checkManagePermission();
         $request->validate([
             'judul' => 'required|string|max:500',
@@ -1343,6 +1370,7 @@ class PendaftarController extends Controller
 
     public function updateKontribusi(\Illuminate\Http\Request $request, Pendaftar $pendaftar, \App\Models\Kontribusi $kontribusi)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $this->checkManagePermission();
         abort_if(!$kontribusi->is_from_admin, 403, 'Anda tidak dapat mengedit data asli dari pendaftar.');
 
@@ -1372,6 +1400,7 @@ class PendaftarController extends Controller
 
     public function destroyKontribusi(Pendaftar $pendaftar, \App\Models\Kontribusi $kontribusi)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $this->checkManagePermission();
         abort_if(!$kontribusi->is_from_admin, 403, 'Anda tidak dapat menghapus data asli dari pendaftar.');
 
@@ -1381,6 +1410,7 @@ class PendaftarController extends Controller
 
     public function storePenghargaan(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $this->checkManagePermission();
         $request->validate([
             'uraian' => 'required|string|max:500',
@@ -1407,6 +1437,7 @@ class PendaftarController extends Controller
 
     public function updatePenghargaan(\Illuminate\Http\Request $request, Pendaftar $pendaftar, \App\Models\Penghargaan $penghargaan)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $this->checkManagePermission();
         abort_if(!$penghargaan->is_from_admin, 403, 'Anda tidak dapat mengedit data asli dari pendaftar.');
 
@@ -1434,6 +1465,7 @@ class PendaftarController extends Controller
 
     public function destroyPenghargaan(Pendaftar $pendaftar, \App\Models\Penghargaan $penghargaan)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $this->checkManagePermission();
         abort_if(!$penghargaan->is_from_admin, 403, 'Anda tidak dapat menghapus data asli dari pendaftar.');
 
@@ -1497,6 +1529,10 @@ class PendaftarController extends Controller
 
         $savedTahapList = $pendaftar->kertasKerja->pluck('tahap')->filter()->unique()->values()->all();
 
+        $user = auth()->user();
+        $reqPerm = \App\Enums\Permission::getCategoryManagePermission($pendaftar->kategori);
+        $canManage = $user && ($user->hasPermission('*') || ($reqPerm && $user->hasPermission($reqPerm)));
+
         return view('pendaftar::kertas_kerja', compact(
             'pendaftar',
             'items',
@@ -1504,12 +1540,14 @@ class PendaftarController extends Controller
             'totalNilaiAkhir',
             'selectedTahap',
             'availableTahaps',
-            'savedTahapList'
+            'savedTahapList',
+            'canManage'
         ));
     }
 
     public function storeKertasKerja(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
     {
+        $this->checkCategoryPermission($pendaftar->kategori);
         $selectedTahap = $request->input('tahap', $pendaftar->status);
 
         if (!str_starts_with($selectedTahap ?? '', 'Lolos') && !str_starts_with($pendaftar->status ?? '', 'Lolos')) {

@@ -416,9 +416,11 @@
                         class="ui button green" data-no-loader="true" target="_blank">
                         <i class="icon file excel"></i> Cetak Excel
                     </a>
+                    @if($canManage)
                     <button type="submit" class="ui button primary">
                         <i class="icon save"></i> Simpan Penilaian
                     </button>
+                    @endif
                 </div>
             </div>
 
@@ -453,7 +455,7 @@
                                         value="{{ $item['nilai'] }}" min="10" max="100"
                                         class="ui input nilai-input" data-index="{{ $index }}"
                                         data-bobot="{{ $item['bobot'] }}" placeholder="10-100"
-                                        onwheel="this.blur()">
+                                        onwheel="this.blur()" style="{{ !$canManage ? 'background-color: #f1f5f9;' : '' }}" @if(!$canManage) disabled @endif>
                                 </td>
                                 <td style="text-align: center;">
                                     <span class="ui badge basic label">{{ $item['bobot'] }}%</span>
@@ -465,10 +467,10 @@
                                 </td>
                                 @if($index === 0)
                                 <td rowspan="{{ count($items) }}" class="cell-textarea" style="vertical-align: top;">
-                                    <textarea name="global_catatan_juri" class="kk-textarea" placeholder="Catatan juri..." style="height: 100%; min-height: 200px;">{{ $item['catatan_juri'] }}</textarea>
+                                    <textarea name="global_catatan_juri" class="kk-textarea" placeholder="Catatan juri..." style="height: 100%; min-height: 200px;{{ !$canManage ? ' background-color: #f1f5f9;' : '' }}" @if(!$canManage) disabled @endif>{{ $item['catatan_juri'] }}</textarea>
                                 </td>
                                 <td rowspan="{{ count($items) }}" class="cell-textarea" style="vertical-align: top;">
-                                    <textarea name="global_tracking_media" class="kk-textarea" placeholder="Link / Catatan media..." style="height: 100%; min-height: 200px;">{{ $item['tracking_media'] }}</textarea>
+                                    <textarea name="global_tracking_media" class="kk-textarea" placeholder="Link / Catatan media..." style="height: 100%; min-height: 200px;{{ !$canManage ? ' background-color: #f1f5f9;' : '' }}" @if(!$canManage) disabled @endif>{{ $item['tracking_media'] }}</textarea>
                                 </td>
                                 <td rowspan="{{ count($items) }}" style="vertical-align: top;">
                                     <div id="dd-preview-container-global">
@@ -520,11 +522,13 @@
                                             </div>
                                         @endforeach
                                     </div>
+                                    @if($canManage)
                                     <button type="button" class="ui button mini basic teal"
                                         style="margin-top: 0.3rem; width: 100%;"
                                         onclick="openDataDukungModal('global')">
                                         <i class="icon plus"></i> Pilih / Edit Data Dukung
                                     </button>
+                                    @endif
 
                                     <!-- Hidden Inputs Container for Data Dukung -->
                                     <div id="dd-inputs-container-global">
@@ -606,9 +610,11 @@
                         class="ui button large green" data-no-loader="true" target="_blank">
                         <i class="icon file excel"></i> Cetak Excel
                     </a>
+                    @if($canManage)
                     <button type="submit" class="ui button large primary">
                         <i class="icon save"></i> Simpan Penilaian
                     </button>
+                    @endif
                 </div>
             </div>
         </form>
@@ -939,11 +945,25 @@
             let currentAspectIndex = null;
 
             document.addEventListener('DOMContentLoaded', function() {
+                // Only start autosave if user has permission to save
+                if (!@json($canManage)) {
+                    return; // Skip autosave initialization if no permission
+                }
+                
                 // Auto calculate total on score input
                 const scoreInputs = document.querySelectorAll('.nilai-input');
                 scoreInputs.forEach(input => {
                     input.addEventListener('input', function() {
                         calculateTotals();
+                    });
+
+                    input.addEventListener('change', function() {
+                        let val = parseFloat(this.value);
+                        if (!isNaN(val)) {
+                            if (val > 100) this.value = 100;
+                            else if (val < 10) this.value = 10;
+                            calculateTotals();
+                        }
                     });
                 });
 

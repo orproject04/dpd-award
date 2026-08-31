@@ -28,10 +28,17 @@ class PendaftarTableView extends CustomTableView
             $query = $filter->apply($query, $value);
         }
 
+        $hasRestrictedView = auth()->check() && auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        $visibleStatuses = "'Lolos ke Tahap 50 Besar', 'Lolos ke Tahap 10 Besar', 'Lolos ke Tahap 3 Besar', 'Lolos ke Tahap Wawancara', 'Lolos ke Tahap Final'";
+        
+        $nilaiSelect = $hasRestrictedView 
+            ? "CASE WHEN pendaftar.status IN ($visibleStatuses) THEN COALESCE(SUM(total), 0) ELSE -1 END"
+            : "COALESCE(SUM(total), 0)";
+
         return $query
             ->withCount(['kontribusi', 'penghargaan'])
             ->addSelect([
-                'nilai' => \App\Models\PendaftarKertasKerja::selectRaw('COALESCE(SUM(total), 0)')
+                'nilai' => \App\Models\PendaftarKertasKerja::selectRaw($nilaiSelect)
                     ->whereColumn('pendaftar_kertas_kerja.pendaftar_id', 'pendaftar.id')
                     ->whereColumn('pendaftar_kertas_kerja.tahap', 'pendaftar.status')
             ])
@@ -43,6 +50,8 @@ class PendaftarTableView extends CustomTableView
 
     public function columns(): array
     {
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+
         return [
             Numbering::make('No'),
             // Raw::make(
@@ -112,17 +121,23 @@ class PendaftarTableView extends CustomTableView
                 'Lolos ke Tahap Wawancara' => 'purple',
                 'Lolos ke Tahap Final' => 'teal',
             ])->addClass('large')->sortable(),
-            Raw::make(function ($data) {
+            Raw::make(function ($data) use ($hasRestrictedView) {
+                $statusRank = \App\Models\Pendaftar::getStatusRank($data->status);
+                
+                if ($hasRestrictedView && $statusRank < 2) {
+                    return "<span style='display:block;text-align:center;font-weight:bold;color:#94a3b8;'>-</span>";
+                }
+
                 return "<span style='display:block;text-align:center;font-weight:bold;color:#0284c7;'>" . number_format($data->nilai ?? 0, 2) . "</span>";
             }, 'Nilai')->sortable('nilai'),
 
-            Raw::make(function ($data) {
+            Raw::make(function ($data) use ($hasRestrictedView) {
                 $reqPerm = \App\Enums\Permission::getCategoryManagePermission($data->kategori);
                 $canManage = auth()->user()->hasPermission('*') || ($reqPerm && auth()->user()->hasPermission($reqPerm));
                 
                 $actions = collect(['show' => route('modules::pendaftar.show', $data->id)]);
                 
-                if ($canManage) {
+                if ($canManage && !$hasRestrictedView) {
                     $actions->put('destroy', route('modules::pendaftar.destroy', $data->id));
                 }
                 

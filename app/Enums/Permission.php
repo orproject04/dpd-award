@@ -25,6 +25,8 @@ final class Permission extends Enum
     const PANGAN_MANAGE = 'pangan.manage';
     const SENI_MANAGE = 'seni.manage';
 
+    public const PENILAIAN_VIEW_TERBATAS = 'penilaian.view_terbatas';
+
     public static function getCategoryManagePermission(string $kategori): ?string
     {
         return match ($kategori) {

@@ -1,4 +1,7 @@
 <x-volt-app :title="'Detail Pendaftar'">
+    @php
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+    @endphp
     <x-volt-backlink url="{{ session('pendaftar_index_url', route('modules::pendaftar.index')) }}" />
 
     @php
@@ -669,12 +672,12 @@
                                     <div id="provinsi-display"
                                         style="display: flex; justify-content: space-between; align-items: center;">
                                         <span>{{ $pendaftar->provinsi_with_wilayah }}</span>
-                                        @if($canManage)
+                                        @if($canManage && !$hasRestrictedView)
                                             <button type="button" class="ui mini button basic"
                                                 onclick="document.getElementById('provinsi-form-container').style.display='block'; document.getElementById('provinsi-display').style.display='none';">Edit</button>
                                         @endif
                                     </div>
-                                    @if($canManage)
+                                    @if($canManage && !$hasRestrictedView)
                                         <div id="provinsi-form-container" style="display: none;">
                                             <form id="provinsi-form"
                                                 action="{{ route('modules::pendaftar.update-provinsi', $pendaftar->id) }}"
@@ -1222,7 +1225,14 @@
             {{-- ═══════════════════════ KOLOM KANAN ══════════════════════ --}}
             <div class="five wide column">
 
-                @if (str_starts_with($pendaftar->status ?? '', 'Lolos'))
+                @php
+                    $statusRank = \App\Models\Pendaftar::getStatusRank($pendaftar->status);
+                    $showKertasKerja = str_starts_with($pendaftar->status ?? '', 'Lolos');
+                    if ($hasRestrictedView && $statusRank < 2) {
+                        $showKertasKerja = false;
+                    }
+                @endphp
+                @if ($showKertasKerja)
                     {{-- ── Kertas Kerja Penilaian ──────────────────────────── --}}
                     <div class="show-card" style="border: 2px solid #0284c7; background: #f0f9ff;">
                         <div class="show-card-header"
@@ -1315,85 +1325,98 @@
 
                         {{-- Update status form --}}
                         @if($canManage)
-                            <div x-data="{ showModal: false }">
-                                <form class="status-update-form" x-ref="statusForm"
-                                    action="{{ route('modules::pendaftar.update-status', $pendaftar->id) }}" method="POST">
-                                    @csrf
-                                    <div
-                                        style="font-size:1rem; font-weight:700; color:#64748b;  letter-spacing:.06em; margin-bottom:.5rem;">
-                                        Ubah Status Pendaftar</div>
+                            @php
+                                $pendaftarRank = \App\Models\Pendaftar::getStatusRank($pendaftar->status);
+                                $disableStatusEdit = $hasRestrictedView && $pendaftarRank < 2;
+                            @endphp
+                            
+                            @if(!$disableStatusEdit)
+                                <div x-data="{ showModal: false }">
+                                    <form class="status-update-form" x-ref="statusForm"
+                                        action="{{ route('modules::pendaftar.update-status', $pendaftar->id) }}" method="POST">
+                                        @csrf
+                                        <div
+                                            style="font-size:1rem; font-weight:700; color:#64748b;  letter-spacing:.06em; margin-bottom:.5rem;">
+                                            Ubah Status Pendaftar</div>
 
-                                    <input type="hidden" name="status" id="status-input"
-                                        value="{{ $pendaftar->status ?? 'Diajukan' }}">
-                                    <div class="custom-dropdown" id="status-dropdown">
-                                        <div class="custom-dropdown-trigger">
-                                            <div>
-                                                <span class="status-dot {{ $statusColor }}"></span>
-                                                <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
-                                            </div>
-                                            <i class="chevron down icon"></i>
-                                        </div>
-                                        <div class="custom-dropdown-menu">
-                                            @foreach ($statuses as $status)
-                                                @php
-                                                    $optColor = match ($status) {
-                                                        'Tidak Lolos' => 'red',
-                                                        'Diajukan' => 'blue',
-                                                        'Lolos Verifikasi Berkas' => 'yellow',
-                                                        'Lolos ke Tahap 50 Besar' => 'yellow',
-                                                        'Lolos ke Tahap 10 Besar' => 'yellow',
-                                                        'Lolos ke Tahap 3 Besar' => 'yellow',
-                                                        'Lolos ke Tahap Wawancara' => 'purple',
-                                                        'Lolos ke Tahap Final' => 'teal',
-                                                        default => 'grey',
-                                                    };
-                                                @endphp
-                                                <div class="custom-dropdown-item {{ ($pendaftar->status ?? 'Diajukan') === $status ? 'active' : '' }}"
-                                                    data-value="{{ $status }}" data-color="{{ $optColor }}">
-                                                    <span class="status-dot {{ $optColor }}"></span>
-                                                    <span class="item-text">{{ $status }}</span>
+                                        <input type="hidden" name="status" id="status-input"
+                                            value="{{ $pendaftar->status ?? 'Diajukan' }}">
+                                        
+                                        <div class="custom-dropdown" id="status-dropdown">
+                                            <div class="custom-dropdown-trigger">
+                                                <div>
+                                                    <span class="status-dot {{ $statusColor }}"></span>
+                                                    <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
                                                 </div>
-                                            @endforeach
+                                                <i class="chevron down icon"></i>
+                                            </div>
+                                            <div class="custom-dropdown-menu">
+                                                @foreach ($statuses as $status)
+                                                    @php
+                                                        $optRank = \App\Models\Pendaftar::getStatusRank($status);
+                                                    @endphp
+                                                    @if($hasRestrictedView && $optRank < 2)
+                                                        @continue
+                                                    @endif
+                                                    @php
+                                                        $optColor = match ($status) {
+                                                            'Tidak Lolos' => 'red',
+                                                            'Diajukan' => 'blue',
+                                                            'Lolos Verifikasi Berkas' => 'yellow',
+                                                            'Lolos ke Tahap 50 Besar' => 'yellow',
+                                                            'Lolos ke Tahap 10 Besar' => 'yellow',
+                                                            'Lolos ke Tahap 3 Besar' => 'yellow',
+                                                            'Lolos ke Tahap Wawancara' => 'purple',
+                                                            'Lolos ke Tahap Final' => 'teal',
+                                                            default => 'grey',
+                                                        };
+                                                    @endphp
+                                                    <div class="custom-dropdown-item {{ ($pendaftar->status ?? 'Diajukan') === $status ? 'active' : '' }}"
+                                                        data-value="{{ $status }}" data-color="{{ $optColor }}">
+                                                        <span class="status-dot {{ $optColor }}"></span>
+                                                        <span class="item-text">{{ $status }}</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <x-volt-button type="button" icon="save" class="primary fluid"
-                                        @click="showModal = true">
-                                        Perbarui Status
-                                    </x-volt-button>
+                                        <x-volt-button type="button" icon="save" class="primary fluid" @click="showModal = true">
+                                            Perbarui Status
+                                        </x-volt-button>
 
-                                    {{-- Modal Keterangan --}}
-                                    <div x-show="showModal"
-                                        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0,0,0,0.6);"
-                                        x-transition>
-                                        <div @click.away="showModal = false"
-                                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 12px; width: 450px; max-width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
-                                            <h3
-                                                style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: #1e293b;">
-                                                <i class="edit icon"></i> Keterangan
-                                            </h3>
+                                        {{-- Modal Keterangan --}}
+                                        <div x-show="showModal"
+                                            style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0,0,0,0.6);"
+                                            x-transition>
+                                            <div @click.away="showModal = false"
+                                                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 12px; width: 450px; max-width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                                                <h3
+                                                    style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: #1e293b;">
+                                                    <i class="edit icon"></i> Keterangan
+                                                </h3>
 
-                                            <div class="ui form">
-                                                <div class="field required">
-                                                    <label>Keterangan</label>
-                                                    <textarea x-ref="keteranganInput" name="keterangan" rows="4" required
-                                                        placeholder="Contoh: Lolos berkas administrasi dan dapat lanjut ke tahap berikutnya..."></textarea>
+                                                <div class="ui form">
+                                                    <div class="field required">
+                                                        <label>Keterangan</label>
+                                                        <textarea x-ref="keteranganInput" name="keterangan" rows="4" required
+                                                            placeholder="Contoh: Lolos berkas administrasi dan dapat lanjut ke tahap berikutnya..."></textarea>
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+                                                    <button type="button" @click="showModal = false"
+                                                        class="ui button basic">Batal</button>
+                                                    <button type="button"
+                                                        @click="if($refs.keteranganInput.reportValidity()) $refs.statusForm.submit()"
+                                                        class="ui button primary"><i class="save icon"></i> Simpan
+                                                    </button>
                                                 </div>
                                             </div>
-
-                                            <div
-                                                style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
-                                                <button type="button" @click="showModal = false"
-                                                    class="ui button basic">Batal</button>
-                                                <button type="button"
-                                                    @click="if($refs.keteranganInput.reportValidity()) $refs.statusForm.submit()"
-                                                    class="ui button primary"><i class="save icon"></i> Simpan
-                                                    Status</button>
-                                            </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
+                                    </form>
+                                </div>
+                            @endif
                         @endif
 
                         <hr class="show-divider">
@@ -1453,7 +1476,7 @@
                                     <i class="image outline icon"></i> Foto tidak diunggah
                                 </div>
                             @endif
-                            @if($canManage)
+                            @if($canManage && !$hasRestrictedView)
                                 <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}" method="POST"
                                     enctype="multipart/form-data" style="margin-top: .6rem;">
                                     @csrf
@@ -1510,7 +1533,7 @@
                                         <i class="id card outline icon"></i> KTP tidak diunggah
                                     </div>
                                 @endif
-                                @if($canManage)
+                                @if($canManage && !$hasRestrictedView)
                                     <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}" method="POST"
                                         enctype="multipart/form-data" style="margin-top: .6rem;">
                                         @csrf
@@ -1572,7 +1595,11 @@
                                     {{ $riwayat->created_at->format('d M Y, H:i') }}
                                 </div>
 
-                                @if ($riwayat->status !== 'Diajukan')
+                                @php
+                                    $riwayatRank = \App\Models\Pendaftar::getStatusRank($riwayat->status);
+                                    $canEditKeterangan = $riwayat->status !== 'Diajukan' && (! $hasRestrictedView || $riwayatRank >= 2);
+                                @endphp
+                                @if ($canEditKeterangan)
                                     <div x-data="{ showForm: false }" style="margin-top: 0.5rem;">
                                         <button type="button" x-show="!showForm" @click="showForm = true"
                                             class="ui button small basic"

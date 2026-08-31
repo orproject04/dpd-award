@@ -89,6 +89,9 @@ class PendaftarController extends Controller
 
     public function destroy(Pendaftar $pendaftar): RedirectResponse
     {
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        abort_if($hasRestrictedView, 403, 'Anda tidak memiliki akses untuk menghapus data ini.');
+
         $this->checkCategoryPermission($pendaftar->kategori);
         
         $pendaftar->delete();
@@ -248,6 +251,12 @@ class PendaftarController extends Controller
         $newStatus = $validated['status'];
         $keterangan = $validated['keterangan'];
 
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        if ($hasRestrictedView) {
+            $optRank = \App\Models\Pendaftar::getStatusRank($newStatus);
+            abort_if($optRank < 2, 403, 'Anda tidak diizinkan mengubah status ke tahap ini.');
+        }
+
         if ($newStatus === $pendaftar->status) {
             // Hanya perbarui keterangan untuk status yang sama
             $latestRiwayat = $pendaftar->riwayats()->where('status', $newStatus)->latest()->first();
@@ -284,6 +293,9 @@ class PendaftarController extends Controller
 
     public function updateFoto(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
     {
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        abort_if($hasRestrictedView, 403, 'Akses dibatasi untuk akun Anda.');
+
         $this->checkCategoryPermission($pendaftar->kategori);
         $request->validate([
             'foto' => 'required|image|max:5120'
@@ -304,6 +316,9 @@ class PendaftarController extends Controller
 
     public function updateKtp(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
     {
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        abort_if($hasRestrictedView, 403, 'Akses dibatasi untuk akun Anda.');
+
         $this->checkCategoryPermission($pendaftar->kategori);
         $user = auth()->user();
         if (!$user || !($user->hasPermission('*') || $user->hasPermission(Permission::KTP_VIEW))) {
@@ -329,6 +344,9 @@ class PendaftarController extends Controller
 
     public function updateProvinsi(Pendaftar $pendaftar, \Illuminate\Http\Request $request)
     {
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        abort_if($hasRestrictedView, 403, 'Akses dibatasi untuk akun Anda.');
+
         $this->checkCategoryPermission($pendaftar->kategori);
         $validated = $request->validate([
             'provinsi' => 'nullable|string|max:255',
@@ -468,7 +486,15 @@ class PendaftarController extends Controller
             $nilai = $pendaftar->kertasKerja
                 ->where('tahap', $status)
                 ->sum('total');
-            $sheetPendaftar->setCellValue('O' . $rowIdx, $nilai);
+            
+            $user = auth()->user();
+            $hasRestrictedView = $user && $user->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !$user->hasPermission('*');
+            
+            if ($hasRestrictedView && \App\Models\Pendaftar::getStatusRank($status) < 2) {
+                $sheetPendaftar->setCellValue('O' . $rowIdx, '-');
+            } else {
+                $sheetPendaftar->setCellValue('O' . $rowIdx, $nilai);
+            }
 
             $keterangan = $pendaftar->riwayats->first()?->keterangan ?? '';
             $sheetPendaftar->setCellValue('P' . $rowIdx, $keterangan);
@@ -1477,6 +1503,12 @@ class PendaftarController extends Controller
 
     public function kertasKerja(\Illuminate\Http\Request $request, Pendaftar $pendaftar)
     {
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        $statusRank = \App\Models\Pendaftar::getStatusRank($pendaftar->status);
+        if ($hasRestrictedView && $statusRank < 2) {
+            abort(403, 'Akses Kertas Kerja Penilaian dibatasi untuk status saat ini.');
+        }
+
         $availableTahaps = [
             'Lolos Verifikasi Berkas',
             'Lolos ke Tahap 50 Besar',
@@ -1686,9 +1718,22 @@ class PendaftarController extends Controller
     {
         $format = $request->query('format', 'excel'); // 'excel' or 'pdf'
 
-        $pendaftars = $this->getFilteredQuery($request)
-            ->where('status', 'like', 'Lolos%')
-            ->pluck('id');
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        $query = $this->getFilteredQuery($request);
+        
+        if ($hasRestrictedView) {
+            $query->whereIn('status', [
+                'Lolos ke Tahap 50 Besar',
+                'Lolos ke Tahap 10 Besar',
+                'Lolos ke Tahap 3 Besar',
+                'Lolos ke Tahap Wawancara',
+                'Lolos ke Tahap Final'
+            ]);
+        } else {
+            $query->where('status', 'like', 'Lolos%');
+        }
+
+        $pendaftars = $query->pluck('id');
 
         if ($pendaftars->isEmpty()) {
             return response()->json(['success' => false, 'message' => 'Tidak ada data pendaftar (yang lolos verifikasi) untuk diekspor.']);

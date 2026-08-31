@@ -1260,7 +1260,7 @@
                 @php
                     $statusRank = \App\Models\Pendaftar::getStatusRank($pendaftar->status);
                     $showKertasKerja = str_starts_with($pendaftar->status ?? '', 'Lolos');
-                    if ($hasRestrictedView && $statusRank < 1) {
+                    if ($hasRestrictedView && $statusRank < 2) {
                         $showKertasKerja = false;
                     }
                 @endphp
@@ -1362,7 +1362,7 @@
                         @if ($canManage)
                             @php
                                 $pendaftarRank = \App\Models\Pendaftar::getStatusRank($pendaftar->status);
-                                $disableStatusEdit = $hasRestrictedView && $pendaftarRank < 1;
+                                $disableStatusEdit = $hasRestrictedView && $pendaftarRank < 2;
                             @endphp
 
                             @if (!$disableStatusEdit)
@@ -1392,7 +1392,7 @@
                                                     @php
                                                         $optRank = \App\Models\Pendaftar::getStatusRank($status);
                                                     @endphp
-                                                    @if ($hasRestrictedView && $optRank < 1)
+                                                    @if ($hasRestrictedView && $optRank < 2 && $status !== 'Tidak Lolos')
                                                         @continue
                                                     @endif
                                                     @php
@@ -1642,7 +1642,7 @@
                                 @php
                                     $riwayatRank = \App\Models\Pendaftar::getStatusRank($riwayat->status);
                                     $canEditKeterangan =
-                                        $riwayat->status !== 'Diajukan' && (!$hasRestrictedView || $riwayatRank >= 2);
+                                        $riwayat->status !== 'Diajukan' && (!$hasRestrictedView || $riwayatRank >= 3);
                                 @endphp
                                 @if ($canEditKeterangan)
                                     <div x-data="{ showForm: false }" style="margin-top: 0.5rem;">

@@ -254,7 +254,7 @@ class PendaftarController extends Controller
         $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
         if ($hasRestrictedView) {
             $optRank = \App\Models\Pendaftar::getStatusRank($newStatus);
-            abort_if($optRank < 2, 403, 'Anda tidak diizinkan mengubah status ke tahap ini.');
+            abort_if($optRank < 2 && $newStatus !== 'Tidak Lolos', 403, 'Anda tidak diizinkan mengubah status ke tahap ini.');
         }
 
         if ($newStatus === $pendaftar->status) {
@@ -1192,6 +1192,12 @@ class PendaftarController extends Controller
 
         if ($riwayat->status === 'Diajukan') {
             return back()->withError('Keterangan untuk status Diajukan tidak dapat diubah.');
+        }
+
+        $riwayatRank = \App\Models\Pendaftar::getStatusRank($riwayat->status);
+        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        if ($hasRestrictedView && $riwayatRank < 3) {
+            abort(403, 'Anda tidak diizinkan mengubah keterangan untuk status ini.');
         }
 
         $riwayat->update([

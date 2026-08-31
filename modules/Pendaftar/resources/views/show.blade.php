@@ -1,6 +1,8 @@
 <x-volt-app :title="'Detail Pendaftar'">
     @php
-        $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        $hasRestrictedView =
+            auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) &&
+            !auth()->user()->hasPermission('*');
     @endphp
     <x-volt-backlink url="{{ session('pendaftar_index_url', route('modules::pendaftar.index')) }}" />
 
@@ -59,14 +61,11 @@
             /* ─── Page Chrome ─────────────────────────────────────── */
             .show-page {
                 --accent:
-                    {{ $themeColor }}
-                ;
+                    {{ $themeColor }};
                 --accent-hover:
-                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }}
-                ;
+                    {{ hexToRgba(config('laravolt.ui.color'), 1.0) }};
                 --accent-light:
-                    {{ $themeColorLight }}
-                ;
+                    {{ $themeColorLight }};
                 --radius: 10px;
             }
 
@@ -672,22 +671,24 @@
                                     <div id="provinsi-display"
                                         style="display: flex; justify-content: space-between; align-items: center;">
                                         <span>{{ $pendaftar->provinsi_with_wilayah }}</span>
-                                        @if($canManage && !$hasRestrictedView)
+                                        @if ($canManage && !$hasRestrictedView)
                                             <button type="button" class="ui mini button basic"
                                                 onclick="document.getElementById('provinsi-form-container').style.display='block'; document.getElementById('provinsi-display').style.display='none';">Edit</button>
                                         @endif
                                     </div>
-                                    @if($canManage && !$hasRestrictedView)
+                                    @if ($canManage && !$hasRestrictedView)
                                         <div id="provinsi-form-container" style="display: none;">
                                             <form id="provinsi-form"
                                                 action="{{ route('modules::pendaftar.update-provinsi', $pendaftar->id) }}"
                                                 method="POST" class="ui form mini">
                                                 @csrf
-                                                <div style="display: flex; gap: 8px; width: 100%; align-items: stretch;">
+                                                <div
+                                                    style="display: flex; gap: 8px; width: 100%; align-items: stretch;">
                                                     <div style="flex-grow: 1;">
                                                         <select name="provinsi" class="ui fluid search dropdown">
                                                             @foreach (\App\Models\Pendaftar::getProvinsiList() as $val => $label)
-                                                                <option value="{{ $val }}" {{ $pendaftar->provinsi == $val ? 'selected' : '' }}>
+                                                                <option value="{{ $val }}"
+                                                                    {{ $pendaftar->provinsi == $val ? 'selected' : '' }}>
                                                                     {{ $label }}
                                                                 </option>
                                                             @endforeach
@@ -757,7 +758,10 @@
                             <div class="card-icon"><i class="lightbulb outline icon" style="margin:0"></i></div>
                             <h3 style="margin:0">Kontribusi / Inovasi</h3>
                         </div>
-                        @if ($canManage && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
+                        @if (
+                            $canManage &&
+                                (auth()->user()->hasPermission('*') ||
+                                    auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
                             <button type="button" class="ui mini blue button"
                                 onclick="$('#modal-add-kontribusi').modal('show')">
                                 <i class="plus icon"></i> Tambah
@@ -767,18 +771,23 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->kontribusi as $index => $kontribusi)
                             <div class="accordion-item">
-                                <div class="accordion-trigger" data-acc="kontribusi-{{ $index }}" tabindex="0" onkeypress="if(event.key==='Enter') this.click();">
+                                <div class="accordion-trigger" data-acc="kontribusi-{{ $index }}" tabindex="0"
+                                    onkeypress="if(event.key==='Enter') this.click();">
                                     <span>
-                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span
+                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ $kontribusi->judul }}
                                     </span>
                                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                                         @if (
-                                                $kontribusi->is_from_admin &&
-                                                $canManage && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
-                                            )
-                                            <button type="button" class="ui mini icon button orange" style="margin:0; padding: 0.4rem 0.5rem;"
-                                                onclick="event.stopPropagation(); $('#modal-edit-kontribusi-{{ $kontribusi->id }}').modal('show')" title="Edit">
+                                            $kontribusi->is_from_admin &&
+                                                $canManage &&
+                                                (auth()->user()->hasPermission('*') ||
+                                                    auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
+                                            <button type="button" class="ui mini icon button orange"
+                                                style="margin:0; padding: 0.4rem 0.5rem;"
+                                                onclick="event.stopPropagation(); $('#modal-edit-kontribusi-{{ $kontribusi->id }}').modal('show')"
+                                                title="Edit">
                                                 <i class="edit icon" style="margin:0;"></i>
                                             </button>
                                             <form id="form-delete-kontribusi-{{ $kontribusi->id }}"
@@ -786,14 +795,18 @@
                                                 method="POST" style="margin:0;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="ui mini icon button red" style="margin:0; padding: 0.4rem 0.5rem;"
-                                                    onclick="event.stopPropagation(); confirmDelete('form-delete-kontribusi-{{ $kontribusi->id }}', 'Apakah Anda yakin ingin menghapus kontribusi ini?')" title="Hapus">
+                                                <button type="button" class="ui mini icon button red"
+                                                    style="margin:0; padding: 0.4rem 0.5rem;"
+                                                    onclick="event.stopPropagation(); confirmDelete('form-delete-kontribusi-{{ $kontribusi->id }}', 'Apakah Anda yakin ingin menghapus kontribusi ini?')"
+                                                    title="Hapus">
                                                     <i class="trash icon" style="margin:0;"></i>
                                                 </button>
                                             </form>
                                         @endif
-                                        <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-left: 0.5rem;">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        <svg class="acc-chevron" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" style="margin-left: 0.5rem;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
                                         </svg>
                                     </div>
                                 </div>
@@ -830,7 +843,8 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}"
+                                                                        class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Kontribusi {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -861,12 +875,13 @@
                                         @endif
 
                                         @if (
-                                                $kontribusi->is_from_admin &&
-                                                $canManage && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
-                                            )
-
+                                            $kontribusi->is_from_admin &&
+                                                $canManage &&
+                                                (auth()->user()->hasPermission('*') ||
+                                                    auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
                                             {{-- MODAL EDIT KONTRIBUSI --}}
-                                            <div class="ui modal small" id="modal-edit-kontribusi-{{ $kontribusi->id }}"
+                                            <div class="ui modal small"
+                                                id="modal-edit-kontribusi-{{ $kontribusi->id }}"
                                                 style="text-align: left;">
                                                 <i class="close icon"></i>
                                                 <div class="header">Edit Kontribusi / Inovasi</div>
@@ -878,18 +893,17 @@
                                                         @method('PUT')
                                                         <div class="field required">
                                                             <label>Judul</label>
-                                                            <input type="text" name="judul" value="{{ $kontribusi->judul }}"
-                                                                maxlength="500" required>
+                                                            <input type="text" name="judul"
+                                                                value="{{ $kontribusi->judul }}" maxlength="500"
+                                                                required>
                                                         </div>
                                                         <div class="field required">
                                                             <label>Deskripsi</label>
-                                                            <textarea name="deskripsi"
-                                                                required>{{ $kontribusi->deskripsi }}</textarea>
+                                                            <textarea name="deskripsi" required>{{ $kontribusi->deskripsi }}</textarea>
                                                         </div>
                                                         <div class="field required">
                                                             <label>Dampak</label>
-                                                            <textarea name="dampak"
-                                                                required>{{ $kontribusi->dampak }}</textarea>
+                                                            <textarea name="dampak" required>{{ $kontribusi->dampak }}</textarea>
                                                         </div>
                                                         <div class="field">
                                                             <label>Bukti Dukung (Ganti File - Opsional)</label>
@@ -898,10 +912,11 @@
                                                                     accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                                                     onchange="handleFileChange(this)">
                                                                 <div class="upload-icon-circle">
-                                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                                        width="28" height="28">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                                            stroke-width="2"
+                                                                    <svg fill="none" stroke="currentColor"
+                                                                        viewBox="0 0 24 24" width="28"
+                                                                        height="28">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
                                                                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
                                                                         </path>
                                                                     </svg>
@@ -919,7 +934,8 @@
                                                 </div>
                                                 <div class="actions">
                                                     <div class="ui cancel button">Batal</div>
-                                                    <button type="submit" form="form-edit-kontribusi-{{ $kontribusi->id }}"
+                                                    <button type="submit"
+                                                        form="form-edit-kontribusi-{{ $kontribusi->id }}"
                                                         class="ui primary button">Simpan Perubahan</button>
                                                 </div>
                                             </div>
@@ -937,10 +953,8 @@
                 </div>
 
                 {{-- MODAL ADD KONTRIBUSI --}}
-                @if (
-                        auth()->user()->hasPermission('*') ||
-                        auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)
-                    )
+                @if (auth()->user()->hasPermission('*') ||
+                        auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
                     <div class="ui modal small" id="modal-add-kontribusi">
                         <i class="close icon"></i>
                         <div class="header">Tambah Kontribusi / Inovasi</div>
@@ -968,8 +982,8 @@
                                             accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                             onchange="handleFileChange(this)">
                                         <div class="upload-icon-circle">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="28"
-                                                height="28">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                width="28" height="28">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
                                                 </path>
@@ -997,7 +1011,10 @@
                             <div class="card-icon"><i class="trophy icon" style="margin:0"></i></div>
                             <h3 style="margin:0">Penghargaan</h3>
                         </div>
-                        @if ($canManage && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
+                        @if (
+                            $canManage &&
+                                (auth()->user()->hasPermission('*') ||
+                                    auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
                             <button type="button" class="ui mini blue button"
                                 onclick="$('#modal-add-penghargaan').modal('show')">
                                 <i class="plus icon"></i> Tambah
@@ -1007,18 +1024,23 @@
                     <div class="show-card-body">
                         @forelse($pendaftar->penghargaan as $index => $penghargaan)
                             <div class="accordion-item">
-                                <div class="accordion-trigger" data-acc="penghargaan-{{ $index }}" tabindex="0" onkeypress="if(event.key==='Enter') this.click();">
+                                <div class="accordion-trigger" data-acc="penghargaan-{{ $index }}"
+                                    tabindex="0" onkeypress="if(event.key==='Enter') this.click();">
                                     <span>
-                                        <span style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
+                                        <span
+                                            style="color: var(--accent); margin-right:.4rem;">#{{ $index + 1 }}</span>
                                         {{ \Illuminate\Support\Str::limit($penghargaan->uraian, 60) }}
                                     </span>
                                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                                         @if (
-                                                $penghargaan->is_from_admin &&
-                                                $canManage && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
-                                            )
-                                            <button type="button" class="ui mini icon button orange" style="margin:0; padding: 0.4rem 0.5rem;"
-                                                onclick="event.stopPropagation(); $('#modal-edit-penghargaan-{{ $penghargaan->id }}').modal('show')" title="Edit">
+                                            $penghargaan->is_from_admin &&
+                                                $canManage &&
+                                                (auth()->user()->hasPermission('*') ||
+                                                    auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
+                                            <button type="button" class="ui mini icon button orange"
+                                                style="margin:0; padding: 0.4rem 0.5rem;"
+                                                onclick="event.stopPropagation(); $('#modal-edit-penghargaan-{{ $penghargaan->id }}').modal('show')"
+                                                title="Edit">
                                                 <i class="edit icon" style="margin:0;"></i>
                                             </button>
                                             <form id="form-delete-penghargaan-{{ $penghargaan->id }}"
@@ -1026,14 +1048,18 @@
                                                 method="POST" style="margin:0;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="ui mini icon button red" style="margin:0; padding: 0.4rem 0.5rem;"
-                                                    onclick="event.stopPropagation(); confirmDelete('form-delete-penghargaan-{{ $penghargaan->id }}', 'Apakah Anda yakin ingin menghapus penghargaan ini?')" title="Hapus">
+                                                <button type="button" class="ui mini icon button red"
+                                                    style="margin:0; padding: 0.4rem 0.5rem;"
+                                                    onclick="event.stopPropagation(); confirmDelete('form-delete-penghargaan-{{ $penghargaan->id }}', 'Apakah Anda yakin ingin menghapus penghargaan ini?')"
+                                                    title="Hapus">
                                                     <i class="trash icon" style="margin:0;"></i>
                                                 </button>
                                             </form>
                                         @endif
-                                        <svg class="acc-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-left: 0.5rem;">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        <svg class="acc-chevron" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" style="margin-left: 0.5rem;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
                                         </svg>
                                     </div>
                                 </div>
@@ -1046,7 +1072,8 @@
                                         <hr class="detail-field-divider">
                                         <div class="detail-field">
                                             <div class="detail-field-label">Tahun</div>
-                                            <div class="detail-field-value" style="font-weight:700; font-size:1.05rem;">
+                                            <div class="detail-field-value"
+                                                style="font-weight:700; font-size:1.05rem;">
                                                 {{ $penghargaan->tahun }}
                                             </div>
                                         </div>
@@ -1065,7 +1092,8 @@
                                                                         Berkas {{ $fileIdx + 1 }}</div>
                                                                 @endif
                                                                 @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
+                                                                    <img src="{{ $buktiFileUrl }}"
+                                                                        class="bukti-img lightbox-trigger"
                                                                         data-src="{{ $buktiFileUrl }}"
                                                                         alt="Bukti Penghargaan {{ $index + 1 }} - {{ $fileIdx + 1 }}">
                                                                 @elseif($isPdf($buktiFile))
@@ -1098,12 +1126,13 @@
 
 
                                         @if (
-                                                $penghargaan->is_from_admin &&
-                                                $canManage && (auth()->user()->hasPermission('*') || auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
-                                            )
-
+                                            $penghargaan->is_from_admin &&
+                                                $canManage &&
+                                                (auth()->user()->hasPermission('*') ||
+                                                    auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)))
                                             {{-- MODAL EDIT PENGHARGAAN --}}
-                                            <div class="ui modal small" id="modal-edit-penghargaan-{{ $penghargaan->id }}"
+                                            <div class="ui modal small"
+                                                id="modal-edit-penghargaan-{{ $penghargaan->id }}"
                                                 style="text-align: left;">
                                                 <i class="close icon"></i>
                                                 <div class="header">Edit Penghargaan</div>
@@ -1115,13 +1144,15 @@
                                                         @method('PUT')
                                                         <div class="field required">
                                                             <label>Uraian Penghargaan</label>
-                                                            <input type="text" name="uraian" value="{{ $penghargaan->uraian }}"
-                                                                maxlength="500" required>
+                                                            <input type="text" name="uraian"
+                                                                value="{{ $penghargaan->uraian }}" maxlength="500"
+                                                                required>
                                                         </div>
                                                         <div class="field required">
                                                             <label>Tahun</label>
-                                                            <input type="number" name="tahun" value="{{ $penghargaan->tahun }}"
-                                                                min="1900" max="{{ date('Y') }}"
+                                                            <input type="number" name="tahun"
+                                                                value="{{ $penghargaan->tahun }}" min="1900"
+                                                                max="{{ date('Y') }}"
                                                                 oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"
                                                                 required>
                                                         </div>
@@ -1132,10 +1163,11 @@
                                                                     accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                                                     onchange="handleFileChange(this)">
                                                                 <div class="upload-icon-circle">
-                                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                                        width="28" height="28">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                                            stroke-width="2"
+                                                                    <svg fill="none" stroke="currentColor"
+                                                                        viewBox="0 0 24 24" width="28"
+                                                                        height="28">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
                                                                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
                                                                         </path>
                                                                     </svg>
@@ -1153,7 +1185,8 @@
                                                 </div>
                                                 <div class="actions">
                                                     <div class="ui cancel button">Batal</div>
-                                                    <button type="submit" form="form-edit-penghargaan-{{ $penghargaan->id }}"
+                                                    <button type="submit"
+                                                        form="form-edit-penghargaan-{{ $penghargaan->id }}"
                                                         class="ui primary button">Simpan Perubahan</button>
                                                 </div>
                                             </div>
@@ -1171,10 +1204,8 @@
                 </div>
 
                 {{-- MODAL ADD PENGHARGAAN --}}
-                @if (
-                        auth()->user()->hasPermission('*') ||
-                        auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE)
-                    )
+                @if (auth()->user()->hasPermission('*') ||
+                        auth()->user()->hasPermission(\App\Enums\Permission::KONTRIBUSI_PENGHARGAAN_MANAGE))
                     <div class="ui modal small" id="modal-add-penghargaan">
                         <i class="close icon"></i>
                         <div class="header">Tambah Penghargaan</div>
@@ -1190,7 +1221,8 @@
                                 <div class="field required">
                                     <label>Tahun</label>
                                     <input type="number" name="tahun" min="1900" max="{{ date('Y') }}"
-                                        oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" required>
+                                        oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);"
+                                        required>
                                 </div>
                                 <div class="field required">
                                     <label>Bukti Dukung (Wajib)</label>
@@ -1199,8 +1231,8 @@
                                             accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                                             onchange="handleFileChange(this)">
                                         <div class="upload-icon-circle">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="28"
-                                                height="28">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                width="28" height="28">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
                                                 </path>
@@ -1228,7 +1260,7 @@
                 @php
                     $statusRank = \App\Models\Pendaftar::getStatusRank($pendaftar->status);
                     $showKertasKerja = str_starts_with($pendaftar->status ?? '', 'Lolos');
-                    if ($hasRestrictedView && $statusRank < 2) {
+                    if ($hasRestrictedView && $statusRank < 1) {
                         $showKertasKerja = false;
                     }
                 @endphp
@@ -1244,7 +1276,9 @@
                         <div class="show-card-body" style="text-align: center;">
                             @php
                                 $currentStatusStr = $pendaftar->status ?? '';
-                                $kkForCurrentStatus = $pendaftar->kertasKerja->filter(function ($kk) use ($currentStatusStr, ) {
+                                $kkForCurrentStatus = $pendaftar->kertasKerja->filter(function ($kk) use (
+                                    $currentStatusStr,
+                                ) {
                                     return $kk->tahap === $currentStatusStr ||
                                         (empty($kk->tahap) && str_starts_with($currentStatusStr, 'Lolos'));
                                 });
@@ -1283,7 +1317,8 @@
                                     @foreach ($savedTahapGroup as $tahapName => $items)
                                         <div
                                             style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; margin-bottom: 0.3rem;">
-                                            <span style="font-weight: 600; color: #334155;">{{ $tahapName }}:</span>
+                                            <span
+                                                style="font-weight: 600; color: #334155;">{{ $tahapName }}:</span>
                                             <div>
                                                 <span
                                                     class="ui label mini compact teal">{{ number_format($items->sum('total'), 2) }}</span>
@@ -1324,16 +1359,17 @@
                         <hr class="show-divider">
 
                         {{-- Update status form --}}
-                        @if($canManage)
+                        @if ($canManage)
                             @php
                                 $pendaftarRank = \App\Models\Pendaftar::getStatusRank($pendaftar->status);
-                                $disableStatusEdit = $hasRestrictedView && $pendaftarRank < 2;
+                                $disableStatusEdit = $hasRestrictedView && $pendaftarRank < 1;
                             @endphp
-                            
-                            @if(!$disableStatusEdit)
+
+                            @if (!$disableStatusEdit)
                                 <div x-data="{ showModal: false }">
                                     <form class="status-update-form" x-ref="statusForm"
-                                        action="{{ route('modules::pendaftar.update-status', $pendaftar->id) }}" method="POST">
+                                        action="{{ route('modules::pendaftar.update-status', $pendaftar->id) }}"
+                                        method="POST">
                                         @csrf
                                         <div
                                             style="font-size:1rem; font-weight:700; color:#64748b;  letter-spacing:.06em; margin-bottom:.5rem;">
@@ -1341,12 +1377,13 @@
 
                                         <input type="hidden" name="status" id="status-input"
                                             value="{{ $pendaftar->status ?? 'Diajukan' }}">
-                                        
+
                                         <div class="custom-dropdown" id="status-dropdown">
                                             <div class="custom-dropdown-trigger">
                                                 <div>
                                                     <span class="status-dot {{ $statusColor }}"></span>
-                                                    <span class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
+                                                    <span
+                                                        class="status-text">{{ $pendaftar->status ?? 'Diajukan' }}</span>
                                                 </div>
                                                 <i class="chevron down icon"></i>
                                             </div>
@@ -1355,7 +1392,7 @@
                                                     @php
                                                         $optRank = \App\Models\Pendaftar::getStatusRank($status);
                                                     @endphp
-                                                    @if($hasRestrictedView && $optRank < 2)
+                                                    @if ($hasRestrictedView && $optRank < 1)
                                                         @continue
                                                     @endif
                                                     @php
@@ -1372,7 +1409,8 @@
                                                         };
                                                     @endphp
                                                     <div class="custom-dropdown-item {{ ($pendaftar->status ?? 'Diajukan') === $status ? 'active' : '' }}"
-                                                        data-value="{{ $status }}" data-color="{{ $optColor }}">
+                                                        data-value="{{ $status }}"
+                                                        data-color="{{ $optColor }}">
                                                         <span class="status-dot {{ $optColor }}"></span>
                                                         <span class="item-text">{{ $status }}</span>
                                                     </div>
@@ -1380,7 +1418,8 @@
                                             </div>
                                         </div>
 
-                                        <x-volt-button type="button" icon="save" class="primary fluid" @click="showModal = true">
+                                        <x-volt-button type="button" icon="save" class="primary fluid"
+                                            @click="showModal = true">
                                             Perbarui Status
                                         </x-volt-button>
 
@@ -1476,9 +1515,9 @@
                                     <i class="image outline icon"></i> Foto tidak diunggah
                                 </div>
                             @endif
-                            @if($canManage && !$hasRestrictedView)
-                                <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}" method="POST"
-                                    enctype="multipart/form-data" style="margin-top: .6rem;">
+                            @if ($canManage && !$hasRestrictedView)
+                                <form action="{{ route('modules::pendaftar.update-foto', $pendaftar->id) }}"
+                                    method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
                                     @csrf
                                     <label class="ui basic button small fluid"
                                         style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
@@ -1508,16 +1547,19 @@
                                             data-src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
                                             alt="KTP Pendaftar">
                                     @elseif($isPdf($ktpRaw))
-                                        <object data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
+                                        <object
+                                            data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
                                             type="application/pdf"
                                             style="width: 100%; height: 300px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
-                                            <iframe src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
+                                            <iframe
+                                                src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
                                                 style="width: 100%; height: 300px; border: none;">
                                                 <p>Browser Anda tidak mendukung pratinjau PDF.</p>
                                             </iframe>
                                         </object>
                                     @else
-                                        <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
+                                        <div
+                                            style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
                                             <i class="file alternate outline icon large"></i><br>Berkas Lainnya
                                         </div>
                                     @endif
@@ -1533,15 +1575,16 @@
                                         <i class="id card outline icon"></i> KTP tidak diunggah
                                     </div>
                                 @endif
-                                @if($canManage && !$hasRestrictedView)
-                                    <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}" method="POST"
-                                        enctype="multipart/form-data" style="margin-top: .6rem;">
+                                @if ($canManage && !$hasRestrictedView)
+                                    <form action="{{ route('modules::pendaftar.update-ktp', $pendaftar->id) }}"
+                                        method="POST" enctype="multipart/form-data" style="margin-top: .6rem;">
                                         @csrf
                                         <label class="ui basic button small fluid"
                                             style="display: flex; align-items: center; justify-content: center; gap: .4rem;">
                                             <i class="upload icon"></i> Unggah / Ganti KTP
                                             <input type="file" name="ktp" style="display: none;"
-                                                onchange="showLoading(); this.form.submit();" accept=".jpg,.jpeg,.png,.pdf">
+                                                onchange="showLoading(); this.form.submit();"
+                                                accept=".jpg,.jpeg,.png,.pdf">
                                         </label>
                                     </form>
                                 @endif
@@ -1591,13 +1634,15 @@
                                 </div>
                                 <div
                                     style="font-size: 12.5px; color: #475569; margin-bottom: 0.75rem; display: inline-flex; align-items: center; background: #f1f5f9; padding: 0.3rem 0.7rem; border-radius: 6px; font-weight: 500;">
-                                    <i class="calendar alternate icon" style="margin-right: 0.4rem; color: #64748b;"></i>
+                                    <i class="calendar alternate icon"
+                                        style="margin-right: 0.4rem; color: #64748b;"></i>
                                     {{ $riwayat->created_at->format('d M Y, H:i') }}
                                 </div>
 
                                 @php
                                     $riwayatRank = \App\Models\Pendaftar::getStatusRank($riwayat->status);
-                                    $canEditKeterangan = $riwayat->status !== 'Diajukan' && (! $hasRestrictedView || $riwayatRank >= 2);
+                                    $canEditKeterangan =
+                                        $riwayat->status !== 'Diajukan' && (!$hasRestrictedView || $riwayatRank >= 2);
                                 @endphp
                                 @if ($canEditKeterangan)
                                     <div x-data="{ showForm: false }" style="margin-top: 0.5rem;">
@@ -1608,13 +1653,13 @@
                                             {{ $riwayat->keterangan ? 'Ubah Keterangan' : 'Tambah Keterangan' }}
                                         </button>
 
-                                        <form action="{{ route('pendaftar.riwayat.update-keterangan', $riwayat->id) }}"
+                                        <form
+                                            action="{{ route('pendaftar.riwayat.update-keterangan', $riwayat->id) }}"
                                             method="POST" x-show="showForm" style="display: none;">
                                             @csrf
                                             <div class="ui form">
                                                 <div class="field" style="margin-bottom: 0.6rem;">
-                                                    <textarea name="keterangan" rows="2"
-                                                        style="font-size: 14px; padding: 0.75rem; line-height: 1.5;"
+                                                    <textarea name="keterangan" rows="2" style="font-size: 14px; padding: 0.75rem; line-height: 1.5;"
                                                         placeholder="Tambahkan keterangan opsional...">{{ $riwayat->keterangan }}</textarea>
                                                 </div>
                                                 <div style="display: flex; gap: 0.5rem;">
@@ -1646,7 +1691,8 @@
                             </div>
                         @endforeach
                         @if (empty($pendaftar->riwayats) || $pendaftar->riwayats->isEmpty())
-                            <div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 1rem 0;">
+                            <div
+                                style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 1rem 0;">
                                 Belum ada riwayat</div>
                         @endif
                     </div>
@@ -1664,19 +1710,19 @@
 
     @push('script')
         <script>
-            (function () {
+            (function() {
                 /* ── Accordion ─────────────────────────────────────── */
-                document.querySelectorAll('.accordion-trigger').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
+                document.querySelectorAll('.accordion-trigger').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
                         var targetId = btn.getAttribute('data-acc');
                         var content = document.getElementById(targetId);
                         var isOpen = content.classList.contains('open');
 
                         /* Close all open accordions */
-                        document.querySelectorAll('.accordion-content.open').forEach(function (el) {
+                        document.querySelectorAll('.accordion-content.open').forEach(function(el) {
                             el.classList.remove('open');
                         });
-                        document.querySelectorAll('.accordion-trigger.open').forEach(function (el) {
+                        document.querySelectorAll('.accordion-trigger.open').forEach(function(el) {
                             el.classList.remove('open');
                         });
 
@@ -1692,7 +1738,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
 
-                document.addEventListener('click', function (e) {
+                document.addEventListener('click', function(e) {
                     var trigger = e.target.closest('.lightbox-trigger');
                     if (!trigger) return;
                     e.preventDefault();
@@ -1701,18 +1747,18 @@
                     lightbox.classList.add('active');
                 });
 
-                lightbox.addEventListener('click', function (e) {
+                lightbox.addEventListener('click', function(e) {
                     if (e.target === lightbox || e.target === lightboxImg) {
                         closeLightbox();
                     }
                 });
 
-                document.addEventListener('keydown', function (e) {
+                document.addEventListener('keydown', function(e) {
                     if (e.key === 'Escape') closeLightbox();
                 });
 
                 /* ── Prevent loader on download links ─────────────── */
-                document.addEventListener('click', function (e) {
+                document.addEventListener('click', function(e) {
                     var link = e.target.closest('a[data-no-loader]');
                     if (!link) return;
                     /* stop the page-loader that base.blade.php attaches */
@@ -1727,13 +1773,13 @@
                     var triggerDot = trigger.querySelector('.status-dot');
                     var triggerText = trigger.querySelector('.status-text');
 
-                    trigger.addEventListener('click', function (e) {
+                    trigger.addEventListener('click', function(e) {
                         e.stopPropagation();
                         dropdown.classList.toggle('active');
                     });
 
-                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (item) {
-                        item.addEventListener('click', function (e) {
+                    dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(item) {
+                        item.addEventListener('click', function(e) {
                             e.stopPropagation();
                             var val = item.getAttribute('data-value');
                             var color = item.getAttribute('data-color');
@@ -1747,7 +1793,7 @@
                             triggerDot.className = 'status-dot ' + color;
 
                             // Set active item class
-                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function (i) {
+                            dropdown.querySelectorAll('.custom-dropdown-item').forEach(function(i) {
                                 i.classList.remove('active');
                             });
                             item.classList.add('active');
@@ -1758,7 +1804,7 @@
                     });
 
                     // Close when clicking outside
-                    document.addEventListener('click', function () {
+                    document.addEventListener('click', function() {
                         dropdown.classList.remove('active');
                     });
                 }
@@ -1768,7 +1814,7 @@
                 var lightbox = document.getElementById('img-lightbox');
                 var lightboxImg = document.getElementById('img-lightbox-img');
                 lightbox.classList.remove('active');
-                setTimeout(function () {
+                setTimeout(function() {
                     lightboxImg.src = '';
                 }, 300);
             }
@@ -1801,18 +1847,18 @@
                 var form = document.getElementById(formId);
                 if (!form) return;
 
-                form.addEventListener('submit', function (e) {
+                form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     if (typeof showLoading === 'function') showLoading();
 
                     fetch(this.action, {
-                        method: 'POST',
-                        body: new FormData(this),
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        }
-                    })
+                            method: 'POST',
+                            body: new FormData(this),
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        })
                         .then(res => res.json())
                         .then(data => {
                             if (typeof hideLoading === 'function') hideLoading();
@@ -1846,7 +1892,7 @@
             }
 
             // 1. Provinsi Form
-            handleAjaxForm('provinsi-form', function (data) {
+            handleAjaxForm('provinsi-form', function(data) {
                 document.querySelector('#provinsi-display span').textContent = data.provinsi_with_wilayah;
                 document.getElementById('provinsi-form-container').style.display = 'none';
                 document.getElementById('provinsi-display').style.display = 'flex';
@@ -1859,7 +1905,7 @@
                 handleAjaxForm('status-form'); // UI is already updated by the custom dropdown click
             }
 
-            window.confirmDelete = function (formId, message) {
+            window.confirmDelete = function(formId, message) {
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         title: 'Apakah Anda yakin?',
@@ -1882,7 +1928,7 @@
                 }
             };
 
-            window.handleFileChange = function (input) {
+            window.handleFileChange = function(input) {
                 if (!input.accumulatedFiles) {
                     input.accumulatedFiles = new DataTransfer();
                 }
@@ -1907,7 +1953,7 @@
                 window.renderFilePreview(input);
             };
 
-            window.removeFile = function (btn, index) {
+            window.removeFile = function(btn, index) {
                 const container = btn.closest('.file-preview-container');
                 const form = container.closest('form');
                 const input = form.querySelector('input[type="file"]');
@@ -1925,7 +1971,7 @@
                 window.renderFilePreview(input);
             };
 
-            window.renderFilePreview = function (input) {
+            window.renderFilePreview = function(input) {
                 let container = input.closest('.field').querySelector('.file-preview-container');
                 if (!container) {
                     container = document.createElement('div');
@@ -1974,7 +2020,7 @@
                 }
             };
 
-            document.addEventListener("wheel", function (event) {
+            document.addEventListener("wheel", function(event) {
                 if (document.activeElement.type === "number") {
                     event.preventDefault();
                 }

@@ -329,7 +329,8 @@
                 <a href="#alur"
                     class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">TIMELINE</a>
                 <a href="#berita-terbaru"
-                    class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">BERITA TERKINI</a>
+                    class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">BERITA
+                    TERKINI</a>
                 <a href="#lacak"
                     class="text-white/80 hover:text-white text-[14px] font-semibold tracking-wider transition-colors">LACAK</a>
                 <a href="#statistik"
@@ -1272,7 +1273,7 @@
                 </div>
 
 
-                <div class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col w-full gap-4 shrink-0">
+                <!-- <div class="p-5 sm:p-6 border-t border-gray-100 bg-gray-50 flex flex-col w-full gap-4 shrink-0">
                     <div class="w-full">
                         <span
                             class="text-[#1da851] font-bold text-[12px] uppercase flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2.5">
@@ -1343,7 +1344,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div> -->
             </div>
         </div>
     </section>

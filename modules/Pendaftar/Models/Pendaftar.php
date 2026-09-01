@@ -21,7 +21,7 @@ class Pendaftar extends Model
     protected $guarded = [];
 
     /** @var array<string> */
-    protected $searchableColumns = ['nomor_registrasi', 'nama'];
+    protected $searchableColumns = ['nomor_registrasi', 'nama', 'email'];
 
     protected $keyType = 'string';
 

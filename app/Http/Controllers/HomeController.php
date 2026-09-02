@@ -230,74 +230,48 @@ final class HomeController
         $provinsiColors['Belum Diisi'] = '#9ca3af'; // Gray color for unfilled
 
         // 14. Review stage stats for "Progres Review Berkas" widget
-        $stageRanks = [
-            'Diajukan' => 0,
-            'Lolos Verifikasi Berkas' => 1,
-            'Lolos ke Tahap 50 Besar' => 2,
-            'Lolos ke Tahap 10 Besar' => 3,
-            'Lolos ke Tahap 3 Besar' => 4,
-            'Lolos ke Tahap Wawancara' => 5,
-            'Lolos ke Tahap Final' => 6,
-        ];
-
-        $pendaftarStatuses = (clone $baseQuery)->select('status', 'status_before')->get();
+        $pendaftarList = (clone $baseQuery)->with('riwayats')->get(['id', 'status', 'status_before']);
 
         $stageDefinitions = [
-            'Verifikasi Berkas' => [
-                'min_rank_total' => 0,
-                'unreviewed_status' => 'Diajukan',
-            ],
-            'Tahap 50 Besar' => [
-                'min_rank_total' => 1,
-                'unreviewed_status' => 'Lolos Verifikasi Berkas',
-            ],
-            'Tahap 10 Besar' => [
-                'min_rank_total' => 2,
-                'unreviewed_status' => 'Lolos ke Tahap 50 Besar',
-            ],
-            'Tahap 3 Besar' => [
-                'min_rank_total' => 3,
-                'unreviewed_status' => 'Lolos ke Tahap 10 Besar',
-            ],
+            'Verifikasi Berkas' => 'Diajukan',
+            'Tahap 50 Besar'    => 'Lolos Verifikasi Berkas',
+            'Tahap 10 Besar'    => 'Lolos ke Tahap 50 Besar',
+            'Tahap 3 Besar'     => 'Lolos ke Tahap 10 Besar',
         ];
 
         $reviewStageStats = [];
 
-        foreach ($stageDefinitions as $stageKey => $def) {
-            $minRankTotal = $def['min_rank_total'];
-            $unreviewedStatus = $def['unreviewed_status'];
-
+        foreach ($stageDefinitions as $stageKey => $targetStatus) {
             $totalBerkas = 0;
+            $sudahDitinjau = 0;
             $belumDitinjau = 0;
 
-            foreach ($pendaftarStatuses as $p) {
+            foreach ($pendaftarList as $p) {
                 $st = $p->status ?? 'Diajukan';
-                $stBefore = $p->status_before ?? $st;
+                $stBefore = $p->status_before;
+                $historyStatuses = $p->riwayats ? $p->riwayats->pluck('status')->toArray() : [];
 
-                if ($st === 'Tidak Lolos') {
-                    $rankBefore = $stageRanks[$stBefore] ?? 0;
-                    if ($rankBefore >= $minRankTotal) {
-                        $totalBerkas++;
-                    }
-                } else {
-                    $rank = $stageRanks[$st] ?? 0;
-                    if ($rank >= $minRankTotal) {
-                        $totalBerkas++;
-                        if ($st === $unreviewedStatus) {
-                            $belumDitinjau++;
-                        }
+                // Cek apakah pendaftar pernah melewati/berada di stage ini berdasarkan riwayat
+                $hasHistory = in_array($targetStatus, $historyStatuses) || $st === $targetStatus || $stBefore === $targetStatus;
+
+                if ($hasHistory) {
+                    $totalBerkas++;
+
+                    if ($st === $targetStatus) {
+                        $belumDitinjau++;
+                    } else {
+                        $sudahDitinjau++;
                     }
                 }
             }
 
-            $sudahDitinjau = max(0, $totalBerkas - $belumDitinjau);
             $rate = $totalBerkas > 0 ? round(($sudahDitinjau / $totalBerkas) * 100, 1) : 0;
 
             $reviewStageStats[$stageKey] = [
-                'total_berkas' => $totalBerkas,
+                'total_berkas'   => $totalBerkas,
                 'sudah_ditinjau' => $sudahDitinjau,
                 'belum_ditinjau' => $belumDitinjau,
-                'rate' => $rate,
+                'rate'           => $rate,
             ];
         }
 

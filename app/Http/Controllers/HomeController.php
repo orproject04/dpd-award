@@ -229,6 +229,78 @@ final class HomeController
         }
         $provinsiColors['Belum Diisi'] = '#9ca3af'; // Gray color for unfilled
 
+        // 14. Review stage stats for "Progres Review Berkas" widget
+        $stageRanks = [
+            'Diajukan' => 0,
+            'Lolos Verifikasi Berkas' => 1,
+            'Lolos ke Tahap 50 Besar' => 2,
+            'Lolos ke Tahap 10 Besar' => 3,
+            'Lolos ke Tahap 3 Besar' => 4,
+            'Lolos ke Tahap Wawancara' => 5,
+            'Lolos ke Tahap Final' => 6,
+        ];
+
+        $pendaftarStatuses = (clone $baseQuery)->select('status', 'status_before')->get();
+
+        $stageDefinitions = [
+            'Verifikasi Berkas' => [
+                'min_rank_total' => 0,
+                'unreviewed_status' => 'Diajukan',
+            ],
+            'Tahap 50 Besar' => [
+                'min_rank_total' => 1,
+                'unreviewed_status' => 'Lolos Verifikasi Berkas',
+            ],
+            'Tahap 10 Besar' => [
+                'min_rank_total' => 2,
+                'unreviewed_status' => 'Lolos ke Tahap 50 Besar',
+            ],
+            'Tahap 3 Besar' => [
+                'min_rank_total' => 3,
+                'unreviewed_status' => 'Lolos ke Tahap 10 Besar',
+            ],
+        ];
+
+        $reviewStageStats = [];
+
+        foreach ($stageDefinitions as $stageKey => $def) {
+            $minRankTotal = $def['min_rank_total'];
+            $unreviewedStatus = $def['unreviewed_status'];
+
+            $totalBerkas = 0;
+            $belumDitinjau = 0;
+
+            foreach ($pendaftarStatuses as $p) {
+                $st = $p->status ?? 'Diajukan';
+                $stBefore = $p->status_before ?? $st;
+
+                if ($st === 'Tidak Lolos') {
+                    $rankBefore = $stageRanks[$stBefore] ?? 0;
+                    if ($rankBefore >= $minRankTotal) {
+                        $totalBerkas++;
+                    }
+                } else {
+                    $rank = $stageRanks[$st] ?? 0;
+                    if ($rank >= $minRankTotal) {
+                        $totalBerkas++;
+                        if ($st === $unreviewedStatus) {
+                            $belumDitinjau++;
+                        }
+                    }
+                }
+            }
+
+            $sudahDitinjau = max(0, $totalBerkas - $belumDitinjau);
+            $rate = $totalBerkas > 0 ? round(($sudahDitinjau / $totalBerkas) * 100, 1) : 0;
+
+            $reviewStageStats[$stageKey] = [
+                'total_berkas' => $totalBerkas,
+                'sudah_ditinjau' => $sudahDitinjau,
+                'belum_ditinjau' => $belumDitinjau,
+                'rate' => $rate,
+            ];
+        }
+
         // Pass all stats to the dashboard view
         return view('home', compact(
             'availableKategories',
@@ -253,7 +325,8 @@ final class HomeController
             'geoProvinsi',
             'geoWilayah',
             'provinsiColors',
-            'statusByKategori'
+            'statusByKategori',
+            'reviewStageStats'
         ));
     }
 

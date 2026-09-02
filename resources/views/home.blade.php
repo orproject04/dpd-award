@@ -486,7 +486,7 @@
                         Pantau seluruh progres seleksi dari satu tempat.
                     </p>
                 </div>
-                <div class="flex gap-4 flex-shrink-0">
+                {{-- <div class="flex gap-4 flex-shrink-0">
                     <div
                         style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:16px 22px;text-align:center;min-width:90px;">
                         <div class="db-head" style="font-size:1.6rem;font-weight:800;color:#fff;">{{ $newToday }}
@@ -513,7 +513,7 @@
                         <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;">Ditinjau
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 
@@ -594,48 +594,70 @@
             </div>
 
             <div class="card p-3 anim-in anim-delay-3">
-                <div class="sec-title">Progres Review Berkas</div>
-                <div class="sec-sub mb-5">Persentase berkas yang telah ditinjau</div>
+                <div class="flex items-center justify-between gap-2 mb-4">
+                    <div style="min-width: 0;">
+                        <div class="sec-title"
+                            style="font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            Progres Review Berkas</div>
+                        <div class="sec-sub"
+                            style="font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            Persentase berkas yang telah ditinjau</div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <select id="reviewStageFilter" onchange="updateReviewStage(this.value)"
+                            style="font-size: 11.5px; font-weight: 600; padding: 5px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #f8fafc; color: var(--text-main); cursor: pointer; outline: none;">
+                            <option value="Verifikasi Berkas">Verifikasi Berkas</option>
+                            <option value="Tahap 50 Besar">Tahap 50 Besar</option>
+                            <option value="Tahap 10 Besar">Tahap 10 Besar</option>
+                            <option value="Tahap 3 Besar">Tahap 3 Besar</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="flex flex-col items-center gap-4">
                     @php
-                        $reviewedCount = $totalPendaftar - $pendingCount;
-                        $reviewRate = $totalPendaftar > 0 ? round(($reviewedCount / $totalPendaftar) * 100, 1) : 0;
+                        $initialStageStats = $reviewStageStats['Verifikasi Berkas'] ?? [
+                            'total_berkas' => $totalPendaftar,
+                            'sudah_ditinjau' => $totalPendaftar - $pendingCount,
+                            'belum_ditinjau' => $pendingCount,
+                            'rate' =>
+                                $totalPendaftar > 0
+                                    ? round((($totalPendaftar - $pendingCount) / $totalPendaftar) * 100, 1)
+                                    : 0,
+                        ];
                         $r = 68;
                         $circ = 2 * pi() * $r;
-                        $dash = ($reviewRate / 100) * $circ;
+                        $dash = ($initialStageStats['rate'] / 100) * $circ;
                         $gap = $circ - $dash;
                     @endphp
                     <div class="ring-wrap">
                         <svg width="180" height="180" viewBox="0 0 180 180">
                             <circle cx="90" cy="90" r="{{ $r }}" fill="none"
                                 stroke="#f0f2f7" stroke-width="18" />
-                            <circle cx="90" cy="90" r="{{ $r }}" fill="none"
-                                stroke="#00b5ad" stroke-width="18"
-                                stroke-dasharray="{{ round($dash, 2) }} {{ round($gap, 2) }}"
-                                stroke-linecap="round" />
+                            <circle id="reviewProgressCircle" cx="90" cy="90" r="{{ $r }}"
+                                fill="none" stroke="#00b5ad" stroke-width="18"
+                                stroke-dasharray="{{ round($dash, 2) }} {{ round($gap, 2) }}" stroke-linecap="round"
+                                style="transition: stroke-dasharray 0.5s ease;" />
                         </svg>
-                        <div class="ring-val">{{ $reviewRate }}%</div>
+                        <div class="ring-val" id="reviewRateText">{{ $initialStageStats['rate'] }}%</div>
                     </div>
                     <div class="w-full space-y-3" style="font-size:13px;">
                         <div class="flex justify-between items-center">
                             <span style="color:var(--text-muted)"><i class="folder open icon"
                                     style="color:#3b82f6;margin-right:6px;"></i>Total Berkas</span>
-                            <strong>{{ number_format($totalPendaftar) }}</strong>
+                            <strong
+                                id="reviewTotalCount">{{ number_format($initialStageStats['total_berkas']) }}</strong>
                         </div>
                         <div class="flex justify-between items-center">
                             <span style="color:var(--text-muted)"><i class="check circle icon"
                                     style="color:#059669;margin-right:6px;"></i>Sudah Ditinjau</span>
-                            <strong style="color:#059669;">{{ number_format($reviewedCount) }}</strong>
+                            <strong style="color:#059669;"
+                                id="reviewReviewedCount">{{ number_format($initialStageStats['sudah_ditinjau']) }}</strong>
                         </div>
                         <div class="flex justify-between items-center">
                             <span style="color:var(--text-muted)"><i class="clock icon"
                                     style="color:#f59e0b;margin-right:6px;"></i>Belum Ditinjau</span>
-                            <strong style="color:#d97706;">{{ number_format($pendingCount) }}</strong>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span style="color:var(--text-muted)"><i class="trophy icon"
-                                    style="color:#8b5cf6;margin-right:6px;"></i>Lolos Final</span>
-                            <strong style="color:#8b5cf6;">{{ number_format($finalistCount) }}</strong>
+                            <strong style="color:#d97706;"
+                                id="reviewPendingCount">{{ number_format($initialStageStats['belum_ditinjau']) }}</strong>
                         </div>
                     </div>
                 </div>
@@ -652,43 +674,44 @@
                     <div class="sec-sub mb-3">Proporsi peserta per bidang penghargaan</div>
                 </div>
                 <div class="flex-grow flex flex-col justify-center">
-                    <div style="position:relative;height:150px;display:flex;align-items:center;justify-content:center;">
+                    <div
+                        style="position:relative;height:150px;display:flex;align-items:center;justify-content:center;">
                         <canvas id="categoryChart"></canvas>
                     </div>
                     <div class="mt-4 space-y-1.5">
                         @php
                             $orderedCategories = [
-                            'Bidang Pendidikan',
-                            'Bidang Kesehatan',
-                            'Bidang Ketahanan Pangan',
-                            'Bidang Seni dan Budaya'
-                        ];
-                        $catColorMap = [
-                            'Bidang Pendidikan' => '#3b82f6',
-                            'Bidang Kesehatan' => '#ec4899',
-                            'Bidang Ketahanan Pangan' => '#10b981',
-                            'Bidang Seni dan Budaya' => '#f59e0b',
-                        ];
-                    @endphp
-                    @foreach ($orderedCategories as $katName)
-                        @php 
-                            $katCount = $kategoriCounts[$katName] ?? 0;
-                            $pct = $totalPendaftar > 0 ? round(($katCount / $totalPendaftar) * 100, 1) : 0; 
-                            $bgColor = $catColorMap[$katName] ?? '#8b5cf6';
+                                'Bidang Pendidikan',
+                                'Bidang Kesehatan',
+                                'Bidang Ketahanan Pangan',
+                                'Bidang Seni dan Budaya',
+                            ];
+                            $catColorMap = [
+                                'Bidang Pendidikan' => '#3b82f6',
+                                'Bidang Kesehatan' => '#ec4899',
+                                'Bidang Ketahanan Pangan' => '#10b981',
+                                'Bidang Seni dan Budaya' => '#f59e0b',
+                            ];
                         @endphp
-                        <div class="flex items-center justify-between" style="font-size:12.5px;">
-                            <div class="flex items-center gap-2">
-                                <div
-                                    style="width:10px;height:10px;border-radius:3px;background:{{ $bgColor }};flex-shrink:0;">
+                        @foreach ($orderedCategories as $katName)
+                            @php
+                                $katCount = $kategoriCounts[$katName] ?? 0;
+                                $pct = $totalPendaftar > 0 ? round(($katCount / $totalPendaftar) * 100, 1) : 0;
+                                $bgColor = $catColorMap[$katName] ?? '#8b5cf6';
+                            @endphp
+                            <div class="flex items-center justify-between" style="font-size:12.5px;">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        style="width:10px;height:10px;border-radius:3px;background:{{ $bgColor }};flex-shrink:0;">
+                                    </div>
+                                    <span
+                                        style="color:var(--text-muted);">{{ Str::limit(str_replace('Bidang ', '', $katName), 20) }}</span>
                                 </div>
-                                <span
-                                    style="color:var(--text-muted);">{{ Str::limit(str_replace('Bidang ', '', $katName), 20) }}</span>
+                                <div class="flex items-center gap-2">
+                                    <span style="font-weight:700;">{{ $katCount }}</span>
+                                    <span style="color:var(--text-muted);">({{ $pct }}%)</span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span style="font-weight:700;">{{ $katCount }}</span>
-                                <span style="color:var(--text-muted);">({{ $pct }}%)</span>
-                            </div>
-                        </div>
                         @endforeach
                         @if (empty($kategoriCounts))
                             <p style="font-size:12px;color:var(--text-muted);text-align:center;">Belum ada data</p>
@@ -720,22 +743,23 @@
                 @endphp
                 <div class="flex-grow flex flex-col justify-center">
                     <div class="space-y-1">
-                    @foreach ($eduOrder as $edu)
-                        @php $eduVal = $pendidikanCounts[$edu] ?? 0; @endphp
-                        @if ($eduVal >= 0)
-                            <div class="flex items-center gap-2 mb-2" style="font-size:11.5px;">
-                                <span
-                                    style="min-width:100px;color:var(--text-muted);white-space:nowrap;">{{ $edu }}</span>
-                                <div style="flex:1;height:6px;background:#f0f2f7;border-radius:6px;overflow:hidden;">
+                        @foreach ($eduOrder as $edu)
+                            @php $eduVal = $pendidikanCounts[$edu] ?? 0; @endphp
+                            @if ($eduVal >= 0)
+                                <div class="flex items-center gap-2 mb-2" style="font-size:11.5px;">
+                                    <span
+                                        style="min-width:100px;color:var(--text-muted);white-space:nowrap;">{{ $edu }}</span>
                                     <div
-                                        style="height:100%;width:{{ round(($eduVal / $maxEdu) * 100) }}%;background:#6366f1;border-radius:6px;transition:width .8s;">
+                                        style="flex:1;height:6px;background:#f0f2f7;border-radius:6px;overflow:hidden;">
+                                        <div
+                                            style="height:100%;width:{{ round(($eduVal / $maxEdu) * 100) }}%;background:#6366f1;border-radius:6px;transition:width .8s;">
+                                        </div>
                                     </div>
+                                    <span
+                                        style="min-width:18px;text-align:right;font-weight:700;">{{ $eduVal }}</span>
                                 </div>
-                                <span
-                                    style="min-width:18px;text-align:right;font-weight:700;">{{ $eduVal }}</span>
-                            </div>
-                        @endif
-                    @endforeach
+                            @endif
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -755,54 +779,63 @@
 
                 <div class="flex-grow flex flex-col justify-center relative">
                     <div id="tab-gender">
-                    <div
-                        style="position:relative;height:180px;display:flex;align-items:center;justify-content:center;">
-                        <canvas id="genderChart"></canvas>
-                    </div>
-                    <div class="mt-3 grid grid-cols-2 gap-2">
-                        @php 
-                            $gColors = ['Laki-laki' => '#60a5fa', 'laki-laki' => '#60a5fa', 'L' => '#60a5fa', 'Perempuan' => '#f472b6', 'perempuan' => '#f472b6', 'P' => '#f472b6']; 
-                            $orderedGenders = ['Laki-laki', 'Perempuan'];
-                        @endphp
-                        @foreach ($orderedGenders as $g)
-                            @php 
-                                $gc = $genderCounts[$g] ?? 0;
-                                $gPct = $totalPendaftar > 0 ? round(($gc / $totalPendaftar) * 100, 1) : 0; 
+                        <div
+                            style="position:relative;height:180px;display:flex;align-items:center;justify-content:center;">
+                            <canvas id="genderChart"></canvas>
+                        </div>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            @php
+                                $gColors = [
+                                    'Laki-laki' => '#60a5fa',
+                                    'laki-laki' => '#60a5fa',
+                                    'L' => '#60a5fa',
+                                    'Perempuan' => '#f472b6',
+                                    'perempuan' => '#f472b6',
+                                    'P' => '#f472b6',
+                                ];
+                                $orderedGenders = ['Laki-laki', 'Perempuan'];
                             @endphp
-                            <div style="background:#f9fafb;border-radius:10px;padding:10px 12px;text-align:center;">
+                            @foreach ($orderedGenders as $g)
+                                @php
+                                    $gc = $genderCounts[$g] ?? 0;
+                                    $gPct = $totalPendaftar > 0 ? round(($gc / $totalPendaftar) * 100, 1) : 0;
+                                @endphp
                                 <div
-                                    style="width:12px;height:12px;border-radius:3px;background:{{ $gColors[$g] ?? '#94a3b8' }};margin:0 auto 4px;">
-                                </div>
-                                <div style="font-weight:800;font-size:1.1rem;font-family:var(--font-head);">
-                                    {{ $gc }}</div>
-                                <div style="font-size:11px;color:var(--text-muted);">{{ $g }}
-                                    ({{ $gPct }}%)
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div id="tab-age" style="display:none;">
-                    <div style="position:relative;height:180px;">
-                        <canvas id="ageChart"></canvas>
-                    </div>
-                    <div class="mt-3 space-y-1">
-                        @foreach ($ageGroups as $ageKey => $ageVal)
-                            @php $agePct = $totalPendaftar > 0 ? round(($ageVal / max(1, $totalPendaftar)) * 100, 1) : 0; @endphp
-                            <div class="flex items-center gap-2" style="font-size:12px;">
-                                <span style="min-width:48px;color:var(--text-muted);">{{ $ageKey }}</span>
-                                <div style="flex:1;height:6px;background:#f0f2f7;border-radius:10px;overflow:hidden;">
+                                    style="background:#f9fafb;border-radius:10px;padding:10px 12px;text-align:center;">
                                     <div
-                                        style="height:100%;width:{{ $agePct }}%;background:#6366f1;border-radius:10px;">
+                                        style="width:12px;height:12px;border-radius:3px;background:{{ $gColors[$g] ?? '#94a3b8' }};margin:0 auto 4px;">
+                                    </div>
+                                    <div style="font-weight:800;font-size:1.1rem;font-family:var(--font-head);">
+                                        {{ $gc }}</div>
+                                    <div style="font-size:11px;color:var(--text-muted);">{{ $g }}
+                                        ({{ $gPct }}%)
                                     </div>
                                 </div>
-                                <span
-                                    style="min-width:24px;text-align:right;font-weight:700;">{{ $ageVal }}</span>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+
+                    <div id="tab-age" style="display:none;">
+                        <div style="position:relative;height:180px;">
+                            <canvas id="ageChart"></canvas>
+                        </div>
+                        <div class="mt-3 space-y-1">
+                            @foreach ($ageGroups as $ageKey => $ageVal)
+                                @php $agePct = $totalPendaftar > 0 ? round(($ageVal / max(1, $totalPendaftar)) * 100, 1) : 0; @endphp
+                                <div class="flex items-center gap-2" style="font-size:12px;">
+                                    <span style="min-width:48px;color:var(--text-muted);">{{ $ageKey }}</span>
+                                    <div
+                                        style="flex:1;height:6px;background:#f0f2f7;border-radius:10px;overflow:hidden;">
+                                        <div
+                                            style="height:100%;width:{{ $agePct }}%;background:#6366f1;border-radius:10px;">
+                                        </div>
+                                    </div>
+                                    <span
+                                        style="min-width:24px;text-align:right;font-weight:700;">{{ $ageVal }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div> <!-- close tab wrapper -->
             </div>
         </div>
@@ -816,9 +849,10 @@
                         <div class="sec-sub">Distribusi peserta di setiap tahap penilaian</div>
                     </div>
                     <div class="ui form m-0">
-                        <select id="statusFilter" class="ui dropdown" onchange="updateStatusChart(this.value)" style="border-radius: var(--radius-md); font-weight: 600; min-width: 220px;">
+                        <select id="statusFilter" class="ui dropdown" onchange="updateStatusChart(this.value)"
+                            style="border-radius: var(--radius-md); font-weight: 600; min-width: 220px;">
                             <option value="Semua Kategori">Semua Kategori</option>
-                            @foreach($availableKategories as $kat)
+                            @foreach ($availableKategories as $kat)
                                 <option value="{{ $kat }}">{{ $kat }}</option>
                             @endforeach
                         </select>
@@ -851,15 +885,18 @@
                         </div>
                     </button>
                     @if (auth()->user()->hasPermission('*'))
-                        <form action="{{ route('pendaftar.generate-history') }}" method="POST" style="margin: 0; width: 100%;">
+                        <form action="{{ route('pendaftar.generate-history') }}" method="POST"
+                            style="margin: 0; width: 100%;">
                             @csrf
                             <button type="submit" class="quick-action"
                                 style="cursor:pointer;border:none;background:none;width:100%;font-family:inherit;text-align:left;">
                                 <div class="quick-action-icon" style="background:#fffbeb;color:#d97706;"><i
                                         class="history icon"></i></div>
                                 <div>
-                                    <div style="font-size:13px;font-weight:700;color:var(--text-main);">Generate Riwayat</div>
-                                    <div style="font-size:11px;color:var(--text-muted);">Generate riwayat untuk pendaftar lama</div>
+                                    <div style="font-size:13px;font-weight:700;color:var(--text-main);">Generate
+                                        Riwayat</div>
+                                    <div style="font-size:11px;color:var(--text-muted);">Generate riwayat untuk
+                                        pendaftar lama</div>
                                 </div>
                             </button>
                         </form>
@@ -889,9 +926,10 @@
                     <div class="sec-sub">Analisis pendaftar berdasarkan pembagian sub wilayah dan provinsi</div>
                 </div>
                 <div class="ui form m-0">
-                    <select id="geoFilter" class="ui dropdown" onchange="updateGeoCharts(this.value)" style="border-radius: var(--radius-md); font-weight: 600; min-width: 220px;">
+                    <select id="geoFilter" class="ui dropdown" onchange="updateGeoCharts(this.value)"
+                        style="border-radius: var(--radius-md); font-weight: 600; min-width: 220px;">
                         <option value="Semua Kategori">Semua Kategori</option>
-                        @foreach($availableKategories as $kat)
+                        @foreach ($availableKategories as $kat)
                             <option value="{{ $kat }}">{{ $kat }}</option>
                         @endforeach
                     </select>
@@ -899,15 +937,20 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                <div class="lg:col-span-1" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
-                    <div id="wilayahTitle" class="sec-title mb-4" style="font-size: 1rem; text-align: center;">Sub Wilayah Semua Kategori</div>
-                    <div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;">
+                <div class="lg:col-span-1"
+                    style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
+                    <div id="wilayahTitle" class="sec-title mb-4" style="font-size: 1rem; text-align: center;">Sub
+                        Wilayah Semua Kategori</div>
+                    <div
+                        style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;">
                         <canvas id="wilayahChart"></canvas>
                     </div>
                     <div id="wilayahList" class="mt-8 space-y-2"></div>
                 </div>
-                <div class="lg:col-span-3" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
-                    <div id="provinsiTitle" class="sec-title mb-4" style="font-size: 1rem;">Persebaran Provinsi Semua Kategori</div>
+                <div class="lg:col-span-3"
+                    style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px;">
+                    <div id="provinsiTitle" class="sec-title mb-4" style="font-size: 1rem;">Persebaran Provinsi Semua
+                        Kategori</div>
                     <div style="height:350px; overflow-y:auto; overflow-x:hidden;" class="scroll-thin pr-2">
                         <div style="position:relative;height:800px;width:100%;">
                             <canvas id="provinsiChart"></canvas>
@@ -1299,136 +1342,151 @@
                 }
             });
 
-        // ── 6. Geographic Distribution ────────────────────────────
-        const geoWilayahData = {!! json_encode($geoWilayah) !!};
-        const geoProvinsiData = {!! json_encode($geoProvinsi) !!};
-        const provinsiColorMap = {!! json_encode($provinsiColors) !!};
-        const wColors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#9ca3af'];
-        const initialKat = 'Semua Kategori';
+            // ── 6. Geographic Distribution ────────────────────────────
+            const geoWilayahData = {!! json_encode($geoWilayah) !!};
+            const geoProvinsiData = {!! json_encode($geoProvinsi) !!};
+            const provinsiColorMap = {!! json_encode($provinsiColors) !!};
+            const wColors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#9ca3af'];
+            const initialKat = 'Semua Kategori';
 
-        function buildTooltipDetail(context, dataObj, prefix) {
-            let currentFilter = document.getElementById('geoFilter').value;
-            let locationName = prefix + context.label;
-            
-            if (currentFilter !== 'Semua Kategori') {
-                return 'Peserta: ' + context.raw;
+            function buildTooltipDetail(context, dataObj, prefix) {
+                let currentFilter = document.getElementById('geoFilter').value;
+                let locationName = prefix + context.label;
+
+                if (currentFilter !== 'Semua Kategori') {
+                    return 'Peserta: ' + context.raw;
+                }
+
+                let lines = ['Total Peserta: ' + context.raw, ''];
+                let cats = ['Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan',
+                    'Bidang Seni dan Budaya'
+                ];
+
+                cats.forEach(cat => {
+                    if (dataObj[cat] && dataObj[cat][locationName] !== undefined) {
+                        lines.push(cat + ': ' + dataObj[cat][locationName]);
+                    }
+                });
+
+                return lines;
             }
 
-            let lines = ['Total Peserta: ' + context.raw, ''];
-            let cats = ['Bidang Pendidikan', 'Bidang Kesehatan', 'Bidang Ketahanan Pangan', 'Bidang Seni dan Budaya'];
-            
-            cats.forEach(cat => {
-                if (dataObj[cat] && dataObj[cat][locationName] !== undefined) {
-                    lines.push(cat + ': ' + dataObj[cat][locationName]);
+            let rawWilayah = geoWilayahData[initialKat];
+            let wLabels = Object.keys(rawWilayah);
+            let wData = Object.values(rawWilayah);
+
+            window.wilayahChart = new Chart(document.getElementById('wilayahChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: wLabels.map(l => l.replace('Sub Wilayah ', '')),
+                    datasets: [{
+                        label: 'Peserta',
+                        data: wData,
+                        backgroundColor: wColors,
+                        borderWidth: 2,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return 'Sub Wilayah ' + context[0].label;
+                                },
+                                label: function(context) {
+                                    return buildTooltipDetail(context, geoWilayahData, 'Sub Wilayah ');
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
                 }
             });
-            
-            return lines;
-        }
 
-        let rawWilayah = geoWilayahData[initialKat];
-        let wLabels = Object.keys(rawWilayah);
-        let wData = Object.values(rawWilayah);
+            let rawProvinsi = geoProvinsiData[initialKat];
+            let pLabels = Object.keys(rawProvinsi);
+            let pData = Object.values(rawProvinsi);
 
-        window.wilayahChart = new Chart(document.getElementById('wilayahChart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: wLabels.map(l => l.replace('Sub Wilayah ', '')),
-                datasets: [{
-                    label: 'Peserta',
-                    data: wData,
-                    backgroundColor: wColors,
-                    borderWidth: 2,
-                    hoverOffset: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { 
-                        display: false
+            let pColors = pLabels.map(l => provinsiColorMap[l] || '#6366f1');
+
+            window.provinsiChart = new Chart(document.getElementById('provinsiChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: pLabels.map(l => l.replace('Provinsi ', '')),
+                    datasets: [{
+                        label: 'Peserta',
+                        data: pData,
+                        backgroundColor: pColors,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return 'Provinsi ' + context[0].label;
+                                },
+                                label: function(context) {
+                                    return buildTooltipDetail(context, geoProvinsiData, 'Provinsi ');
+                                }
+                            }
+                        }
                     },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                return 'Sub Wilayah ' + context[0].label;
+                    scales: {
+                        x: {
+                            ticks: {
+                                precision: 0
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
                             },
-                            label: function(context) {
-                                return buildTooltipDetail(context, geoWilayahData, 'Sub Wilayah ');
+                            ticks: {
+                                autoSkip: false
                             }
                         }
                     }
-                },
-                cutout: '65%'
-            }
-        });
-
-        let rawProvinsi = geoProvinsiData[initialKat];
-        let pLabels = Object.keys(rawProvinsi);
-        let pData = Object.values(rawProvinsi);
-
-        let pColors = pLabels.map(l => provinsiColorMap[l] || '#6366f1');
-
-        window.provinsiChart = new Chart(document.getElementById('provinsiChart').getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: pLabels.map(l => l.replace('Provinsi ', '')),
-                datasets: [{
-                    label: 'Peserta',
-                    data: pData,
-                    backgroundColor: pColors,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                return 'Provinsi ' + context[0].label;
-                            },
-                            label: function(context) {
-                                return buildTooltipDetail(context, geoProvinsiData, 'Provinsi ');
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: { ticks: { precision: 0 } },
-                    y: { grid: { display: false }, ticks: { autoSkip: false } }
                 }
-            }
-        });
+            });
 
-        // Update charts dynamically without reload
-        const katColors = {
-            'Bidang Pendidikan': '#3b82f6',
-            'Bidang Kesehatan': '#ec4899',
-            'Bidang Ketahanan Pangan': '#10b981',
-            'Bidang Seni dan Budaya': '#f59e0b',
-            'Semua Kategori': '#6366f1'
-        };
+            // Update charts dynamically without reload
+            const katColors = {
+                'Bidang Pendidikan': '#3b82f6',
+                'Bidang Kesehatan': '#ec4899',
+                'Bidang Ketahanan Pangan': '#10b981',
+                'Bidang Seni dan Budaya': '#f59e0b',
+                'Semua Kategori': '#6366f1'
+            };
 
-        function updateWilayahList(kategori) {
-            let rawWil = geoWilayahData[kategori];
-            let listContainer = document.getElementById('wilayahList');
-            if(!listContainer || !rawWil) return;
+            function updateWilayahList(kategori) {
+                let rawWil = geoWilayahData[kategori];
+                let listContainer = document.getElementById('wilayahList');
+                if (!listContainer || !rawWil) return;
 
-            let total = Object.values(rawWil).reduce((a,b) => a + b, 0);
-            let html = '';
-            
-            let i = 0;
-            for(let [key, val] of Object.entries(rawWil)) {
-                let name = key.replace('Sub Wilayah ', '');
-                let pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
-                let color = wColors[i % wColors.length];
-                
-                html += `
+                let total = Object.values(rawWil).reduce((a, b) => a + b, 0);
+                let html = '';
+
+                let i = 0;
+                for (let [key, val] of Object.entries(rawWil)) {
+                    let name = key.replace('Sub Wilayah ', '');
+                    let pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                    let color = wColors[i % wColors.length];
+
+                    html += `
                 <div class="flex items-center justify-between" style="font-size:12.5px;">
                     <div class="flex items-center gap-2">
                         <div style="width:10px;height:10px;border-radius:3px;background:${color};flex-shrink:0;"></div>
@@ -1440,47 +1498,71 @@
                     </div>
                 </div>
                 `;
-                i++;
+                    i++;
+                }
+                listContainer.innerHTML = html;
             }
-            listContainer.innerHTML = html;
-        }
 
-        window.updateGeoCharts = function(kategori) {
-            if (!geoWilayahData[kategori] || !geoProvinsiData[kategori]) return;
-            
-            let wD = Object.values(geoWilayahData[kategori]);
-            window.wilayahChart.data.datasets[0].data = wD;
-            window.wilayahChart.update();
+            window.updateGeoCharts = function(kategori) {
+                if (!geoWilayahData[kategori] || !geoProvinsiData[kategori]) return;
 
-            let pLRaw = Object.keys(geoProvinsiData[kategori]);
-            let pL = pLRaw.map(l => l.replace('Provinsi ', ''));
-            let pD = Object.values(geoProvinsiData[kategori]);
-            let pC = pLRaw.map(l => provinsiColorMap[l] || '#6366f1');
+                let wD = Object.values(geoWilayahData[kategori]);
+                window.wilayahChart.data.datasets[0].data = wD;
+                window.wilayahChart.update();
 
-            window.provinsiChart.data.labels = pL;
-            window.provinsiChart.data.datasets[0].data = pD;
-            window.provinsiChart.data.datasets[0].backgroundColor = pC;
-            window.provinsiChart.update();
+                let pLRaw = Object.keys(geoProvinsiData[kategori]);
+                let pL = pLRaw.map(l => l.replace('Provinsi ', ''));
+                let pD = Object.values(geoProvinsiData[kategori]);
+                let pC = pLRaw.map(l => provinsiColorMap[l] || '#6366f1');
 
-            document.getElementById('wilayahTitle').innerText = 'Sub Wilayah ' + kategori;
-            document.getElementById('provinsiTitle').innerText = 'Persebaran Provinsi ' + kategori;
+                window.provinsiChart.data.labels = pL;
+                window.provinsiChart.data.datasets[0].data = pD;
+                window.provinsiChart.data.datasets[0].backgroundColor = pC;
+                window.provinsiChart.update();
 
-            updateWilayahList(kategori);
-        };
+                document.getElementById('wilayahTitle').innerText = 'Sub Wilayah ' + kategori;
+                document.getElementById('provinsiTitle').innerText = 'Persebaran Provinsi ' + kategori;
 
-        // Initialize list
-        updateWilayahList(initialKat);
+                updateWilayahList(kategori);
+            };
 
-        window.updateStatusChart = function(kategori) {
-            if (!statusByKategoriData[kategori]) return;
-            
-            let dataKat = statusByKategoriData[kategori];
-            
-            window.statusChart.data.datasets[0].data = stages.map(s => dataKat[s] ?? 0);
-            window.statusChart.update();
-            
-            document.getElementById('statusTitle').innerText = 'Status Seleksi Peserta ' + kategori;
-        };
+            // Initialize list
+            updateWilayahList(initialKat);
+
+            window.updateStatusChart = function(kategori) {
+                if (!statusByKategoriData[kategori]) return;
+
+                let dataKat = statusByKategoriData[kategori];
+
+                window.statusChart.data.datasets[0].data = stages.map(s => dataKat[s] ?? 0);
+                window.statusChart.update();
+
+                document.getElementById('statusTitle').innerText = 'Status Seleksi Peserta ' + kategori;
+            };
+
+            // ── Progres Review Berkas Stage Filter ───────────────────
+            const reviewStageStatsData = {!! json_encode($reviewStageStats) !!};
+            const reviewCircumference = 2 * Math.PI * 68;
+
+            window.updateReviewStage = function(stage) {
+                const stats = reviewStageStatsData[stage];
+                if (!stats) return;
+
+                document.getElementById('reviewTotalCount').innerText = new Intl.NumberFormat().format(stats
+                    .total_berkas);
+                document.getElementById('reviewReviewedCount').innerText = new Intl.NumberFormat().format(stats
+                    .sudah_ditinjau);
+                document.getElementById('reviewPendingCount').innerText = new Intl.NumberFormat().format(stats
+                    .belum_ditinjau);
+                document.getElementById('reviewRateText').innerText = stats.rate + '%';
+
+                const dash = (stats.rate / 100) * reviewCircumference;
+                const gap = reviewCircumference - dash;
+                const circle = document.getElementById('reviewProgressCircle');
+                if (circle) {
+                    circle.setAttribute('stroke-dasharray', `${dash.toFixed(2)} ${gap.toFixed(2)}`);
+                }
+            };
 
         }); // end DOMContentLoaded
 

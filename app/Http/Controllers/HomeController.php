@@ -48,6 +48,12 @@ final class HomeController
             ->pluck('total', 'status')
             ->toArray();
 
+        $gugurCounts = (clone $baseQuery)->where('status', 'Tidak Lolos')
+            ->select('status_before', DB::raw('count(*) as total'))
+            ->groupBy('status_before')
+            ->pluck('total', 'status_before')
+            ->toArray();
+
         // 3. Count by Kategori (if unfiltered, shows all. if filtered, shows only the filtered one)
         $kategoriCounts = (clone $baseQuery)->select('kategori', DB::raw('count(*) as total'))
             ->groupBy('kategori')
@@ -152,6 +158,7 @@ final class HomeController
         $geoProvinsi = [];
         $geoWilayah = [];
         $statusByKategori = [];
+        $gugurByKategori = [];
         $categoriesToFetch = array_merge(['Semua Kategori'], $availableKategories);
 
         foreach ($categoriesToFetch as $kat) {
@@ -165,10 +172,18 @@ final class HomeController
                 ->groupBy('status')
                 ->pluck('total', 'status')
                 ->toArray();
+                
+            $gugurCountsPerKat = (clone $q)->where('status', 'Tidak Lolos')
+                ->select('status_before', DB::raw('count(*) as total'))
+                ->groupBy('status_before')
+                ->pluck('total', 'status_before')
+                ->toArray();
             
             $statusByKategori[$kat] = [];
+            $gugurByKategori[$kat] = [];
             foreach ($allStages as $stage) {
                 $statusByKategori[$kat][$stage] = $statusCountsPerKat[$stage] ?? 0;
+                $gugurByKategori[$kat][$stage] = $gugurCountsPerKat[$stage] ?? 0;
             }
 
             $allProvinsiCounts = [];
@@ -289,6 +304,7 @@ final class HomeController
             'trendValues',
             'recentPendaftar',
             'funnelCounts',
+            'gugurCounts',
             'finalistCount',
             'pendingCount',
             'rejectedCount',
@@ -300,6 +316,7 @@ final class HomeController
             'geoWilayah',
             'provinsiColors',
             'statusByKategori',
+            'gugurByKategori',
             'reviewStageStats'
         ));
     }

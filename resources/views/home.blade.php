@@ -842,7 +842,7 @@
 
         {{-- ═══════════════ ROW 4: Status Chart + Quick Actions ═══════════════ --}}
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-6">
-            <div class="card p-3 lg:col-span-3 anim-in anim-delay-1">
+            <div class="card p-3 {{ auth()->user()->hasPermission('*') ? 'lg:col-span-3' : 'lg:col-span-4' }} anim-in anim-delay-1">
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <div id="statusTitle" class="sec-title">Status Seleksi Peserta Semua Kategori</div>
@@ -863,6 +863,7 @@
                 </div>
             </div>
 
+            @if (auth()->user()->hasPermission('*'))
             <div class="card p-3 anim-in anim-delay-2">
                 <div class="sec-title mb-4">Aksi Cepat</div>
                 <div class="space-y-3">
@@ -884,7 +885,7 @@
                             <div style="font-size:11px;color:var(--text-muted);">Perbarui semua statistik</div>
                         </div>
                     </button>
-                    @if (auth()->user()->hasPermission('*'))
+                    
                         <form action="{{ route('pendaftar.generate-history') }}" method="POST"
                             style="margin: 0; width: 100%;">
                             @csrf
@@ -913,9 +914,9 @@
                                 </div>
                             </button>
                         </form>
-                    @endif
                 </div>
             </div>
+            @endif
         </div>
 
         {{-- ═══════════════ ROW 5: Geographic Distribution ═══════════════ --}}
@@ -1282,31 +1283,35 @@
 
             // ── 5. Status Bar Chart ───────────────────────────────────
             const rawStatus = {!! json_encode($statusCounts) !!};
+            const rawGugur = {!! json_encode($gugurCounts ?? []) !!};
             const statusByKategoriData = {!! json_encode($statusByKategori) !!};
-            const stages = [
-                'Tidak Lolos', 'Diajukan', 'Lolos Verifikasi Berkas',
-                'Lolos ke Tahap 50 Besar', 'Lolos ke Tahap 10 Besar',
-                'Lolos ke Tahap 3 Besar', 'Lolos ke Tahap Wawancara',
-                'Lolos ke Tahap Final'
+            const gugurByKategoriData = {!! json_encode($gugurByKategori ?? []) !!};
+            const chartColumns = [
+                { key: 'Diajukan', isGugur: true, label: 'Tidak Lolos Verifikasi Berkas', color: '#ef4444' },
+                { key: 'Lolos Verifikasi Berkas', isGugur: true, label: 'Tidak Lolos 50 Besar', color: '#ef4444' },
+                { key: 'Lolos ke Tahap 50 Besar', isGugur: true, label: 'Tidak Lolos 10 Besar', color: '#ef4444' },
+                { key: 'Lolos ke Tahap 10 Besar', isGugur: true, label: 'Tidak Lolos 3 Besar', color: '#ef4444' },
+                
+                { key: 'Diajukan', isGugur: false, label: 'Diajukan', color: '#3b82f6' },
+                { key: 'Lolos Verifikasi Berkas', isGugur: false, label: 'Lolos Verifikasi Berkas', color: '#f59e0b' },
+                { key: 'Lolos ke Tahap 50 Besar', isGugur: false, label: 'Tahap 50 Besar', color: '#f59e0b' },
+                { key: 'Lolos ke Tahap 10 Besar', isGugur: false, label: 'Tahap 10 Besar', color: '#f59e0b' },
+                { key: 'Lolos ke Tahap 3 Besar', isGugur: false, label: 'Tahap 3 Besar', color: '#f59e0b' }
             ];
-            const stageBg = stages.map(s => {
-                if (s === 'Tidak Lolos') return '#ef4444';
-                if (s === 'Lolos ke Tahap Final') return '#10b981';
-                if (s === 'Diajukan') return '#3b82f6';
-                if (s.includes('Wawancara')) return '#8b5cf6';
-                return '#f59e0b';
-            });
+
             window.statusChart = new Chart(document.getElementById('statusChart').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: stages.map(s => s.replace('Lolos ke ', '')),
-                    datasets: [{
-                        label: 'Jumlah Peserta',
-                        data: stages.map(s => rawStatus[s] ?? 0),
-                        backgroundColor: stageBg,
-                        borderRadius: 8,
-                        barThickness: 36
-                    }]
+                    labels: chartColumns.map(c => c.label),
+                    datasets: [
+                        {
+                            label: 'Jumlah Peserta',
+                            data: chartColumns.map(c => c.isGugur ? (rawGugur[c.key] ?? 0) : (rawStatus[c.key] ?? 0)),
+                            backgroundColor: chartColumns.map(c => c.color),
+                            borderRadius: 8,
+                            barThickness: 36
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -1326,6 +1331,7 @@
                     },
                     scales: {
                         y: {
+                            stacked: false,
                             grid: {
                                 color: 'rgba(0,0,0,.04)'
                             },
@@ -1334,6 +1340,7 @@
                             }
                         },
                         x: {
+                            stacked: false,
                             grid: {
                                 display: false
                             }
@@ -1533,8 +1540,9 @@
                 if (!statusByKategoriData[kategori]) return;
 
                 let dataKat = statusByKategoriData[kategori];
+                let gugurKat = gugurByKategoriData[kategori] || {};
 
-                window.statusChart.data.datasets[0].data = stages.map(s => dataKat[s] ?? 0);
+                window.statusChart.data.datasets[0].data = chartColumns.map(c => c.isGugur ? (gugurKat[c.key] ?? 0) : (dataKat[c.key] ?? 0));
                 window.statusChart.update();
 
                 document.getElementById('statusTitle').innerText = 'Status Seleksi Peserta ' + kategori;

@@ -10,7 +10,6 @@
         content="DPDRI AWARDS 2026 - Penghargaan bagi inovator di bidang pendidikan, kesehatan, pangan, dan pelestari budaya daerah.">
     <link rel="icon" href="{{ asset_cb('images/logo.png') }}">
     <link rel="preload" as="image" href="{{ asset_cb('images/hero-bg.jpg') }}" fetchpriority="high">
-
     <link rel="stylesheet" href="{{ asset_cb('css/fonts.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -1984,12 +1983,12 @@
                                 <div>
                                     <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-1">STATUS</div>
                                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border mt-1"
-                                        :class="resultData?.status.toLowerCase() === 'tidak lolos' ? 'bg-red-50 border-red-200' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'bg-green-50 border-green-200' : 'bg-[#e0b53c]/10 border-[#e0b53c]/20')">
+                                        :class="resultData?.status.toLowerCase().includes('tidak') ? 'bg-red-50 border-red-200' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'bg-green-50 border-green-200' : 'bg-[#e0b53c]/10 border-[#e0b53c]/20')">
                                         <div class="w-2 h-2 rounded-full animate-pulse"
-                                            :class="resultData?.status.toLowerCase() === 'tidak lolos' ? 'bg-red-500' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'bg-green-500' : 'bg-[#e0b53c]')">
+                                            :class="resultData?.status.toLowerCase().includes('tidak') ? 'bg-red-500' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'bg-green-500' : 'bg-[#e0b53c]')">
                                         </div>
                                         <span class="font-bold text-[14px] uppercase"
-                                            :class="resultData?.status.toLowerCase() === 'tidak lolos' ? 'text-red-600' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'text-green-700' : 'text-[#b8860b]')"
+                                            :class="resultData?.status.toLowerCase().includes('tidak') ? 'text-red-600' : (resultData?.status.toLowerCase() === 'lolos ke tahap final' ? 'text-green-700' : 'text-[#b8860b]')"
                                             x-text="resultData?.status"></span>
                                     </div>
                                 </div>

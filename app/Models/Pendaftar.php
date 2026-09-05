@@ -213,6 +213,21 @@ class Pendaftar extends Model
         }
 
         if ($actualStatus === 'Tidak Lolos') {
+            if (!empty($statusBefore) && $statusBefore !== 'Tidak Lolos' && isset($stages[$statusBefore])) {
+                $nextStages = [
+                    'Diajukan' => 'Lolos Verifikasi Berkas',
+                    'Lolos Verifikasi Berkas' => 'Lolos ke Tahap 50 Besar',
+                    'Lolos ke Tahap 50 Besar' => 'Lolos ke Tahap 10 Besar',
+                    'Lolos ke Tahap 10 Besar' => 'Lolos ke Tahap 3 Besar',
+                    'Lolos ke Tahap 3 Besar' => 'Lolos ke Tahap Wawancara',
+                    'Lolos ke Tahap Wawancara' => 'Lolos ke Tahap Final'
+                ];
+                
+                if (isset($nextStages[$statusBefore])) {
+                    $nextStageName = str_replace(['Lolos ke Tahap ', 'Lolos '], '', $nextStages[$statusBefore]);
+                    return "Tidak Lolos Tahap " . $nextStageName;
+                }
+            }
             return 'Tidak Lolos';
         }
 

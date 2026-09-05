@@ -1265,71 +1265,96 @@
                 @if ($showKertasKerja)
                     {{-- ── Kertas Kerja Penilaian ──────────────────────────── --}}
                     <div class="show-card" style="border: 2px solid #0284c7; background: #f0f9ff;">
+                        @php
+                            $currentTimelineStage = \App\Models\Pendaftar::getCurrentTimelineStage();
+                            
+                            $timelineSequence = [
+                                'Lolos Verifikasi Berkas' => 'Seleksi 50 Besar',
+                                'Lolos ke Tahap 50 Besar' => 'Seleksi 10 Besar',
+                                'Lolos ke Tahap 10 Besar' => 'Seleksi 3 Besar',
+                                'Lolos ke Tahap 3 Besar' => 'Seleksi Wawancara',
+                                'Lolos ke Tahap Wawancara' => 'Seleksi Final',
+                            ];
+
+                            $availableStages = [];
+                            $foundCurrent = false;
+                            foreach ($timelineSequence as $key => $name) {
+                                $availableStages[$key] = [
+                                    'name' => $name,
+                                    'kk' => $pendaftar->kertasKerja->where('tahap', $key)
+                                ];
+                                if ($key === $currentTimelineStage) {
+                                    $foundCurrent = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!$foundCurrent) {
+                                $fallbackName = $timelineSequence[$currentTimelineStage] ?? 'Penilaian';
+                                $availableStages[$currentTimelineStage] = [
+                                    'name' => $fallbackName,
+                                    'kk' => $pendaftar->kertasKerja->where('tahap', $currentTimelineStage)
+                                ];
+                            }
+
+                            $aspeksTotalCount = \App\Models\KategoriAspek::where('kategori', $pendaftar->kategori)->count();
+                        @endphp
                         <div class="show-card-header"
-                            style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff;">
-                            <div class="card-icon" style="background: rgba(255,255,255,0.2);"><i
-                                    class="clipboard check icon" style="margin:0; color: #fff;"></i></div>
-                            <h3 style="color: #fff;">Kertas Kerja Penilaian</h3>
+                            style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <div class="card-icon" style="background: rgba(255,255,255,0.2);"><i
+                                        class="clipboard check icon" style="margin:0; color: #fff;"></i></div>
+                                <h3 style="color: #fff; margin: 0;">Kertas Kerja Penilaian</h3>
+                            </div>
+                            @if(count($availableStages) > 1)
+                                <div>
+                                    <select id="tahapDropdown" onchange="updateKertasKerjaView(this.value)"
+                                        style="background: rgba(255, 255, 255, 0.2); color: #fff; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; backdrop-filter: blur(4px);">
+                                        @foreach($availableStages as $key => $data)
+                                            <option value="{{ $key }}" style="color: #333; background: #fff;" {{ $key === $currentTimelineStage ? 'selected' : '' }}>{{ $data['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
                         </div>
                         <div class="show-card-body" style="text-align: center;">
-                            @php
-                                $currentStatusStr = $pendaftar->status ?? '';
-                                $kkForCurrentStatus = $pendaftar->kertasKerja->filter(function ($kk) use ($currentStatusStr, ) {
-                                    return $kk->tahap === $currentStatusStr ||
-                                        (empty($kk->tahap) && str_starts_with($currentStatusStr, 'Lolos'));
-                                });
-                                $totalKkScore = $kkForCurrentStatus->sum('total');
-                                $aspeksTotalCount = \App\Models\KategoriAspek::where(
-                                    'kategori',
-                                    $pendaftar->kategori,
-                                )->count();
-                                $aspeksTerisiCount = $kkForCurrentStatus->whereNotNull('nilai')->count();
 
-                                $savedTahapGroup = $pendaftar->kertasKerja->groupBy(
-                                    fn($kk) => $kk->tahap ?: $currentStatusStr,
-                                );
-                            @endphp
-
-                            <div
+                            <div id="kkTitle"
                                 style="font-size: 0.8rem; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-                                Nilai Akhir
-                                {{-- ({{ $currentStatusStr }}) --}}
+                                Nilai {{ $availableStages[$currentTimelineStage]['name'] }}
                             </div>
-                            <div
+                            <div id="kkScore"
                                 style="font-size: 2.2rem; font-weight: 800; color: #0284c7; line-height: 1; margin-bottom: 0.5rem;">
-                                {{ number_format($totalKkScore, 2) }}
+                                {{ number_format($availableStages[$currentTimelineStage]['kk']->sum('total') ?? 0, 2) }}
                             </div>
                             <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">
-                                Terisi: <strong>{{ $aspeksTerisiCount }}</strong> dari
+                                Terisi: <strong id="kkTerisi">{{ $availableStages[$currentTimelineStage]['kk']->whereNotNull('nilai')->count() }}</strong> dari
                                 <strong>{{ $aspeksTotalCount }}</strong> Aspek Penilaian
                             </div>
 
-                            @if ($savedTahapGroup->count() > 1)
-                                <div
-                                    style="margin-bottom: 1rem; text-align: left; background: #fff; padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                    <div
-                                        style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.4rem; text-transform: uppercase;">
-                                        Riwayat Penilaian Per Tahap:</div>
-                                    @foreach ($savedTahapGroup as $tahapName => $items)
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; margin-bottom: 0.3rem;">
-                                            <span style="font-weight: 600; color: #334155;">{{ $tahapName }}:</span>
-                                            <div>
-                                                <span
-                                                    class="ui label mini compact teal">{{ number_format($items->sum('total'), 2) }}</span>
-                                                <a href="{{ route('modules::pendaftar.kertas-kerja', ['pendaftar' => $pendaftar->id, 'tahap' => $tahapName]) }}"
-                                                    style="font-size: 0.75rem; margin-left: 0.25rem;">Lihat</a>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
-
-                            <a href="{{ route('modules::pendaftar.kertas-kerja', ['pendaftar' => $pendaftar->id, 'tahap' => $currentStatusStr]) }}"
+                            <a id="kkLink" href="{{ route('modules::pendaftar.kertas-kerja', ['pendaftar' => $pendaftar->id, 'tahap' => $currentTimelineStage]) }}"
                                 class="ui button primary fluid">
                                 <i class="edit icon"></i> Buka Kertas Kerja
-                                {{-- ({{ $currentStatusStr }}) --}}
                             </a>
+                            
+                            <script>
+                                const kkData = {!! json_encode(collect($availableStages)->map(function($data, $key) use ($pendaftar) {
+                                    return [
+                                        'name' => 'Nilai ' . $data['name'],
+                                        'score' => number_format($data['kk']->sum('total') ?? 0, 2),
+                                        'terisi' => $data['kk']->whereNotNull('nilai')->count(),
+                                        'url' => route('modules::pendaftar.kertas-kerja', ['pendaftar' => $pendaftar->id, 'tahap' => $key])
+                                    ];
+                                })) !!};
+                            
+                                function updateKertasKerjaView(tahap) {
+                                    if (!kkData[tahap]) return;
+                                    document.getElementById('kkTitle').innerText = kkData[tahap].name;
+                                    document.getElementById('kkScore').innerText = kkData[tahap].score;
+                                    document.getElementById('kkTerisi').innerText = kkData[tahap].terisi;
+                                    document.getElementById('kkLink').href = kkData[tahap].url;
+                                }
+                            </script>
                         </div>
                     </div>
                 @endif

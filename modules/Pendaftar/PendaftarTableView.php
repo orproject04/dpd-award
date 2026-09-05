@@ -31,6 +31,8 @@ class PendaftarTableView extends CustomTableView
         $hasRestrictedView = auth()->check() && auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
         $visibleStatuses = "'Lolos ke Tahap 50 Besar', 'Lolos ke Tahap 10 Besar', 'Lolos ke Tahap 3 Besar', 'Lolos ke Tahap Wawancara', 'Lolos ke Tahap Final'";
         
+        $currentTimelineStage = \App\Models\Pendaftar::getCurrentTimelineStage();
+
         $nilaiSelect = $hasRestrictedView 
             ? "CASE WHEN pendaftar.status IN ($visibleStatuses) THEN COALESCE(SUM(total), 0) ELSE -1 END"
             : "COALESCE(SUM(total), 0)";
@@ -40,7 +42,7 @@ class PendaftarTableView extends CustomTableView
             ->addSelect([
                 'nilai' => \App\Models\PendaftarKertasKerja::selectRaw($nilaiSelect)
                     ->whereColumn('pendaftar_kertas_kerja.pendaftar_id', 'pendaftar.id')
-                    ->whereColumn('pendaftar_kertas_kerja.tahap', 'pendaftar.status')
+                    ->where('pendaftar_kertas_kerja.tahap', $currentTimelineStage)
             ])
             ->autoSort()
             ->latest('created_at')

@@ -2220,7 +2220,7 @@
                         [
                             'q' => 'Apakah pemenang tahun lalu bisa mendaftar lagi?',
                             'a' =>
-                                'Tidak bisa. Pemenang DPDRI <i>AWARDS</i> sebelumnya tidak diperkenankan mendaftar kembali.',
+                                'Pemenang DPDRI <i>AWARDS</i> sebelumnya tidak diperkenankan mendaftar kembali pada kategori yang sama. Namun tetap diperbolehkan untuk mendaftar pada kategori yang berbeda.',
                         ],
                     ];
                 @endphp

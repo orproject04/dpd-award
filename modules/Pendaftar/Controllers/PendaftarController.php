@@ -93,7 +93,7 @@ class PendaftarController extends Controller
         abort_if($hasRestrictedView, 403, 'Anda tidak memiliki akses untuk menghapus data ini.');
 
         $this->checkCategoryPermission($pendaftar->kategori);
-        
+
         $pendaftar->delete();
 
         return to_route('modules::pendaftar.index')->withSuccess('Pendaftar deleted');
@@ -486,10 +486,10 @@ class PendaftarController extends Controller
             $nilai = $pendaftar->kertasKerja
                 ->where('tahap', $status)
                 ->sum('total');
-            
+
             $user = auth()->user();
             $hasRestrictedView = $user && $user->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !$user->hasPermission('*');
-            
+
             if ($hasRestrictedView && \App\Models\Pendaftar::getStatusRank($status) < 2) {
                 $sheetPendaftar->setCellValue('O' . $rowIdx, '-');
             } else {
@@ -1551,9 +1551,9 @@ class PendaftarController extends Controller
 
             return [
                 'kategori_aspek_id' => $aspekItem->id,
-                'aspek' => $aspekItem->aspek,
-                'dimensi' => $aspekItem->dimensi,
-                'bobot' => $aspekItem->bobot,
+                'aspek' => $saved ? $saved->aspek : $aspekItem->aspek,
+                'dimensi' => $saved ? $saved->dimensi : $aspekItem->dimensi,
+                'bobot' => $saved ? $saved->bobot : $aspekItem->bobot,
                 'nilai' => $saved ? $saved->nilai : null,
                 'total' => $saved ? $saved->total : null,
                 'catatan_juri' => $saved ? $saved->catatan_juri : null,
@@ -1726,7 +1726,7 @@ class PendaftarController extends Controller
 
         $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
         $query = $this->getFilteredQuery($request);
-        
+
         if ($hasRestrictedView) {
             $query->whereIn('status', [
                 'Lolos ke Tahap 50 Besar',
@@ -1818,7 +1818,6 @@ class PendaftarController extends Controller
             $filePath = $batchDir . '/Kertas_Kerja_Part_' . $fileIndexStr . '.xlsx';
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save($filePath);
-
         } elseif ($format === 'pdf') {
             foreach ($pendaftars as $pdfIndex => $pendaftar) {
                 $selectedTahap = $pendaftar->status;
@@ -1898,9 +1897,9 @@ class PendaftarController extends Controller
             $saved = $savedPenilaian->get($aspekItem->id);
             return [
                 'kategori_aspek_id' => $aspekItem->id,
-                'aspek' => $aspekItem->aspek,
-                'dimensi' => $aspekItem->dimensi,
-                'bobot' => $aspekItem->bobot,
+                'aspek' => $saved ? $saved->aspek : $aspekItem->aspek,
+                'dimensi' => $saved ? $saved->dimensi : $aspekItem->dimensi,
+                'bobot' => $saved ? $saved->bobot : $aspekItem->bobot,
                 'nilai' => $saved ? $saved->nilai : null,
                 'total' => $saved ? $saved->total : null,
                 'catatan_juri' => $saved ? $saved->catatan_juri : null,

@@ -1630,8 +1630,17 @@ class PendaftarController extends Controller
                 continue;
             }
 
-            $nilai = isset($itemData['nilai']) && $itemData['nilai'] !== '' ? (int) $itemData['nilai'] : null;
-            $bobot = (int) $kategoriAspek->bobot;
+            $existing = \App\Models\PendaftarKertasKerja::where([
+                'pendaftar_id' => $pendaftar->id,
+                'tahap' => $selectedTahap,
+                'kategori_aspek_id' => $kategoriAspek->id,
+            ])->first();
+
+            $aspek = $existing ? $existing->aspek : $kategoriAspek->aspek;
+            $dimensi = $existing ? $existing->dimensi : $kategoriAspek->dimensi;
+            $bobot = $existing ? (int) $existing->bobot : (int) $kategoriAspek->bobot;
+
+            $nilai = isset($itemData['nilai']) && $itemData['nilai'] !== '' ? (float) $itemData['nilai'] : null;
             $total = !is_null($nilai) ? round(($nilai * $bobot) / 100, 2) : null;
 
             \App\Models\PendaftarKertasKerja::updateOrCreate(
@@ -1641,8 +1650,8 @@ class PendaftarController extends Controller
                     'kategori_aspek_id' => $kategoriAspek->id,
                 ],
                 [
-                    'aspek' => $kategoriAspek->aspek,
-                    'dimensi' => $kategoriAspek->dimensi,
+                    'aspek' => $aspek,
+                    'dimensi' => $dimensi,
                     'bobot' => $bobot,
                     'nilai' => $nilai,
                     'total' => $total,
@@ -1650,7 +1659,7 @@ class PendaftarController extends Controller
                     'tracking_media' => $isFirst ? $globalTrackingMedia : null,
                     'data_dukung' => $isFirst ? $globalDataDukung : [],
                     'updated_by' => $user?->id,
-                    'created_by' => $user?->id,
+                    'created_by' => $existing ? $existing->created_by : $user?->id,
                 ]
             );
 

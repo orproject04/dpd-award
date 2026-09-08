@@ -106,9 +106,13 @@
                 display: inline !important;
             }
 
-            .mobile-action-buttons .ui.button {
-                padding: 0.6em 0.8em !important;
-                font-size: 0.8rem !important;
+            .ui.mini.button {
+                padding: 0.5em 0.5em !important;
+                font-size: 0.75rem !important;
+            }
+
+            .ui.pointing.dropdown.button.mini {
+                padding: 0.5em 0.5em !important;
             }
 
             /* 1. Force all menu parts to stack and align perfectly */
@@ -269,4 +273,99 @@
             });
         }
     </script>
+    
+    @push('script')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const statuses = {!! json_encode([
+                    'Diajukan' => 'Diajukan',
+                    'Lolos Verifikasi Berkas' => 'Lolos Verifikasi Berkas',
+                    'Lolos ke Tahap 50 Besar' => 'Lolos ke Tahap 50 Besar',
+                    'Lolos ke Tahap 10 Besar' => 'Lolos ke Tahap 10 Besar',
+                    'Lolos ke Tahap 3 Besar' => 'Lolos ke Tahap 3 Besar',
+                    'Lolos ke Tahap Wawancara' => 'Lolos ke Tahap Wawancara',
+                    'Lolos ke Tahap Final' => 'Lolos ke Tahap Final',
+                    'Tidak Lolos' => 'Tidak Lolos'
+                ]) !!};
+
+                document.body.addEventListener('click', function(e) {
+                    const btn = e.target.closest('.edit-status-btn');
+                    if (btn) {
+                        e.preventDefault();
+                        
+                        if (typeof Swal === 'undefined') {
+                            console.error('SweetAlert2 is not loaded!');
+                            return;
+                        }
+
+                        const pendaftarId = btn.getAttribute('data-id');
+                        const currentStatus = btn.getAttribute('data-status');
+
+                        Swal.fire({
+                            title: 'Ubah Status Pendaftar',
+                            html: `
+                                <div class="ui form" style="text-align: left;">
+                                    <div class="field required" style="margin-bottom: 1rem;">
+                                        <label>Pilih Status Baru</label>
+                                        <select id="swal-status-input" class="ui dropdown fluid">
+                                            ${Object.keys(statuses).map(s => `<option value="${s}" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div class="field required">
+                                        <label>Keterangan</label>
+                                        <textarea id="swal-keterangan-input" rows="3" placeholder="Contoh: Lolos berkas administrasi..."></textarea>
+                                    </div>
+                                </div>
+                            `,
+                            showCancelButton: true,
+                            confirmButtonText: '<i class="save icon"></i> Perbarui',
+                            cancelButtonText: 'Batal',
+                            customClass: {
+                                confirmButton: 'ui primary button',
+                                cancelButton: 'ui button'
+                            },
+                            buttonsStyling: false,
+                            preConfirm: () => {
+                                const newStatus = document.getElementById('swal-status-input').value;
+                                const keterangan = document.getElementById('swal-keterangan-input').value;
+                                if (!keterangan.trim()) {
+                                    Swal.showValidationMessage('Keterangan wajib diisi!');
+                                    return false;
+                                }
+                                return { newStatus, keterangan };
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const form = document.createElement('form');
+                                form.method = 'POST';
+                                form.action = `{{ route('modules::pendaftar.update-status', ':id') }}`.replace(':id', pendaftarId);
+                                
+                                const csrfInput = document.createElement('input');
+                                csrfInput.type = 'hidden';
+                                csrfInput.name = '_token';
+                                csrfInput.value = '{{ csrf_token() }}';
+                                form.appendChild(csrfInput);
+
+                                const statusInput = document.createElement('input');
+                                statusInput.type = 'hidden';
+                                statusInput.name = 'status';
+                                statusInput.value = result.value.newStatus;
+                                form.appendChild(statusInput);
+
+                                const ketInput = document.createElement('input');
+                                ketInput.type = 'hidden';
+                                ketInput.name = 'keterangan';
+                                ketInput.value = result.value.keterangan;
+                                form.appendChild(ketInput);
+
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    @endpush
 </x-volt-app>

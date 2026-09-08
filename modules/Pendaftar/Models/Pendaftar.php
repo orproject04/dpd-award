@@ -126,4 +126,67 @@ class Pendaftar extends Model
     {
         return $this->hasMany(\App\Models\PendaftarKertasKerja::class, 'pendaftar_id');
     }
+
+    public function getDetailedStatus(): string
+    {
+        $statusBefore = $this->status_before;
+        $actualStatus = $this->status;
+
+        if (empty($actualStatus)) {
+            $actualStatus = 'Diajukan';
+        }
+
+        if (empty($statusBefore)) {
+            $statusBefore = $actualStatus;
+        }
+
+        $stages = [
+            'Diajukan' => 0,
+            'Lolos Verifikasi Berkas' => 1,
+            'Lolos ke Tahap 50 Besar' => 2,
+            'Lolos ke Tahap 10 Besar' => 3,
+            'Lolos ke Tahap 3 Besar' => 4,
+            'Lolos ke Tahap Wawancara' => 5,
+            'Lolos ke Tahap Final' => 6,
+        ];
+
+        $currentStage = \App\Models\Pendaftar::getCurrentTimelineStage();
+        $currentRank = $stages[$currentStage] ?? 0;
+        $beforeRank = $stages[$statusBefore] ?? 0;
+
+        if (isset($stages[$statusBefore]) && $currentRank <= $beforeRank && $actualStatus !== $statusBefore) {
+            return $statusBefore;
+        }
+
+        if ($actualStatus === 'Tidak Lolos') {
+            if (!empty($statusBefore) && $statusBefore !== 'Tidak Lolos' && isset($stages[$statusBefore])) {
+                $nextStages = [
+                    'Diajukan' => 'Lolos Verifikasi Berkas',
+                    'Lolos Verifikasi Berkas' => 'Lolos ke Tahap 50 Besar',
+                    'Lolos ke Tahap 50 Besar' => 'Lolos ke Tahap 10 Besar',
+                    'Lolos ke Tahap 10 Besar' => 'Lolos ke Tahap 3 Besar',
+                    'Lolos ke Tahap 3 Besar' => 'Lolos ke Tahap Wawancara',
+                    'Lolos ke Tahap Wawancara' => 'Lolos ke Tahap Final'
+                ];
+                
+                if (isset($nextStages[$statusBefore])) {
+                    $nextStageName = str_replace(['Lolos ke Tahap ', 'Lolos '], '', $nextStages[$statusBefore]);
+                    return "Tidak Lolos Tahap " . $nextStageName;
+                }
+            }
+            return 'Tidak Lolos';
+        }
+
+        if (!isset($stages[$actualStatus])) {
+            return $actualStatus;
+        }
+
+        $actualRank = $stages[$actualStatus];
+
+        if ($actualRank > $currentRank) {
+            return $currentStage;
+        }
+
+        return $actualStatus;
+    }
 }

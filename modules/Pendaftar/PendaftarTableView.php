@@ -116,16 +116,13 @@ class PendaftarTableView extends CustomTableView
             Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;white-space:nowrap;font-size:12px;color:var(--text-muted);'>" . $data->created_at->format('d M Y') . "</span>";
             }, 'Tanggal')->sortable('created_at'),
-            MyLabel::make('status')->map([
-                'Tidak Lolos' => 'red',
-                'Diajukan' => 'blue',
-                'Lolos Verifikasi Berkas' => 'yellow',
-                'Lolos ke Tahap 50 Besar' => 'yellow',
-                'Lolos ke Tahap 10 Besar' => 'yellow',
-                'Lolos ke Tahap 3 Besar' => 'yellow',
-                'Lolos ke Tahap Wawancara' => 'purple',
-                'Lolos ke Tahap Final' => 'teal',
-            ])->addClass('large')->sortable(),
+            Raw::make(function ($data) use ($hasRestrictedView) {
+                $reqPerm = \App\Enums\Permission::getCategoryManagePermission($data->kategori);
+                $canManage = auth()->user()->hasPermission('*') || ($reqPerm && auth()->user()->hasPermission($reqPerm));
+                $canManage = $canManage && !$hasRestrictedView;
+
+                return \Illuminate\Support\Facades\View::make('pendaftar::columns.status_editable', compact('data', 'canManage'))->render();
+            }, 'Status')->sortable('status'),
             Raw::make(function ($data) use ($hasRestrictedView) {
                 $statusRank = \App\Models\Pendaftar::getStatusRank($data->status);
                 

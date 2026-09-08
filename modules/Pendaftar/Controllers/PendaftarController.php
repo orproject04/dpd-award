@@ -481,10 +481,12 @@ class PendaftarController extends Controller
             $sheetPendaftar->setCellValue('M' . $rowIdx, $pendaftar->email);
 
             $status = $pendaftar->status ?? 'Diajukan';
-            $sheetPendaftar->setCellValue('N' . $rowIdx, $status);
+            $detailedStatus = $pendaftar->getDetailedStatus();
+            $sheetPendaftar->setCellValue('N' . $rowIdx, $detailedStatus);
 
+            $currentTimelineStage = \App\Models\Pendaftar::getCurrentTimelineStage();
             $nilai = $pendaftar->kertasKerja
-                ->where('tahap', $status)
+                ->where('tahap', $currentTimelineStage)
                 ->sum('total');
 
             $user = auth()->user();

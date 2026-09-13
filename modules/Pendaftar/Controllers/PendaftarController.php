@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Modules\Pendaftar\Models\Pendaftar;
 use Modules\Pendaftar\PendaftarTableView;
+use Modules\Pendaftar\Responses\LargeFileResponse;
 use Modules\Pendaftar\Requests\Store;
 use Modules\Pendaftar\Requests\Update;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -67,7 +68,11 @@ class PendaftarController extends Controller
         /** @var view-string $view */
         $view = 'pendaftar::show';
 
-        return view($view, compact('pendaftar'));
+        $buktiDukungData = $this->getBuktiDukungTree($pendaftar->nomor_registrasi);
+        $buktiDukungTree = $buktiDukungData['tree'];
+        $buktiDukungStats = $buktiDukungData['stats'];
+
+        return view($view, compact('pendaftar', 'buktiDukungTree', 'buktiDukungStats'));
     }
 
     public function edit(Pendaftar $pendaftar): View
@@ -161,11 +166,15 @@ class PendaftarController extends Controller
             }
         }
 
-        if ($request->has('download')) {
-            return response()->download($fullPath);
-        }
+        $isDownload = $request->has('download') || $request->boolean('download');
+        $downloadName = $request->query('name');
 
-        return response()->file($fullPath);
+        return LargeFileResponse::make(
+            $fullPath,
+            $request,
+            $isDownload,
+            $downloadName
+        );
     }
 
     public function downloadAllFiles(Pendaftar $pendaftar)
@@ -215,6 +224,16 @@ class PendaftarController extends Controller
             }
         }
 
+        // Add Bukti Dukung Tambahan if exists
+        $buktiDukungDir = storage_path('app/private/pendaftar/bukti_dukung/' . $pendaftar->nomor_registrasi);
+        if (file_exists($buktiDukungDir) && is_dir($buktiDukungDir)) {
+            $buktiFiles = [];
+            $this->collectAllFilesRecursive($buktiDukungDir, $buktiDukungDir, $buktiFiles);
+            foreach ($buktiFiles as $relPath => $absPath) {
+                $files['Bukti_Dukung_Tambahan/' . $relPath] = $absPath;
+            }
+        }
+
         // Filter files that exist on disk
         $existingFiles = array_filter($files, function ($path) {
             return !empty($path) && file_exists($path) && is_file($path);
@@ -239,6 +258,199 @@ class PendaftarController extends Controller
         $zip->close();
 
         return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
+    }
+
+    public function downloadBuktiDukungZip(Pendaftar $pendaftar)
+    {
+        $nomorRegistrasi = $pendaftar->nomor_registrasi;
+        if (empty($nomorRegistrasi)) {
+            return back()->withError('Nomor registrasi pendaftar tidak valid.');
+        }
+
+        $baseDir = storage_path('app/private/pendaftar/bukti_dukung/' . $nomorRegistrasi);
+        if (!file_exists($baseDir) || !is_dir($baseDir)) {
+            return back()->withError('Folder bukti dukung belum tersedia untuk pendaftar ini.');
+        }
+
+        $files = [];
+        $this->collectAllFilesRecursive($baseDir, $baseDir, $files);
+
+        if (empty($files)) {
+            return back()->withError('Tidak ada berkas bukti dukung tambahan yang dapat diunduh.');
+        }
+
+        $cleanNama = preg_replace('/[^A-Za-z0-9_\-]/', '_', $pendaftar->nama);
+        $zipFileName = 'Bukti_Dukung_' . $pendaftar->nomor_registrasi . '_' . $cleanNama . '.zip';
+        $zipPath = storage_path('app/private/temp_' . \Illuminate\Support\Str::random(16) . '.zip');
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            abort(500, 'Gagal membuat berkas ZIP.');
+        }
+
+        foreach ($files as $relativeName => $absolutePath) {
+            if (file_exists($absolutePath) && is_file($absolutePath)) {
+                $zip->addFile($absolutePath, $relativeName);
+            }
+        }
+
+        $zip->close();
+
+        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
+    }
+
+    protected function getBuktiDukungTree(?string $nomorRegistrasi): array
+    {
+        $emptyStats = [
+            'total_files' => 0,
+            'total_directories' => 0,
+            'total_size' => 0,
+            'formatted_total_size' => '0 B',
+            'by_category' => [
+                'pdf' => 0,
+                'word' => 0,
+                'ppt' => 0,
+                'excel' => 0,
+                'image' => 0,
+                'video' => 0,
+                'audio' => 0,
+                'archive' => 0,
+                'other' => 0,
+            ],
+        ];
+
+        if (empty($nomorRegistrasi)) {
+            return ['tree' => [], 'stats' => $emptyStats];
+        }
+
+        $baseRelative = 'pendaftar/bukti_dukung/' . $nomorRegistrasi;
+        $baseDir = storage_path('app/private/' . $baseRelative);
+
+        if (!file_exists($baseDir) || !is_dir($baseDir)) {
+            return ['tree' => [], 'stats' => $emptyStats];
+        }
+
+        $stats = $emptyStats;
+        $tree = $this->scanDirectoryRecursive($baseDir, $baseDir, $baseRelative, $stats);
+        $stats['formatted_total_size'] = $this->formatBytes($stats['total_size']);
+
+        return [
+            'tree' => $tree,
+            'stats' => $stats,
+        ];
+    }
+
+    protected function scanDirectoryRecursive(string $currentDir, string $rootBaseDir, string $rootPrefix, array &$stats): array
+    {
+        $items = @scandir($currentDir);
+        if ($items === false) {
+            return [];
+        }
+
+        $directories = [];
+        $files = [];
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..' || str_starts_with($item, '.')) {
+                continue;
+            }
+
+            $fullPath = $currentDir . DIRECTORY_SEPARATOR . $item;
+            $relativeFromRoot = ltrim(str_replace([$rootBaseDir, '\\'], ['', '/'], $fullPath), '/');
+            $storagePath = $rootPrefix . '/' . $relativeFromRoot;
+
+            if (is_dir($fullPath)) {
+                $stats['total_directories']++;
+                $children = $this->scanDirectoryRecursive($fullPath, $rootBaseDir, $rootPrefix, $stats);
+                $directories[] = [
+                    'name' => $item,
+                    'type' => 'directory',
+                    'relative_path' => $relativeFromRoot,
+                    'storage_path' => $storagePath,
+                    'children' => $children,
+                    'items_count' => count($children),
+                ];
+            } elseif (is_file($fullPath)) {
+                $size = @filesize($fullPath) ?: 0;
+                $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
+                $category = $this->determineFileCategory($ext);
+
+                $stats['total_files']++;
+                $stats['total_size'] += $size;
+                if (isset($stats['by_category'][$category])) {
+                    $stats['by_category'][$category]++;
+                } else {
+                    $stats['by_category']['other']++;
+                }
+
+                $files[] = [
+                    'name' => $item,
+                    'type' => 'file',
+                    'extension' => $ext,
+                    'size' => $size,
+                    'formatted_size' => $this->formatBytes($size),
+                    'modified' => date('d M Y, H:i', @filemtime($fullPath) ?: time()),
+                    'relative_path' => $relativeFromRoot,
+                    'storage_path' => $storagePath,
+                    'url' => route('modules::pendaftar.file', ['path' => $storagePath]),
+                    'download_url' => route('modules::pendaftar.file', ['path' => $storagePath, 'download' => 1]),
+                    'category' => $category,
+                ];
+            }
+        }
+
+        usort($directories, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        usort($files, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+
+        return array_merge($directories, $files);
+    }
+
+    protected function collectAllFilesRecursive(string $currentDir, string $rootBaseDir, array &$files): void
+    {
+        $items = @scandir($currentDir);
+        if ($items === false) {
+            return;
+        }
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..' || str_starts_with($item, '.')) {
+                continue;
+            }
+
+            $fullPath = $currentDir . DIRECTORY_SEPARATOR . $item;
+            $relativeFromRoot = ltrim(str_replace([$rootBaseDir, '\\'], ['', '/'], $fullPath), '/');
+
+            if (is_dir($fullPath)) {
+                $this->collectAllFilesRecursive($fullPath, $rootBaseDir, $files);
+            } elseif (is_file($fullPath)) {
+                $files[$relativeFromRoot] = $fullPath;
+            }
+        }
+    }
+
+    protected function determineFileCategory(string $ext): string
+    {
+        return match ($ext) {
+            'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp' => 'image',
+            'pdf' => 'pdf',
+            'doc', 'docx', 'odt', 'rtf' => 'word',
+            'ppt', 'pptx', 'pps', 'ppsx', 'odp' => 'ppt',
+            'xls', 'xlsx', 'csv', 'ods' => 'excel',
+            'mp4', 'webm', 'ogg', 'mov', 'mkv', 'avi', 'wmv' => 'video',
+            'mp3', 'wav', 'm4a', 'aac', 'flac' => 'audio',
+            'zip', 'rar', '7z', 'tar', 'gz' => 'archive',
+            default => 'other',
+        };
+    }
+
+    protected function formatBytes(int|float $bytes, int $precision = 2): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min((int) $pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
     public function updateStatus(Pendaftar $pendaftar, \Illuminate\Http\Request $request)

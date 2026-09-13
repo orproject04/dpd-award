@@ -57,6 +57,44 @@ class PendaftarTest extends TestCase
     }
 
     #[Test]
+    public function it_can_render_show_page_with_evidence_and_bukti_dukung(): void
+    {
+        $tempDir = storage_path('app/private/pendaftar/test_show_evidence');
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0755, true);
+        }
+        $pdfPath = 'pendaftar/test_show_evidence/doc.pdf';
+        $fullPath = storage_path('app/private/' . $pdfPath);
+        file_put_contents($fullPath, '%PDF-1.4 sample content');
+
+        $pendaftar = Pendaftar::factory()->create([
+            'nomor_registrasi' => 'TEST-SHOW-001',
+            'ktp' => $pdfPath,
+        ]);
+
+        $pendaftar->kontribusi()->create([
+            'judul' => 'Kontribusi Inovasi',
+            'deskripsi' => 'Deskripsi inovasi',
+            'dampak' => 'Dampak inovasi',
+            'bukti_dukung' => [$pdfPath],
+        ]);
+
+        $pendaftar->penghargaan()->create([
+            'uraian' => 'Penghargaan Nasional',
+            'tahun' => '2025-01-01',
+            'bukti_dukung' => [$pdfPath],
+        ]);
+
+        $response = $this->get(route('modules::pendaftar.show', $pendaftar));
+        $response->assertStatus(200);
+        $response->assertSee('doc.pdf');
+        $response->assertSee('Layar Penuh');
+
+        @unlink($fullPath);
+        @rmdir($tempDir);
+    }
+
+    #[Test]
     public function it_can_open_edit_page(): void
     {
         $pendaftar = Pendaftar::factory()->create();
@@ -284,6 +322,58 @@ class PendaftarTest extends TestCase
 
         if (file_exists($tempPath)) {
             @unlink($tempPath);
+        }
+    }
+
+    #[Test]
+    public function it_serves_file_with_streaming_headers_and_disposition(): void
+    {
+        $tempDir = storage_path('app/private/pendaftar/test_streaming');
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0755, true);
+        }
+        $filePath = 'pendaftar/test_streaming/sample.pdf';
+        $fullPath = storage_path('app/private/' . $filePath);
+        file_put_contents($fullPath, '%PDF-1.4 test stream content');
+
+        // Test 1: Preview (inline)
+        $response = $this->get(route('modules::pendaftar.file', ['path' => $filePath]));
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/pdf');
+        $response->assertHeader('Accept-Ranges', 'bytes');
+        $this->assertStringContainsString('inline', $response->headers->get('Content-Disposition') ?? '');
+
+        // Test 2: Download (attachment)
+        $dlResponse = $this->get(route('modules::pendaftar.file', ['path' => $filePath, 'download' => 1]));
+        $dlResponse->assertStatus(200);
+        $this->assertStringContainsString('attachment', $dlResponse->headers->get('Content-Disposition') ?? '');
+
+        // Test 3: Range request (HTTP 206 Partial Content)
+        $rangeResponse = $this->get(route('modules::pendaftar.file', ['path' => $filePath]), [
+            'Range' => 'bytes=0-4',
+        ]);
+        $rangeResponse->assertStatus(206);
+        $rangeResponse->assertHeader('Content-Range', 'bytes 0-4/' . filesize($fullPath));
+        $rangeResponse->assertHeader('Content-Length', '5');
+
+        @unlink($fullPath);
+        @rmdir($tempDir);
+    }
+
+    #[Test]
+    public function it_handles_large_video_range_request(): void
+    {
+        $videoPath = 'pendaftar/bukti_dukung/DPD-BP26-8305050272/MOTORPUSTAKA/WhatsApp Video 2026-09-09 at 20.20.05.mp4';
+        $fullPath = storage_path('app/private/' . $videoPath);
+        if (file_exists($fullPath)) {
+            $response = $this->get(route('modules::pendaftar.file', ['path' => $videoPath]), [
+                'Range' => 'bytes=0-1048575',
+            ]);
+            $response->assertStatus(206);
+            $response->assertHeader('Content-Type', 'video/mp4');
+            $response->assertHeader('Content-Range', 'bytes 0-1048575/' . filesize($fullPath));
+            $response->assertHeader('Content-Length', '1048576');
+            $response->assertHeader('Accept-Ranges', 'bytes');
         }
     }
 }

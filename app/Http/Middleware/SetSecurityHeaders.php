@@ -23,12 +23,14 @@ class SetSecurityHeaders
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
         // Content Security Policy
-        if (env('APP_ENV') === 'production') {
-            $response->headers->set('Content-Security-Policy', "upgrade-insecure-requests; default-src 'self' https: wss: data: blob: 'unsafe-inline' 'unsafe-eval';");
+        $isProduction = config('app.env') === 'production';
+        if ($isProduction) {
+            $csp = ($request->isSecure() ? 'upgrade-insecure-requests; ' : '') . "default-src 'self' https: http: wss: data: blob: 'unsafe-inline' 'unsafe-eval';";
+            $response->headers->set('Content-Security-Policy', $csp);
         }
 
         // Prevent clickjacking attacks
-        $frameOptions = env('X_FRAME_OPTIONS', 'SAMEORIGIN');
+        $frameOptions = config('app.frame_options', env('X_FRAME_OPTIONS', 'SAMEORIGIN'));
         if ($frameOptions && strtoupper($frameOptions) !== 'NONE') {
             $response->headers->set('X-Frame-Options', $frameOptions);
         }
@@ -36,8 +38,10 @@ class SetSecurityHeaders
         // Enable XSS filtering in older browsers
         $response->headers->set('X-XSS-Protection', '1; mode=block');
 
-        // Force HTTPS connection for this domain and subdomains
-        $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+        // Force HTTPS connection for this domain and subdomains only if request is already secure
+        if ($request->isSecure()) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+        }
 
         // Restrict which features and APIs can be used
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');

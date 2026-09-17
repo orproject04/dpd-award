@@ -16,6 +16,7 @@ Route::group(
         Route::post('pendaftar/import-keterangan', [PendaftarController::class, 'importKeterangan'])->name('pendaftar.import-keterangan');
         Route::get('pendaftar/download-all-zip', [PendaftarController::class, 'downloadAllZip'])->name('pendaftar.download-all-zip');
         Route::get('pendaftar/{pendaftar}/download-all', [PendaftarController::class, 'downloadAllFiles'])->name('pendaftar.download-all');
+        Route::get('pendaftar/{pendaftar}/download-bukti-dukung-zip', [PendaftarController::class, 'downloadBuktiDukungZip'])->name('pendaftar.download-bukti-dukung-zip');
         Route::post('pendaftar/{pendaftar}/resend-email', [PendaftarController::class, 'resendEmail'])->name('pendaftar.resend-email');
         Route::post('pendaftar/{pendaftar}/status', [PendaftarController::class, 'updateStatus'])->name('pendaftar.update-status');
         Route::post('pendaftar/{pendaftar}/foto', [PendaftarController::class, 'updateFoto'])->name('pendaftar.update-foto');

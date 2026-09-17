@@ -643,6 +643,343 @@
                 border-top: 1px solid #e2e8f0;
                 margin: 1rem 0;
             }
+
+            /* ─── Bukti Dukung Tambahan Explorer ──────────────────────── */
+            .bd-stats-bar {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                padding: 0.75rem 1rem;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+            }
+
+            .bd-stat-pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                font-size: 0.85rem;
+                color: #334155;
+            }
+
+            .bd-stat-pill .icon {
+                margin: 0;
+            }
+
+            .bd-stat-pill .text-blue { color: #0284c7; }
+            .bd-stat-pill .text-amber { color: #d97706; }
+            .bd-stat-pill .text-slate { color: #64748b; }
+
+            .bd-controls-bar {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+            }
+
+            .bd-search-box {
+                position: relative;
+                flex: 1;
+                min-width: 240px;
+            }
+
+            .bd-search-box input {
+                width: 100%;
+                padding: 0.55rem 2.25rem 0.55rem 2.25rem;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 0.875rem;
+                outline: none;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+
+            .bd-search-box input:focus {
+                border-color: #0284c7;
+                box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+            }
+
+            .bd-search-box .search.icon {
+                position: absolute;
+                left: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                pointer-events: none;
+                margin: 0;
+            }
+
+            #bd-search-clear {
+                position: absolute;
+                right: 0.6rem;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: #94a3b8;
+                font-size: 1.1rem;
+                cursor: pointer;
+                padding: 0 0.3rem;
+            }
+
+            #bd-search-clear:hover {
+                color: #ef4444;
+            }
+
+            .bd-filter-tabs {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+            }
+
+            .bd-tab-btn {
+                background: #f1f5f9;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                padding: 0.45rem 0.75rem;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #475569;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                transition: all 0.2s;
+            }
+
+            .bd-tab-btn:hover {
+                background: #e2e8f0;
+                color: #1e293b;
+            }
+
+            .bd-tab-btn.active {
+                background: #0284c7;
+                border-color: #0284c7;
+                color: #fff;
+            }
+
+            .bd-tab-btn .bd-tab-count {
+                background: rgba(0,0,0,0.08);
+                padding: 1px 6px;
+                border-radius: 10px;
+                font-size: 0.7rem;
+            }
+
+            .bd-tab-btn.active .bd-tab-count {
+                background: rgba(255,255,255,0.25);
+                color: #fff;
+            }
+
+            .bd-tree-container {
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                background: #fff;
+                padding: 0.5rem;
+                max-height: 700px;
+                overflow-y: auto;
+            }
+
+            .bd-tree-list {
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+            }
+
+            .bd-tree-nested {
+                margin-left: 1.5rem;
+                padding-left: 0.75rem;
+                border-left: 2px dashed #cbd5e1;
+                margin-top: 0.35rem;
+                margin-bottom: 0.35rem;
+            }
+
+            .bd-folder-item {
+                border-radius: 6px;
+                transition: background 0.15s;
+            }
+
+            .bd-folder-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.55rem 0.75rem;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                cursor: pointer;
+                user-select: none;
+                transition: all 0.15s;
+            }
+
+            .bd-folder-header:hover {
+                background: #f1f5f9;
+                border-color: #cbd5e1;
+            }
+
+            .bd-folder-left {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .bd-chevron {
+                font-size: 0.85rem !important;
+                color: #64748b;
+                transition: transform 0.2s ease;
+                margin: 0 !important;
+            }
+
+            .bd-chevron.down {
+                transform: rotate(90deg);
+            }
+
+            .bd-folder-icon {
+                color: #f59e0b !important;
+                font-size: 1.15rem !important;
+                margin: 0 !important;
+            }
+
+            .bd-folder-title {
+                font-weight: 700;
+                color: #1e293b;
+                font-size: 0.9rem;
+            }
+
+            .bd-badge-count {
+                font-size: 0.75rem;
+                color: #64748b;
+                background: #e2e8f0;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-weight: 600;
+            }
+
+            .bd-empty-subfolder {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+                color: #94a3b8;
+                font-style: italic;
+            }
+
+            .bd-file-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.5rem 0.75rem;
+                background: #fff;
+                border: 1px solid #f1f5f9;
+                border-radius: 6px;
+                transition: all 0.15s;
+            }
+
+            .bd-file-item:hover {
+                background: #f8fafc;
+                border-color: #cbd5e1;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
+
+            .bd-file-left {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                min-width: 0;
+                flex: 1;
+            }
+
+            .bd-file-icon-box {
+                width: 36px;
+                height: 36px;
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+                flex-shrink: 0;
+            }
+
+            .bd-file-meta {
+                min-width: 0;
+                flex: 1;
+            }
+
+            .bd-file-name {
+                font-weight: 600;
+                color: #1e293b;
+                font-size: 0.875rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+            }
+
+            .bd-file-name:hover {
+                color: #0284c7;
+                text-decoration: underline;
+            }
+
+            .bd-file-info {
+                display: flex;
+                align-items: center;
+                gap: 0.35rem;
+                font-size: 0.75rem;
+                color: #64748b;
+                margin-top: 0.15rem;
+            }
+
+            .bd-badge-ext {
+                font-size: 0.65rem;
+                font-weight: 700;
+                padding: 1px 5px;
+                border-radius: 4px;
+                letter-spacing: 0.04em;
+            }
+
+            .bd-info-sep {
+                color: #cbd5e1;
+            }
+
+            .bd-file-actions {
+                display: flex;
+                align-items: center;
+                gap: 0.35rem;
+                flex-shrink: 0;
+                margin-left: 0.75rem;
+            }
+
+            .bd-empty-state {
+                text-align: center;
+                padding: 3rem 1.5rem;
+                background: #f8fafc;
+                border: 2px dashed #cbd5e1;
+                border-radius: 8px;
+            }
+
+            .bd-empty-icon {
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: #e2e8f0;
+                color: #64748b;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.6rem;
+                margin: 0 auto 0.75rem auto;
+            }
+
+            /* DOCX rendered styling */
+            #bd-docx-container .docx-wrapper {
+                background: transparent !important;
+                padding: 0 !important;
+            }
+            #bd-docx-container section.docx {
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+                margin-bottom: 2rem !important;
+                max-width: 100% !important;
+            }
         </style>
     @endpush
 
@@ -756,7 +1093,7 @@
                     <div class="show-card-header"
                         style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div style="display: flex; align-items: center; gap: 0.8rem;">
-                            <div class="card-icon"><i class="lightbulb outline icon" style="margin:0"></i></div>
+                            <div class="card-icon"><i class="lightbulb icon" style="margin:0"></i></div>
                             <h3 style="margin:0">Kontribusi / Inovasi</h3>
                         </div>
                         @if (
@@ -837,38 +1174,10 @@
                                                 <div style="margin-top: .5rem;">
                                                     @foreach ($kontribusi->bukti_dukung as $fileIdx => $buktiFile)
                                                         @if (!empty($buktiFile))
-                                                            @php $buktiFileUrl = route('modules::pendaftar.file', ['path' => $buktiFile]); @endphp
-                                                            <div style="margin-bottom: 1.25rem;">
-                                                                @if (count($kontribusi->bukti_dukung) > 1)
-                                                                    <div
-                                                                        style="font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; font-weight:700; ">
-                                                                        Berkas {{ $fileIdx + 1 }}</div>
-                                                                @endif
-                                                                @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
-                                                                        data-src="{{ $buktiFileUrl }}"
-                                                                        alt="Bukti Kontribusi {{ $index + 1 }} - {{ $fileIdx + 1 }}">
-                                                                @elseif($isPdf($buktiFile))
-                                                                    <object
-                                                                        data="{{ route('modules::pendaftar.file', ['path' => $buktiFile], false) }}"
-                                                                        type="application/pdf"
-                                                                        style="width: 100%; height: 500px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
-                                                                        <iframe
-                                                                            src="{{ route('modules::pendaftar.file', ['path' => $buktiFile], false) }}"
-                                                                            style="width: 100%; height: 500px; border: none;">
-                                                                            <p>Browser Anda tidak mendukung pratinjau
-                                                                                PDF.</p>
-                                                                        </iframe>
-                                                                    </object>
-                                                                @endif
-                                                                <x-volt-link-button
-                                                                    url="{{ route('modules::pendaftar.file', ['path' => $buktiFile, 'download' => 1]) }}"
-                                                                    icon="download" class="basic blue"
-                                                                    style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
-                                                                    target="_blank" data-no-loader="true">
-                                                                    Unduh{{ count($kontribusi->bukti_dukung) > 1 ? ' Berkas ' . ($fileIdx + 1) : ' Berkas Bukti' }}
-                                                                </x-volt-link-button>
-                                                            </div>
+                                                            @include('pendaftar::_file_preview_card', [
+                                                                'file' => $buktiFile,
+                                                                'label' => count($kontribusi->bukti_dukung) > 1 ? 'Berkas ' . ($fileIdx + 1) : null,
+                                                            ])
                                                         @endif
                                                     @endforeach
                                                 </div>
@@ -1086,38 +1395,10 @@
                                                 <div style="margin-top: .5rem;">
                                                     @foreach ($penghargaan->bukti_dukung as $fileIdx => $buktiFile)
                                                         @if (!empty($buktiFile))
-                                                            @php $buktiFileUrl = route('modules::pendaftar.file', ['path' => $buktiFile]); @endphp
-                                                            <div style="margin-bottom: 1.25rem;">
-                                                                @if (count($penghargaan->bukti_dukung) > 1)
-                                                                    <div
-                                                                        style="font-size:.75rem; color:#94a3b8; margin-bottom:.3rem; font-weight:700; ">
-                                                                        Berkas {{ $fileIdx + 1 }}</div>
-                                                                @endif
-                                                                @if ($isImage($buktiFile))
-                                                                    <img src="{{ $buktiFileUrl }}" class="bukti-img lightbox-trigger"
-                                                                        data-src="{{ $buktiFileUrl }}"
-                                                                        alt="Bukti Penghargaan {{ $index + 1 }} - {{ $fileIdx + 1 }}">
-                                                                @elseif($isPdf($buktiFile))
-                                                                    <object
-                                                                        data="{{ route('modules::pendaftar.file', ['path' => $buktiFile], false) }}"
-                                                                        type="application/pdf"
-                                                                        style="width: 100%; height: 500px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
-                                                                        <iframe
-                                                                            src="{{ route('modules::pendaftar.file', ['path' => $buktiFile], false) }}"
-                                                                            style="width: 100%; height: 500px; border: none;">
-                                                                            <p>Browser Anda tidak mendukung pratinjau
-                                                                                PDF.</p>
-                                                                        </iframe>
-                                                                    </object>
-                                                                @endif
-                                                                <x-volt-link-button
-                                                                    url="{{ route('modules::pendaftar.file', ['path' => $buktiFile, 'download' => 1]) }}"
-                                                                    icon="download" class="basic blue"
-                                                                    style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
-                                                                    target="_blank" data-no-loader="true">
-                                                                    Unduh{{ count($penghargaan->bukti_dukung) > 1 ? ' Berkas ' . ($fileIdx + 1) : ' Berkas Bukti' }}
-                                                                </x-volt-link-button>
-                                                            </div>
+                                                            @include('pendaftar::_file_preview_card', [
+                                                                'file' => $buktiFile,
+                                                                'label' => count($penghargaan->bukti_dukung) > 1 ? 'Berkas ' . ($fileIdx + 1) : null,
+                                                            ])
                                                         @endif
                                                     @endforeach
                                                 </div>
@@ -1246,6 +1527,100 @@
                             <div class="ui cancel button">Batal</div>
                             <button type="submit" form="form-add-penghargaan" class="ui primary button">Tambah
                                 Penghargaan</button>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- ── Bukti Dukung Tambahan (Folder & File Explorer) ──────── --}}
+                @if (($buktiDukungStats['total_files'] ?? 0) > 0)
+                    <div class="show-card" id="card-bukti-dukung-tambahan">
+                        <div class="show-card-header"
+                            style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <div class="card-icon" style="background: #0284c7;"><i class="folder open icon" style="margin:0"></i></div>
+                                <div>
+                                    <h3 style="margin:0; font-size: 1.15rem; color: #1e293b;">Bukti Dukung Tambahan</h3>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <a href="{{ route('modules::pendaftar.download-bukti-dukung-zip', $pendaftar->id) }}"
+                                    class="ui mini button primary" target="_blank" data-no-loader="true"
+                                    title="Unduh seluruh bukti dukung tambahan dalam satu berkas ZIP">
+                                    <i class="archive icon"></i> Unduh Semua (ZIP)
+                                </a>
+                                <button type="button" class="ui mini basic button" onclick="expandAllBdFolders()" title="Buka seluruh subfolder">
+                                    <i class="folder open icon"></i> Buka Semua
+                                </button>
+                                <button type="button" class="ui mini basic button" onclick="collapseAllBdFolders()" title="Tutup seluruh subfolder">
+                                    <i class="folder icon"></i> Tutup Semua
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="show-card-body" style="padding: 1.25rem;">
+                            {{-- Stats summary strip --}}
+                            <div class="bd-stats-bar">
+                                <div class="bd-stat-pill">
+                                    <i class="file icon text-blue"></i>
+                                    <span><strong>{{ $buktiDukungStats['total_files'] }}</strong> Berkas</span>
+                                </div>
+                                @if (($buktiDukungStats['total_directories'] ?? 0) > 0)
+                                    <div class="bd-stat-pill">
+                                        <i class="folder open icon text-amber"></i>
+                                        <span><strong>{{ $buktiDukungStats['total_directories'] }}</strong> Subfolder</span>
+                                    </div>
+                                @endif
+                                <div class="bd-stat-pill">
+                                    <i class="database icon text-slate"></i>
+                                    <span><strong>{{ $buktiDukungStats['formatted_total_size'] }}</strong> Total Ukuran</span>
+                                </div>
+                            </div>
+
+                            {{-- Filter and Search Controls --}}
+                            <div class="bd-controls-bar">
+                                <div class="bd-search-box">
+                                    <i class="search icon"></i>
+                                    <input type="text" id="bd-search-input" placeholder="Cari nama berkas bukti dukung..." onkeyup="filterBdItems()">
+                                    <button type="button" id="bd-search-clear" onclick="clearBdSearch()" style="display: none;">&times;</button>
+                                </div>
+
+                                <div class="bd-filter-tabs">
+                                    <button type="button" class="bd-tab-btn active" data-cat="all" onclick="filterBdCategory('all', this)">
+                                        Semua <span class="bd-tab-count">{{ $buktiDukungStats['total_files'] }}</span>
+                                    </button>
+                                    @if (($buktiDukungStats['by_category']['pdf'] ?? 0) > 0)
+                                        <button type="button" class="bd-tab-btn" data-cat="pdf" onclick="filterBdCategory('pdf', this)">
+                                            PDF <span class="bd-tab-count">{{ $buktiDukungStats['by_category']['pdf'] }}</span>
+                                        </button>
+                                    @endif
+                                    @if ((($buktiDukungStats['by_category']['word'] ?? 0) + ($buktiDukungStats['by_category']['ppt'] ?? 0)) > 0)
+                                        <button type="button" class="bd-tab-btn" data-cat="office" onclick="filterBdCategory('office', this)">
+                                            Dokumen <span class="bd-tab-count">{{ ($buktiDukungStats['by_category']['word'] ?? 0) + ($buktiDukungStats['by_category']['ppt'] ?? 0) }}</span>
+                                        </button>
+                                    @endif
+                                    @if (($buktiDukungStats['by_category']['image'] ?? 0) > 0)
+                                        <button type="button" class="bd-tab-btn" data-cat="image" onclick="filterBdCategory('image', this)">
+                                            Gambar <span class="bd-tab-count">{{ $buktiDukungStats['by_category']['image'] }}</span>
+                                        </button>
+                                    @endif
+                                    @if (($buktiDukungStats['by_category']['video'] ?? 0) > 0)
+                                        <button type="button" class="bd-tab-btn" data-cat="video" onclick="filterBdCategory('video', this)">
+                                            Video <span class="bd-tab-count">{{ $buktiDukungStats['by_category']['video'] }}</span>
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div id="bd-no-results" style="display: none; text-align: center; padding: 2rem; color: #94a3b8;">
+                                <i class="search icon large"></i>
+                                <p style="margin-top: 0.5rem; font-size: 0.95rem;">Tidak ada berkas yang cocok dengan filter atau pencarian.</p>
+                            </div>
+
+                            {{-- Folder & File Tree --}}
+                            <div class="bd-tree-container">
+                                @include('pendaftar::_bukti_dukung_tree', ['items' => $buktiDukungTree, 'level' => 0])
+                            </div>
                         </div>
                     </div>
                 @endif
@@ -1518,7 +1893,7 @@
                                         alt="Foto Pendaftar">
                                 @else
                                     <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
-                                        <i class="file alternate outline icon large"></i><br>Berkas Non-Gambar
+                                        <i class="file icon large"></i><br>Berkas Non-Gambar
                                     </div>
                                 @endif
                                 <x-volt-link-button
@@ -1530,7 +1905,7 @@
                                 </x-volt-link-button>
                             @else
                                 <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
-                                    <i class="image outline icon"></i> Foto tidak diunggah
+                                    <i class="image icon"></i> Foto tidak diunggah
                                 </div>
                             @endif
                             @if ($canManage && !$hasRestrictedView)
@@ -1556,38 +1931,16 @@
                         @endphp
                         @if ($canViewKtp)
                             <div class="file-block">
-                                <div class="file-block-label"><i class="id card outline icon"></i> KTP Pendaftar</div>
+                                <div class="file-block-label"><i class="id card icon"></i> KTP Pendaftar</div>
 
                                 @if (!empty($ktpRaw))
-                                    @if ($isImage($ktpRaw))
-                                        <img src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
-                                            class="file-img-preview lightbox-trigger"
-                                            data-src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw]) }}"
-                                            alt="KTP Pendaftar">
-                                    @elseif($isPdf($ktpRaw))
-                                        <object data="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
-                                            type="application/pdf"
-                                            style="width: 100%; height: 300px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
-                                            <iframe src="{{ route('modules::pendaftar.file', ['path' => $ktpRaw], false) }}"
-                                                style="width: 100%; height: 300px; border: none;">
-                                                <p>Browser Anda tidak mendukung pratinjau PDF.</p>
-                                            </iframe>
-                                        </object>
-                                    @else
-                                        <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
-                                            <i class="file alternate outline icon large"></i><br>Berkas Lainnya
-                                        </div>
-                                    @endif
-                                    <x-volt-link-button
-                                        url="{{ route('modules::pendaftar.file', ['path' => $ktpRaw, 'download' => 1]) }}"
-                                        icon="download" class="basic blue"
-                                        style="margin-top: .6rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: .4rem;"
-                                        target="_blank" data-no-loader="true">
-                                        Unduh KTP
-                                    </x-volt-link-button>
+                                    @include('pendaftar::_file_preview_card', [
+                                        'file' => $ktpRaw,
+                                        'label' => null,
+                                    ])
                                 @else
                                     <div style="color:#94a3b8; font-size:.85rem; text-align:center; padding:.75rem 0;">
-                                        <i class="id card outline icon"></i> KTP tidak diunggah
+                                        <i class="id card icon"></i> KTP tidak diunggah
                                     </div>
                                 @endif
                                 @if ($canManage && !$hasRestrictedView)
@@ -1648,7 +2001,7 @@
                                 </div>
                                 <div
                                     style="font-size: 12.5px; color: #475569; margin-bottom: 0.75rem; display: inline-flex; align-items: center; background: #f1f5f9; padding: 0.3rem 0.7rem; border-radius: 6px; font-weight: 500;">
-                                    <i class="calendar alternate icon" style="margin-right: 0.4rem; color: #64748b;"></i>
+                                    <i class="calendar icon" style="margin-right: 0.4rem; color: #64748b;"></i>
                                     {{ $riwayat->created_at->format('d M Y, H:i') }}
                                 </div>
 
@@ -1720,7 +2073,150 @@
         <img id="img-lightbox-img" src="" alt="Preview">
     </div>
 
+    {{-- ═══════ Modal Pratinjau Bukti Dukung Tambahan ═══════ --}}
+    <div class="ui modal" id="modal-preview-bukti-dukung" style="width: 94vw; max-width: 1250px; border-radius: 12px; overflow: hidden; background: #0f172a;">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1.25rem; background: #0f172a; color: #fff; border-bottom: 1px solid #334155;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; overflow: hidden;">
+                <div id="bd-modal-icon" style="width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; background: rgba(255,255,255,0.1); color: #38bdf8;">
+                    <i class="file icon" style="margin:0;"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div id="bd-modal-title" style="font-weight: 700; font-size: 1.05rem; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 650px;">
+                        Nama Berkas
+                    </div>
+                    <div style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem; margin-top: 2px;">
+                        <span id="bd-modal-ext" style="font-weight: 700; text-transform: uppercase;">PDF</span>
+                        <span>&bull;</span>
+                        <span id="bd-modal-size">0 KB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+                <a id="bd-modal-btn-external" href="#" target="_blank" data-no-loader="true" class="ui mini basic inverted button" title="Buka berkas di tab baru">
+                    <i class="external icon"></i> Tab Baru
+                </a>
+                <a id="bd-modal-btn-download" href="#" target="_blank" data-no-loader="true" class="ui mini blue button" title="Unduh berkas ini">
+                    <i class="download icon"></i> Unduh
+                </a>
+                <button type="button" class="ui mini basic inverted icon button" onclick="closeBdModal()" title="Tutup">
+                    <i class="close icon" style="margin: 0;"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="content" id="bd-modal-body" style="padding: 1rem; background: #0b1120; min-height: 480px; max-height: 82vh; overflow: auto; position: relative;">
+            {{-- Loading spinner --}}
+            <div id="bd-modal-loader" style="display: none; position: absolute; inset: 0; background: rgba(15,23,42,0.88); z-index: 50; flex-direction: column; align-items: center; justify-content: center; color: #fff;">
+                <div class="ui active centered inline loader large"></div>
+                <p id="bd-modal-loader-text" style="margin-top: 1rem; font-size: 0.95rem; color: #cbd5e1;">Memuat pratinjau berkas...</p>
+            </div>
+
+            {{-- PDF Viewer Container --}}
+            <div id="bd-view-pdf" class="bd-viewer-pane" style="display: none;">
+                <div style="background: #1e293b; padding: 0.5rem 0.85rem; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; border-bottom: none;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #cbd5e1; font-size: 0.85rem; font-weight: 600;">
+                        <i class="file pdf icon" style="color: #ef4444; margin: 0;"></i>
+                        <span>Dokumen PDF</span>
+                        <span id="bd-pdf-filesize-badge" style="font-size: 0.75rem; color: #94a3b8; font-weight: 400;"></span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; align-items: center;">
+                        <button type="button" class="ui mini basic inverted button" onclick="reloadBdPdf()" title="Muat ulang pratinjau jika dokumen belum tampil">
+                            <i class="redo icon"></i> Muat Ulang
+                        </button>
+                        <a id="bd-pdf-btn-open" href="#" target="_blank" data-no-loader="true" class="ui mini basic inverted button" title="Buka PDF di tab baru">
+                            <i class="external icon"></i> Buka Tab Baru
+                        </a>
+                        <a id="bd-pdf-btn-dl" href="#" target="_blank" data-no-loader="true" class="ui mini blue button" title="Unduh PDF">
+                            <i class="download icon"></i> Unduh PDF
+                        </a>
+                    </div>
+                </div>
+                <iframe id="bd-frame-pdf" src="" style="width: 100%; height: 72vh; border: 1px solid #334155; border-radius: 0 0 8px 8px; background: #fff;"></iframe>
+            </div>
+
+            {{-- Image Viewer Container --}}
+            <div id="bd-view-image" class="bd-viewer-pane" style="display: none; text-align: center; padding: 0.5rem 0;">
+                <div style="margin-bottom: 0.75rem; display: flex; justify-content: center; gap: 0.5rem;">
+                    <button type="button" class="ui mini basic inverted button" onclick="zoomBdImage(1.2)"><i class="search plus icon"></i> Perbesar</button>
+                    <button type="button" class="ui mini basic inverted button" onclick="zoomBdImage(0.8)"><i class="search minus icon"></i> Perkecil</button>
+                    <button type="button" class="ui mini basic inverted button" onclick="resetBdImage()"><i class="undo icon"></i> Reset</button>
+                    <button type="button" class="ui mini basic inverted button" onclick="rotateBdImage()"><i class="redo icon"></i> Putar</button>
+                </div>
+                <div style="overflow: auto; max-height: 68vh; display: flex; align-items: center; justify-content: center;">
+                    <img id="bd-img-element" src="" alt="Pratinjau Gambar" style="max-width: 100%; max-height: 65vh; object-fit: contain; transition: transform 0.2s ease; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+                </div>
+            </div>
+
+            {{-- Video Viewer Container --}}
+            <div id="bd-view-video" class="bd-viewer-pane" style="display: none; text-align: center;">
+                <video id="bd-video-element" controls playsinline style="max-width: 100%; max-height: 72vh; border-radius: 8px; outline: none; background: #000;"></video>
+            </div>
+
+            {{-- Word DOCX Viewer Container --}}
+            <div id="bd-view-docx" class="bd-viewer-pane" style="display: none;">
+                <div style="background: #f1f5f9; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.85rem; color: #475569; font-weight: 600;">
+                        <i class="file word icon" style="color: #2563eb;"></i> Pratinjau Dokumen Microsoft Word (.docx)
+                    </span>
+                    <span style="font-size: 0.8rem; color: #64748b;">Halaman dokumen dirender langsung</span>
+                </div>
+                <div id="bd-docx-container" style="background: #fff; min-height: 400px; padding: 2rem; border-radius: 8px; overflow: auto; max-height: 68vh; color: #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
+            </div>
+
+            {{-- PowerPoint PPTX Viewer Container --}}
+            <div id="bd-view-pptx" class="bd-viewer-pane" style="display: none;">
+                <div id="bd-pptx-container" style="background: #fff; padding: 1.5rem; border-radius: 8px; min-height: 400px; max-height: 72vh; overflow-y: auto; color: #1e293b;">
+                    <div id="bd-pptx-header" style="border-bottom: 2px solid #fed7aa; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 44px; height: 44px; border-radius: 8px; background: #fff7ed; border: 1px solid #fed7aa; color: #ea580c; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                <i class="file powerpoint icon" style="margin: 0;"></i>
+                            </div>
+                            <div>
+                                <h3 id="bd-pptx-title" style="margin: 0; color: #9a3412;">Presentasi PowerPoint</h3>
+                                <div id="bd-pptx-info" style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">Mendeteksi slide...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="bd-pptx-thumbnail-box" style="display: none; text-align: center; margin-bottom: 1.5rem; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; margin-bottom: 0.5rem; text-transform: uppercase;">Sampul / Thumbnail Presentasi</div>
+                        <img id="bd-pptx-thumbnail" src="" alt="Thumbnail Slide" style="max-height: 260px; max-width: 100%; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    </div>
+
+                    <div id="bd-pptx-slides-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                        {{-- Extracted slides rendered here --}}
+                    </div>
+                </div>
+            </div>
+
+            {{-- Audio Viewer Container --}}
+            <div id="bd-view-audio" class="bd-viewer-pane" style="display: none; text-align: center; padding: 3rem 1rem;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: #fffbeb; border: 1px solid #fde68a; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.5rem auto;">
+                    <i class="volume up icon" style="margin: 0;"></i>
+                </div>
+                <audio id="bd-audio-element" controls style="width: 100%; max-width: 500px;"></audio>
+            </div>
+
+            {{-- Fallback Container --}}
+            <div id="bd-view-fallback" class="bd-viewer-pane" style="display: none; text-align: center; padding: 3.5rem 1.5rem; color: #f8fafc;">
+                <div id="bd-fallback-icon" style="width: 72px; height: 72px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.25rem auto; color: #cbd5e1;">
+                    <i class="file icon" style="margin: 0;"></i>
+                </div>
+                <h3 id="bd-fallback-name" style="margin: 0 0 0.5rem 0; color: #fff;">Nama Berkas</h3>
+                <p id="bd-fallback-msg" style="color: #94a3b8; font-size: 0.95rem; max-width: 500px; margin: 0 auto 1.5rem auto; line-height: 1.5;">
+                    Pratinjau langsung tidak didukung untuk jenis berkas ini. Anda dapat mengunduh berkas untuk membukanya langsung di perangkat Anda.
+                </p>
+                <a id="bd-fallback-btn-download" href="#" target="_blank" data-no-loader="true" class="ui primary large button">
+                    <i class="download icon"></i> Unduh Berkas
+                </a>
+            </div>
+        </div>
+    </div>
+
     @push('script')
+        <script src="{{ asset('js/jszip.min.js') }}"></script>
+        <script src="{{ asset('js/docx-preview.min.js') }}"></script>
         <script>
             (function () {
                 /* ── Accordion ─────────────────────────────────────── */
@@ -2000,7 +2496,7 @@
                         const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
                         const sizeStr = file.size > 1024 * 1024 ? sizeMB : sizeKB;
 
-                        let iconHtml = '<i class="file alternate outline icon large" style="margin:0;"></i>';
+                        let iconHtml = '<i class="file icon large" style="margin:0;"></i>';
                         let bgColor = '#10b981';
 
                         if (file.type.startsWith('image/')) {
@@ -2008,10 +2504,10 @@
                             iconHtml = `<img src="${objUrl}" alt="Preview" onload="URL.revokeObjectURL(this.src)">`;
                             bgColor = 'transparent';
                         } else if (file.type === 'application/pdf') {
-                            iconHtml = '<i class="file pdf outline icon large" style="margin:0;"></i>';
+                            iconHtml = '<i class="file pdf icon large" style="margin:0;"></i>';
                             bgColor = '#ef4444';
                         } else if (file.name.match(/\.(doc|docx)$/i)) {
-                            iconHtml = '<i class="file word outline icon large" style="margin:0;"></i>';
+                            iconHtml = '<i class="file word icon large" style="margin:0;"></i>';
                             bgColor = '#3b82f6';
                         }
 
@@ -2039,6 +2535,537 @@
             }, {
                 passive: false
             });
+
+            /* ══════════════════════════════════════════════════════════════
+               BUKTI DUKUNG TAMBAHAN: FOLDER EXPLORER & PREVIEWER
+            ══════════════════════════════════════════════════════════════ */
+            window.toggleBdFolder = function (itemId) {
+                var content = document.getElementById('content-' + itemId);
+                var chevron = document.getElementById('chevron-' + itemId);
+                var icon = document.getElementById('folder-icon-' + itemId);
+                if (!content) return;
+
+                var isHidden = content.style.display === 'none' || !content.style.display;
+                if (isHidden) {
+                    content.style.display = 'block';
+                    if (chevron) chevron.classList.add('down');
+                    if (icon) {
+                        icon.classList.remove('folder');
+                        icon.classList.add('folder', 'open');
+                    }
+                } else {
+                    content.style.display = 'none';
+                    if (chevron) chevron.classList.remove('down');
+                    if (icon) {
+                        icon.classList.remove('open');
+                        icon.classList.add('folder');
+                    }
+                }
+            };
+
+            window.expandAllBdFolders = function () {
+                document.querySelectorAll('.bd-folder-content').forEach(function (el) {
+                    el.style.display = 'block';
+                });
+                document.querySelectorAll('.bd-chevron').forEach(function (el) {
+                    el.classList.add('down');
+                });
+                document.querySelectorAll('.bd-folder-icon').forEach(function (el) {
+                    el.classList.remove('folder');
+                    el.classList.add('folder', 'open');
+                });
+            };
+
+            window.collapseAllBdFolders = function () {
+                document.querySelectorAll('.bd-folder-content').forEach(function (el) {
+                    el.style.display = 'none';
+                });
+                document.querySelectorAll('.bd-chevron').forEach(function (el) {
+                    el.classList.remove('down');
+                });
+                document.querySelectorAll('.bd-folder-icon').forEach(function (el) {
+                    el.classList.remove('open');
+                    el.classList.add('folder');
+                });
+            };
+
+            var currentBdCategory = 'all';
+
+            window.filterBdCategory = function (category, btn) {
+                currentBdCategory = category;
+                document.querySelectorAll('.bd-tab-btn').forEach(function (b) {
+                    b.classList.remove('active');
+                });
+                if (btn) btn.classList.add('active');
+                applyBdFilters();
+            };
+
+            window.filterBdItems = function () {
+                var input = document.getElementById('bd-search-input');
+                var clearBtn = document.getElementById('bd-search-clear');
+                if (clearBtn) {
+                    clearBtn.style.display = (input && input.value.trim().length > 0) ? 'block' : 'none';
+                }
+                applyBdFilters();
+            };
+
+            window.clearBdSearch = function () {
+                var input = document.getElementById('bd-search-input');
+                var clearBtn = document.getElementById('bd-search-clear');
+                if (input) input.value = '';
+                if (clearBtn) clearBtn.style.display = 'none';
+                applyBdFilters();
+            };
+
+            function applyBdFilters() {
+                var searchInput = document.getElementById('bd-search-input');
+                var query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+                var files = document.querySelectorAll('.bd-file-item');
+                var visibleCount = 0;
+
+                files.forEach(function (fileEl) {
+                    var filename = fileEl.getAttribute('data-filename') || '';
+                    var cat = fileEl.getAttribute('data-category') || '';
+
+                    // Match category
+                    var matchCat = true;
+                    if (currentBdCategory === 'all') {
+                        matchCat = true;
+                    } else if (currentBdCategory === 'office') {
+                        matchCat = (cat === 'word' || cat === 'ppt' || cat === 'excel');
+                    } else {
+                        matchCat = (cat === currentBdCategory);
+                    }
+
+                    // Match search query
+                    var matchQuery = true;
+                    if (query.length > 0) {
+                        matchQuery = filename.indexOf(query) !== -1;
+                    }
+
+                    if (matchCat && matchQuery) {
+                        fileEl.style.display = 'flex';
+                        visibleCount++;
+
+                        // Open all ancestor folders so matching file is visible
+                        var parentContent = fileEl.closest('.bd-folder-content');
+                        while (parentContent) {
+                            parentContent.style.display = 'block';
+                            var parentFolder = parentContent.closest('.bd-folder-item');
+                            if (parentFolder) {
+                                var chevron = parentFolder.querySelector('.bd-chevron');
+                                var icon = parentFolder.querySelector('.bd-folder-icon');
+                                if (chevron) chevron.classList.add('down');
+                                if (icon) {
+                                    icon.classList.remove('folder');
+                                    icon.classList.add('folder', 'open');
+                                }
+                            }
+                            parentContent = parentFolder ? parentFolder.parentElement.closest('.bd-folder-content') : null;
+                        }
+                    } else {
+                        fileEl.style.display = 'none';
+                    }
+                });
+
+                var noResults = document.getElementById('bd-no-results');
+                if (noResults) {
+                    noResults.style.display = (visibleCount === 0 && files.length > 0) ? 'block' : 'none';
+                }
+            }
+
+            // Image Zoom & Rotate State
+            var bdImgScale = 1;
+            var bdImgRotate = 0;
+
+            window.zoomBdImage = function (factor) {
+                bdImgScale = Math.max(0.2, Math.min(bdImgScale * factor, 5));
+                updateBdImageTransform();
+            };
+
+            window.rotateBdImage = function () {
+                bdImgRotate = (bdImgRotate + 90) % 360;
+                updateBdImageTransform();
+            };
+
+            window.resetBdImage = function () {
+                bdImgScale = 1;
+                bdImgRotate = 0;
+                updateBdImageTransform();
+            };
+
+            function updateBdImageTransform() {
+                var img = document.getElementById('bd-img-element');
+                if (img) {
+                    img.style.transform = 'scale(' + bdImgScale + ') rotate(' + bdImgRotate + 'deg)';
+                }
+            }
+
+            function stopBdMedia() {
+                var video = document.getElementById('bd-video-element');
+                if (video) {
+                    video.pause();
+                    video.removeAttribute('src');
+                    video.load();
+                }
+                var audio = document.getElementById('bd-audio-element');
+                if (audio) {
+                    audio.pause();
+                    audio.removeAttribute('src');
+                    audio.load();
+                }
+                var frame = document.getElementById('bd-frame-pdf');
+                if (frame) {
+                    frame.src = 'about:blank';
+                }
+                var docxContainer = document.getElementById('bd-docx-container');
+                if (docxContainer) {
+                    docxContainer.innerHTML = '';
+                }
+            }
+
+            window.closeBdModal = function () {
+                stopBdMedia();
+                $('#modal-preview-bukti-dukung').modal('hide');
+            };
+
+            window.reloadBdPdf = function () {
+                var pdfFrame = document.getElementById('bd-frame-pdf');
+                var loader = document.getElementById('bd-modal-loader');
+                var loaderText = document.getElementById('bd-modal-loader-text');
+                if (pdfFrame && pdfFrame.src && pdfFrame.src !== 'about:blank') {
+                    var current = pdfFrame.src;
+                    if (loader) {
+                        loaderText.textContent = 'Memuat ulang pratinjau PDF...';
+                        loader.style.display = 'flex';
+                    }
+                    pdfFrame.src = 'about:blank';
+                    setTimeout(function () {
+                        pdfFrame.onload = function () {
+                            if (loader) loader.style.display = 'none';
+                        };
+                        pdfFrame.src = current;
+                        setTimeout(function () {
+                            if (loader) loader.style.display = 'none';
+                        }, 2500);
+                    }, 120);
+                }
+            };
+
+            function escapeHtml(text) {
+                var map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return (text || '').replace(/[&<>"']/g, function (m) { return map[m]; });
+            }
+
+            window.openBdPreview = function (file) {
+                if (!file) return;
+
+                // Set header metadata
+                var titleEl = document.getElementById('bd-modal-title');
+                var extEl = document.getElementById('bd-modal-ext');
+                var sizeEl = document.getElementById('bd-modal-size');
+                var iconEl = document.getElementById('bd-modal-icon');
+                var btnExt = document.getElementById('bd-modal-btn-external');
+                var btnDl = document.getElementById('bd-modal-btn-download');
+
+                if (titleEl) titleEl.textContent = file.name;
+                if (extEl) extEl.textContent = file.extension || 'FILE';
+                if (sizeEl) sizeEl.textContent = file.formatted_size || '';
+                if (btnExt) btnExt.href = file.url;
+                if (btnDl) btnDl.href = file.download_url;
+
+                // Set icon & color
+                var iconMap = {
+                    pdf: { icon: 'file pdf', color: '#ef4444' },
+                    word: { icon: 'file word', color: '#2563eb' },
+                    ppt: { icon: 'file powerpoint', color: '#ea580c' },
+                    excel: { icon: 'file excel', color: '#16a34a' },
+                    image: { icon: 'file image', color: '#059669' },
+                    video: { icon: 'file video', color: '#7c3aed' },
+                    audio: { icon: 'volume up', color: '#d97706' },
+                };
+                var iconInfo = iconMap[file.category] || { icon: 'file', color: '#64748b' };
+                if (iconEl) {
+                    iconEl.innerHTML = '<i class="' + iconInfo.icon + ' icon" style="margin:0;"></i>';
+                    iconEl.style.color = iconInfo.color;
+                }
+
+                // Hide all viewer panes
+                document.querySelectorAll('.bd-viewer-pane').forEach(function (pane) {
+                    pane.style.display = 'none';
+                });
+
+                var loader = document.getElementById('bd-modal-loader');
+                var loaderText = document.getElementById('bd-modal-loader-text');
+                if (loader) loader.style.display = 'none';
+
+                var cat = file.category;
+                var ext = (file.extension || '').toLowerCase();
+
+                // Open Modal first so dimensions are ready
+                $('#modal-preview-bukti-dukung').modal({
+                    autofocus: false,
+                    observeChanges: true,
+                    closable: true,
+                    onHidden: function () {
+                        stopBdMedia();
+                    }
+                }).modal('show');
+
+                // Process by category
+                if (cat === 'pdf') {
+                    var pdfPane = document.getElementById('bd-view-pdf');
+                    var pdfFrame = document.getElementById('bd-frame-pdf');
+                    var pdfOpen = document.getElementById('bd-pdf-btn-open');
+                    var pdfDl = document.getElementById('bd-pdf-btn-dl');
+                    var pdfSizeBadge = document.getElementById('bd-pdf-filesize-badge');
+                    if (pdfPane && pdfFrame) {
+                        pdfPane.style.display = 'block';
+                        if (pdfOpen) pdfOpen.href = file.url;
+                        if (pdfDl) pdfDl.href = file.download_url;
+                        if (pdfSizeBadge) pdfSizeBadge.textContent = file.formatted_size ? '(' + file.formatted_size + ')' : '';
+
+                        if (loader) {
+                            loaderText.textContent = 'Memuat pratinjau dokumen PDF...';
+                            loader.style.display = 'flex';
+                        }
+
+                        var loadTimeout = setTimeout(function () {
+                            if (loader) loader.style.display = 'none';
+                        }, 2500);
+
+                        pdfFrame.onload = function () {
+                            clearTimeout(loadTimeout);
+                            if (loader) loader.style.display = 'none';
+                        };
+
+                        pdfFrame.src = file.url;
+                    }
+                } else if (cat === 'image') {
+                    var imgPane = document.getElementById('bd-view-image');
+                    var imgEl = document.getElementById('bd-img-element');
+                    if (imgPane && imgEl) {
+                        imgPane.style.display = 'block';
+                        imgEl.src = file.url;
+                        resetBdImage();
+                    }
+                } else if (cat === 'video') {
+                    var videoPane = document.getElementById('bd-view-video');
+                    var videoEl = document.getElementById('bd-video-element');
+                    if (videoPane && videoEl) {
+                        videoPane.style.display = 'block';
+                        videoEl.src = file.url;
+                        videoEl.load();
+                        videoEl.play().catch(function () {});
+                    }
+                } else if (cat === 'word') {
+                    if (ext === 'docx') {
+                        var docxPane = document.getElementById('bd-view-docx');
+                        var docxContainer = document.getElementById('bd-docx-container');
+                        if (docxPane && docxContainer) {
+                            docxPane.style.display = 'block';
+                            docxContainer.innerHTML = '';
+                            if (loader) {
+                                loaderText.textContent = 'Memuat dan merender dokumen Word (.docx)...';
+                                loader.style.display = 'flex';
+                            }
+
+                            fetch(file.url)
+                                .then(function (res) {
+                                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                                    return res.blob();
+                                })
+                                .then(function (blob) {
+                                    if (typeof docx !== 'undefined' && docx.renderAsync) {
+                                        return docx.renderAsync(blob, docxContainer, null, {
+                                            inWrapper: false,
+                                            ignoreWidth: false,
+                                            ignoreHeight: false,
+                                            breakPages: true,
+                                            useBase64URL: true
+                                        });
+                                    } else {
+                                        throw new Error('Pustaka docx-preview tidak ditemukan.');
+                                    }
+                                })
+                                .then(function () {
+                                    if (loader) loader.style.display = 'none';
+                                })
+                                .catch(function (err) {
+                                    console.error('Error rendering docx:', err);
+                                    if (loader) loader.style.display = 'none';
+                                    docxContainer.innerHTML = '<div style="text-align: center; padding: 3rem 1rem; color: #dc2626;">' +
+                                        '<i class="exclamation triangle icon large"></i>' +
+                                        '<p style="margin-top: 0.5rem; font-weight: 600;">Gagal memproses pratinjau Word langsung.</p>' +
+                                        '<p style="color: #64748b; font-size: 0.85rem;">' + escapeHtml(err.message) + '</p>' +
+                                        '<a href="' + file.download_url + '" class="ui mini primary button" target="_blank" data-no-loader="true" style="margin-top: 1rem;"><i class="download icon"></i> Unduh Berkas Word</a>' +
+                                        '</div>';
+                                });
+                        }
+                    } else {
+                        // Older .doc
+                        showFallbackPane(file, 'Format dokumen Word versi lawas (.doc). Pratinjau langsung di website disarankan menggunakan format .docx. Silakan unduh dokumen untuk membukanya di Microsoft Word.');
+                    }
+                } else if (cat === 'ppt') {
+                    if (ext === 'pptx') {
+                        var pptxPane = document.getElementById('bd-view-pptx');
+                        var pptxTitle = document.getElementById('bd-pptx-title');
+                        var pptxInfo = document.getElementById('bd-pptx-info');
+                        var slidesList = document.getElementById('bd-pptx-slides-list');
+                        var thumbBox = document.getElementById('bd-pptx-thumbnail-box');
+                        var thumbImg = document.getElementById('bd-pptx-thumbnail');
+
+                        if (pptxPane) {
+                            pptxPane.style.display = 'block';
+                            if (pptxTitle) pptxTitle.textContent = file.name;
+                            if (pptxInfo) pptxInfo.textContent = 'Menganalisis slide presentasi...';
+                            if (slidesList) slidesList.innerHTML = '';
+                            if (thumbBox) thumbBox.style.display = 'none';
+
+                            if (loader) {
+                                loaderText.textContent = 'Membaca struktur slide PowerPoint (.pptx)...';
+                                loader.style.display = 'flex';
+                            }
+
+                            fetch(file.url)
+                                .then(function (res) {
+                                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                                    return res.arrayBuffer();
+                                })
+                                .then(async function (arrayBuffer) {
+                                    if (typeof JSZip === 'undefined') {
+                                        throw new Error('Pustaka JSZip tidak ditemukan.');
+                                    }
+                                    var zip = await JSZip.loadAsync(arrayBuffer);
+
+                                    // Check thumbnail
+                                    var thumbFile = zip.file('docProps/thumbnail.jpeg') || zip.file('docProps/thumbnail.jpg') || zip.file('docProps/thumbnail.png');
+                                    if (thumbFile && thumbImg && thumbBox) {
+                                        var base64 = await thumbFile.async('base64');
+                                        var mime = thumbFile.name.endsWith('.png') ? 'image/png' : 'image/jpeg';
+                                        thumbImg.src = 'data:' + mime + ';base64,' + base64;
+                                        thumbBox.style.display = 'block';
+                                    }
+
+                                    // Find slides
+                                    var slideFiles = [];
+                                    zip.forEach(function (relativePath) {
+                                        if (/^ppt\/slides\/slide[0-9]+\.xml$/i.test(relativePath)) {
+                                            slideFiles.push(relativePath);
+                                        }
+                                    });
+
+                                    slideFiles.sort(function (a, b) {
+                                        var numA = parseInt(a.match(/slide([0-9]+)\.xml/i)[1], 10);
+                                        var numB = parseInt(b.match(/slide([0-9]+)\.xml/i)[1], 10);
+                                        return numA - numB;
+                                    });
+
+                                    if (pptxInfo) {
+                                        pptxInfo.textContent = 'Terdeteksi ' + slideFiles.length + ' Slide Presentasi';
+                                    }
+
+                                    if (slideFiles.length === 0) {
+                                        slidesList.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 2rem;">Tidak ada slide yang terdeteksi dalam berkas presentasi ini.</div>';
+                                        return;
+                                    }
+
+                                    var parser = new DOMParser();
+                                    for (var i = 0; i < slideFiles.length; i++) {
+                                        var slideXml = await zip.file(slideFiles[i]).async('string');
+                                        var xmlDoc = parser.parseFromString(slideXml, 'text/xml');
+                                        var textNodes = xmlDoc.getElementsByTagName('a:t');
+                                        var lines = [];
+                                        for (var t = 0; t < textNodes.length; t++) {
+                                            var txt = (textNodes[t].textContent || '').trim();
+                                            if (txt) lines.push(txt);
+                                        }
+
+                                        var card = document.createElement('div');
+                                        card.style.cssText = 'border: 1px solid #fed7aa; background: #fffdfa; border-radius: 8px; padding: 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);';
+
+                                        var headerHtml = '<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #fee0b2; padding-bottom: 0.5rem; margin-bottom: 0.75rem;">' +
+                                            '<span style="font-weight: 700; color: #ea580c; font-size: 0.92rem;"><i class="play circle icon"></i> Slide ' + (i + 1) + '</span>' +
+                                            '<span style="font-size: 0.75rem; color: #94a3b8;">' + (lines.length > 0 ? lines.length + ' poin teks' : 'Slide visual / diagram') + '</span>' +
+                                            '</div>';
+
+                                        var bodyHtml = '';
+                                        if (lines.length > 0) {
+                                            bodyHtml += '<div style="display: flex; flex-direction: column; gap: 0.4rem;">';
+                                            var isTitle = true;
+                                            for (var l = 0; l < lines.length; l++) {
+                                                if (isTitle && lines[l].length < 100) {
+                                                    bodyHtml += '<div style="font-weight: 700; font-size: 1.05rem; color: #1e293b; margin-bottom: 0.2rem;">' + escapeHtml(lines[l]) + '</div>';
+                                                    isTitle = false;
+                                                } else {
+                                                    isTitle = false;
+                                                    bodyHtml += '<div style="font-size: 0.88rem; color: #475569; display: flex; align-items: flex-start; gap: 0.5rem;">' +
+                                                        '<span style="color: #ea580c; font-weight: bold; line-height: 1.2;">&bull;</span>' +
+                                                        '<span>' + escapeHtml(lines[l]) + '</span>' +
+                                                        '</div>';
+                                                }
+                                            }
+                                            bodyHtml += '</div>';
+                                        } else {
+                                            bodyHtml += '<div style="color: #94a3b8; font-size: 0.85rem; font-style: italic;"><i class="image icon"></i> Slide berupa media gambar atau diagram grafik.</div>';
+                                        }
+
+                                        card.innerHTML = headerHtml + bodyHtml;
+                                        slidesList.appendChild(card);
+                                    }
+                                })
+                                .then(function () {
+                                    if (loader) loader.style.display = 'none';
+                                })
+                                .catch(function (err) {
+                                    console.error('Error parsing pptx:', err);
+                                    if (loader) loader.style.display = 'none';
+                                    slidesList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #dc2626;">' +
+                                        '<i class="exclamation triangle icon large"></i>' +
+                                        '<p style="margin-top: 0.5rem; font-weight: 600;">Gagal membaca slide PowerPoint secara otomatis.</p>' +
+                                        '<a href="' + file.download_url + '" class="ui mini orange button" target="_blank" data-no-loader="true" style="margin-top: 0.75rem;"><i class="download icon"></i> Unduh Berkas PowerPoint</a>' +
+                                        '</div>';
+                                });
+                        }
+                    } else {
+                        // Older .ppt
+                        showFallbackPane(file, 'Format presentasi PowerPoint versi lawas (.ppt). Pratinjau langsung di website disarankan menggunakan format .pptx. Silakan unduh presentasi untuk membukanya di Microsoft PowerPoint.');
+                    }
+                } else if (cat === 'audio') {
+                    var audioPane = document.getElementById('bd-view-audio');
+                    var audioEl = document.getElementById('bd-audio-element');
+                    if (audioPane && audioEl) {
+                        audioPane.style.display = 'block';
+                        audioEl.src = file.url;
+                        audioEl.load();
+                        audioEl.play().catch(function () {});
+                    }
+                } else {
+                    showFallbackPane(file);
+                }
+            };
+
+            function showFallbackPane(file, customMsg) {
+                var fallbackPane = document.getElementById('bd-view-fallback');
+                var nameEl = document.getElementById('bd-fallback-name');
+                var msgEl = document.getElementById('bd-fallback-msg');
+                var dlBtn = document.getElementById('bd-fallback-btn-download');
+
+                if (fallbackPane) {
+                    fallbackPane.style.display = 'block';
+                    if (nameEl) nameEl.textContent = file.name;
+                    if (msgEl && customMsg) msgEl.textContent = customMsg;
+                    if (dlBtn) dlBtn.href = file.download_url;
+                }
+            }
+
+            window.openFilePreview = window.openBdPreview;
         </script>
     @endpush
 

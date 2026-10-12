@@ -139,7 +139,7 @@ return [
         [
             'type' => 'text',
             'name' => 'timeline_wawancara',
-            'label' => 'Tanggal Wawancara',
+            'label' => 'Tanggal Verifikasi Lapangan & Penjurian 3 Besar',
         ],
         [
             'type' => 'text',

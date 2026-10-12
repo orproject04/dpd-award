@@ -1560,7 +1560,7 @@
                     ],
                     [
                         'n' => '7',
-                        'title' => 'Wawancara',
+                        'title' => 'Verifikasi Lapangan & Penjurian 3 Besar',
                         'date' => config('laravolt.ui.timeline_wawancara'),
                         'is_passed' => isTimelinePassed(config('laravolt.ui.timeline_wawancara')),
                         'color_class' =>

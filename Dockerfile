@@ -16,30 +16,30 @@ RUN npm run build
 # ==========================
 # STAGE 2: PHP-FPM + Nginx
 # ==========================
-FROM php:8.3-fpm-alpine
+FROM php:8.3.36-fpm-alpine
 
 # Set timezone untuk PHP stage
 RUN apk add --no-cache tzdata \
- && cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime \
- && echo "Asia/Jakarta" > /etc/timezone \
- && apk del tzdata
+   && cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime \
+   && echo "Asia/Jakarta" > /etc/timezone \
+   && apk del tzdata
 
 # Install sistem & ekstensi (kombinasi RUN untuk reduce layers)
 RUN apk add --no-cache \
-    nginx supervisor git unzip postgresql-client \
-    libpq-dev oniguruma-dev libxml2-dev libzip-dev \
-    libjpeg-turbo-dev libpng-dev freetype-dev icu-dev \
-    sqlite-dev libwebp-dev \
- && apk add --no-cache --virtual .build-deps \
-    autoconf gcc g++ make \
- && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
- && docker-php-ext-install -j$(nproc) \
-    pdo pdo_mysql pdo_pgsql pgsql pdo_sqlite \
-    mbstring pcntl zip bcmath gd exif intl \
- && pecl install redis \
- && docker-php-ext-enable redis opcache \
- && apk del .build-deps \
- && rm -rf /var/cache/apk/*
+   nginx supervisor git unzip postgresql-client \
+   libpq-dev oniguruma-dev libxml2-dev libzip-dev \
+   libjpeg-turbo-dev libpng-dev freetype-dev icu-dev \
+   sqlite-dev libwebp-dev \
+   && apk add --no-cache --virtual .build-deps \
+   autoconf gcc g++ make \
+   && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+   && docker-php-ext-install -j$(nproc) \
+   pdo pdo_mysql pdo_pgsql pgsql pdo_sqlite \
+   mbstring pcntl zip bcmath gd exif intl \
+   && pecl install redis \
+   && docker-php-ext-enable redis opcache \
+   && apk del .build-deps \
+   && rm -rf /var/cache/apk/*
 
 WORKDIR /var/www/html
 
@@ -49,7 +49,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Cache composer dependencies (copy composer files first)
 COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-interaction --prefer-dist --no-scripts \
- && composer clear-cache
+   && composer clear-cache
 
 # Copy application code
 COPY . .
@@ -60,15 +60,15 @@ COPY --from=build-assets /app/public/build ./public/build
 
 # Setup Laravel (kombinasi RUN untuk reduce layers)
 RUN rm -rf bootstrap/cache/*.php \
- && mkdir -p bootstrap/cache storage/logs storage/app/public \
- && rm -rf public/storage \
- && chown -R www-data:www-data bootstrap/cache storage \
- && chmod -R 775 bootstrap/cache storage \
- && php artisan config:clear \
- && composer dump-autoload \
- && php artisan storage:link \
- && php artisan laravolt:link \
- && chown -h www-data:www-data public/storage public/laravolt
+   && mkdir -p bootstrap/cache storage/logs storage/app/public \
+   && rm -rf public/storage \
+   && chown -R www-data:www-data bootstrap/cache storage \
+   && chmod -R 775 bootstrap/cache storage \
+   && php artisan config:clear \
+   && composer dump-autoload \
+   && php artisan storage:link \
+   && php artisan laravolt:link \
+   && chown -h www-data:www-data public/storage public/laravolt
 
 # Configure PHP timezone
 RUN echo "date.timezone = Asia/Jakarta" > /usr/local/etc/php/conf.d/timezone.ini
@@ -86,8 +86,8 @@ COPY docker/entrypoint.sh /entrypoint.sh
 
 # Setup Nginx dan Supervisor (kombinasi untuk reduce layers)
 RUN rm -f /etc/nginx/http.d/default.conf \
- && mkdir -p /var/log/nginx /run/nginx \
- && chmod +x /entrypoint.sh
+   && mkdir -p /var/log/nginx /run/nginx \
+   && chmod +x /entrypoint.sh
 
 # Expose Nginx (bukan FPM)
 EXPOSE 80

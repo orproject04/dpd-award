@@ -37,6 +37,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/pendaftar/generate-history', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'generateHistory'])->name('pendaftar.generate-history')->middleware('can:*');
     Route::post('/pendaftar/riwayat/{riwayat}/keterangan', [\Modules\Pendaftar\Controllers\PendaftarController::class, 'updateRiwayatKeterangan'])->name('pendaftar.riwayat.update-keterangan');
+
+    Route::prefix('storage-manager')->name('storage-manager.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\StorageManagerController::class, 'index'])->name('index');
+        Route::get('/file', [\App\Http\Controllers\StorageManagerController::class, 'serveFile'])->name('file');
+        Route::get('/download-zip', [\App\Http\Controllers\StorageManagerController::class, 'downloadZip'])->name('download-zip');
+        Route::get('/bulk-download', [\App\Http\Controllers\StorageManagerController::class, 'bulkDownload'])->name('bulk-download');
+        Route::post('/folder', [\App\Http\Controllers\StorageManagerController::class, 'createFolder'])->name('create-folder');
+        Route::post('/upload', [\App\Http\Controllers\StorageManagerController::class, 'upload'])->name('upload');
+        Route::post('/rename', [\App\Http\Controllers\StorageManagerController::class, 'rename'])->name('rename');
+        Route::post('/move', [\App\Http\Controllers\StorageManagerController::class, 'move'])->name('move');
+        Route::post('/extract-zip', [\App\Http\Controllers\StorageManagerController::class, 'extractZip'])->name('extract-zip');
+        Route::delete('/item', [\App\Http\Controllers\StorageManagerController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-delete', [\App\Http\Controllers\StorageManagerController::class, 'bulkDelete'])->name('bulk-delete');
+    });
 });
 
 Route::get('/nominasi', [\App\Http\Controllers\NominasiController::class, 'create'])->name('nominasi');

@@ -18,6 +18,8 @@ final class Permission extends Enum
     const KONTRIBUSI_PENGHARGAAN_MANAGE = 'kontribusi_penghargaan.manage';
 
     const SETTING_ASPEK_MANAGE = 'setting_aspek.manage';
+
+    const STORAGE_MANAGE = 'storage.manage';
     
 
     const PENDIDIKAN_MANAGE = 'pendidikan.manage';

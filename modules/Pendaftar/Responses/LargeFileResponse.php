@@ -57,8 +57,11 @@ class LargeFileResponse extends BinaryFileResponse
             'webm' => 'video/webm',
             'ogg' => 'video/ogg',
             'mov' => 'video/quicktime',
+            'mkv' => 'video/x-matroska',
+            'avi' => 'video/x-msvideo',
             'mp3' => 'audio/mpeg',
             'wav' => 'audio/wav',
+            'm4a' => 'audio/mp4',
             'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'doc' => 'application/msword',
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -69,6 +72,11 @@ class LargeFileResponse extends BinaryFileResponse
             'rar' => 'application/x-rar-compressed',
             '7z' => 'application/x-7z-compressed',
             'txt' => 'text/plain',
+            'log' => 'text/plain',
+            'md' => 'text/plain',
+            'csv' => 'text/csv',
+            'json' => 'application/json',
+            'xml' => 'application/xml',
         ];
 
         if (isset($map[$ext])) {

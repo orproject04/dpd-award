@@ -110,6 +110,13 @@ final class AppServiceProvider extends ServiceProvider
                     ->active('kategori-aspek/*');
             }
 
+            if ($user && ($user->hasPermission('*') || $user->hasPermission(\App\Enums\Permission::STORAGE_MANAGE))) {
+                $mainMenu->add('Manajemen Storage', route('storage-manager.index'))
+                    ->data('icon', 'folder-open')
+                    ->data('order', 4)
+                    ->active('storage-manager*');
+            }
+
             // System menu
             $user = auth()->user();
 

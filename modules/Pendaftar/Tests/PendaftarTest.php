@@ -140,6 +140,36 @@ class PendaftarTest extends TestCase
     }
 
     #[Test]
+    public function it_can_export_and_init_batches_when_sorted_by_relation_counts(): void
+    {
+        Pendaftar::factory()->create(['nama' => 'Peserta Satu', 'status' => 'Lolos ke Tahap 50 Besar']);
+        Pendaftar::factory()->create(['nama' => 'Peserta Dua', 'status' => 'Lolos ke Tahap 50 Besar']);
+
+        $this->get(route('modules::pendaftar.export', [
+            'sort' => 'kontribusi_count',
+            'direction' => 'desc',
+            'search' => 'Peserta',
+        ]))->assertStatus(200);
+
+        $this->get(route('modules::pendaftar.export', [
+            'sort' => 'penghargaan_count',
+            'direction' => 'asc',
+        ]))->assertStatus(200);
+
+        $this->getJson(route('modules::pendaftar.export-batch-init', [
+            'sort' => 'kontribusi_count',
+            'direction' => 'desc',
+        ]))
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->getJson(route('modules::pendaftar.send-cert-email-init', [
+            'sort' => 'kontribusi_count',
+            'direction' => 'desc',
+        ]))->assertStatus(200);
+    }
+
+    #[Test]
     public function it_redirects_back_if_no_files_to_download(): void
     {
         Pendaftar::factory()->create(['ktp' => '', 'foto' => '']);

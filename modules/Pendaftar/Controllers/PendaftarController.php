@@ -623,6 +623,7 @@ class PendaftarController extends Controller
         }
 
         return $query
+            ->withCount(['kontribusi', 'penghargaan'])
             ->addSelect([
                 'nilai' => \App\Models\PendaftarKertasKerja::selectRaw('COALESCE(SUM(total), 0)')
                     ->whereColumn('pendaftar_kertas_kerja.pendaftar_id', 'pendaftar.id')
@@ -1991,7 +1992,8 @@ class PendaftarController extends Controller
             $query->where('status', 'like', 'Lolos%');
         }
 
-        $pendaftars = $query->pluck('id');
+        // Gunakan get()->pluck('id') agar alias withCount/addSelect untuk autoSort tetap tersedia
+        $pendaftars = $query->get()->pluck('id');
 
         if ($pendaftars->isEmpty()) {
             return response()->json(['success' => false, 'message' => 'Tidak ada data pendaftar (yang lolos verifikasi) untuk diekspor.']);

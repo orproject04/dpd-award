@@ -249,6 +249,16 @@ class Pendaftar extends Model
         return $this->hasMany(PendaftarRiwayat::class, 'pendaftar_id')->orderBy('created_at', 'desc');
     }
 
+    public function emailLogs(): HasMany
+    {
+        return $this->hasMany(PendaftarEmailLog::class, 'pendaftar_id')->orderBy('created_at', 'desc');
+    }
+
+    public function sertifikatEmailLogs(): HasMany
+    {
+        return $this->emailLogs()->where('email_type', 'sertifikat');
+    }
+
     public static function getStatusRank(?string $status): int
     {
         $stages = [

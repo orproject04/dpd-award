@@ -42,6 +42,10 @@ Route::group(
         Route::post('pendaftars/kertas-kerja/export-batch/process', [PendaftarController::class, 'exportBatchProcess'])->name('pendaftar.export-batch-process');
         Route::get('pendaftars/kertas-kerja/export-batch/download', [PendaftarController::class, 'exportBatchDownload'])->name('pendaftar.export-batch-download');
 
+        // Pengiriman Email Sertifikat Massal
+        Route::get('pendaftars/sertifikat/send-email/init', [PendaftarController::class, 'sendCertificateEmailInit'])->name('pendaftar.send-cert-email-init');
+        Route::post('pendaftars/sertifikat/send-email/process', [PendaftarController::class, 'sendCertificateEmailProcess'])->name('pendaftar.send-cert-email-process');
+
         Route::resource('pendaftar', PendaftarController::class);
     }
 );

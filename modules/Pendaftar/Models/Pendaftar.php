@@ -122,6 +122,16 @@ class Pendaftar extends Model
         return $this->hasMany(\App\Models\PendaftarRiwayat::class, 'pendaftar_id')->orderBy('created_at', 'desc');
     }
 
+    public function emailLogs()
+    {
+        return $this->hasMany(\App\Models\PendaftarEmailLog::class, 'pendaftar_id')->orderBy('created_at', 'desc');
+    }
+
+    public function sertifikatEmailLogs()
+    {
+        return $this->emailLogs()->where('email_type', 'sertifikat');
+    }
+
     public function kertasKerja()
     {
         return $this->hasMany(\App\Models\PendaftarKertasKerja::class, 'pendaftar_id');

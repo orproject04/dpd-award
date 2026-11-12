@@ -38,6 +38,7 @@ class PendaftarTableView extends CustomTableView
             : "COALESCE(SUM(total), 0)";
 
         return $query
+            ->with(['sertifikatEmailLogs' => fn ($q) => $q->latest('created_at')])
             ->withCount(['kontribusi', 'penghargaan'])
             ->addSelect([
                 'nilai' => \App\Models\PendaftarKertasKerja::selectRaw($nilaiSelect)
@@ -102,8 +103,41 @@ class PendaftarTableView extends CustomTableView
                 return "<span style='display:block;text-align:center;'>" . ($data->provinsi ?: '-') . "</span>";
             }, 'Provinsi')->sortable('provinsi'),
             Raw::make(function ($data) {
-                return "<span style='display:block;text-align:center;'>" . ($data->email ?: '-') . "</span>";
+                return "<span style='display:block;text-align:center;'>" . e($data->email ?: '-') . "</span>";
             }, 'Email')->sortable('email'),
+            Raw::make(function ($data) {
+                $logs = $data->sertifikatEmailLogs;
+                $activeStageKey = \App\Services\SertifikatService::mapStageKeyFromStatus(request('status-filter'));
+                $scopedLogs = $activeStageKey !== null ? $logs->where('stage_key', $activeStageKey) : $logs;
+
+                $sentLog = $scopedLogs->firstWhere('status', 'sent');
+                $latestLog = $scopedLogs->first();
+
+                if ($sentLog) {
+                    $stageLabel = e($sentLog->stage_label);
+                    $time = $sentLog->sent_at ? $sentLog->sent_at->format('d M Y H:i') : '';
+                    $titleAttr = e("Terkirim ({$sentLog->stage_label})" . ($time ? " pada {$time}" : ''));
+
+                    return "<div style='text-align:center;white-space:nowrap;' title='{$titleAttr}'>"
+                        . "<span class='ui mini green basic label' style='font-size:11px;padding:3px 7px;'><i class='check icon'></i> Terkirim</span>"
+                        . "<div style='font-size:10.5px;color:#64748b;margin-top:3px;'>{$stageLabel}</div>"
+                        . "</div>";
+                }
+
+                if ($latestLog && $latestLog->status === 'failed') {
+                    $stageLabel = e($latestLog->stage_label);
+                    $errTitle = e($latestLog->error_message ?: 'Gagal mengirim email');
+
+                    return "<div style='text-align:center;white-space:nowrap;' title='{$errTitle}'>"
+                        . "<span class='ui mini red basic label' style='font-size:11px;padding:3px 7px;'><i class='times icon'></i> Gagal</span>"
+                        . "<div style='font-size:10.5px;color:#64748b;margin-top:3px;'>{$stageLabel}</div>"
+                        . "</div>";
+                }
+
+                return "<div style='text-align:center;white-space:nowrap;'>"
+                    . "<span class='ui mini grey basic label' style='font-size:11px;padding:3px 7px;'>Belum Dikirim</span>"
+                    . "</div>";
+            }, 'Email Sertifikat'),
             Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;font-family:monospace;font-size:12px;color:var(--text-muted);'>" . $data->nomor_registrasi . "</span>";
             }, 'Nomor Registrasi')->sortable('nomor_registrasi'),
@@ -156,6 +190,7 @@ class PendaftarTableView extends CustomTableView
             new KategoriFilter,
             new \App\Http\Filters\ProvinsiFilter,
             new StatusFilter,
+            new \App\Http\Filters\EmailSertifikatFilter,
         ];
     }
 }

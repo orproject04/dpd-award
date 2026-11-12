@@ -60,6 +60,9 @@ Route::get('/track', function () {
     return redirect('/');
 });
 Route::post('/track', [LandingController::class, 'track'])->middleware('throttle:200,1')->name('track');
+Route::get('/track/certificate', [LandingController::class, 'trackCertificate'])
+    ->middleware(['throttle:200,1', 'doNotCacheResponse'])
+    ->name('track.certificate');
 
 Route::get('/admin', [LoginController::class, 'show'])->name('admin.login');
 

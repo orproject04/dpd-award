@@ -613,6 +613,7 @@ class PendaftarController extends Controller
             new \App\Http\Filters\KategoriFilter,
             new \App\Http\Filters\ProvinsiFilter,
             new \App\Http\Filters\StatusFilter,
+            new \App\Http\Filters\EmailSertifikatFilter,
         ];
 
         foreach ($filters as $filter) {
@@ -2411,5 +2412,338 @@ class PendaftarController extends Controller
         $sheet->getColumnDimension('G')->setWidth(30);
         $sheet->getColumnDimension('H')->setWidth(30);
         $sheet->getColumnDimension('I')->setWidth(45);
+    }
+
+    /**
+     * Memastikan pengguna berhak mengirim atau melihat log email sertifikat,
+     * serta mengembalikan daftar kategori yang diizinkan (null jika superadmin).
+     *
+     * @return array<int, string>|null
+     */
+    protected function authorizeCertificateEmailAction(): ?array
+    {
+        $user = auth()->user();
+        if (!$user) {
+            abort(403, 'Anda belum login.');
+        }
+
+        $hasRestrictedView = $user->hasPermission(Permission::PENILAIAN_VIEW_TERBATAS) && !$user->hasPermission('*');
+        if ($hasRestrictedView) {
+            abort(403, 'Akses dibatasi untuk akun Anda.');
+        }
+
+        if ($user->hasPermission('*')) {
+            return null;
+        }
+
+        $categoryMap = [
+            'Bidang Pendidikan' => Permission::PENDIDIKAN_MANAGE,
+            'Bidang Kesehatan' => Permission::KESEHATAN_MANAGE,
+            'Bidang Ketahanan Pangan' => Permission::PANGAN_MANAGE,
+            'Bidang Seni dan Budaya' => Permission::SENI_MANAGE,
+        ];
+
+        $allowed = [];
+        foreach ($categoryMap as $kategori => $perm) {
+            if ($user->hasPermission($perm)) {
+                $allowed[] = $kategori;
+            }
+        }
+
+        if (empty($allowed)) {
+            abort(403, 'Anda tidak memiliki izin untuk mengirim email sertifikat pendaftar.');
+        }
+
+        return $allowed;
+    }
+
+    /**
+     * Mengambil daftar pendaftar terfilter sesuai hak akses kategori dan parameter filter aktif.
+     *
+     * @return array{0: \Illuminate\Database\Eloquent\Collection<int, Pendaftar>, 1: string}
+     */
+    protected function fetchFilteredPendaftarsForCertificate(\Illuminate\Http\Request $request, array $relations): array
+    {
+        $allowedCategories = $this->authorizeCertificateEmailAction();
+
+        $query = $this->getFilteredQuery($request);
+        if ($allowedCategories !== null) {
+            $query->whereIn('kategori', $allowedCategories);
+        }
+
+        $statusFilter = trim((string) $request->get('status-filter', ''));
+        $pendaftars = $query->with($relations)->get();
+
+        return [$pendaftars, $statusFilter];
+    }
+
+    /**
+     * Menginisialisasi batch pengiriman email sertifikat berdasarkan filter aktif (termasuk dropdown Status).
+     */
+    public function sendCertificateEmailInit(
+        \Illuminate\Http\Request $request,
+        \App\Services\SertifikatService $sertifikatService
+    ) {
+        [$pendaftars, $statusFilter] = $this->fetchFilteredPendaftarsForCertificate($request, [
+            'riwayats',
+            'sertifikatEmailLogs' => fn ($q) => $q->where('status', 'sent'),
+        ]);
+
+        $dirIndex = $sertifikatService->getStageDirectoryIndex();
+        $allItems = [];
+        $alreadySentCount = 0;
+        $pendingCount = 0;
+        $invalidEmails = [];
+
+        foreach ($pendaftars as $pendaftar) {
+            $cert = $sertifikatService->resolveAdminCertificateForSend($pendaftar, $statusFilter, $dirIndex);
+            if ($cert === null) {
+                continue;
+            }
+
+            $email = trim((string) $pendaftar->email);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $invalidEmails[] = [
+                    'nama' => $pendaftar->nama,
+                    'nomor_registrasi' => $pendaftar->nomor_registrasi,
+                    'email' => $pendaftar->email ?: '-',
+                ];
+                continue;
+            }
+
+            $alreadySent = $pendaftar->sertifikatEmailLogs->contains('stage_key', $cert['stage_key']);
+            if ($alreadySent) {
+                $alreadySentCount++;
+            } else {
+                $pendingCount++;
+            }
+
+            $allItems[] = [
+                'pendaftar_id' => $pendaftar->id,
+                'nomor_registrasi' => $pendaftar->nomor_registrasi,
+                'nama' => $pendaftar->nama,
+                'email' => $email,
+                'stage_key' => $cert['stage_key'],
+                'stage_label' => $cert['stage_label'],
+                'title' => $cert['title'],
+                'already_sent' => $alreadySent,
+            ];
+        }
+
+        if (empty($allItems)) {
+            $statusLabel = $statusFilter !== '' ? $statusFilter : 'Semua Status';
+            $invalidMsg = !empty($invalidEmails)
+                ? ' (' . count($invalidEmails) . ' peserta memiliki format email tidak valid).'
+                : '';
+
+            return response()->json([
+                'success' => false,
+                'message' => "Tidak ditemukan pendaftar pada filter Status \"{$statusLabel}\" yang memiliki file sertifikat PDF dan email valid{$invalidMsg}",
+            ]);
+        }
+
+        $batchId = \Illuminate\Support\Str::random(16);
+        \Illuminate\Support\Facades\Cache::put(
+            "cert_email_batch_{$batchId}",
+            [
+                'user_id' => auth()->id(),
+                'status_filter' => $statusFilter,
+                'items' => $allItems,
+            ],
+            now()->addHours(4)
+        );
+
+        return response()->json([
+            'success' => true,
+            'batch_id' => $batchId,
+            'status_filter_label' => $statusFilter !== '' ? $statusFilter : 'Semua Status',
+            'total_filtered' => $pendaftars->count(),
+            'total_with_certificate' => count($allItems),
+            'already_sent_count' => $alreadySentCount,
+            'pending_count' => $pendingCount,
+            'invalid_email_count' => count($invalidEmails),
+        ]);
+    }
+
+    /**
+     * Mengirim satu email sertifikat per panggilan AJAX untuk update progres real-time dan tracking status SMTP.
+     */
+    public function sendCertificateEmailProcess(
+        \Illuminate\Http\Request $request,
+        \App\Services\SertifikatService $sertifikatService
+    ) {
+        $this->authorizeCertificateEmailAction();
+
+        $validated = $request->validate([
+            'batch_id' => ['required', 'string', 'max:64'],
+            'mode' => ['nullable', 'in:pending,all'],
+            'limit' => ['nullable', 'integer', 'min:0'],
+            'index' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $batch = \Illuminate\Support\Facades\Cache::get("cert_email_batch_{$validated['batch_id']}");
+        if (!$batch || ($batch['user_id'] ?? null) !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'fatal' => true,
+                'message' => 'Sesi pengiriman email kadaluarsa atau tidak valid. Silakan mulai ulang.',
+            ], 400);
+        }
+
+        $mode = $validated['mode'] ?? 'pending';
+        $limit = (int) ($validated['limit'] ?? 0);
+        $index = (int) $validated['index'];
+
+        $queue = $mode === 'pending'
+            ? array_values(array_filter($batch['items'], fn (array $item) => empty($item['already_sent'])))
+            : $batch['items'];
+
+        if ($limit > 0) {
+            $queue = array_slice($queue, 0, $limit);
+        }
+
+        $target = $queue[$index] ?? null;
+        if ($target === null) {
+            return response()->json([
+                'success' => true,
+                'done' => true,
+            ]);
+        }
+
+        $pendaftar = \App\Models\Pendaftar::with('riwayats')->find($target['pendaftar_id']);
+        if (!$pendaftar) {
+            return response()->json([
+                'success' => false,
+                'quota_exceeded' => false,
+                'nama' => $target['nama'],
+                'nomor_registrasi' => $target['nomor_registrasi'],
+                'email' => $target['email'],
+                'cert_title' => $target['title'],
+                'error' => 'Data pendaftar tidak lagi ditemukan di database.',
+            ]);
+        }
+
+        $this->checkCategoryPermission((string) $pendaftar->kategori);
+
+        $resolved = $sertifikatService->resolveCertificateFileForStage($pendaftar, $target['stage_key'], false);
+        if ($resolved === null) {
+            $errorMsg = 'File PDF sertifikat tidak ditemukan atau peserta tidak lagi memenuhi tahap.';
+            $this->recordCertificateEmailLog(
+                $pendaftar->id,
+                $target['stage_key'],
+                $target['stage_label'],
+                $target['email'],
+                'failed',
+                $errorMsg
+            );
+
+            return response()->json([
+                'success' => false,
+                'quota_exceeded' => false,
+                'nama' => $pendaftar->nama,
+                'nomor_registrasi' => $pendaftar->nomor_registrasi,
+                'email' => $target['email'],
+                'cert_title' => $target['title'],
+                'error' => $errorMsg,
+            ]);
+        }
+
+        $email = trim((string) $pendaftar->email);
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\SertifikatEmail(
+                $pendaftar,
+                $resolved['meta']['label'],
+                $resolved['meta']['title'],
+                $resolved['path'],
+                $resolved['download_name']
+            ));
+
+            $this->recordCertificateEmailLog(
+                $pendaftar->id,
+                $resolved['meta']['key'],
+                $resolved['meta']['label'],
+                $email,
+                'sent'
+            );
+
+            return response()->json([
+                'success' => true,
+                'quota_exceeded' => false,
+                'nama' => $pendaftar->nama,
+                'nomor_registrasi' => $pendaftar->nomor_registrasi,
+                'email' => $email,
+                'cert_title' => $resolved['meta']['title'],
+            ]);
+        } catch (\Throwable $e) {
+            $errorMsg = $e->getMessage();
+            $quotaExceeded = $this->isSmtpQuotaError($errorMsg);
+
+            \Illuminate\Support\Facades\Log::error("Gagal mengirim email sertifikat ke {$email} ({$pendaftar->nomor_registrasi}): {$errorMsg}");
+
+            $this->recordCertificateEmailLog(
+                $pendaftar->id,
+                $resolved['meta']['key'],
+                $resolved['meta']['label'],
+                $email,
+                'failed',
+                mb_substr($errorMsg, 0, 1000)
+            );
+
+            return response()->json([
+                'success' => false,
+                'quota_exceeded' => $quotaExceeded,
+                'nama' => $pendaftar->nama,
+                'nomor_registrasi' => $pendaftar->nomor_registrasi,
+                'email' => $email,
+                'cert_title' => $resolved['meta']['title'],
+                'error' => $errorMsg,
+            ]);
+        }
+    }
+
+    protected function recordCertificateEmailLog(
+        string $pendaftarId,
+        string $stageKey,
+        string $stageLabel,
+        string $email,
+        string $status,
+        ?string $errorMessage = null
+    ): void {
+        \App\Models\PendaftarEmailLog::create([
+            'pendaftar_id' => $pendaftarId,
+            'email_type' => 'sertifikat',
+            'stage_key' => $stageKey,
+            'stage_label' => $stageLabel,
+            'email' => $email,
+            'status' => $status,
+            'error_message' => $errorMessage,
+            'sent_by' => auth()->id(),
+            'sent_at' => $status === 'sent' ? now() : null,
+        ]);
+    }
+
+    protected function isSmtpQuotaError(string $message): bool
+    {
+        $lower = strtolower($message);
+        $patterns = [
+            'daily user sending quota',
+            '5.4.5',
+            '4.7.0',
+            'quota exceeded',
+            'sending limit',
+            'too many messages',
+            'too many login',
+            'rate limit',
+            '421 ',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (str_contains($lower, $pattern)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

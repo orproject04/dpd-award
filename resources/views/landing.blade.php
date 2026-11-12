@@ -1992,6 +1992,65 @@
                                             x-text="resultData?.status"></span>
                                     </div>
                                 </div>
+
+                                <template x-if="resultData?.certificates && resultData.certificates.length > 0">
+                                    <div class="pt-4 border-t border-gray-100">
+                                        <div class="text-gray-400 text-[12px] font-bold tracking-wider mb-2.5">SERTIFIKAT PENGHARGAAN</div>
+                                        <div class="space-y-3">
+                                            <template x-for="cert in resultData.certificates" :key="cert.stage_key">
+                                                <div
+                                                    class="rounded-xl border border-[#1b6e4c]/20 bg-gradient-to-br from-[#0a3622]/[0.03] via-[#1b6e4c]/[0.04] to-[#e0b53c]/[0.08] p-4 transition-all">
+                                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                                        <div class="flex items-center gap-3">
+                                                            <div
+                                                                class="w-10 h-10 rounded-lg bg-[#1b6e4c]/10 border border-[#1b6e4c]/15 flex items-center justify-center shrink-0 text-[#1b6e4c]">
+                                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path
+                                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                                    </path>
+                                                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                                                    <path d="M9 15l2 2 4-4"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <div class="text-[#10131a] font-bold text-[15px] leading-snug"
+                                                                x-text="cert.title"></div>
+                                                        </div>
+                                                        <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                                            <a :href="cert.view_url" target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-[12.5px] font-semibold border border-gray-200 text-[#10131a] bg-white hover:bg-gray-50 transition-colors">
+                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path
+                                                                        d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6">
+                                                                    </path>
+                                                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                                                </svg>
+                                                                <span>Buka</span>
+                                                            </a>
+                                                            <a :href="cert.download_url"
+                                                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[12.5px] font-bold bg-gradient-to-br from-[#f5da8b] via-[#e0b53c] to-[#b8860b] text-[#10131a] shadow-sm hover:brightness-105 transition-all">
+                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2.2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4">
+                                                                    </path>
+                                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                                </svg>
+                                                                <span>Unduh PDF</span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
 
                             <div class="mt-5 pt-5 border-t border-gray-100 flex justify-center">
@@ -2061,7 +2120,7 @@
                             this.success = data.success;
                             if (data.success) {
                                 this.resultData = data.data;
-                                this.resultData.nomor_registrasi = this.regId;
+                                this.resultData.nomor_registrasi = data.data.nomor_registrasi || this.regId;
                             } else {
                                 this.message = data.message || 'Nomor registrasi tidak valid.';
                             }

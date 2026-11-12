@@ -613,7 +613,7 @@ class PendaftarController extends Controller
             new \App\Http\Filters\KategoriFilter,
             new \App\Http\Filters\ProvinsiFilter,
             new \App\Http\Filters\StatusFilter,
-            new \App\Http\Filters\EmailSertifikatFilter,
+            new \App\Http\Filters\SertifikatFilter,
         ];
 
         foreach ($filters as $filter) {
@@ -2486,23 +2486,72 @@ class PendaftarController extends Controller
     ) {
         [$pendaftars, $statusFilter] = $this->fetchFilteredPendaftarsForCertificate($request, [
             'riwayats',
-            'sertifikatEmailLogs' => fn ($q) => $q->where('status', 'sent'),
+            'sertifikatEmailLogs' => fn ($q) => $q->latest('created_at'),
         ]);
+
+        $stageDefs = [
+            1 => ['key' => 'verifikasi_berkas', 'label' => 'Lolos Verifikasi Berkas (Peserta)', 'always_show' => true],
+            2 => ['key' => '50_besar', 'label' => 'Lolos 50 Besar', 'always_show' => true],
+            3 => ['key' => '10_besar', 'label' => 'Lolos 10 Besar', 'always_show' => true],
+            4 => ['key' => '3_besar', 'label' => 'Lolos 3 Besar', 'always_show' => false],
+            5 => ['key' => 'wawancara', 'label' => 'Lolos Verifikasi Lapangan', 'always_show' => false],
+            6 => ['key' => 'final', 'label' => 'Lolos Tahap Final', 'always_show' => false],
+        ];
+
+        $breakdown = [];
+        foreach ($stageDefs as $rank => $def) {
+            $breakdown[$rank] = [
+                'rank' => $rank,
+                'key' => $def['key'],
+                'label' => $def['label'],
+                'eligible' => 0,
+                'with_pdf' => 0,
+                'missing_pdf' => 0,
+                'invalid_email' => 0,
+                'sent' => 0,
+                'unsent' => 0,
+                'failed' => 0,
+            ];
+        }
+
+        $filterRank = ($statusFilter !== '' && $statusFilter !== 'Tidak Lolos')
+            ? \App\Services\SertifikatService::resolveStageRankFromStatus($statusFilter)
+            : -1;
 
         $dirIndex = $sertifikatService->getStageDirectoryIndex();
         $allItems = [];
-        $alreadySentCount = 0;
-        $pendingCount = 0;
+        $eligibleTotal = 0;
+        $ineligibleCount = 0;
+        $missingPdfCount = 0;
+        $sentCount = 0;
+        $unsentCount = 0;
+        $failedCount = 0;
         $invalidEmails = [];
 
         foreach ($pendaftars as $pendaftar) {
+            $maxAdminRank = $sertifikatService->resolveAdminMaxStageRank($pendaftar);
+            $bucketRank = $filterRank >= 1
+                ? ($maxAdminRank >= $filterRank ? $filterRank : 0)
+                : $maxAdminRank;
+
+            if ($bucketRank < 1 || !isset($breakdown[$bucketRank])) {
+                $ineligibleCount++;
+                continue;
+            }
+
+            $eligibleTotal++;
+            $breakdown[$bucketRank]['eligible']++;
+
             $cert = $sertifikatService->resolveAdminCertificateForSend($pendaftar, $statusFilter, $dirIndex);
             if ($cert === null) {
+                $missingPdfCount++;
+                $breakdown[$bucketRank]['missing_pdf']++;
                 continue;
             }
 
             $email = trim((string) $pendaftar->email);
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $breakdown[$bucketRank]['invalid_email']++;
                 $invalidEmails[] = [
                     'nama' => $pendaftar->nama,
                     'nomor_registrasi' => $pendaftar->nomor_registrasi,
@@ -2511,11 +2560,20 @@ class PendaftarController extends Controller
                 continue;
             }
 
-            $alreadySent = $pendaftar->sertifikatEmailLogs->contains('stage_key', $cert['stage_key']);
-            if ($alreadySent) {
-                $alreadySentCount++;
+            $stageLogs = $pendaftar->sertifikatEmailLogs->where('stage_key', $cert['stage_key']);
+            $isSent = $stageLogs->contains('status', 'sent');
+            $isFailed = !$isSent && $stageLogs->contains('status', 'failed');
+
+            $breakdown[$bucketRank]['with_pdf']++;
+            if ($isSent) {
+                $sentCount++;
+                $breakdown[$bucketRank]['sent']++;
+            } elseif ($isFailed) {
+                $failedCount++;
+                $breakdown[$bucketRank]['failed']++;
             } else {
-                $pendingCount++;
+                $unsentCount++;
+                $breakdown[$bucketRank]['unsent']++;
             }
 
             $allItems[] = [
@@ -2526,8 +2584,16 @@ class PendaftarController extends Controller
                 'stage_key' => $cert['stage_key'],
                 'stage_label' => $cert['stage_label'],
                 'title' => $cert['title'],
-                'already_sent' => $alreadySent,
+                'already_sent' => $isSent,
+                'has_failed' => $isFailed,
             ];
+        }
+
+        $stageBreakdownList = [];
+        foreach ($stageDefs as $rank => $def) {
+            if (($statusFilter === '' && $def['always_show']) || $breakdown[$rank]['eligible'] > 0) {
+                $stageBreakdownList[] = $breakdown[$rank];
+            }
         }
 
         if (empty($allItems)) {
@@ -2538,7 +2604,12 @@ class PendaftarController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => "Tidak ditemukan pendaftar pada filter Status \"{$statusLabel}\" yang memiliki file sertifikat PDF dan email valid{$invalidMsg}",
+                'total_filtered' => $pendaftars->count(),
+                'eligible_total' => $eligibleTotal,
+                'ineligible_count' => $ineligibleCount,
+                'missing_pdf_count' => $missingPdfCount,
+                'stage_breakdown' => $stageBreakdownList,
+                'message' => "Dari {$pendaftars->count()} peserta pada filter Status \"{$statusLabel}\", terdapat {$eligibleTotal} peserta berhak sertifikat namun tidak ada yang memiliki file sertifikat PDF dan email valid{$invalidMsg}",
             ]);
         }
 
@@ -2558,10 +2629,17 @@ class PendaftarController extends Controller
             'batch_id' => $batchId,
             'status_filter_label' => $statusFilter !== '' ? $statusFilter : 'Semua Status',
             'total_filtered' => $pendaftars->count(),
+            'eligible_total' => $eligibleTotal,
+            'ineligible_count' => $ineligibleCount,
+            'missing_pdf_count' => $missingPdfCount,
             'total_with_certificate' => count($allItems),
-            'already_sent_count' => $alreadySentCount,
-            'pending_count' => $pendingCount,
+            'sent_count' => $sentCount,
+            'already_sent_count' => $sentCount,
+            'unsent_count' => $unsentCount,
+            'failed_count' => $failedCount,
+            'pending_count' => $unsentCount + $failedCount,
             'invalid_email_count' => count($invalidEmails),
+            'stage_breakdown' => $stageBreakdownList,
         ]);
     }
 
@@ -2576,7 +2654,7 @@ class PendaftarController extends Controller
 
         $validated = $request->validate([
             'batch_id' => ['required', 'string', 'max:64'],
-            'mode' => ['nullable', 'in:pending,all'],
+            'mode' => ['nullable', 'in:pending,unsent,failed,all'],
             'limit' => ['nullable', 'integer', 'min:0'],
             'index' => ['required', 'integer', 'min:0'],
         ]);
@@ -2594,9 +2672,12 @@ class PendaftarController extends Controller
         $limit = (int) ($validated['limit'] ?? 0);
         $index = (int) $validated['index'];
 
-        $queue = $mode === 'pending'
-            ? array_values(array_filter($batch['items'], fn (array $item) => empty($item['already_sent'])))
-            : $batch['items'];
+        $queue = match ($mode) {
+            'unsent' => array_values(array_filter($batch['items'], fn (array $item) => empty($item['already_sent']) && empty($item['has_failed']))),
+            'failed' => array_values(array_filter($batch['items'], fn (array $item) => empty($item['already_sent']) && !empty($item['has_failed']))),
+            'pending' => array_values(array_filter($batch['items'], fn (array $item) => empty($item['already_sent']))),
+            default => $batch['items'],
+        };
 
         if ($limit > 0) {
             $queue = array_slice($queue, 0, $limit);

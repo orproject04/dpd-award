@@ -73,14 +73,23 @@ class SertifikatService
     ];
 
     /**
+     * Mengonversi nilai status dropdown menjadi peringkat tahap (0..6, atau -1 bila tidak dikenal).
+     */
+    public static function resolveStageRankFromStatus(?string $status): int
+    {
+        $clean = trim((string) $status);
+
+        return self::STAGE_RANKS[$clean] ?? -1;
+    }
+
+    /**
      * Mengonversi nilai status dropdown menjadi stage_key kanonik sertifikat (jika merupakan tahap lolos).
      */
     public static function mapStageKeyFromStatus(?string $status): ?string
     {
-        $clean = trim((string) $status);
-        $rank = self::STAGE_RANKS[$clean] ?? null;
+        $rank = self::resolveStageRankFromStatus($status);
 
-        if ($rank === null || $rank < 1 || !isset(self::STAGE_META[$rank])) {
+        if ($rank < 1 || !isset(self::STAGE_META[$rank])) {
             return null;
         }
 
@@ -177,6 +186,154 @@ class SertifikatService
             'root' => $realRoot,
             'dirs' => $this->mapStageDirectories($realRoot),
         ];
+    }
+
+    /**
+     * Mengembalikan daftar ID pendaftar yang memiliki file sertifikat PDF fisik valid
+     * sesuai filter status yang aktif.
+     *
+     * @return array<int, string>
+     */
+    public function getPendaftarIdsWithCertificate(?string $statusFilter = null): array
+    {
+        $index = $this->getStageDirectoryIndex();
+        if ($index === null) {
+            return [];
+        }
+
+        $stemsByRank = $this->collectPdfStemsByRank($index);
+        if (empty($stemsByRank)) {
+            return [];
+        }
+
+        $cleanFilter = trim((string) $statusFilter);
+        if ($cleanFilter !== '' && $cleanFilter !== 'Tidak Lolos') {
+            $filterRank = self::STAGE_RANKS[$cleanFilter] ?? null;
+            if ($filterRank === null || $filterRank < 1 || empty($stemsByRank[$filterRank])) {
+                return [];
+            }
+
+            $rows = Pendaftar::query()
+                ->where('status', $cleanFilter)
+                ->get(['id', 'nomor_registrasi', 'status', 'status_before']);
+
+            $matchedIds = [];
+            foreach ($rows as $row) {
+                $stem = strtolower(trim((string) $row->nomor_registrasi));
+                if ($stem !== '' && isset($stemsByRank[$filterRank][$stem])) {
+                    $matchedIds[] = $row->id;
+                }
+            }
+
+            return $matchedIds;
+        }
+
+        $query = Pendaftar::query()->with('riwayats');
+        if ($cleanFilter === 'Tidak Lolos') {
+            $query->where('status', 'Tidak Lolos');
+        } else {
+            $query->where(function ($q) {
+                $q->where('status', 'like', 'Lolos%')
+                    ->orWhere('status', 'Tidak Lolos');
+            });
+        }
+
+        $rows = $query->get(['id', 'nomor_registrasi', 'status', 'status_before']);
+        $matchedIds = [];
+
+        foreach ($rows as $row) {
+            $stem = strtolower(trim((string) $row->nomor_registrasi));
+            if ($stem === '') {
+                continue;
+            }
+
+            $maxRank = $this->resolveAdminMaxStageRank($row);
+            if ($maxRank < 1) {
+                continue;
+            }
+
+            for ($r = $maxRank; $r >= 1; $r--) {
+                if (isset($stemsByRank[$r][$stem])) {
+                    $matchedIds[] = $row->id;
+                    break;
+                }
+            }
+        }
+
+        return $matchedIds;
+    }
+
+    /**
+     * Memindai seluruh stem nama file PDF per peringkat untuk pencocokan cepat O(1).
+     *
+     * @param array{root: string, dirs: array<int, array<int, string>>} $index
+     * @return array<int, array<string, true>>
+     */
+    protected function collectPdfStemsByRank(array $index): array
+    {
+        $realRoot = $index['root'];
+        $stemsByRank = [];
+
+        foreach ($index['dirs'] as $rank => $dirs) {
+            foreach ($dirs as $dir) {
+                foreach ($this->scanPdfFilesInDir($dir, $realRoot) as $filePath) {
+                    $stem = strtolower((string) pathinfo($filePath, PATHINFO_FILENAME));
+                    if ($stem !== '') {
+                        $stemsByRank[$rank][$stem] = true;
+                    }
+                }
+            }
+        }
+
+        return $stemsByRank;
+    }
+
+    /**
+     * Mengumpulkan path file PDF valid pada direktori tahap (langsung maupun 1 subfolder kategori).
+     *
+     * @return array<int, string>
+     */
+    protected function scanPdfFilesInDir(string $dir, string $realRoot): array
+    {
+        $entries = @scandir($dir);
+        if (!is_array($entries)) {
+            return [];
+        }
+
+        $results = [];
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..' || str_starts_with($entry, '.')) {
+                continue;
+            }
+
+            $entryPath = $dir . DIRECTORY_SEPARATOR . $entry;
+            if (is_file($entryPath)) {
+                if (strtolower((string) pathinfo($entry, PATHINFO_EXTENSION)) === 'pdf') {
+                    $verified = $this->verifyPdfInsideRoot($entryPath, $realRoot);
+                    if ($verified !== null) {
+                        $results[] = $verified;
+                    }
+                }
+            } elseif (is_dir($entryPath)) {
+                $subEntries = @scandir($entryPath);
+                if (!is_array($subEntries)) {
+                    continue;
+                }
+                foreach ($subEntries as $subEntry) {
+                    if ($subEntry === '.' || $subEntry === '..' || str_starts_with($subEntry, '.')) {
+                        continue;
+                    }
+                    if (strtolower((string) pathinfo($subEntry, PATHINFO_EXTENSION)) === 'pdf') {
+                        $verified = $this->verifyPdfInsideRoot($entryPath . DIRECTORY_SEPARATOR . $subEntry, $realRoot);
+                        if ($verified !== null) {
+                            $results[] = $verified;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $results;
     }
 
     /**
@@ -470,51 +627,14 @@ class SertifikatService
                 return $verified;
             }
 
-            $entries = @scandir($dir);
-            if (!is_array($entries)) {
-                continue;
-            }
-
-            foreach ($entries as $entry) {
-                if ($entry === '.' || $entry === '..' || str_starts_with($entry, '.')) {
-                    continue;
-                }
-
-                $entryPath = $dir . DIRECTORY_SEPARATOR . $entry;
-                if (is_file($entryPath)) {
-                    if ($this->matchesPdfStem($entry, $needleStem)) {
-                        $verified = $this->verifyPdfInsideRoot($entryPath, $realRoot);
-                        if ($verified !== null) {
-                            return $verified;
-                        }
-                    }
-                } elseif (is_dir($entryPath)) {
-                    $subEntries = @scandir($entryPath);
-                    if (!is_array($subEntries)) {
-                        continue;
-                    }
-                    foreach ($subEntries as $subEntry) {
-                        if ($subEntry === '.' || $subEntry === '..' || str_starts_with($subEntry, '.')) {
-                            continue;
-                        }
-                        if ($this->matchesPdfStem($subEntry, $needleStem)) {
-                            $verified = $this->verifyPdfInsideRoot($entryPath . DIRECTORY_SEPARATOR . $subEntry, $realRoot);
-                            if ($verified !== null) {
-                                return $verified;
-                            }
-                        }
-                    }
+            foreach ($this->scanPdfFilesInDir($dir, $realRoot) as $pdfPath) {
+                if (strtolower((string) pathinfo($pdfPath, PATHINFO_FILENAME)) === $needleStem) {
+                    return $pdfPath;
                 }
             }
         }
 
         return null;
-    }
-
-    protected function matchesPdfStem(string $filename, string $needleStem): bool
-    {
-        return strtolower((string) pathinfo($filename, PATHINFO_EXTENSION)) === 'pdf'
-            && strtolower((string) pathinfo($filename, PATHINFO_FILENAME)) === $needleStem;
     }
 
     protected function verifyPdfInsideRoot(string $candidatePath, string $realRoot): ?string

@@ -5,13 +5,13 @@ namespace App\Http\Filters;
 use App\Services\SertifikatService;
 use Laravolt\Ui\Filters\BaseFilter;
 
-class EmailSertifikatFilter extends BaseFilter
+class SertifikatFilter extends BaseFilter
 {
     protected string $label = '';
 
     public function __construct()
     {
-        $this->label = 'Email Sertifikat';
+        $this->label = 'Sertifikat';
     }
 
     public function apply($data, $value)
@@ -20,7 +20,8 @@ class EmailSertifikatFilter extends BaseFilter
             return $data;
         }
 
-        $stageKey = SertifikatService::mapStageKeyFromStatus(request()->get('status-filter'));
+        $statusFilter = request()->get('status-filter');
+        $stageKey = SertifikatService::mapStageKeyFromStatus($statusFilter);
         $scopeStage = function ($q) use ($stageKey) {
             if ($stageKey !== null) {
                 $q->where('stage_key', $stageKey);
@@ -32,11 +33,6 @@ class EmailSertifikatFilter extends BaseFilter
                 $q->where('status', 'sent');
                 $scopeStage($q);
             });
-        } elseif ($value === 'unsent') {
-            $data->whereDoesntHave('sertifikatEmailLogs', function ($q) use ($scopeStage) {
-                $q->where('status', 'sent');
-                $scopeStage($q);
-            });
         } elseif ($value === 'failed') {
             $data->whereHas('sertifikatEmailLogs', function ($q) use ($scopeStage) {
                 $q->where('status', 'failed');
@@ -45,6 +41,29 @@ class EmailSertifikatFilter extends BaseFilter
                 $q->where('status', 'sent');
                 $scopeStage($q);
             });
+        } elseif ($value === 'unsent' || $value === 'missing') {
+            $idsWithCert = app(SertifikatService::class)->getPendaftarIdsWithCertificate($statusFilter);
+
+            $data->whereDoesntHave('sertifikatEmailLogs', function ($q) use ($scopeStage) {
+                $q->where('status', 'sent');
+                $scopeStage($q);
+            });
+
+            if ($value === 'unsent') {
+                if (empty($idsWithCert)) {
+                    $data->whereRaw('1 = 0');
+                } else {
+                    $data->where(function ($q) use ($idsWithCert) {
+                        foreach (array_chunk($idsWithCert, 400) as $chunk) {
+                            $q->orWhereIn('pendaftar.id', $chunk);
+                        }
+                    });
+                }
+            } else {
+                foreach (array_chunk($idsWithCert, 400) as $chunk) {
+                    $data->whereNotIn('pendaftar.id', $chunk);
+                }
+            }
         }
 
         return $data;
@@ -57,6 +76,7 @@ class EmailSertifikatFilter extends BaseFilter
             'sent' => 'Sudah Dikirim',
             'unsent' => 'Belum Dikirim',
             'failed' => 'Gagal Dikirim',
+            'missing' => 'Tidak Ditemukan Sertifikat',
         ];
     }
 
@@ -70,3 +90,4 @@ class EmailSertifikatFilter extends BaseFilter
             ->addClass('clearable');
     }
 }
+

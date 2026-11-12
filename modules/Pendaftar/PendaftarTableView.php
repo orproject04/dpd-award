@@ -38,7 +38,10 @@ class PendaftarTableView extends CustomTableView
             : "COALESCE(SUM(total), 0)";
 
         return $query
-            ->with(['sertifikatEmailLogs' => fn ($q) => $q->latest('created_at')])
+            ->with([
+                'riwayats',
+                'sertifikatEmailLogs' => fn ($q) => $q->latest('created_at'),
+            ])
             ->withCount(['kontribusi', 'penghargaan'])
             ->addSelect([
                 'nilai' => \App\Models\PendaftarKertasKerja::selectRaw($nilaiSelect)
@@ -54,6 +57,8 @@ class PendaftarTableView extends CustomTableView
     public function columns(): array
     {
         $hasRestrictedView = auth()->user()->hasPermission(\App\Enums\Permission::PENILAIAN_VIEW_TERBATAS) && !auth()->user()->hasPermission('*');
+        $sertifikatService = app(\App\Services\SertifikatService::class);
+        $certDirIndex = $sertifikatService->getStageDirectoryIndex();
 
         return [
             Numbering::make('No'),
@@ -105,9 +110,10 @@ class PendaftarTableView extends CustomTableView
             Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;'>" . e($data->email ?: '-') . "</span>";
             }, 'Email')->sortable('email'),
-            Raw::make(function ($data) {
+            Raw::make(function ($data) use ($sertifikatService, $certDirIndex) {
                 $logs = $data->sertifikatEmailLogs;
-                $activeStageKey = \App\Services\SertifikatService::mapStageKeyFromStatus(request('status-filter'));
+                $statusFilter = request('status-filter');
+                $activeStageKey = \App\Services\SertifikatService::mapStageKeyFromStatus($statusFilter);
                 $scopedLogs = $activeStageKey !== null ? $logs->where('stage_key', $activeStageKey) : $logs;
 
                 $sentLog = $scopedLogs->firstWhere('status', 'sent');
@@ -134,10 +140,20 @@ class PendaftarTableView extends CustomTableView
                         . "</div>";
                 }
 
+                $cert = $sertifikatService->resolveAdminCertificateForSend($data, $statusFilter, $certDirIndex);
+                if ($cert !== null) {
+                    $stageLabel = e($cert['stage_label']);
+
+                    return "<div style='text-align:center;white-space:nowrap;'>"
+                        . "<span class='ui mini blue basic label' style='font-size:11px;padding:3px 7px;'>Belum Dikirim</span>"
+                        . "<div style='font-size:10.5px;color:#64748b;margin-top:3px;'>{$stageLabel}</div>"
+                        . "</div>";
+                }
+
                 return "<div style='text-align:center;white-space:nowrap;'>"
-                    . "<span class='ui mini grey basic label' style='font-size:11px;padding:3px 7px;'>Belum Dikirim</span>"
+                    . "<span class='ui mini grey basic label' style='font-size:11px;padding:3px 7px;'>Tidak Ditemukan</span>"
                     . "</div>";
-            }, 'Email Sertifikat'),
+            }, 'Sertifikat'),
             Raw::make(function ($data) {
                 return "<span style='display:block;text-align:center;font-family:monospace;font-size:12px;color:var(--text-muted);'>" . $data->nomor_registrasi . "</span>";
             }, 'Nomor Registrasi')->sortable('nomor_registrasi'),
@@ -190,7 +206,7 @@ class PendaftarTableView extends CustomTableView
             new KategoriFilter,
             new \App\Http\Filters\ProvinsiFilter,
             new StatusFilter,
-            new \App\Http\Filters\EmailSertifikatFilter,
+            new \App\Http\Filters\SertifikatFilter,
         ];
     }
 }

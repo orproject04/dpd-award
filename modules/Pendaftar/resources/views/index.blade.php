@@ -381,7 +381,7 @@
 
             function getActiveFilterQueryString() {
                 const params = new URLSearchParams(window.location.search);
-                ['kategori-filter', 'provinsi-filter', 'status-filter', 'email-sertifikat-filter'].forEach(function(key) {
+                ['kategori-filter', 'provinsi-filter', 'status-filter', 'sertifikat-filter'].forEach(function(key) {
                     const el = document.querySelector(`[name="${key}"]`);
                     if (el) {
                         params.set(key, el.value || '');
@@ -430,29 +430,96 @@
                         return;
                     }
 
-                    const hasPending = initData.pending_count > 0;
-                    const defaultMode = hasPending ? 'pending' : 'all';
+                    const sentTotal = initData.sent_count ?? initData.already_sent_count ?? 0;
+                    const unsentTotal = initData.unsent_count ?? 0;
+                    const failedTotal = initData.failed_count ?? 0;
+                    const pendingTotal = initData.pending_count ?? (unsentTotal + failedTotal);
+
+                    const breakdownRowsHtml = (initData.stage_breakdown || []).map(function(row) {
+                        const missingNote = row.missing_pdf > 0
+                            ? `<div style="font-size:10.5px;color:#64748b;">PDF belum ada: ${row.missing_pdf}</div>`
+                            : '';
+                        return `
+                            <tr style="border-bottom:1px solid #e2e8f0;">
+                                <td style="padding:6px 8px;font-weight:600;color:#1e293b;">
+                                    ${escapeHtmlCert(row.label)}
+                                    ${missingNote}
+                                </td>
+                                <td style="padding:6px 6px;text-align:center;font-weight:600;">${row.eligible}</td>
+                                <td style="padding:6px 6px;text-align:center;font-weight:700;">${row.with_pdf}</td>
+                                <td style="padding:6px 6px;text-align:center;color:#15803d;font-weight:700;">${row.sent}</td>
+                                <td style="padding:6px 6px;text-align:center;color:#0284c7;font-weight:700;">${row.unsent}</td>
+                                <td style="padding:6px 6px;text-align:center;color:#dc2626;font-weight:700;">${row.failed}</td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                    const breakdownTableHtml = breakdownRowsHtml
+                        ? `
+                            <div style="margin-bottom:14px;">
+                                <div style="font-size:12px;font-weight:700;color:#475569;margin-bottom:5px;">
+                                    Rincian Peserta yang Berhak Sertifikat (dari ${initData.total_filtered} peserta):
+                                </div>
+                                <div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+                                    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                                        <thead style="background:#f1f5f9;color:#475569;">
+                                            <tr style="border-bottom:1px solid #e2e8f0;">
+                                                <th style="padding:6px 8px;text-align:left;">Tahap</th>
+                                                <th style="padding:6px 6px;text-align:center;">Berhak</th>
+                                                <th style="padding:6px 6px;text-align:center;">Ada PDF</th>
+                                                <th style="padding:6px 6px;text-align:center;color:#15803d;">Berhasil</th>
+                                                <th style="padding:6px 6px;text-align:center;color:#0284c7;">Belum</th>
+                                                <th style="padding:6px 6px;text-align:center;color:#dc2626;">Gagal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>${breakdownRowsHtml}</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        `
+                        : '';
+
+                    let defaultMode = 'all';
+                    if (pendingTotal > 0) {
+                        defaultMode = unsentTotal > 0 && failedTotal === 0 ? 'unsent' : 'pending';
+                    }
 
                     const confirmRes = await Swal.fire({
                         title: 'Kirim Email Sertifikat',
-                        width: 560,
+                        width: 660,
                         html: `
-                            <div style="text-align:left;font-size:13.5px;color:#334155;line-height:1.6;">
-                                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+                            <div style="text-align:left;font-size:13.5px;color:#334155;line-height:1.55;">
+                                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
                                     <div><strong>Filter Status (Dropdown):</strong> <span style="color:#0f766e;">${escapeHtmlCert(initData.status_filter_label)}</span></div>
-                                    <div><strong>Total Peserta Tersaring:</strong> ${initData.total_filtered} peserta</div>
-                                    <div><strong>Memiliki Sertifikat PDF &amp; Email Valid:</strong> <strong>${initData.total_with_certificate}</strong> peserta</div>
-                                    <div style="margin-top:4px;font-size:12.5px;">
-                                        <span style="color:#15803d;">&#10003; Sudah terkirim: <strong>${initData.already_sent_count}</strong></span> &nbsp;|&nbsp;
-                                        <span style="color:#b45309;">&#9679; Belum terkirim / gagal: <strong>${initData.pending_count}</strong></span>
-                                        ${initData.invalid_email_count > 0 ? `<br><span style="color:#dc2626;">&#9888; ${initData.invalid_email_count} peserta dilewati karena email tidak valid</span>` : ''}
+                                    <div>
+                                        <strong>Total Peserta Tersaring:</strong> ${initData.total_filtered} peserta
+                                        <span style="font-size:12px;color:#64748b;">(Berhak sertifikat: <strong>${initData.eligible_total}</strong> &bull; Belum lolos berkas: ${initData.ineligible_count})</span>
                                     </div>
+                                    <div>
+                                        <strong>Memiliki Sertifikat PDF &amp; Email Valid:</strong> <strong>${initData.total_with_certificate}</strong> peserta
+                                        ${initData.missing_pdf_count > 0 ? `<span style="font-size:12px;color:#64748b;">(${initData.missing_pdf_count} peserta berhak belum ada PDF)</span>` : ''}
+                                    </div>
+                                    <div style="margin-top:6px;font-size:12.5px;display:flex;flex-wrap:wrap;gap:10px;">
+                                        <span style="color:#15803d;">&#10003; Berhasil terkirim: <strong>${sentTotal}</strong></span>
+                                        <span style="color:#0284c7;">&#9679; Belum terkirim: <strong>${unsentTotal}</strong></span>
+                                        <span style="color:#dc2626;">&#10007; Gagal terkirim: <strong>${failedTotal}</strong></span>
+                                    </div>
+                                    ${initData.invalid_email_count > 0 ? `<div style="margin-top:4px;font-size:12px;color:#dc2626;">&#9888; ${initData.invalid_email_count} peserta dilewati karena format email tidak valid</div>` : ''}
                                 </div>
+                                ${breakdownTableHtml}
                                 <div style="margin-bottom:12px;">
                                     <label style="display:block;font-weight:700;margin-bottom:6px;">Target Pengiriman</label>
-                                    <label style="display:flex;align-items:center;gap:8px;margin-bottom:5px;cursor:pointer;">
-                                        <input type="radio" name="cert-send-mode" value="pending" ${defaultMode === 'pending' ? 'checked' : ''} ${!hasPending ? 'disabled' : ''}>
-                                        <span>Hanya yang belum berhasil dikirim (${initData.pending_count} email)</span>
+                                    <label style="display:flex;align-items:center;gap:8px;margin-bottom:4px;cursor:pointer;">
+                                        <input type="radio" name="cert-send-mode" value="unsent" ${defaultMode === 'unsent' ? 'checked' : ''} ${unsentTotal === 0 ? 'disabled' : ''}>
+                                        <span>Belum terkirim saja (${unsentTotal} email)</span>
+                                    </label>
+                                    <label style="display:flex;align-items:center;gap:8px;margin-bottom:4px;cursor:pointer;">
+                                        <input type="radio" name="cert-send-mode" value="failed" ${defaultMode === 'failed' ? 'checked' : ''} ${failedTotal === 0 ? 'disabled' : ''}>
+                                        <span>Hanya yang gagal terkirim (${failedTotal} email)</span>
+                                    </label>
+                                    <label style="display:flex;align-items:center;gap:8px;margin-bottom:4px;cursor:pointer;">
+                                        <input type="radio" name="cert-send-mode" value="pending" ${defaultMode === 'pending' ? 'checked' : ''} ${pendingTotal === 0 ? 'disabled' : ''}>
+                                        <span>Gabungan belum terkirim &amp; gagal (${pendingTotal} email)</span>
                                     </label>
                                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                                         <input type="radio" name="cert-send-mode" value="all" ${defaultMode === 'all' ? 'checked' : ''}>
@@ -492,7 +559,14 @@
 
                     const mode = confirmRes.value.mode;
                     const limit = confirmRes.value.limit;
-                    const baseCount = mode === 'pending' ? initData.pending_count : initData.total_with_certificate;
+                    let baseCount = initData.total_with_certificate;
+                    if (mode === 'unsent') {
+                        baseCount = unsentTotal;
+                    } else if (mode === 'failed') {
+                        baseCount = failedTotal;
+                    } else if (mode === 'pending') {
+                        baseCount = pendingTotal;
+                    }
                     const totalToSend = limit > 0 ? Math.min(baseCount, limit) : baseCount;
 
                     if (totalToSend <= 0) {
